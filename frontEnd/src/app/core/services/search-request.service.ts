@@ -13,14 +13,14 @@ export class SearchRequestService {
   configUrl = 'assets/config.json'
 
   getFirstNRequest(): Observable<any> {
-    return this.http.post("http://127.0.0.1:8001/get_first_n_songs", { "nb_songs": 30 }).pipe(
+    return this.http.post("http://46.101.197.163:81/get_first_n_songs", { "nb_songs": 30 }).pipe(
       catchError(this.handleError)
     );;
   }
 
   searchRequest(body: object): Observable<any> {
 
-    return this.http.post("http://127.0.0.1:8001/search_request", body).pipe(
+    return this.http.post("http://46.101.197.163:81/search_request", body).pipe(
       catchError(this.handleError)
     );;
 
