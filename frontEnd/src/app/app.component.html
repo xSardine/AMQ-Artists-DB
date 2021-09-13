@@ -1,0 +1,37 @@
+<!-- Toolbar -->
+<div class="toolbar" role="banner">
+  <img width="40" alt="Artist Anisong Database Logo" src="/assets/img/sardineLogo.png" />
+  <span style="padding-left: 5px;">Artist Anisong Database</span>
+  <div class="spacer"></div>
+  <a class="toolbar-github-logo" aria-label="See project on Github" target="_blank" rel="noopener"
+    href="https://github.com/xSardine/Artist_Anisongs_Database" title="Github">
+    <i class="fa fa-github"></i>
+  </a>
+  <label id="switch" title="Flashbang" class="switch">
+    <input type="checkbox" (click)="toggleTheme()" id="slider">
+    <span class="slider round"></span>
+  </label>
+</div>
+
+<div class="video-player">
+  <vm-player #player *ngIf="url" autoplay playsinline>
+    <vm-audio cross-origin="true">
+      <source data-src={{url}} type="audio/mp3" />
+    </vm-audio>
+    <vm-default-ui></vm-default-ui>
+  </vm-player>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+
+
+<div class="content" role="main">
+  <app-search-bar (messageEvent)="receiveSongList($event)"></app-search-bar>
+  <app-song-table (mp3PlayerClicked)="playMP3($event)" [songTable]="songList"></app-song-table>
+</div>
+
+
+<router-outlet></router-outlet>

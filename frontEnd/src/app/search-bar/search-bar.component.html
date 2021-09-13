@@ -1,0 +1,116 @@
+<div class=mainFilter>
+
+    <input *ngIf="!showAdvancedFilters" #mainFilterInput placeholder="Search a song"
+        title="Search songs by anime name, song name or artist" style="width: 420px;" class=textInputFilter type=search
+        (keyup.enter)="onEnterKey()" (input)="mainFilter = mainFilterInput.value">
+
+    <a class="showFilter" (click)="generateDownloadJsonUri()" [href]="downloadJsonHref" download="{{downloadFileName}}">
+        <i class=" fa fa-download"></i> Download Last Search
+    </a>
+
+    <span class="showFilter" (click)="showAdvancedFilters=!showAdvancedFilters">
+        <i class="fa fa-cog"></i> Toggle Advanced Filters
+    </span>
+</div>
+
+<br>
+
+<div *ngIf="showAdvancedFilters" class="filters">
+
+    <div style="display:block; padding-bottom: 5px;">
+        <input #animeFilterInput class=textInputFilter type=search placeholder="Type an anime..."
+            title="Search songs by anime name" style="width: 230px;" (keyup.enter)="onEnterKey()"
+            (input)="animeFilter = animeFilterInput.value">
+
+        <label class="check"
+            title="If activated, results only have to contain the filter and not match it exactly"><input
+                type="checkbox" (change)="animeFilterPartialMatch=!animeFilterPartialMatch" checked>
+            Partial Match
+        </label>
+        <label class="check" title="If activated, it will ignore specials caracters"><input type="checkbox"
+                (change)="animeFilterIgnoreSpecialCaracters=!animeFilterIgnoreSpecialCaracters" checked>
+            Ignore Special Caracters </label>
+        <label class="check" title="If activated, matching will be case sensitive"><input type="checkbox"
+                (change)="animeFilterCaseSensitive=!animeFilterCaseSensitive"> Case
+            Sensitive
+        </label>
+
+    </div>
+
+    <div style="display:block; padding-bottom: 5px;">
+        <input #songNameFilterInput class=textInputFilter placeholder="Type a song name..."
+            title="Search songs by song name" type=search style="width: 230px;" (keyup.enter)="onEnterKey()"
+            (input)="songNameFilter = songNameFilterInput.value">
+
+        <label class="check"
+            title="If activated, results only have to contain the filter and not match it exactly"><input
+                type="checkbox" (change)="songNameFilterPartialMatch=!songNameFilterPartialMatch" checked>
+            Partial Match
+        </label>
+        <label class="check" title="If activated, it will ignore specials caracters"><input type="checkbox"
+                (change)="songNameFilterIgnoreSpecialCaracters=!songNameFilterIgnoreSpecialCaracters" checked>
+            Ignore Special Caracters </label>
+        <label class="check" title="If activated, matching will be case sensitive"><input type="checkbox"
+                (change)="songNameFilterCaseSensitive=!songNameFilterCaseSensitive"> Case
+            Sensitive
+        </label>
+
+    </div>
+
+    <div style="display:block; padding-bottom: 8px;">
+        <input #artistFilterInput class=textInputFilter placeholder="Type an artist..." type=search
+            title="Search songs by artist" style="width: 230px;" (keyup.enter)="onEnterKey()"
+            (input)="artistFilter = artistFilterInput.value">
+
+        <label class="check"
+            title="If activated, results only have to contain the filter and not match it exactly"><input
+                type="checkbox" (change)="artistFilterPartialMatch=!artistFilterPartialMatch" checked>
+            Partial Match
+        </label>
+        <label class="check" title="If activated, it will ignore specials caracters"><input type="checkbox"
+                (change)="artistFilterIgnoreSpecialCaracters=!artistFilterIgnoreSpecialCaracters" checked>
+            Ignore Special Caracters </label>
+        <label class="check" title="If activated, matching will be case sensitive"><input type="checkbox"
+                (change)="artistFilterCaseSensitive=!artistFilterCaseSensitive"> Case
+            Sensitive
+        </label>
+
+        <div style="display:block; padding-top: 3px;">
+
+            <input #maximumRandomsFilterInput placeholder="3..."
+                title="Maximum amount of singer that are not from the group or that are not the initial artist that can be present (defaulted to 3)"
+                style="width: 40px;" type=search class=textInputFilter (keyup.enter)="onEnterKey()"
+                (input)="maximumRandomsFilter = maximumRandomsFilterInput.value">
+
+            <input #minimalMembersFilterInput placeholder="3..."
+                title="Minimal amount of singer from the groups that needs to be present (only useful for groups, defaulted to 3)"
+                style="width: 40px;" type=search class=textInputFilter (keyup.enter)="onEnterKey()"
+                (input)="minimalMembersFilter = minimalMembersFilterInput.value">
+
+        </div>
+
+    </div>
+
+
+
+    <div style="display:block; padding-bottom: 5px;">
+        <label class="check"><input type="checkbox" (change)="showOpenings=!showOpenings" checked> Opening </label>
+        <label class="check"><input type="checkbox" (change)="showEndings=!showEndings" checked> Ending </label>
+        <label class="check"><input type="checkbox" (change)="showInserts=!showInserts" checked> Insert Song </label>
+    </div>
+
+    <div style="display:block; padding-bottom: 5px;">
+
+        <label title="Define how the filters will be combine together" for="showonly">Filters Combination: </label>
+        <select (change)="selectFilterCombinationChangeHandler($event)" class="selectFilter">
+            <option title=" A song needs to match at least one of the filters" selected="selected">Union</option>
+            <option title="A song needs to match every filter">Intersection</option>
+        </select>
+
+        <label class="check"><input type="checkbox" (change)="ignoreDuplicate=!ignoreDuplicate"> Ignore Duplicates
+        </label>
+
+
+    </div>
+
+</div>

@@ -1,0 +1,57 @@
+<!-- The Modal -->
+<div *ngIf="showSongInfoPopup" id="myModal" class="modal">
+
+    <!-- Modal content -->
+    <div (click)="this.doubleClickPreventer = !this.doubleClickPreventer;" class="modal-content">
+        <div class="modal-header">
+            <h1><a id="modal-header" class="animeLink" target="_blank" href="{{popUpannURL}}">{{popUpAnime}}</a></h1>
+            <span class="close"></span>
+        </div>
+        <div class="modal-body">
+            <h2>Song Information</h2>
+            <p id="modal-songinfo"></p>
+            720p:
+            <a id="modal-720-link" class="textLink" target="_blank" href="{{popUpHDLink}}">{{popUpHDLink}}</a>
+            <br>
+            480p:
+            <a id=" modal-480-link" class="textLink" target="_blank" href="{{popUpMDLink}}">{{popUpMDLink}}</a>
+            <br>
+            mp3:
+            <a id="modal-mp3-link" class="textLink" target="_blank" href="{{popUpAudioLink}}">{{popUpAudioLink}}</a>
+            <h2 id="modal-artist-part">Artists Information</h2>
+            <div *ngFor=" let artist of popUpArtistsInfo">
+                <p>Known as: {{artist["names"]}}</p>
+                <p *ngIf="artist['members'] != undefined">Comprised of: {{artist["members"]}}</p>
+                <p *ngIf="artist['groups'] != undefined">Part of: {{artist["groups"]}}</p>
+                <br>
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <h3 id="modal-footer"></h3>
+        </div>
+    </div>
+
+</div>
+
+<table id="table" *ngIf="songTable">
+    <!-- ADD HEADERS -->
+    <tr>
+        <th *ngFor="let col of tableHeaders" (click)="sortFunction(col)">
+            {{ col }}
+        </th>
+        <th style="text-align: center;">mp3</th>
+    </tr>
+
+    <!-- BIND ARRAY TO TABLE -->
+    <tr *ngFor=" let song of songTable">
+        <td style="cursor: pointer;" (click)="displaySongIngoPopup(song)">{{song.annId}}</td>
+        <td>{{song.Anime}}</td>
+        <td>{{song.Type}}</td>
+        <td>{{song.SongName}}</td>
+        <td>{{song.Artist}}</td>
+        <td *ngIf="song.mptrois" style="text-align: center; z-index: 15;"><span class="mp3logo"
+                (click)="playMP3music(song)">♫</span>
+        </td>
+    </tr>
+</table>

@@ -1,0 +1,67 @@
+@import '~font-awesome/css/font-awesome.css';
+
+.textInputFilter {
+    /* width: 100%; */
+    font-size: 14px;
+    border: 1px solid #aaa;
+    float:none;
+    background-color: var(--songTablePairColor);
+    color: var(--textOnBackground)
+}
+
+.textInputFilter::placeholder {
+    color: var(--textOnBackground)
+}
+
+input[type="search"]::-webkit-search-cancel-button {
+  cursor: pointer;
+}
+
+.showFilter {
+    padding-left: 30px;
+    cursor: pointer;
+    float:right;
+    color: var(--textOnBackground);
+}
+
+.mainFilter {
+    position:static;
+}
+
+.filters {
+    margin-top: 14px;
+    display: block;
+    border-radius: 25px;
+    padding: 3px 0px;
+    text-align: center;
+    animation-name: animatetop;
+    animation-duration: 0.7s;
+    color: var(--textOnBackground)
+}
+
+.check {
+    cursor: pointer;
+    border: 10px;
+    border-color: black;
+    display: inline-block;
+    margin: 0px 5px;
+    color: var(--textOnBackground)
+}
+
+.selectFilter {
+    cursor: pointer;
+}
+
+/* Add Animation */
+@keyframes animatetop {
+    from {
+        top: -300px;
+        opacity: 0
+    }
+
+    to {
+        top: 0;
+        opacity: 1
+    }
+}
+

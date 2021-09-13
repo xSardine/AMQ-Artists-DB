@@ -1,0 +1,20 @@
+/* You can add global styles to this file, and also import other style files */
+:root {
+  --primaryColor: #222;
+  --secondaryColor: #1976d2;
+  --songTableHoverColor: #222;
+  --songTableImpairColor: #333;
+  --songTablePairColor: #555;
+  --tableFontColor: white;
+  --textOnPrimary: white;
+  --textOnSecondary: black;
+  --background: #555;
+  --textOnBackground: white;
+  --linkOnBackground: white;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--textOnBackground);
+  font-family: "Arial", sans-serif;
+}
