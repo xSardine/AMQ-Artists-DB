@@ -149,6 +149,7 @@ splitting_exception_list = [
         "Asuka Nishi to Yukai na Nakama-tachi",
         ("Asuka Nishi", "Yukai na Nakama-tachi",),
     ),
+    ("Marina Inoue and Chinami Nishimura", ("Marina Inoue", "Chinami Nishimura",)),
     ("Velvet.kodhy to Velvet.kodhy to μ to μ", ("Velvet.kodhy", "μ",),),
     ("Melori to Cocotama Five", ("Melori", "Cocotama Five",),),
     ("Junji Majima to Youkai Taiji Sentai", ("Junji Majima", "Youkai Taiji Sentai",),),
@@ -665,6 +666,7 @@ splitting_exception_list = [
             "Kana from AIKATSU☆STARS!",
         ),
     ),
+    ("SUN&LUNAR", ("SUN&LUNAR",)),
     (
         "Ruka・Nanase・Kana・Miho from AIKATSU☆STARS!",
         (
@@ -740,6 +742,7 @@ splitting_exception_list = [
             "Miki from AIKATSU☆STARS!",
         ),
     ),
+    ("Kuni Kawachi and Takako Ishiguro", ("Kuni Kawachi", "Takako Ishiguro",)),
     (
         "Kana・Nanase from AIKATSU☆STARS!",
         ("Kana from AIKATSU☆STARS!", "Nanase from AIKATSU☆STARS!",),
@@ -1042,6 +1045,12 @@ splitting_exception_list = [
     ),
     ("Waka・Eimi", ("Waka Kirishima", "Eimi Naruse",),),
     ("Ayane・Eri", ("Ayane Fujisaki", "Eri Aino",),),
+    ("You & Explosion Band", ("You & Explosion Band",)),
+    (
+        "You & Explosion Band feat. Lyn Inaizumi",
+        ("You & Explosion Band", "Lyn Inaizumi",),
+    ),
+    ("You & Explosion Band featuring Lileth", ("You & Explosion Band", "Lileth",),),
 ]
 # 0000
 
@@ -1260,6 +1269,7 @@ alternative_names = [
     ["Midori Kato", "Midori Katou"],
     ["Satomi Majima", "Satomi Mashima"],
     ["Kyoko Okada", "Kyouko Okada"],
+    ["Salia", "SALIA"],
     ["Norman J. Grossfield", "Norman J. Grossfeld"],
     [
         "Nishirokugou Shōnen Gasshō-dan",
@@ -1323,7 +1333,9 @@ alternative_names = [
     ["Sunbrain", "sunbrain"],
     ["Shizuka Itou", "Shizuka Itō"],
     ["Yu Kobayashi", "Yuu Kobayashi", "Smith"],
+    ["Aki Toyosaki", "Melori"],
     ["Chiaki Osawa", "Chiaki Ōsawa"],
+    ["ERIKA", "Erika Masaki"],
     ["Ryoko Shiraishi", "Ryōko Shiraishi"],
     ["Mahora Gakuen Chuutou-bu 2-A", "Mahora Gakuen Chuutoubu 2-A",],
     [
@@ -1443,6 +1455,8 @@ alternative_names = [
     ["Takuya Satō", "Takuya Satou"],
     ["Sae Aeuchi", "Sae Aiuchi"],
     ["Ayaka Senbongi", "Sayaka Senbongi"],
+    ["Takayuki Hattori", "Takayuki Hattori Presents GUNDAM THE ORIGIN"],
+    ["Flower", "FLOWER"],
     # ["Shuuta Morishima", "Shuuta Morishima"],
     ["Miho Arakawa", "Miho Arikawa"],
     ["smileY inc.", "SmileY inc."],
@@ -1524,6 +1538,7 @@ alternative_names = [
     ["yosh", "Yosh", "yosh(Survive Said The Prophet)"],
     ["CHINO", "Chino"],
     ["THE ALFEE", "ALFEE"],
+    ["Midori Karashima", "Midori Karashima "],
     # probably because database inconsistency
     # proper alternative names
     ["ASCA", "Asuka Ōkura"],
@@ -4585,6 +4600,112 @@ groups_subdivision_list = [
     ["London Boots 1-go 2-go", ["Atsushi Tamura", "Ryo Tamura"]],
     ["jealkb", ["Atsushi Tamura"]],
     ["Fine★Rein", ["Yuko Goto", "Megumi Kojima"]],
+    [
+        "Columbia Animation Stars",
+        [
+            "Ushio Hashimoto",
+            "Mitsuko Horie",
+            "Yoko Ishida",
+            "Hironobu Kageyama",
+            "Takayuki Miyauchi",
+            "Ichiro Mizuki",
+            "Kumiko Oosugi",
+            "Sayuri Saito",
+            "Yasuhide Sawa",
+            "Junko Uchida",
+            "Satoko Yamano",
+            "Masatake Okura",
+        ],
+    ],
+    ["Dragon Soul", ["Takayoshi Tanimoto", "Mayumi Goj\u014d", "YOFFY"]],
+    ["GIRLS BE", ["Houko Kuwashima", "Machiko Toyoshima"]],
+    ["Tanpopo", ["Aya Ishiguro", "Kaori Iida", "Mari Yaguchi"]],
+    [
+        "Tenipuri All Stars",
+        [
+            "Junko Minagawa",
+            "Ryotaro Okiayu",
+            "Takayuki Kondou",
+            "Hiroki Takahashi",
+            "Yuki Kaida",
+            "Naru Kawamoto",
+            "Kenjiro Tsuda",
+            "Masaya Onosaka",
+            "Kohei Kiyasu",
+            "Junichi Suwabe",
+            "Kiuchi Hidenobu",
+            "Souichirou Hoshi",
+            "Toshiyuki Kusuda",
+            "Daisuke Namikawa",
+            "Masami Iwasaki",
+            "Taiten Kusunoki",
+            "Eisuke Tsuda",
+            "Yuuki Masuda",
+            "Naozumi Takahashi",
+            "Showtaro Morikubo",
+            "Tarusuke Shingaki",
+            "Yoshimasa Hosoya",
+            "Jun Oosuka",
+            "Masaya Takatsuka",
+            "Jun Fukuyama",
+            "Yu Sugimoto",
+            "Chihiro Suzuki",
+            "Eiji Moriyama",
+            "Kousuke Toriumi",
+        ],
+    ],
+    [
+        "Shimanchu MiRiKa Girls",
+        [
+            "Shino Shimoji",
+            "Arisa Iho",
+            "Erina Katayama",
+            "Satsuki Kinjou",
+            "Mariko Nishime",
+            "Tomoka Takara",
+            "Madoka Tomishiro",
+            "Minami Uehara",
+        ],
+    ],
+    [
+        "Amikyuu Danji",
+        [
+            "Junko Minagawa",
+            "Ryotaro Okiayu",
+            "Naozumi Takahashi",
+            "Showtaro Morikubo",
+            "Jun Fukuyama",
+            "Yu Sugimoto",
+            "",
+        ],
+    ],
+    ["MAI-AMI", ["Ami", "Mai Kariyuki"]],
+    ["Inaribayashi", ["Mayu Udono", "Eriko Satou"]],
+    [
+        "Cocotama Five",
+        [
+            "Rikako Aikawa",
+            "Megumi Han",
+            "Yumi Kakazu",
+            "Michiyo Murase",
+            "Ryouka Yuzuki",
+        ],
+    ],
+    [
+        "Cocotama9",
+        [
+            "Rikako Aikawa",
+            "Megumi Han",
+            "Aki Toyosaki",
+            "Yumi Kakazu",
+            "Michiyo Murase",
+            "Ryouka Yuzuki",
+            "Ayumi Fujimura",
+            "Yuri Shiratori",
+        ],
+    ],
+    ["unicorn table", ["Salia"]],
+    ["SUN&LUNAR", ["Haruko Momoi", "Sakura Nogawa"]],
 ]
 
 
@@ -4654,6 +4775,8 @@ know name
 sugizo
 hw
 TECHNOBOYS PULCRAFT GREEN-FUND
+REDALiCE
+you & explosion band
 
 
 TODO

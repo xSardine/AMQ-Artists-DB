@@ -22,7 +22,7 @@ class Search_Filter(BaseModel):
 
     # How much I decompose the group to search for other songs
     # ie. 1: Artists one by one 2: At least two member from the group, etc...
-    group_granularity: Optional[int] = Field(2, ge=1)
+    group_granularity: Optional[int] = Field(2, ge=0)
     # Once I've confirmed group_granularity requirement is met
     # How much other artists that are not from the og group do I accept
     max_other_artist: Optional[int] = Field(2, ge=0)

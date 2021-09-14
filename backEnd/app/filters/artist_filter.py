@@ -102,7 +102,6 @@ def song_meets_search_requirement(
     Check that a song meets the groum_granularity and the max_other_artist settings
     """
     if song["type"] in authorized_types:
-        song_artist_list = []
         for members_list in members_lists:
             song_artist_list = []
             for artist in song["artist_ids"]:
@@ -115,9 +114,20 @@ def song_meets_search_requirement(
                 members_list, song_artist_list
             )
 
-            tmp_group_granularity = min(
-                group_granularity, max(len(members_list) - 1, 1)
+            tmp_group_granularity = max(
+                min(group_granularity, len(members_list) - 1), 1
             )
+
+            if "fripSide" in song["artist"]:
+                print(members_list)
+                print(song_artist_list)
+                print()
+                print("is in", is_in_artist_list)
+                print("isn't", is_not_in_artist_list)
+                print(max_other_artist)
+                print(tmp_group_granularity)
+                print()
+                print()
 
             if len(is_in_artist_list) >= tmp_group_granularity:
                 if len(is_not_in_artist_list) <= max_other_artist:
@@ -151,9 +161,12 @@ def search_artist(
 
         members_list = []
         for artist in artist_id_list:
-            members_list.append(get_artists_in_group(group_database, artist))
-            if int(artist) not in members_list[len(members_list) - 1]:
-                members_list[len(members_list) - 1].append(int(artist))
+            if group_granularity > 0:
+                members_list.append(get_artists_in_group(group_database, artist))
+                if int(artist) not in members_list[len(members_list) - 1]:
+                    members_list[len(members_list) - 1].append(int(artist))
+            else:
+                members_list.append([int(artist)])
 
         song_list = []
         for anime in song_database:

@@ -18,6 +18,13 @@
 <div *ngIf="showAdvancedFilters" class="filters">
 
     <div style="display:block; padding-bottom: 5px;">
+        <label class="check"><input type="checkbox" (change)="showOpenings=!showOpenings" checked> Opening </label>
+        <label class="check"><input type="checkbox" (change)="showEndings=!showEndings" checked> Ending </label>
+        <label class="check"><input type="checkbox" (change)="showInserts=!showInserts" checked> Insert Song </label>
+    </div>
+
+
+    <div style="display:block; padding-bottom: 5px; padding-right: 96px;">
         <input #animeFilterInput class=textInputFilter type=search placeholder="Type an anime..."
             title="Search songs by anime name" style="width: 230px;" (keyup.enter)="onEnterKey()"
             (input)="animeFilter = animeFilterInput.value">
@@ -37,7 +44,7 @@
 
     </div>
 
-    <div style="display:block; padding-bottom: 5px;">
+    <div style="display:block; padding-bottom: 5px; padding-right: 96px;">
         <input #songNameFilterInput class=textInputFilter placeholder="Type a song name..."
             title="Search songs by song name" type=search style="width: 230px;" (keyup.enter)="onEnterKey()"
             (input)="songNameFilter = songNameFilterInput.value">
@@ -75,28 +82,16 @@
             Sensitive
         </label>
 
-        <div style="display:block; padding-top: 3px;">
+        <input #maximumRandomsFilterInput placeholder="0..."
+            title="This is the maximum amount of people that are not in your Artist Filter field that are allowed"
+            style="width: 40px; margin-left: 8px;" type=search class=textInputFilter (keyup.enter)="onEnterKey()"
+            (input)="maximumRandomsFilter = maximumRandomsFilterInput.value">
 
-            <input #maximumRandomsFilterInput placeholder="3..."
-                title="Maximum amount of singer that are not from the group or that are not the initial artist that can be present (defaulted to 3)"
-                style="width: 40px;" type=search class=textInputFilter (keyup.enter)="onEnterKey()"
-                (input)="maximumRandomsFilter = maximumRandomsFilterInput.value">
+        <input #minimalMembersFilterInput placeholder="9..."
+            title="Minimal amount of singer from the group that needs to be present (only useful for groups)"
+            style="width: 40px; margin-left: 8px;" type=search class=textInputFilter (keyup.enter)="onEnterKey()"
+            (input)="minimalMembersFilter = minimalMembersFilterInput.value">
 
-            <input #minimalMembersFilterInput placeholder="3..."
-                title="Minimal amount of singer from the groups that needs to be present (only useful for groups, defaulted to 3)"
-                style="width: 40px;" type=search class=textInputFilter (keyup.enter)="onEnterKey()"
-                (input)="minimalMembersFilter = minimalMembersFilterInput.value">
-
-        </div>
-
-    </div>
-
-
-
-    <div style="display:block; padding-bottom: 5px;">
-        <label class="check"><input type="checkbox" (change)="showOpenings=!showOpenings" checked> Opening </label>
-        <label class="check"><input type="checkbox" (change)="showEndings=!showEndings" checked> Ending </label>
-        <label class="check"><input type="checkbox" (change)="showInserts=!showInserts" checked> Insert Song </label>
     </div>
 
     <div style="display:block; padding-bottom: 5px;">

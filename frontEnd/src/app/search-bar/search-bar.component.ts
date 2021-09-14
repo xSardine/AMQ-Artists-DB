@@ -16,8 +16,8 @@ export class SearchBarComponent implements OnInit {
   animeFilter: string = "";
   songNameFilter: string = "";
   artistFilter: string = "";
-  maximumRandomsFilter: string = "3";
-  minimalMembersFilter: string = "3";
+  maximumRandomsFilter: string = "0";
+  minimalMembersFilter: string = "9";
   selectedCombination: string = "Union";
   animeFilterPartialMatch: boolean = true;
   animeFilterIgnoreSpecialCaracters: boolean = true;
