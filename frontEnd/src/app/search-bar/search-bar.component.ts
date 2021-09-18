@@ -164,10 +164,10 @@ export class SearchBarComponent implements OnInit {
     this.downloadJsonHref = uri;
   }
 
-  @Output() messageEvent = new EventEmitter();
+  @Output() sendSongListtoTable = new EventEmitter();
 
   sendMessage(currentSongList: any) {
-    this.messageEvent.emit(currentSongList)
+    this.sendSongListtoTable.emit(currentSongList)
   }
 
 }

@@ -13,7 +13,7 @@
   </label>
 </div>
 
-<div class="video-player">
+<div id="video-player">
   <vm-player #player *ngIf="url" autoplay playsinline>
     <vm-audio cross-origin="true">
       <source data-src={{url}} type="audio/mp3" />
@@ -29,7 +29,7 @@
 
 
 <div class="content" role="main">
-  <app-search-bar (messageEvent)="receiveSongList($event)"></app-search-bar>
+  <app-search-bar (sendSongListtoTable)="receiveSongList($event)"></app-search-bar>
   <app-song-table (mp3PlayerClicked)="playMP3($event)" [songTable]="songList"></app-song-table>
 </div>
 

@@ -33,7 +33,7 @@ def get_regex_search(search, ignore_special_character=True, partial_match=True):
     return "^" + search + "$" if not partial_match else ".*" + search + ".*"
 
 
-def format_song(annId, anime_name, song):
+def format_song(annId, anime_name, romaji, song):
     if song["type"] == 1:
         type = "Opening " + str(song["number"])
     elif song["type"] == 2:
@@ -44,6 +44,7 @@ def format_song(annId, anime_name, song):
     songinfo = {
         "annId": annId,
         "Anime": anime_name,
+        "Romaji": romaji,
         "Type": type,
         "SongName": song["name"],
         "Artist": song["artist"],

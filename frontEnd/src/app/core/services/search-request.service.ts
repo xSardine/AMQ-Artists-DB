@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError, retry } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +12,9 @@ export class SearchRequestService {
 
   configUrl = 'assets/config.json'
 
+  /*46.101.197.163:81
+    127.0.0.1:8001
+  */
   getFirstNRequest(): Observable<any> {
     return this.http.post("http://46.101.197.163:81/get_first_n_songs", { "nb_songs": 30 }).pipe(
       catchError(this.handleError)

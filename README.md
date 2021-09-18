@@ -85,4 +85,4 @@ Feedbacks on the User Interface, new functionalities, etc...
 
 Let me know if you find any groups that has relevant people in them and not yet added (by relevant, I mean an artist that will make a link between this group and any other group/artist)
 
-Let me know if you find any artists that is not linked together with all their alternative names. Alternative names are proper alternative names such as Minami Kuribayashi / exige, but also database inconsistencies like Ayaka ōhashi, Ayaka Ohashi 
+Let me know if you find any artists that is not linked together with all their alternative names. Alternative names are proper alternative names such as Minami Kuribayashi / exige, but also database inconsistencies like Ayaka ōhashi, Ayaka Ohashi

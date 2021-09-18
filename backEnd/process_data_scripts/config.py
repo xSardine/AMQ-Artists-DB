@@ -15,6 +15,7 @@ splitting_exception_list = [
     ("Kishida Kyōdan &THE Akeboshi Rockets", ("Kishida Kyōdan &THE Akeboshi Rockets",)),
     ("angela Presents/Shoko Nakagawa", ("angela", "Shoko Nkagawa",),),
     ("G・GRIP", ("G・GRIP",)),
+    ("Aozu + Cap to Bin", ("Aozu", "Cap to Bin",)),
     ("Hello, Happy World!", ("Hello, Happy World!",)),
     ("Happy Around! feat. KYOKO & SAKI", ("Happy Around!",)),
     (" G・GRIP", ("G・GRIP",)),
@@ -228,6 +229,8 @@ splitting_exception_list = [
         "Etsuko Yakushimaru + Yoshinori Sunahara",
         ("Etsuko Yakushimaru", "Yoshinori Sunahara",),
     ),
+    ("QUANGO & SPARKY", ("QUANGO & SPARKY",)),
+    ("TAKAO & THE VIEW", ("TAKAO & THE VIEW",)),
     ("MAHO-dou + Kodomo-tachi", ("MAHO-dou", "Kodomo-tachi",),),
     ("Takanori Nishikawa+ASCA", ("Takanori Nishikawa", "ASCA",),),
     ("Cotori with Stitchbird", ("Cotori with Stitchbird",)),
@@ -304,6 +307,7 @@ splitting_exception_list = [
         "Yuji Ohno & Lupintic Five with Friends Feat. DOUBLE",
         ("Yuji Ohno", "Lupintic Five with Friends", "DOUBLE",),
     ),
+    ("New man Co.,Ltd.", ("New man Co.,Ltd.",)),
     ("Hamatora - Ryota Osaka & Wataru Hatano", ("Ryota Osaka", "Wataru Hatano",),),
     ("Adiamond -Amy & Bibian-", ("Adiamond -Amy & Bibian-",)),
     ("MAYUKO & Luminous", ("MAYUKO & Luminous",)),
@@ -343,6 +347,7 @@ splitting_exception_list = [
     ("Sachi & Juri", ("Sachi & Juri",)),
     ("Tackey & Tsubasa", ("Tackey & Tsubasa",)),
     ("AKIMA & NEOS", ("AKIMA & NEOS",)),
+    ("Okino, Shuntaro", ("Okino, Shuntaro",)),
     ("HoneyWorks meets Sphere", ("HoneyWorks", "Sphere",),),
     ("HoneyWorks meets CHiCO", ("HoneyWorks", "CHiCO",),),
     ("HoneyWorks meets TrySail", ("HoneyWorks", "TrySail",),),
@@ -823,6 +828,7 @@ splitting_exception_list = [
         "Hibiki・Alicia from BEST FRIENDS!",
         ("Hibiki from BEST FRIENDS!", "Alicia from BEST FRIENDS!",),
     ),
+    ("Nicole Price and Bynne Price", ("Nicole Price", "Bynne Price",)),
     (
         "Raki・Aine・Mio from BEST FRIENDS!",
         (
@@ -1051,6 +1057,7 @@ splitting_exception_list = [
         ("You & Explosion Band", "Lyn Inaizumi",),
     ),
     ("You & Explosion Band featuring Lileth", ("You & Explosion Band", "Lileth",),),
+    ("Akiko & Naoko Kobayashi", ("Akiko Kobayashi", "Naoko Kobayashi",)),
 ]
 # 0000
 
@@ -1102,13 +1109,13 @@ alternative_names = [
     ["T's WORKSHOP", "T's WORK SHOP"],
     ["Koji Tsujitani", "Kouji Tsujitani"],
     ["Shoko Minami", "Shōko Minami"],
+    ["Tarantula", "Tarantula (From Hi-Timez)"],
     ["Motohiro Hata", "Motohiro Hata meets Sakamichi no Apollon"],
     [
         "Suginami Jidou Gasshou-dan",
         "Suginami Jidō Gasshō-dan",
         "Suginami Jidou Gassho-dan",
     ],
-    ["Angels", "angels"],
     ["Akira Sudō", "Akira Sudō ", "Akira Sudou"],
     ["Maaya Sakamoto", "maaya sakamoto"],
     ["Yumi Touma", "Yumi Tōma"],
@@ -1130,7 +1137,7 @@ alternative_names = [
     ["Yuka Sato", "Yuka Satou", "Yuka Satō"],
     ["Yukiyo Satō", "Yukiyo Satou"],
     ["Pink Piggies", "Pink Piggys"],
-    ['Minako"mooki"Obata', 'Minako "mooki" Obata'],
+    ["Minako Obata", 'Minako"mooki"Obata', 'Minako "mooki" Obata'],
     ["Akemi Satō", "Akemi Satou"],
     ["Mie Sonozaki", "Mie Sonokazi"],
     ["Kumiko Endou", "Kumiko Endo"],
@@ -1205,7 +1212,7 @@ alternative_names = [
     ["Miki Ito", "Miki Itō", "Miki Itou"],
     ["Tesshou Genda", "Tesshō Genda", "Tessho Kenda"],
     ["Becky♪#", "Becky"],
-    ["Watarirouka Hashiritai 7", "Watari-Rouka Hashiritai"],
+    ["Watarirouka Hashiritai 7", "Watari-Rouka Hashiritai", "Watarirouka Hashiritai"],
     ["Dance Man", "Dance☆Man"],
     ["mihimaru GT", "mihimaruGT"],
     # ["Yuu Takahashi", "Yuu Takahashi"],
@@ -1229,12 +1236,9 @@ alternative_names = [
     ["Mayumi Shou", "Mayumi Shō"],
     ["The Street Sliders", "Street Sliders"],
     ["Folder5", "Folder"],
-    [
-        "7-nin no Mugiwara Kaizoku-dan",
-        "9-nin no Mugiwara Kaizoku-dan-hen",
-        "Mugiwara Kaizoku-dan",
-    ],
+    ["7-nin no Mugiwara Kaizoku-dan", "Mugiwara Kaizoku-dan",],
     ["The ROOTLESS", "THE ROOTLESS"],
+    ["Choo", "Cho", "Yuuichi Nagashima"],
     ["Kota Shinzato", "Kouta Shinzato"],
     ["Yōko Honna", "Yoko Honna", "Youko Honna"],
     ["Pull Tab to Can", "Pull Tab to Kan"],
@@ -1334,6 +1338,7 @@ alternative_names = [
     ["Shizuka Itou", "Shizuka Itō"],
     ["Yu Kobayashi", "Yuu Kobayashi", "Smith"],
     ["Aki Toyosaki", "Melori"],
+    ["Current of Air", "COA"],
     ["Chiaki Osawa", "Chiaki Ōsawa"],
     ["ERIKA", "Erika Masaki"],
     ["Ryoko Shiraishi", "Ryōko Shiraishi"],
@@ -1345,6 +1350,7 @@ alternative_names = [
     ],
     ["Marina del ray", "Marina del Ray"],
     ["Tatsuhisa Suzuki", "Tatsuhisa Susuki"],
+    ["Yuuko \u014cno", "Yuuko Oono"],
     ["Shoko Nakagawa", "Shoko Nkagawa"],
     ["Tomoe Oumi", "Tomoe Ohmi"],
     ["Momoko Saitō", "Momoko Saito", "Momoko Saitou"],
@@ -1365,7 +1371,6 @@ alternative_names = [
     ["Kyōko Kishi", "Kyouko Kishi"],
     ["Kristen Price", "Kirsten Price"],
     ["Takashi Kondou", "Takashi Kondō"],
-    ["Stella Quintet", "stella quintet+"],
     ["Aimee Blackschleger", "Aimee B", "Aimee B."],
     ["Yurika Ooyama", "Yurika Ōyama"],
     ["The 5 TEARDROPS", "The5 TEARDROPS"],
@@ -1487,6 +1492,7 @@ alternative_names = [
     # ["Yuuki Takada", "Yuuki Takada"],
     ["Shuka Saito", "Shuka Saitou", "Shuka Saitō"],
     ["PriPara☆All Idol's", "Super PriPara☆All Idols"],
+    ["AOZU", "Aozu"],
     ["Ryōko Maekawa", "Ryouko Maekawa"],
     # ["Yuuta Kasuya", "Yuuta Kasuya"],
     ["Souma Saito", "Souma Saitou", "Soma Saito"],
@@ -1571,6 +1577,7 @@ alternative_names = [
     ["Hiroyuki Sawano", "SawanoHiroyuki[nZk]"],
     ["Meltic StAr", "Meltic"],
     ["AiM", "Ai Maeda"],
+    ["OKINO.SHUNTARO", "Okino, Shuntaro"],
     ["Miracle☆Kiratts", "Kiratts"],
     ["Fruit Tart", "Tart"],
     ["Takahiro Sakurai", "MC469MA"],
@@ -1589,6 +1596,7 @@ alternative_names = [
     ["Lisa Komine", "lisa"],
     ["little by little", "Satou-san to Suzuki-kun"],
     ["yoshiki*lisa", "Risa Yoshiki"],
+    ["Mariko Kouda", "miyuki"],
     ["TrySail", "TRINITYAiLE"],
     [
         "Hironobu Kageyama",
@@ -1649,6 +1657,9 @@ alternative_names = [
     ["Saori Oonishi", "Alicia from BEST FRIENDS!"],
     ["Yoko Hikasa", "Hibiki from BEST FRIENDS!"],
     ["Rin Aira", "Wakaba from BEST FRIENDS!", "Raki from BEST FRIENDS!"],
+    ["Kensuke Ushio", "Agraph"],
+    ["Sh\u014dta Aoi", "Shouta Aoi"],
+    ["Youji Ueda", "Y\u014dji Ueda"],
 ]
 # Alternative Artists names
 # 0000
@@ -4413,6 +4424,7 @@ groups_subdivision_list = [
     ["SCREEN mode", ["Yuu Hayashi"]],
     ["BEAT CRUSADERS", ["Tooru Hidaka", "Masahiko Kubota"]],
     ["monobright", ["Yosuke Momono", "Tooru Hidaka"]],
+    ["Scha Dara Parr", "SCHA DARA PARR"],
     ["FIELD OF VIEW", ["U-ya Asaoka"]],
     ["TM NETWORK", ["Takashi Utsunomiya"]],
     ["U_WAVE", ["Takashi Utsunomiya"]],
@@ -4706,6 +4718,177 @@ groups_subdivision_list = [
     ],
     ["unicorn table", ["Salia"]],
     ["SUN&LUNAR", ["Haruko Momoi", "Sakura Nogawa"]],
+    [
+        "Angels",
+        [
+            "Aya Hisakawa",
+            "Kikuko Inoue",
+            "Shiho Kikuchi",
+            "Kotono Mitsuishi",
+            "Sakura Tange",
+        ],
+    ],
+    ["Cherish\u2665Monkey", ["Kikuchi Inoue", "Sakura Tange"]],
+    ["Porno Graffitti", ["Akihito Okano"]],
+    ["Magi!? Girls", ["Haruko Momoi", "Ikue Ootani"]],
+    [
+        "P.E.T.S.",
+        [
+            "Saeko Chiba",
+            "Shizuka Hasegawa",
+            "Kyouko Hikami",
+            "Aya Hirano",
+            "Ayako Kawasumi",
+            "Akiko Kobayashi",
+            "Rie Tanaka",
+            "Yukana",
+            "Mayako Nigo",
+            "Sakura Nogawa",
+            "Chiaki Osawa",
+            "Mei Shimizu",
+        ],
+    ],
+    ["Pure'", ["Mari Adachi", "Riko Sayama", "Miwa Yanagihara"]],
+    [
+        "UP^2",
+        [
+            "Mai Asaki",
+            "Sato Higashi",
+            "Yumi Kikuchi",
+            "Kimiko Koyama",
+            "Miyu Matsuki",
+            "Tomomi Nakano",
+            "Fuyumi Sakiya",
+            "Nozomi Mizuhara",
+            "Sao Morita",
+            "AKIKO",
+        ],
+    ],
+    [
+        "Goth-Loli Sh\u014djo Tantei-dan",
+        ["Yukari Fukui", "Azusa Kataoka", "Yu Kobayashi"],
+    ],
+    [
+        "Five Spirits",
+        ["Eriko Ishihara", "Mamiko Noto", "Hiroko Takahashi", "Akeno Watanabe"],
+    ],
+    ["alom", ["Manami Terada", "Sayaka Komuro"]],
+    ["with", ["Mai Fuchigami", "Sarana Yashima"]],
+    ["A.I.S", ["Satomi Akesaka", "Haruka Terui", "Saeko Zougou"]],
+    ["Cherry7", ["Yukari Tamura", "Sakura Tange", "Kana Ueda", "Megumi Toyoguchi"]],
+    [
+        "LOVE RICE",
+        [
+            "Mark Ishii",
+            "Misae Komori",
+            "Chiharu Sawashiro",
+            "Sousuke Souma",
+            "Nina Tamaki",
+        ],
+    ],
+    [
+        "Gekidan Hitotose",
+        ["Marika Kouno", "Yui Ogura", "Miyu Tomita", "M・A・O", "Hisako Tojo"],
+    ],
+    ["LILIc's", ["Yumi Hara", "Rina Hidaka"]],
+    ["J\u014dh\u014dshori-bu", ["Rumi Ookubo", "Risa Taneda", "Minami Tsuda"]],
+    ["AyaRuka", ["Ruka Kawada", "Aya Sakamoto"]],
+    [
+        "Himarinko L. Shizukuesu",
+        [
+            "Ami Koshimizu",
+            "Iori Nomizu",
+            "Asuka Oogame",
+            "Kei Shindou",
+            "Yuki Matsuoka",
+        ],
+    ],
+    [
+        "Inukko Club",
+        ["Kana Asumi", "Marina Inoue", "Shizuka Itou", "Ai Kakuma", "Yuu Serizawa"],
+    ],
+    ["Aozu", ["Junko Minagawa", "Ryōtarō Okiayu", "Yuki Kaida", "Takayuki Kondou"]],
+    [
+        "Cap to Bin",
+        [
+            "Naru Kawamoto",
+            "Kohei Kiyasu",
+            "Masaya Onosaka",
+            "Hiroki Takahashi",
+            "Kenjirou Tsuda",
+        ],
+    ],
+    ["3 Guava Trio", ["Naozumi Takahashi", "Toshiyuki Toyonaga", "Yuji Ueda"]],
+    [
+        "Tachikiri-tai",
+        ["Yoshimasa Hosoya", "Yuki Kaida", "Toshiyuki Kusuda", "Jun Oosuka"],
+    ],
+    ["Current of Air", ["Hideaki Takatori", "Hideaki Nobuzaku"]],
+    ["Lightning Shadows", ["Ayaka Fukuhara", "Ayane Sakura"]],
+    ["HollYMillorS", ["Ayaka Suwa", "Aya Uchida"]],
+    ["The-Light \u2135 Mare", ["Yoko Hikasa", "Rie Murakawa"]],
+    ["\u221avenustas", ["Yumi Hara", "Nao Touyama", "Ryouka Yuzuki"]],
+    [
+        "7-nin no Mugiwara Kaizoku-dan",
+        [
+            "Mayumi Tanaka",
+            "Kazuya Nakai",
+            "Akemi Okamura",
+            "Kappei Yamaguchi",
+            "Ikue Ootani",
+            "Hiroaki Hirata",
+            "Yuriko Yamaguchi",
+        ],
+    ],
+    [
+        "9-nin no Mugiwara Kaizoku-dan-hen",
+        [
+            "Mayumi Tanaka",
+            "Kazuya Nakai",
+            "Akemi Okamura",
+            "Kappei Yamaguchi",
+            "Ikue Ootani",
+            "Hiroaki Hirata",
+            "Yuriko Yamaguchi",
+            "Kazuki Yao",
+            "Choo",
+        ],
+    ],
+    [
+        "Stella Quintet",
+        [
+            "Jun Fukuyama",
+            "Kentarou Itou",
+            "Daisuke Kishio",
+            "Masakazu Morita",
+            "Kishō Taniyama",
+        ],
+    ],
+    [
+        "stella quintet+",
+        [
+            "Jun Fukuyama",
+            "Kentarou Itou",
+            "Daisuke Kishio",
+            "Masakazu Morita",
+            "Kishō Taniyama",
+            "Mamoru Miyano",
+        ],
+    ],
+    ["Seiyo Gakuen no Hoshi-gumi", ["Kanae Itou", "The rest of the fucking class"]],
+    ["Hitomisora", ["Hitomi Yoshida", "Sora Izumikawa"]],
+    ["TRACY", ["Mai Nakahara", "Shizuka Itou", "Ai Kayano"]],
+    [
+        "Donut◎Quintet",
+        [
+            "Juri Kimura",
+            "Haruka Yoshimura",
+            "Haruka Chisuga",
+            "Asami Takano",
+            "Hitomi Owada",
+        ],
+    ],
+    # ["Kirakira", ["Chika Anzai", "Ibuki Kido", "Yurika Kubo"]]
 ]
 
 
@@ -4750,6 +4933,8 @@ hinata satou
 ayane
 Maiko
 sena
+Angels
+Kirakira
 ________________
 missing:
 sasagebu
@@ -4765,18 +4950,24 @@ glitter green
 roselia
 bang dream
 RONDO
+Ourin Sisters
+
 ___________________
 composer
 seatbelts
 sawano
 livetune
 hachioji-p
+any-p
 know name
 sugizo
 hw
 TECHNOBOYS PULCRAFT GREEN-FUND
 REDALiCE
 you & explosion band
+akira miyagawa
+another infinity
+tenmon
 
 
 TODO

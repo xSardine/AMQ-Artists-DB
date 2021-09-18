@@ -25,6 +25,7 @@ export class SongTableComponent {
   ascendingOrder: boolean = false;
   showSongInfoPopup: boolean = false;
   doubleClickPreventer: boolean = false;
+  romaji: string = ""
 
   popUpannURL: string = "";
   popUpAnime: string = "";
@@ -174,6 +175,7 @@ export class SongTableComponent {
     this.popUpArtistsInfo = song.artists;
     this.showSongInfoPopup = !this.showSongInfoPopup;
     this.doubleClickPreventer = true;
+    this.romaji = song.Romaji
   }
 
   @Output() mp3PlayerClicked = new EventEmitter();

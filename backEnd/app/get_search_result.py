@@ -61,7 +61,10 @@ def get_first_n_songs(song_database, nb_songs):
     for anime in song_database:
         for song in anime["songs"]:
             if count < nb_songs:
-                song_list.append(utils.format_song(anime["annId"], anime["name"], song))
+                romaji = anime["romaji"] if "romaji" in anime.keys() else None
+                song_list.append(
+                    utils.format_song(anime["annId"], anime["name"], romaji, song)
+                )
                 count += 1
             else:
                 return song_list

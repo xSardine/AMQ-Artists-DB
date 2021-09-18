@@ -14,6 +14,12 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
+  #video-player {
+    position:fixed;
+    width:100%;
+    bottom:0;
+}
+
   h1,
   h2,
   h3,
@@ -123,8 +129,3 @@ input:checked + .slider:before {
   border-radius: 50%;
 }
 
-.video-player {
-    position: fixed;
-    width: 98.9%;
-    margin-top: 910px;
-}

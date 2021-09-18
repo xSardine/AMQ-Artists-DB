@@ -25,5 +25,8 @@ def search_songName(
                     not case_sensitive and re.match(search, song["name"], re.IGNORECASE)
                 )
             ):
-                song_list.append(utils.format_song(anime["annId"], anime["name"], song))
+                romaji = anime["romaji"] if "romaji" in anime.keys() else None
+                song_list.append(
+                    utils.format_song(anime["annId"], anime["name"], romaji, song)
+                )
     return song_list

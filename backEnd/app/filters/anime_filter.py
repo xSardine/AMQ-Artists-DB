@@ -18,13 +18,26 @@ def search_anime(
     for anime in song_database:
         if len(song_list) >= max_nb_songs:
             break
-        if (case_sensitive and re.match(search, anime["name"])) or (
-            not case_sensitive and re.match(search, anime["name"], re.IGNORECASE)
+        if (
+            case_sensitive
+            and re.match(search, anime["name"])
+            or (not case_sensitive and re.match(search, anime["name"], re.IGNORECASE))
+        ) or (
+            "romaji" in anime.keys()
+            and (
+                case_sensitive
+                and re.match(search, anime["romaji"])
+                or (
+                    not case_sensitive
+                    and re.match(search, anime["romaji"], re.IGNORECASE)
+                )
+            )
         ):
             for song in anime["songs"]:
                 if song["type"] in authorized_types:
+                    romaji = anime["romaji"] if "romaji" in anime.keys() else None
                     song_list.append(
-                        utils.format_song(anime["annId"], anime["name"], song)
+                        utils.format_song(anime["annId"], anime["name"], romaji, song)
                     )
 
     return song_list

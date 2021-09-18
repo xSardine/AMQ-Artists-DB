@@ -118,17 +118,6 @@ def song_meets_search_requirement(
                 min(group_granularity, len(members_list) - 1), 1
             )
 
-            if "fripSide" in song["artist"]:
-                print(members_list)
-                print(song_artist_list)
-                print()
-                print("is in", is_in_artist_list)
-                print("isn't", is_not_in_artist_list)
-                print(max_other_artist)
-                print(tmp_group_granularity)
-                print()
-                print()
-
             if len(is_in_artist_list) >= tmp_group_granularity:
                 if len(is_not_in_artist_list) <= max_other_artist:
                     return True
@@ -181,8 +170,9 @@ def search_artist(
                     max_other_artist,
                     authorized_types,
                 ):
+                    romaji = anime["romaji"] if "romaji" in anime.keys() else None
                     song_list.append(
-                        utils.format_song(anime["annId"], anime["name"], song)
+                        utils.format_song(anime["annId"], anime["name"], romaji, song)
                     )
 
         return song_list

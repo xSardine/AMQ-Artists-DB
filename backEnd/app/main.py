@@ -87,6 +87,7 @@ class Song_Entry(BaseModel):
 
     annId: int
     Anime: str
+    Romaji: Optional[str]
     Type: str
     SongName: str
     Artist: str
