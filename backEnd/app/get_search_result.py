@@ -93,7 +93,7 @@ def get_search_results(
         link_search = links_filter.search_link(
             song_database, artist_search_filters.search
         )
-        if len(link_search) == 1:
+        if len(link_search) > 0:
             return link_search
         artist_result_list = artist_filter.search_artist(
             song_database,
