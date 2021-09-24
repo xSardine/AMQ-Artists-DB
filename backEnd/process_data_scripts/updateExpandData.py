@@ -115,7 +115,5 @@ for update_anime in update_file:
             )
 
 
-with open(
-    "../data/preprocessed/FusedExpandUpdated.json", "w", encoding="utf-8"
-) as outfile:
+with open("../data/preprocessed/FusedExpand.json", "w", encoding="utf-8") as outfile:
     json.dump(source_file, outfile)

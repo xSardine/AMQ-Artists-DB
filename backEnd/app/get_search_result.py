@@ -1,6 +1,7 @@
 from filters import anime_filter
 from filters import artist_filter
 from filters import songname_filter
+from filters import links_filter
 from filters import utils
 from datetime import datetime
 
@@ -8,7 +9,7 @@ from datetime import datetime
 def is_duplicate_in_list(list, song, ignore_duplicate):
     for song2 in list:
         if song["SongName"] == song2["SongName"] and song["Artist"] == song2["Artist"]:
-            if ignore_duplicate or song["Anime"] == song2["Anime"]:
+            if ignore_duplicate or song["annId"] == song2["annId"]:
                 return True
     return False
 
@@ -89,6 +90,11 @@ def get_search_results(
     songname_result_list = []
 
     if type(artist_search_filters) != list:
+        link_search = links_filter.search_link(
+            song_database, artist_search_filters.search
+        )
+        if len(link_search) == 1:
+            return link_search
         artist_result_list = artist_filter.search_artist(
             song_database,
             artist_database,
@@ -135,6 +141,7 @@ def get_search_results(
     )
 
     print(
+        "\n",
         datetime.now().time(),
         ": I have found",
         len(song_list),

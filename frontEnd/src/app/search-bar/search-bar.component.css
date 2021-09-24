@@ -27,6 +27,9 @@ input[type="search"]::-webkit-search-cancel-button {
 .mainFilter {
     position:static;
 }
+.mainFilter ::placeholder {
+  opacity: 0.7; /* Firefox */
+}
 
 .filters {
     margin-top: 14px;
@@ -38,6 +41,10 @@ input[type="search"]::-webkit-search-cancel-button {
     animation-duration: 0.7s;
     color: var(--textOnBackground)
 }
+.filters ::placeholder {
+  opacity: 0.7; /* Firefox */
+}
+
 
 .check {
     cursor: pointer;

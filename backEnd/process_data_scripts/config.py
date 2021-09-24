@@ -9,6 +9,10 @@ secondary_splitters = "・|& | &|&| ,|,| ×|× |×"
 
 splitting_exception_list = [
     ("Kijima to Mori", ("Kijima", "Mori",),),
+    (
+        "Tenshou Gakuen Seito・Kyoushi Ichidou",
+        ("Tenshou Gakuen Seito Ichidou", "Tenshou Gakuen Kyoushi Ichidou",),
+    ),
     ("OxT", ("OxT",)),
     ("Hironobu Kageyama & BROADWAY", ("Hironobu Kageyama & BROADWAY",)),
     ("Fear, and Loathing in Las Vegas", ("Fear, and Loathing in Las Vegas",)),
@@ -312,6 +316,10 @@ splitting_exception_list = [
     ("Adiamond -Amy & Bibian-", ("Adiamond -Amy & Bibian-",)),
     ("MAYUKO & Luminous", ("MAYUKO & Luminous",)),
     ("Bars & Melody", ("Bars & Melody",)),
+    (
+        "Rekka Katakiri meets Desen\u2606Rizotto",
+        ("Rekka Katakiri", "Desen\u2606Rizotto",),
+    ),
     ("MON & STER", ("MON & STER",)),
     ("MYTH & ROID", ("MYTH & ROID",)),
     ("DEJO & BON", ("DEJO & BON",)),
@@ -323,6 +331,10 @@ splitting_exception_list = [
     ("Ōsugi & Hiiko", ("Ōsugi & Hiiko",)),
     ("Christy&Clinton", ("Christy&Clinton",)),
     ("Irene & Erika", ("Irene & Erika",)),
+    (
+        "Kazaki Morinaka meets \u25bd\u25b2TRiNITY\u25b2\u25bd",
+        ("Kazaki Morinaka", "\u25bd\u25b2TRiNITY\u25b2\u25bd",),
+    ),
     ("Dylan & Catherine", ("Dylan & Catherine",)),
     ("Junich & JJr", ("Junich & JJr",)),
     ("Bread & Butter", ("Bread & Butter",)),
@@ -690,6 +702,7 @@ splitting_exception_list = [
         "Sena・Ruka from AIKATSU☆STARS!",
         ("Sena from AIKATSU☆STARS!", "Ruka from AIKATSU☆STARS!",),
     ),
+    ("Ayahi Takagaki meets Sphere", ("Ayahi Takagaki", "Sphere",)),
     ("Rie from AIKATSU☆STARS!", ("Rie from AIKATSU☆STARS!",)),
     ("Sena from AIKATSU☆STARS!", ("Sena from AIKATSU☆STARS!",)),
     (
@@ -828,6 +841,7 @@ splitting_exception_list = [
         "Hibiki・Alicia from BEST FRIENDS!",
         ("Hibiki from BEST FRIENDS!", "Alicia from BEST FRIENDS!",),
     ),
+    ("Ondo\u2606Girl meets Keroro Shoutai", ("Ondo\u2606Girl", "Keroro Shoutai",)),
     ("Nicole Price and Bynne Price", ("Nicole Price", "Bynne Price",)),
     (
         "Raki・Aine・Mio from BEST FRIENDS!",
@@ -932,6 +946,37 @@ splitting_exception_list = [
     (
         "Shiori・Ruli from STARRY PLANET☆",
         ("Shiori from STARRY PLANET☆", "Ruli from STARRY PLANET☆",),
+    ),
+    ("Miyuki Ichijō and the Howmei Girls", ("Miyuki Ichijō", "the Howmei Girls",)),
+    (
+        "Dominic Nolfi, Heidi Weyhmueller and the Cast of Pokémon Live",
+        ("Dominic Nolfi", "Heidi Weyhmueller", "the Cast of Pokémon Live",),
+    ),
+    ("Jeffrey Pescetto and the Jets", ("Jeffrey Pescetto", "the Jets",)),
+    ("Tadashi Suzuki and CA Pops", ("Tadashi Suzuki", "CA Pops",)),
+    ("Yōko Kuri and The Viking", ("Yōko Kuri", "The Viking",)),
+    ("Jeremy Sweet and Ian Nickus", ("Jeremy Sweet", "Ian Nickus",)),
+    ("Élan Rivera and PJ Lequerica", ("Élan Rivera", "PJ Lequerica",)),
+    (
+        "Aida Bunzou and Tokyo Shounen Shoujo Gasshoutai",
+        ("Aida Bunzou", "Tokyo Shounen Shoujo Gasshoutai",),
+    ),
+    ("Mints and Rei Sekimori", ("Mints", "Rei Sekimori",)),
+    ("Yoko Nakamura and Young Fresh", ("Yoko Nakamura", "Young Fresh",)),
+    ("Yoshimi Nakajima and Young Fresh", ("Yoshimi Nakajima", "Young Fresh",)),
+    ("Shiho Mannaka and Young Fresh", ("Shiho Mannaka", "Young Fresh",)),
+    ("Masato Hidaka and Okama Club", ("Masato Hidaka", "Okama Club",)),
+    ("Erin Bowman and Joe Philips", ("Erin Bowman", "Joe Philips",)),
+    ("Alex Nackman and Kathryn Raio", ("Alex Nackman", "Kathryn Raio",)),
+    ("Neal Coomer and Kathryn Raio", ("Neal Coomer", "Kathryn Raio",)),
+    ("Ben Dixon and The Sad Truth", ("Ben Dixon", "The Sad Truth",)),
+    ("Decktonic and Anthony Seeha", ("Decktonic", "Anthony Seeha",)),
+    ("Jannel Candrice and The Sad Truth", ("Jannel Candrice", "The Sad Truth",)),
+    ("Skrillex and Nik Roos", ("Skrillex", "Nik Roos",)),
+    ("Elspeth Bawden and Amelia Jones", ("Elspeth Bawden", "Amelia Jones",)),
+    (
+        "DJ Milky and b-nCHANt-d featuring Rachel Pollack",
+        ("DJ Milky", "b-nCHANt-d", "Rachel Pollack",),
     ),
     (
         "Mao・Shiori from STARRY PLANET☆",
@@ -1110,6 +1155,7 @@ alternative_names = [
     ["Koji Tsujitani", "Kouji Tsujitani"],
     ["Shoko Minami", "Shōko Minami"],
     ["Tarantula", "Tarantula (From Hi-Timez)"],
+    ["Nakayoshi Mantan! Valac Ikka", "Valac Ikka"],
     ["Motohiro Hata", "Motohiro Hata meets Sakamichi no Apollon"],
     [
         "Suginami Jidou Gasshou-dan",
@@ -1141,7 +1187,6 @@ alternative_names = [
     ["Akemi Satō", "Akemi Satou"],
     ["Mie Sonozaki", "Mie Sonokazi"],
     ["Kumiko Endou", "Kumiko Endo"],
-    ["Minami Takayama", "Minami Kabayama"],
     ["Knight Sabers", "the Knight Sabers"],
     ["Maiko Hashimoto", "Maiko Hashimoto "],
     ["Yumi Tōma", "Yumi Touma"],
@@ -1187,6 +1232,9 @@ alternative_names = [
         "Kamitakada Shounen Gasshō-dan",
         "Kamitakada Boys' Choir",
     ],
+    ["Gackt", "GACKT"],
+    ["Luna Goami", "LUNA GOAMI"],
+    ["Scha Dara Parr", "SCHA DARA PARR"],
     # ["Yuumao", "Yuumao"],
     ["Fushigi Hakken no Uta Club", "FHK Fushigi Hakken no Uta Club"],
     ["Choro-gonzu", "Super Chorogons"],
@@ -1198,7 +1246,7 @@ alternative_names = [
     ["Rumania Montevideo", "rumania montevideo"],
     ["Mariko Kouda", "Mariko Kōda"],
     ["Junichirou Oda", "Junichirō Oda"],
-    ["Maaya Uchida", "Rosenburg Engel"],
+    ["Rosenburg Engel", "Rosenburg Alptraum"],
     ["White Ryuu", "Hakuryuu"],
     ["Hideki Saijou", "Hideki Saijo"],
     ["FENCE OF DEFENSE", "FENCE OF DEFENCE"],
@@ -1223,11 +1271,13 @@ alternative_names = [
     ["Yusuke Nakamura", "Yuusuke Nakamura"],
     ["Yuji Mitsuya", "Yuuji Mitsuya"],
     ["TSUNAMI", "TSUNAMi"],
+    ["Nishimura Chinami", "Chinami Nishimura"],
     # ["Yuki Masuda", "Yuuki Masuda", "Yuuki Masuda"],
     ["Yuki Masuda", "Yuuki Masuda"],
     ["Yuukō Kusunoki", "Yukoh Kusunoki"],
     ["Kentar\u014d It\u014d", "Kentarou Itou"],
     ["Moyu Arishima", "Moyu Arashima"],
+    ["Howmei Girls", "the Howmei Girls"],
     ["Miwako Saitou", "Miwako Saitō", "Miwako Saito"],
     ["Kōichi Yamadera", "Kouichi Yamadera", "Koichi Yamadera", "Kōchi Yamadera"],
     ["Shoko Suzuki", "Shōko Suzuki"],
@@ -1235,7 +1285,6 @@ alternative_names = [
     ["Kyoko Hikami", "Kyōko Hikami", "Kyouko Hikami"],
     ["Mayumi Shou", "Mayumi Shō"],
     ["The Street Sliders", "Street Sliders"],
-    ["Folder5", "Folder"],
     ["7-nin no Mugiwara Kaizoku-dan", "Mugiwara Kaizoku-dan",],
     ["The ROOTLESS", "THE ROOTLESS"],
     ["Choo", "Cho", "Yuuichi Nagashima"],
@@ -1251,6 +1300,7 @@ alternative_names = [
     ["FURIL", "FURIL'"],
     ["Ai Shizumu", "Ai Shimizu"],
     ["DAVE MC LOUD", "DAVE Mc LOUD"],
+    ["Yuka Iwahashi", "Coco Panna"],
     ["MICKEY B.", "MICKEY B"],
     ["THE SPIDERS FROM MARS", "SPIDERS FROM MARS"],
     ["The Blessin' Four", "The Blessen Four"],
@@ -1294,6 +1344,7 @@ alternative_names = [
     ["Akio Ootsuka", "Akio Ohtsuka"],
     ["Ryouka Yuzuki", "Ryōka Yuzuki"],
     ["GagagaSP", "Gagaga SP"],
+    ["Tarako", "TARAKO"],
     ["Yuko Tsuburaya", "Yuuko Tsuburaya"],
     ['Chris "Breeze" Barczynski', 'Chris "Breeze" Barczynsk'],
     ["Shabana", "Shabana "],
@@ -1307,6 +1358,7 @@ alternative_names = [
     ["Gospellers", "The Gospellers"],
     ["Iori Sakagami", "Iori Sokagami"],
     ["Ryoko Shintani", "Ryōko Shintani"],
+    ["Shining Stars", "Golden Stars"],
     ["Sadastic Mika Band", "Sadistic Mika Band"],
     ["Chikyuu Bouei-gumi Gasshou-tai", "Chikyuu Boueigumi Gasshotai"],
     ["Chikyuu Seifuku-bu", "Chikyuu Seifukubu"],
@@ -1533,7 +1585,6 @@ alternative_names = [
     ["Larissa Tago Takeda", "Rarisa Tago Takeda"],
     ["Reina Kondo", "Reina Kondou"],
     ["Yuki Ono", "Yuuki Ono"],
-    ["Tenshou Gakuen Seito", "Tenshou Gakuen Seito Ichidou"],
     ["Tokiko Katō", "Tokiko Kato"],
     ["Kyoko Tsuruno", "Kyouko Tsuruno"],
     ["Yuji Mitsuya", "Yuuji Mitsuya"],
@@ -1575,6 +1626,7 @@ alternative_names = [
     ["Yui Ishikawa", "Yui Ishikawa from attackers"],
     ["Hiroshi Kamiya", "Hiroshi Kamiya from No Name"],
     ["Hiroyuki Sawano", "SawanoHiroyuki[nZk]"],
+    ["UraShimaSakataSen", "Fourpe"],
     ["Meltic StAr", "Meltic"],
     ["AiM", "Ai Maeda"],
     ["OKINO.SHUNTARO", "Okino, Shuntaro"],
@@ -1598,6 +1650,7 @@ alternative_names = [
     ["yoshiki*lisa", "Risa Yoshiki"],
     ["Mariko Kouda", "miyuki"],
     ["TrySail", "TRINITYAiLE"],
+    ["Sphere", "LizNoir"],
     [
         "Hironobu Kageyama",
         "Hironobu Kageyama (JAM Project)",
@@ -1610,6 +1663,7 @@ alternative_names = [
         "Yoshiki Fukuyama (JAM Project)",
         "JAM Project (Yoshiki Fukuyama)",
     ],
+    ["SUEMITSU & THE SUEMITH", "Atsushi Suemitsu"],
     ["Masaaki Endoh", "Masaaki Endoh (JAM Project)", "JAM Project (Masaaki Endoh)"],
     ["Arika Takarano", "Arika Takarano (ALI PROJECT)"],
     ["Saori Hayami", "Saori Hayami (from Eclipse)"],
@@ -1702,7 +1756,7 @@ groups_subdivision_list = [
     ["FA Girls #03", ["Yuu Ayase", "Erii Yamazaki"]],
     [
         "FA Girls #04",
-        ["Yuu Ayase", "Narumi Kaho", "Rika Nagae", "Erii Yamazaki", "Minami Kabayama"],
+        ["Yuu Ayase", "Narumi Kaho", "Rika Nagae", "Erii Yamazaki", "Minami Kabayama",],
     ],
     [
         "FA Girls #05",
@@ -1784,7 +1838,7 @@ groups_subdivision_list = [
         "THE ROLLING GIRLS",
         ["Yumiri Hanamori", "Rina Hidaka", "Ari Ozawa", "Risa Taneda"],
     ],
-    ["Comic Girls", ["Hikaru Akao", "Kaede Hondo", "Saori Oonishi", "Rie Takahashi"]],
+    ["Comic Girls", ["Hikaru Akao", "Kaede Hondo", "Saori Oonishi", "Rie Takahashi"],],
     ["Earphones", ["Rie Takahashi", "Marika Kouno"]],
     ["Manias", ["Rie Takahashi", "Marika Kouno"]],
     ["MM first", ["Kana Hanazawa", "Haruka Tomatsu"]],
@@ -1852,7 +1906,10 @@ groups_subdivision_list = [
             "Kensho Ono",
         ],
     ],
-    ["BLACKSTARS", ["Kaori Ishihara", "Hiyori Nitta", "Minami Takahashi", "Yuki Yagi"]],
+    [
+        "BLACKSTARS",
+        ["Kaori Ishihara", "Hiyori Nitta", "Minami Takahashi", "Yuki Yagi"],
+    ],
     ["GARNiDELiA", ["MARiA"]],
     ["phatmans after school", ["Takumi Yoshida from phatmans after school"]],
     ["Ling Tosite Sigure", ["TK from Ling Tosite Sigure"]],
@@ -1877,7 +1934,7 @@ groups_subdivision_list = [
     ],
     ["MY FIRST STORY", ["Sho from MY FIRST STORY"]],
     ["Girls²", ["Misaki Kurea from Girls²", "east²", "west²", "south²"]],
-    ["Sakura men", ["koyomi from Sakura men"]],
+    ["Sakura men", ["Masaki Nakamura", "koyomi from Sakura men"]],
     ["Capsule Girls", ["Yurika Endō", "Riho Iida", "Aina Suzuki"]],
     ["L'Arc~en~Ciel", ["HYDE"]],
     ["Survive Said The Prophet", ["yosh"]],
@@ -1918,7 +1975,7 @@ groups_subdivision_list = [
     ],
     [
         "Neuron★Cream Soft",
-        ["Saori Hayami", "Aya Suzaki", "Yui Ogura", "Hiromi Igarashi", "Saori Goto"],
+        ["Saori Hayami", "Aya Suzaki", "Yui Ogura", "Hiromi Igarashi", "Saori Goto",],
     ],
     [
         "nonet",
@@ -1941,16 +1998,25 @@ groups_subdivision_list = [
             "Minami Tsuda",
         ],
     ],
-    ["Sphere", ["Haruka Tomatsu", "Minako Kotobuki", "Ayahi Takagaki", "Aki Toyosaki"]],
+    [
+        "Sphere",
+        ["Haruka Tomatsu", "Minako Kotobuki", "Ayahi Takagaki", "Aki Toyosaki"],
+    ],
     ["TrySail", ["Sora Amamiya", "Momo Asakura", "Shiina Natsukawa"]],
     [
         "Walküre",
-        ["JUNNA", "Minori Suzuki", "Kiyono Yasuno", "Nao Touyama", "Nozomi Nishida"],
+        ["JUNNA", "Minori Suzuki", "Kiyono Yasuno", "Nao Touyama", "Nozomi Nishida",],
     ],
     ["Mia REGINA", ["Fuuri Uebana", "Waka Kirishima", "Risuko Sasakama"]],
     [
         "Team 'Hanayamata'",
-        ["Reina Ueda", "Minami Tanaka", "Kaya Okuno", "Yuka Ōtsubo", "Manami Numakura"],
+        [
+            "Reina Ueda",
+            "Minami Tanaka",
+            "Kaya Okuno",
+            "Yuka Ōtsubo",
+            "Manami Numakura",
+        ],
     ],
     [
         "Ongaku Shōjo",
@@ -1970,7 +2036,13 @@ groups_subdivision_list = [
     ],
     [
         "Rhodanthe*",
-        ["Nao Touyama", "Risa Taneda", "Yumi Uchiyama", "Asuka Nishi", "Manami Tanaka"],
+        [
+            "Nao Touyama",
+            "Risa Taneda",
+            "Yumi Uchiyama",
+            "Asuka Nishi",
+            "Manami Tanaka",
+        ],
     ],
     ["Honey Bee", ["YURIA"]],
     ["Veil", ["Aoi Tada", "Misuzu Togashi"]],
@@ -2182,7 +2254,7 @@ groups_subdivision_list = [
     ["Chimame-tai", ["Inori Minase", "Sora Tokui", "Rie Murakawa", "Satomi Sato"]],
     [
         "Petit Rabbit's",
-        ["Inori Minase", "Ayane Sakura", "Risa Taneda", "Satomi Sato", "Maaya Uchida"],
+        ["Inori Minase", "Ayane Sakura", "Risa Taneda", "Satomi Sato", "Maaya Uchida",],
     ],
     [
         "Petit Rabbit's with beans",
@@ -2197,12 +2269,18 @@ groups_subdivision_list = [
         ],
     ],
     ["Dropstars", ["Sumire Uesaka", "Inori Minase", "Yui Ogura"]],
-    ["Yuusha Party", ["Inori Minase", "Hikaru Akao", "Shiina Natsukawa", "Ari Ozawa"]],
+    ["Yuusha Party", ["Inori Minase", "Hikaru Akao", "Shiina Natsukawa", "Ari Ozawa"],],
     ["ortensia", ["Ari Ozawa", "Yumiri Hanamori"]],
     ["Hōkago Rakuen-bu", ["Saori Oonishi", "Ari Ozawa", "Juri Kimura"]],
     [
         "Pastel*Palettes",
-        ["Ami Maeshima", "Ari Ozawa", "Sumire Uesaka", "Ikumi Nakagami", "Sawako Hata"],
+        [
+            "Ami Maeshima",
+            "Ari Ozawa",
+            "Sumire Uesaka",
+            "Ikumi Nakagami",
+            "Sawako Hata",
+        ],
     ],
     ["Creepy Nuts", ["R-Shitei (Creepy Nuts)"]],
     ["Ichinen Fuji-gumi", ["Ari Ozawa", "Rie Murakawa", "M・A・O"]],
@@ -2210,7 +2288,7 @@ groups_subdivision_list = [
         "Kaneda Tantei Jimusho",
         ["Akiko Hiramatsu", "Etsuko Kozakura", "Takeshi Kusao", "Fumihiko Tachiki"],
     ],
-    ["Criticrista", ["Rina Hidaka", "Ai Kayano", "Rie Murakawa", "Hiromi Igarashi"]],
+    ["Criticrista", ["Rina Hidaka", "Ai Kayano", "Rie Murakawa", "Hiromi Igarashi"],],
     [
         "Pearly☆Fairy",
         [
@@ -2289,11 +2367,11 @@ groups_subdivision_list = [
         ],
     ],
     ["876PRO ALLSTARS", ["Yuuko Sanpei", "Kana Hanazawa", "Haruka Tomatsu"]],
-    ["Tsurezurenaru Ayatsuri Mugenan", ["Saori Hayami", "Eriko Matsui", "Megumi Han"]],
+    ["Tsurezurenaru Ayatsuri Mugenan", ["Saori Hayami", "Eriko Matsui", "Megumi Han"],],
     ["Trichronika", ["Miyano Mamoru", "Ryota Osaka", "Ayumu Murase"]],
     [
         "SHINGANCRIMSONZ",
-        ["Kishō Taniyama", "Tetsuya Kakihara", "Kouki Uchiyama", "Yoshimasa Hosoya"],
+        ["Kishō Taniyama", "Tetsuya Kakihara", "Kouki Uchiyama", "Yoshimasa Hosoya",],
     ],
     ["Plasmagica", ["Sumire Uesaka", "Manami Numakura", "Ayane Sakura"]],
     [
@@ -2403,7 +2481,7 @@ groups_subdivision_list = [
             "Sayuri Yahagi",
         ],
     ],
-    ["fourfolium", ["Yuuki Takada", "Megumi Yamaguchi", "Megumi Toda", "Ayumi Takeo"]],
+    ["fourfolium", ["Yuuki Takada", "Megumi Yamaguchi", "Megumi Toda", "Ayumi Takeo"],],
     [
         "SPR5",
         [
@@ -2424,9 +2502,9 @@ groups_subdivision_list = [
     ],
     [
         "PPP",
-        ["Mikoi Sasaki", "Ruka Nemoto", "Kyoka Tamura", "Aina Aiba", "Yukiko Chikuta"],
+        ["Mikoi Sasaki", "Ruka Nemoto", "Kyoka Tamura", "Aina Aiba", "Yukiko Chikuta",],
     ],
-    ["Milky Holmes", ["Suzuko Mimori", "Sora Tokui", "Mikoi Sasaki", "Izumi Kitta"]],
+    ["Milky Holmes", ["Suzuko Mimori", "Sora Tokui", "Mikoi Sasaki", "Izumi Kitta"],],
     ["Glitter*Green", ["Suzuko Mimori"]],
     ["Milky Holmes Feathers", ["Ayasa Ito", "Aimi"]],
     [
@@ -2567,7 +2645,10 @@ groups_subdivision_list = [
     ],
     ["tiaraway", ["YUUKA", "Nana Mizuki"]],
     ["THE BAND HAS NO NAME", ["Tamio Okuda", "Shinichi Yakuma"]],
-    ["Kitauji Quartet", ["Chika Anzai", "Tomoyo Kurosawa", "Moe Toyota", "Ayaka Asai"]],
+    [
+        "Kitauji Quartet",
+        ["Chika Anzai", "Tomoyo Kurosawa", "Moe Toyota", "Ayaka Asai"],
+    ],
     ["Black Biscuits", ["Vivian Hsu", "Hiroyuki Amano"]],
     ["SIAM SHADE", ["Hideki Imamura", "Kazuma Endo"]],
     ["ACID", ["Hideki Imamura", "Junpei Yoshihara"]],
@@ -2659,7 +2740,7 @@ groups_subdivision_list = [
     ["SmileY inc.", ["Yuka Ōtsubo"]],
     [
         "Sweet Diva",
-        ["Sora Amamiya", "Kana Asumi", "Miku Itō", "Yuka Ōtsubo", "Ayana Taketatsu"],
+        ["Sora Amamiya", "Kana Asumi", "Miku Itō", "Yuka Ōtsubo", "Ayana Taketatsu",],
     ],
     [
         "Love Roulettes",
@@ -2748,7 +2829,7 @@ groups_subdivision_list = [
             "Himika Akaneya",
         ],
     ],
-    ["Meltic StAr", ["Yuu Serizawa", "Yuki Wakai", "Yuka Morishima", "Nichika Omori"]],
+    ["Meltic StAr", ["Yuu Serizawa", "Yuki Wakai", "Yuka Morishima", "Nichika Omori"],],
     ["Run Girls, Run!", ["Nanami Atsugi", "Yuka Morishima", "Koko Hayashi"]],
     [
         "Wake Up, Girls!",
@@ -2811,7 +2892,7 @@ groups_subdivision_list = [
         ["Yoko Hayashi", "Miyu Kubota", "Nanami Atsugi", "Nanami Yamashita"],
     ],
     ["TRiANGLE", ["Minami Tanaka"]],
-    ["Gaarmageddon", ["Yui Makino", "Yui Watanabe", "Asami Sanada", "Yuina Yamada"]],
+    ["Gaarmageddon", ["Yui Makino", "Yui Watanabe", "Asami Sanada", "Yuina Yamada"],],
     [
         "Orikou Monkeys",
         ["Yui Makino", "Yui Watanabe", "Kenji Akabane", "Shunsuke Takeuchi"],
@@ -2821,7 +2902,7 @@ groups_subdivision_list = [
         "QUELL",
         ["Shunsuke Takeuchi", "Kōtaro Nishiyama", "Shugo Nakamura", "Shō Hayami"],
     ],
-    ["SolidS", ["Takuya Eguchi", "Soma Saito", "Natsuki Hanae", "Yuuichirou Umehara"]],
+    ["SolidS", ["Takuya Eguchi", "Soma Saito", "Natsuki Hanae", "Yuuichirou Umehara"],],
     ["AKATSUKI", ["Keisuke Kaminaga", "Shinichiro Kamio", "Yuuichirou Umehara"]],
     [
         "ArtiSTARs",
@@ -2995,7 +3076,16 @@ groups_subdivision_list = [
     ["S.E.M", ["Kent It\u014d", "Junya Enoki", "Yoshiki Nakajima"]],
     [
         "315 STARS",
-        ["S.E.M", "W", "DRAMATIC STARS", "High\u00d7Joker", "Jupiter", "Beit"],
+        [
+            "S.E.M",
+            "W",
+            "DRAMATIC STARS",
+            "High\u00d7Joker",
+            "Jupiter",
+            "Beit",
+            "Caf\u00e9 Parade!",
+            "Mofumofuen",
+        ],
     ],
     [
         "From4to7",
@@ -3098,7 +3188,7 @@ groups_subdivision_list = [
     ],
     [
         "Kaidou 4 Kyoudai",
-        ["Junko Minagawa", "Tomoaki Maeno", "Yoshitsugu Matsuoka", "Takuma Terashima"],
+        ["Junko Minagawa", "Tomoaki Maeno", "Yoshitsugu Matsuoka", "Takuma Terashima",],
     ],
     [
         "Pentacle\u2605",
@@ -3209,7 +3299,13 @@ groups_subdivision_list = [
     ["KAmiYU", ["Hiroshi Kamiya", "Miyu Irino"]],
     [
         "SOS-dan",
-        ["Aya Hirano", "Tomokazu Sugita", "Yuko Goto", "Minori Chihara", "Daisuke Ono"],
+        [
+            "Aya Hirano",
+            "Tomokazu Sugita",
+            "Yuko Goto",
+            "Minori Chihara",
+            "Daisuke Ono",
+        ],
     ],
     [
         "Kangoku Danshi",
@@ -3238,19 +3334,24 @@ groups_subdivision_list = [
     ],
     [
         "Knight Killers",
-        ["Shintarou Asanuma", "Shinichiro Kamio", "Hikaru Midorikawa", "Yuki Yonai"],
+        ["Shintarou Asanuma", "Shinichiro Kamio", "Hikaru Midorikawa", "Yuki Yonai",],
     ],
     ["Sankishi", ["Toshiyuki Morikawa", "Fumihiko Tachiki", "Hikaru Midorikawa"]],
     ["2HEARTS", ["Fumihiko Tachiki", "Toshiyuki Morikawa"]],
     ["TAKADA BAND", ["Fumihiko Tachiki", "Ami Itabashi"]],
     [
         "Ancient",
-        ["Takehito Koyasu", "Toshiyuki Morikawa", "Ryotaro Okiayu", "Soichiro Hoshi"],
+        ["Takehito Koyasu", "Toshiyuki Morikawa", "Ryotaro Okiayu", "Soichiro Hoshi",],
     ],
     ["Re:vale", ["Soichiro Hoshi", "Shinnosuke Tachibana"]],
     [
         "KYOHSO",
-        ["Taku Yashiro", "Kaito Ishikawa", "Shinnosuke Tachibana", "Showtaro Morikubo"],
+        [
+            "Taku Yashiro",
+            "Kaito Ishikawa",
+            "Shinnosuke Tachibana",
+            "Showtaro Morikubo",
+        ],
     ],
     [
         "\u03b5psilon\u03a6",
@@ -3263,7 +3364,10 @@ groups_subdivision_list = [
         ],
     ],
     ["Sakutasuke", ["Gakuto Kajiwara", "Wataru Urata", "Yuuya Hozumi"]],
-    ["GIGS", ["Junko Minagawa", "Ryotaro Okiayu", "Junichi Suwabe", "Taiten Kusunoki"]],
+    [
+        "GIGS",
+        ["Junko Minagawa", "Ryotaro Okiayu", "Junichi Suwabe", "Taiten Kusunoki"],
+    ],
     ["Adam", ["Junichi Suwabe", "Ryota Osaka"]],
     ["Amatelast", ["Miyano Mamoru"]],
     [
@@ -3279,16 +3383,6 @@ groups_subdivision_list = [
             "Takehito Koyasu",
             "Mika Kanai",
             "Akio Ootsuka",
-        ],
-    ],
-    [
-        "Keroro Shoutai",
-        [
-            "Kumiko Nishihara",
-            "Etsuko Kozakura",
-            "Jouji Nakata",
-            "Takeshi Kusao",
-            "Takehito Koyasu",
         ],
     ],
     [
@@ -3319,7 +3413,7 @@ groups_subdivision_list = [
             "Seiya Konishi",
         ],
     ],
-    ["Saga Arcade Rappers", ["Subaru Kimura", "Shunsuke Takeuchi", "Kazuki Miyagi"]],
+    ["Saga Arcade Rappers", ["Subaru Kimura", "Shunsuke Takeuchi", "Kazuki Miyagi"],],
     [
         "Natsu-gumi",
         [
@@ -3342,7 +3436,7 @@ groups_subdivision_list = [
     ],
     [
         "P4 with T",
-        ["Shōta Aoi", "Daisuke Hirose", "Yuto Adachi", "Yuuya Asato", "Keisuke Ueda"],
+        ["Shōta Aoi", "Daisuke Hirose", "Yuto Adachi", "Yuuya Asato", "Keisuke Ueda",],
     ],
     [
         "Team S\u014dhoku",
@@ -3574,7 +3668,10 @@ groups_subdivision_list = [
         ],
     ],
     ["RAISE A SUILEN", ["Raychell", "Risa Tsumugi"]],
-    ["Photon Maiden", ["Risa Tsumugi", "Ami Maeshima", "Hinata Satou", "Haruki Iwata"]],
+    [
+        "Photon Maiden",
+        ["Risa Tsumugi", "Ami Maeshima", "Hinata Satou", "Haruki Iwata"],
+    ],
     [
         "SUPER\u2606GiRLS",
         [
@@ -3699,11 +3796,17 @@ groups_subdivision_list = [
     ["Ring Marry", ["Sora Tokui", "Himika Akaneya"]],
     [
         "Wataten\u26065",
-        ["Akari Kito", "Naomi Oozora", "Hitomi Owada", "Rika Nagae", "Maria Sashide"],
+        ["Akari Kito", "Naomi Oozora", "Hitomi Owada", "Rika Nagae", "Maria Sashide",],
     ],
     [
         "Hello, Happy World!",
-        ["Miku Itō", "Azusa Tadokoro", "Yuri Yoshida", "Moe Toyota", "Tomoyo Kurosawa"],
+        [
+            "Miku Itō",
+            "Azusa Tadokoro",
+            "Yuri Yoshida",
+            "Moe Toyota",
+            "Tomoyo Kurosawa",
+        ],
     ],
     ["Carbuncle", ["Yuri Yoshida", "Yuu Serizawa", "Yui Kondou"]],
     [
@@ -3730,7 +3833,13 @@ groups_subdivision_list = [
     ],
     [
         "TRINARY",
-        ["Mitsuki Nakae", "Emi Hirayama", "Yuki Yagi", "Ami Hagihara", "Mariko Takeda"],
+        [
+            "Mitsuki Nakae",
+            "Emi Hirayama",
+            "Yuki Yagi",
+            "Ami Hagihara",
+            "Mariko Takeda",
+        ],
     ],
     ["pua:re", ["Marin Mizutani", "Miyu Ogura", "Natsumi Yamada", "Yuki Yagi"]],
     [
@@ -3855,7 +3964,7 @@ groups_subdivision_list = [
         ["Miki Ichizaki", "Natsumi Morita", "Mikuru Sugimoto", "Sayako Toujou"],
     ],
     ["Paprika R", ["Mikuru Sugimoto", "Aya Uchida", "Yui Watanabe"]],
-    ["Paprika G", ["Natsumi Morita", "Fuuko Saito", "Hiromi Tomaru", "Sarasa Tsuji"]],
+    ["Paprika G", ["Natsumi Morita", "Fuuko Saito", "Hiromi Tomaru", "Sarasa Tsuji"],],
     ["Paprika Y", ["Sayako Toujou", "Aina Kusuda", "Miki Ichizaki"]],
     ["Aromageddon", ["Yui Makino", "Yui Watanabe"]],
     [
@@ -3871,10 +3980,10 @@ groups_subdivision_list = [
     ],
     [
         "Ankou Team",
-        ["Mai Fuchigami", "Ai Kayano", "Mami Ozaki", "Ikumi Nakagami", "Yuka Iguchi"],
+        ["Mai Fuchigami", "Ai Kayano", "Mami Ozaki", "Ikumi Nakagami", "Yuka Iguchi",],
     ],
     ["Uta-gumi Setsugetsuka", ["Hitomi Harada", "Ai Kayano", "Yui Ogura"]],
-    ["coffin princess", ["Chika Anzai", "Saeko Zougou", "Yui Makino", "Iori Nomizu"]],
+    ["coffin princess", ["Chika Anzai", "Saeko Zougou", "Yui Makino", "Iori Nomizu"],],
     [
         "Hoshi no Shōjo-tai",
         ["Asuka Nishi", "Iori Nomizu", "Midori Tsukimiya", "Risako Murai"],
@@ -3990,14 +4099,17 @@ groups_subdivision_list = [
     ["TWO-FORMULA", ["Kaori Sadohara", "Saeko Zougou"]],
     ["Baby's breath", ["Yuuko Oono", "Yurika End\u014d", "Aoi Koga"]],
     ["Rifling 4", ["Machico", "Akane Kumada", "Saki Minami", "Anna Yamaki"]],
-    ["CHiSPA", ["Misato Fukuen", "Saki Minami", "Rina Honnizumi", "Madoka Asahina"]],
+    ["CHiSPA", ["Misato Fukuen", "Saki Minami", "Rina Honnizumi", "Madoka Asahina"],],
     ["Katate\u2606SIZE", ["Yui Horie", "Aya Hirano", "Ai Maeda"]],
     ["Pyxis", ["Miku Itō", "Moe Toyota"]],
     ["POLKA DOTS", ["Himika Akaneya", "Yuki Takao"]],
     ["MimimemeMIMI", ["Yuki Takao"]],
     ["kohaluna", ["Saori Oonishi", "Eri Suzuki"]],
     ["GATALIS", ["Hisako Tojo", "Sayaka Senbongi", "Kaede Hondo"]],
-    ["Labyrinths", ["Sayaka Harada", "Kaede Hondo", "Yurika Kubo", "Haruka Yoshimura"]],
+    [
+        "Labyrinths",
+        ["Sayaka Harada", "Kaede Hondo", "Yurika Kubo", "Haruka Yoshimura"],
+    ],
     ["Maple\u2661Doll", ["Yurika Kubo", "Emiri Suyama", "Aya Yamane"]],
     [
         "ChamJam",
@@ -4038,7 +4150,7 @@ groups_subdivision_list = [
     ["Zukkoke Girls", ["Urara Takano", "Chisa Yokoyama", "MIYU", "SUZUTOMO"]],
     [
         "Kami Nomi zo Shiri-tai",
-        ["Kana Asumi", "Saori Hayami", "Kanae Itou", "Ami Koshimizu", "Aki Toyosaki"],
+        ["Kana Asumi", "Saori Hayami", "Kanae Itou", "Ami Koshimizu", "Aki Toyosaki",],
     ],
     ["Oratorio The World God Only Knows", ["ELISA", "Lia", "Saori Hayami"]],
     ["Kaketama-tai", ["Saori Hayami", "Kanae Itou"]],
@@ -4100,7 +4212,7 @@ groups_subdivision_list = [
     ["MAKE-UP", ["NoB"]],
     [
         "HUMMING BIRD",
-        ["Yoshiki Fukuyama", "Kyouko Fukuyama", "Shoichiro Aso", "Toshiyuki Furuya"],
+        ["Yoshiki Fukuyama", "Kyouko Fukuyama", "Shoichiro Aso", "Toshiyuki Furuya",],
     ],
     [
         "Hummingbird",
@@ -4312,7 +4424,7 @@ groups_subdivision_list = [
         ],
     ],
     ["Y\u014dkai King Dream Soda", ["King Cream Soda", "Dream5", "Lucky Ikeda"]],
-    ["Shiawase Okojo-gumi", ["Mika Sakenobe", "Miyuki Sawashiro", "Vanilla Yamazaki"]],
+    ["Shiawase Okojo-gumi", ["Mika Sakenobe", "Miyuki Sawashiro", "Vanilla Yamazaki"],],
     ["Shiawase Sisters", ["Sister MAYO", "Shiawase Okojo-gumi"]],
     [
         "ESP Kenkyuukai",
@@ -4424,26 +4536,28 @@ groups_subdivision_list = [
     ["SCREEN mode", ["Yuu Hayashi"]],
     ["BEAT CRUSADERS", ["Tooru Hidaka", "Masahiko Kubota"]],
     ["monobright", ["Yosuke Momono", "Tooru Hidaka"]],
-    ["Scha Dara Parr", "SCHA DARA PARR"],
     ["FIELD OF VIEW", ["U-ya Asaoka"]],
     ["TM NETWORK", ["Takashi Utsunomiya"]],
     ["U_WAVE", ["Takashi Utsunomiya"]],
     ["Snow*", ["Yuki Otake"]],
     [
         "Ni-Sokkususu",
-        ["Ai Kakuma", "Ibuki Kido", "Saori Oonishi", "Kana Yuuki", "Shizuka Ishigami"],
+        ["Ai Kakuma", "Ibuki Kido", "Saori Oonishi", "Kana Yuuki", "Shizuka Ishigami",],
     ],
     ["Security Politti", ["Yoko Hikasa", "Ryouka Yuzuki"]],
     ["TWINKle MAGIC", ["Nao Touyama", "Aya Suzaki"]],
     ["YuiLevi\u2661", ["Rie Murakawa", "Ayane Sakura"]],
     ["Uta-gumi Setsugetsuka", ["Hitomi Harada", "Ai Kayano", "Yui Ogura"]],
-    ["Labyrinths", ["Sayaka Harada", "Kaede Hondo", "Yurika Kubo", "Haruka Yoshimura"]],
+    [
+        "Labyrinths",
+        ["Sayaka Harada", "Kaede Hondo", "Yurika Kubo", "Haruka Yoshimura"],
+    ],
     ["maRIONnetTe", ["A.m.u."]],
     ["m-flo", ["\u2606Taku Takahashi of m-flo"]],
     ["An Caf\u00e9", ["Miku (an Café)"]],
     ["Lc5", ["Miku (an Café)"]],
     ["MOSAIC.WAV", ["Mi~ko"]],
-    ["Dogeza-tai", ["Tomokazu Sugita", "Yui Ogura", "Saika Kitamori", "Akane Kaida"]],
+    ["Dogeza-tai", ["Tomokazu Sugita", "Yui Ogura", "Saika Kitamori", "Akane Kaida"],],
     ["Happy Around!", ["Aimi", "Risa Tsumugi"]],
     ["RONDO", ["Rihona Kato", "Sae Otsuka", "Haruna Momono"]],
     ["H-el-ical//", ["Hikaru Masai"]],
@@ -4888,9 +5002,415 @@ groups_subdivision_list = [
             "Hitomi Owada",
         ],
     ],
-    # ["Kirakira", ["Chika Anzai", "Ibuki Kido", "Yurika Kubo"]]
+    ["Yamato Nadeshiko", ["Yui Horie", "Yukari Tamura"]],
+    [
+        "Paraiso☆Shain Stars",
+        [
+            "Junya Enoki",
+            "Yumi Hara",
+            "Kazuhiko Inoue",
+            "Yuuichirou Umehara",
+            "Junichi Suwabe",
+            "Daisuke Kishio",
+            "Naomi Oozora",
+            "Ryouta Takeuchi",
+            "Asuna Tomari",
+        ],
+    ],
+    [
+        "LiGHTs",
+        ["Yukari Anzai", "Risa Kubota", "Ribu Mukai", "Iori Saeki", "Mizuki Yamamoto",],
+    ],
+    [
+        "IV KLORE",
+        ["Hazuki Hoshino", "Tomomi Mineuchi", "Yuu Sasahara", "Yoko Nakayama"],
+    ],
+    ["Konohana wa Otome", ["Rina Honizumi", "Arisa Suzuki", "Yuuko Oono"]],
+    ["Sugar Pockets", ["Yukimi Hayase", "Seika Hirose", "Hikaru Akao"]],
+    ["Sadistic\u2605Candy", ["Yuka Amemiya", "Risae Matsuda"]],
+    ["supernova", ["Yuu Sakuragi", "Saeko Oku", "Haruka Itou"]],
+    [
+        "Lapis Re:LiGHTs Stars",
+        [
+            "LiGHTs",
+            "IV KLORE",
+            "Konohana wa Otome",
+            "Sugar Pockets",
+            "Sadistic\u2605Candy",
+            "supernova",
+        ],
+    ],
+    ["Over The Rainbow", ["Toshiki Masuda", "Tetsuya Kakihara", "Tomoaki Maeno"]],
+    [
+        "SePTENRION",
+        [
+            "Taku Yashiro",
+            "Masashi Igarashi",
+            "Souma Saitou",
+            "Yuuma Uchida",
+            "Takuma Nagatsuka",
+            "Tasuku Hatanaka",
+            "Junta Terashima",
+        ],
+    ],
+    [
+        "KiRaRe",
+        [
+            "Amane Makino",
+            "Meemu Tachibana",
+            "Akari Kitou",
+            "Yuka Iwahashi",
+            "Masumi Tazawa",
+            "Yuki Sorami",
+        ],
+    ],
+    [
+        "Caf\u00e9 Parade!",
+        [
+            "Shou Karino",
+            "Makoto Furukawa",
+            "Takuya Kodama",
+            "Daiki Kobayashi",
+            "Kouhei Amasaki",
+        ],
+    ],
+    ["Mofumofuen", ["Ayumu Murase", "Keisuke Furuhata", "Shogo Yano"]],
+    ["Otokonoko Mansions", ["Kotono Mitsuishi"]],
+    ["A-RISE", ["Megu Sakuragawa", "Maho Matsunaga", "Ayuru Oohashi"]],
+    [
+        "Nijigasaki Gakuen School Idol Dōkōkai",
+        [
+            "Akari Kitou",
+            "Miyu Kubota",
+            "Tomori Kusunoki",
+            "Kaori Maeda",
+            "Natsumi Murakami",
+            "Aguri Oonishi",
+            "Mayu Sagara",
+            "Maria Sashide",
+            "Chiemi Tanaka",
+        ],
+    ],
+    [
+        "Liella!",
+        ["Sayuri Date", "Nako Misaki", "Liyuu", "Nagisa Aoyama", "Naomi Payton"],
+    ],
+    ["Rosenburg Engel", ["Maaya Uchida"]],
+    ["Triad Primus", ["Ayaka Fukuhara", "Mai Fuchigami", "Eriko Matsui"]],
+    [
+        "The Shuffle",
+        [
+            "Tomokazu Sugita",
+            "Takuhiro Eda",
+            "Norihito Hase",
+            "Wataru Urata",
+            "Kotaro Hashimoto",
+            "Tatsuyuki Kobayashi",
+        ],
+    ],
+    [
+        "Edelrose-sei",
+        [
+            "Leo Saionji",
+            "Minato Takahashi",
+            "Yukinojou Tachibana",
+            "Kakeru Juuouin",
+            "Taiga Kougami",
+            "Yuu Suzuno",
+            "Shin Ichijou",
+        ],
+    ],
+    ["Sexy Guilty", ["Azumi Waki", "Eri Suzuki", "Yuri Noguchi"]],
+    ["Happy Rain♪", ["Emiri Katō", "Mikako Komatsu", "Yuu Serizawa"]],
+    ["Bell Rose", ["Haruka Tomatsu", "Saori Goto", "Maaya Uchida"]],
+    ["SAINTS", ["Kana Asumi", "Emiri Katō", "Rumi Ookubo"]],
+    ["PriPara Police", ["Himika Akaneya", "Azuki Shibuya", "Yui Watanabe"]],
+    ["SoLamageddon Mi", ["Aromageddon", "SoLaMi♡SMILE"]],
+    [
+        "Super PriPara\u2606All Idols",
+        [
+            "SoLaMi♡SMILE",
+            "DressingPafé",
+            "TRiANGLE",
+            "UCCHARI BIG-BANGS",
+            "Tricolore",
+            "NonSugar",
+            "i☆Ris",
+        ],
+    ],
+    [
+        "The Tachibanas",
+        ["Kenichi Ogata", "Fumiko Orikasa", "Daisuke Sakaguchi", "Kumiko Watanabe"],
+    ],
+    ["Kyuu Valkyrie", ["Hiroki Takahashi", "Jun Oosuka", "Yuki Yonai"]],
+    [
+        "Kyuu fine",
+        ["Kaito Ishikawa", "Hikaru Midorikawa", "Junichi Suwabe", "Natsuki Hanae"],
+    ],
+    ["Eve", ["Natsuki Hanae", "Yuuma Uchida"]],
+    [
+        "The Entire Fucking Cast",
+        [
+            "team Ootori",
+            "team Hiiragi",
+            "Kaou-kai",
+            "Ancient",
+            "Nobunaga Shimazaki",
+            "Kengo Takanashi",
+            "Shunsuke Takeuchi",
+            "Yuuichirou Umehara",
+        ],
+    ],
+    [
+        "Almost The Entire Fucking Cast",
+        [
+            "Miyuki Kanbe",
+            "Daisuke Kishio",
+            "Kumi Yamakado",
+            "Chieko Honda",
+            "Yuki Matsuoka",
+            "Miyako Itō",
+            "Sayori Ishizuka",
+            "Miki Tsuchiya",
+            "Sanae Kobayashi",
+            "Eri Kitamura",
+            "Noriko Shitaya",
+            "Ema Kogure",
+            "Hitomi Terakado",
+            "Yuki Matsuda",
+            "Ryoko Nagata",
+            "Chihiro Kusaka",
+            "Kana Ueda",
+            "Asumi Nakada",
+            "Satomi Arai",
+            "Madoka Kimura",
+            "Hiroaki Miura",
+            "Maria Yamamoto",
+            "Yuuki Tai",
+            "Mayumi Asano",
+            "Kiyotaka Furushima",
+            "Atsushi Kisaichi",
+            "Takako Honda",
+            "Setsu Oohashi",
+            "Yasuyuki Kase",
+            "Keiji Okuda",
+            "Chiaki Takahashi",
+            "Eri Saito",
+            "Ryoko Shintani",
+            "Yuko Goto",
+            "Hajime Iijima",
+            "Takehiro Murozono",
+            "Jun Fukuyama",
+            "Kumiko Nishihara",
+        ],
+    ],
+    ["ZIX", ["Daiki Hamano", "Takumi Watanabe"]],
+    ["Koukogaku-bu", ["Yuuki Ono", "Subaru Kimura", "Takuya Eguchi"]],
+    [
+        "Kashou-bu",
+        ["Souichiro Hoshi", "Kenji Nojima", "Ryōtarō Okiayu", "Tomohiro Tsuboi"],
+    ],
+    [
+        "Tenshou Gakuen Seito Ichidou",
+        [
+            "Yuuki Ono",
+            "Souichiro Hoshi",
+            "Gakuto Kajiwara",
+            "Takuya Eguchi",
+            "Kenji Nojima",
+            "Yuuya Hozumi",
+            "Subaru Kimura",
+            "Wataru Urata",
+            "Ryutaro Okiso",
+            "Tomohiro Tsuboi",
+            "Ryota Osaka",
+            "Hikaru Midorikawa",
+            "Naozumi Takahashi",
+            "Shintaro Asanuma",
+            "Toshiyuki Toyonaga",
+            "Kensho Ono",
+            "Shouta Aoi",
+        ],
+    ],
+    [
+        "Tenshou Gakuen Kyoushi Ichidou",
+        ["Ryo Horikawa", "Ryouta Takeuchi", "Sho Hayami"],
+    ],
+    ["Hoshimi Production", ["Sunny Peace", "Tsuki no Tempest"]],
+    [
+        "Tsuki no Tempest",
+        [
+            "Moka Hinata",
+            "Kanata Aikawa",
+            "Koharu Miyazawa",
+            "Kokona Natsume",
+            "Mirai Tachibana",
+        ],
+    ],
+    [
+        "Sunny Peace",
+        ["Yurina Shuto", "Kanon Takao", "Nao Sasaki", "Moeko Yuki", "Mai Konno"],
+    ],
+    ["Nakayoshi Mantan! Valac Ikka", ["Ayaka Asai"]],
+    [
+        "Akuma Gakkou Babyls Seito no Mina-san",
+        [
+            "Saori Hayami",
+            "Takuya Eguchi",
+            "Tatsuhisa Suzuki",
+            "Taku Yashiro",
+            "Ayumu Murase",
+            "Kentarou Tone",
+            "Nozomi Yamamoto",
+            "Mark Ishii",
+            "Daisuke Ono",
+            "Mitsuki Saiga",
+        ],
+    ],
+    [
+        "Pearly\u2606Fairy",
+        [
+            "Himika Akaneya",
+            "Rina Hidaka",
+            "Suzuko Mimori",
+            "Yuu Serizawa",
+            "Rie Takahashi",
+            "Nao Touyama",
+        ],
+    ],
+    [
+        "NEXT STORM",
+        ["Yuka \u014ctsubo", "Chika Anzai", "Marika Kouno", "Mao Amatsuka"],
+    ],
+    ["Mitsuki to Youko", ["Mayu Yoshioka", "Yuka \u014ctsubo"]],
+    ["Chrome Shelled", ["Ricky"]],
+    ["DASEIN", ["Ricky"]],
+    [
+        "Rinjin-bu",
+        [
+            "Misato Fukuen",
+            "Kana Hanazawa",
+            "Yuka Iguchi",
+            "Marina Inoue",
+            "Kanae Itou",
+            "Nozomi Yamamoto",
+        ],
+    ],
+    [
+        "Tokimeki Kanshasai",
+        [
+            "Rie Murakawa",
+            "Haruka Shiraishi",
+            "Moe Toyota",
+            "Erii Yamazaki",
+            "Miku Itō",
+            "Haruka Ishida",
+            "Yuuki Hirose",
+            "M\u30fbA\u30fbO",
+        ],
+    ],
+    ["Pokemon BW Gasshō-dan", ["Fumie Akiyoshi", "Toshiko Ezaki", "Aki Okui"]],
+    [
+        "Electric Show Dancers",
+        [
+            "Sumire Morohoshi",
+            "Daisuke Namikawa",
+            "KENN",
+            "Kousuke Toriumi",
+            "Nobuhiko Okamoto",
+            "Jun Fukuyama",
+            "Shinnosuke Tachibana",
+            "Yoshimasa Hosoya",
+            "Tomoyuki Morikawa",
+        ],
+    ],
+    [
+        "\u25bd\u25b2TRiNITY\u25b2\u25bd",
+        ["Rion Takamiya", "Fuyuki Hakase", "Lustario E Furen"],
+    ],
+    [
+        "Keroro Shoutai",
+        [
+            "Takehito Koyasu",
+            "Etsuko Kozakura",
+            "Takeshi Kusao",
+            "Jouji Nakata",
+            "Kumiko Watanabe",
+        ],
+    ],
+    [
+        "Keroro All-Stars",
+        [
+            "Ryou Hirohashi",
+            "Haruna Ikezawa",
+            "Mamiko Noto",
+            "Chiwa Saito",
+            "Takehito Koyasu",
+            "Etsuko Kozakura",
+            "Takeshi Kusao",
+            "Jouji Nakata",
+            "Kumiko Watanabe",
+        ],
+    ],
+    ["Wagakki Band", ["Yuko Suzuhana"]],
+    [
+        "Tenchuu Girls",
+        [
+            "Saki Fukasawa",
+            "Saori Itayama",
+            "Erika Kaiho",
+            "Megumi Nishikiori",
+            "Rika Sasaki",
+            "Kurumi Watanabe",
+            "Akina Sawada",
+        ],
+    ],
+    [
+        "Ange☆Reve",
+        [
+            "Rika Sasaki",
+            "Arisa Yoshihashi",
+            "Yua Mizuno",
+            "Natsumi Gonda",
+            "Kurumi Watanabe",
+            "Ayuna Matsuda",
+            "Mizuki Saigo",
+        ],
+    ],
+    [
+        "Sweet Bullet",
+        [
+            "Sora Amamiya",
+            "Urara Takatsuji",
+            "Maaya Uchida",
+            "Moe Suzuhana",
+            "Aina Takeda",
+        ],
+    ],
+    ["Shokotan\u2665Haruomi", ["Shoko Nakagawa", "Haruomi Hosono"]],
+    ["Rockahula Goose", ["Fumie Akiyoshi"]],
+    ["Escha Chron", ["Kiyono Yasuno", "Chika Anzai"]],
+    ["ARCAREAFACT", ["Yuusuke Kobayashi"]],
+    ["G-on Riders", ["Masayo Kurata", "Omi Minami", "Ryouka Shima"]],
+    [
+        "Lolivaders Z",
+        ["Miki Machi", "Kaori Mizuhashi", "Yukari Tamura", "Takako Uemura"],
+    ],
+    [
+        "Howmei Girls",
+        [
+            "Tomoko Kawakami",
+            "Yumi Matsuzawa",
+            "Emi Motoi",
+            "Akira Nakagawa",
+            "Akiko Yajima",
+        ],
+    ],
+    ["HIGH and MIGHTY COLOR", ["Halca (SYN)", "Yuusuke (ex. HIGH and MIGHTY COLOR)"]],
+    ["Garura Kobayashi", ["Sachiko Kobayashi", "Unshou Ishizuka", "Koichi Sakaguchi"]],
 ]
 
+# ["Kirakira", ["Chika Anzai", "Ibuki Kido", "Yurika Kubo"]]
 
 # 0000
 
@@ -4935,6 +5455,8 @@ Maiko
 sena
 Angels
 Kirakira
+Almost The Entire Fucking Cast
+Halca
 ________________
 missing:
 sasagebu
@@ -4951,6 +5473,7 @@ roselia
 bang dream
 RONDO
 Ourin Sisters
+eclipse
 
 ___________________
 composer
@@ -4968,7 +5491,8 @@ you & explosion band
 akira miyagawa
 another infinity
 tenmon
-
+ROUND TABLE
+teddyloid
 
 TODO
 Idolls!

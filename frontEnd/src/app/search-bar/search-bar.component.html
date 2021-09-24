@@ -1,8 +1,10 @@
 <div class=mainFilter>
 
-    <input *ngIf="!showAdvancedFilters" #mainFilterInput placeholder="Search a song"
-        title="Search songs by anime name, song name or artist" style="width: 420px;" class=textInputFilter type=search
-        (keyup.enter)="onEnterKey()" (input)="mainFilter = mainFilterInput.value">
+    <button *ngIf="!showAdvancedFilters" type="button" (click)="onSearchCallKey()">Search</button>
+
+    <input *ngIf="!showAdvancedFilters" #mainFilterInput placeholder="Search by anime, song name, artist or catbox link"
+        title="Search by anime, song name, artist or catbox link" style="width: 420px;" class=textInputFilter
+        type=search (keyup.enter)="onSearchCallKey()" (input)="mainFilter = mainFilterInput.value">
 
     <a class="showFilter" (click)="generateDownloadJsonUri()" [href]="downloadJsonHref" download="{{downloadFileName}}">
         <i class=" fa fa-download"></i> Download Last Search
@@ -24,9 +26,9 @@
     </div>
 
 
-    <div style="display:block; padding-bottom: 5px; padding-right: 96px;">
-        <input #animeFilterInput class=textInputFilter type=search placeholder="Type an anime..."
-            title="Search songs by anime name" style="width: 230px;" (keyup.enter)="onEnterKey()"
+    <div style="display:block; padding-bottom: 5px;">
+        <input #animeFilterInput class=textInputFilter type=search placeholder="Search by anime..."
+            title="Search by anime name" style="width: 230px;" (keyup.enter)="onSearchCallKey()"
             (input)="animeFilter = animeFilterInput.value">
 
         <label class="check"
@@ -44,9 +46,9 @@
 
     </div>
 
-    <div style="display:block; padding-bottom: 5px; padding-right: 96px;">
-        <input #songNameFilterInput class=textInputFilter placeholder="Type a song name..."
-            title="Search songs by song name" type=search style="width: 230px;" (keyup.enter)="onEnterKey()"
+    <div style="display:block; padding-bottom: 5px;">
+        <input #songNameFilterInput class=textInputFilter placeholder="Search by song name..."
+            title="Search by song name" type=search style="width: 230px;" (keyup.enter)="onSearchCallKey()"
             (input)="songNameFilter = songNameFilterInput.value">
 
         <label class="check"
@@ -65,8 +67,8 @@
     </div>
 
     <div style="display:block; padding-bottom: 8px;">
-        <input #artistFilterInput class=textInputFilter placeholder="Type an artist..." type=search
-            title="Search songs by artist" style="width: 230px;" (keyup.enter)="onEnterKey()"
+        <input #artistFilterInput class=textInputFilter placeholder="Search by artist..." type=search
+            title="Search by artist" style="width: 230px;" (keyup.enter)="onSearchCallKey()"
             (input)="artistFilter = artistFilterInput.value">
 
         <label class="check"
@@ -82,16 +84,20 @@
             Sensitive
         </label>
 
-        <input #maximumRandomsFilterInput placeholder="0..."
-            title="This is the maximum amount of people that are not in your Artist Filter field that are allowed"
-            style="width: 40px; margin-left: 8px;" type=search class=textInputFilter (keyup.enter)="onEnterKey()"
-            (input)="maximumRandomsFilter = maximumRandomsFilterInput.value">
+    </div>
 
-        <input #minimalMembersFilterInput placeholder="9..."
-            title="Minimal amount of singer from the group that needs to be present (only useful for groups)"
-            style="width: 40px; margin-left: 8px;" type=search class=textInputFilter (keyup.enter)="onEnterKey()"
-            (input)="minimalMembersFilter = minimalMembersFilterInput.value">
+    <div style="display:block; padding-bottom: 8px; padding-right: 6px;">
+        <label>Max Other People<input #maximumRandomsFilterInput placeholder="2..."
+                title="This is the maximum amount of people that are not in your Artist Filter field who are allowed"
+                style="width: 40px; margin-left: 5px;" type=search class=textInputFilter
+                (keyup.enter)="onSearchCallKey()"
+                (input)="maximumRandomsFilter = maximumRandomsFilterInput.value"></label>
 
+        <label style="margin-left: 20px;">Min group members<input #minimalMembersFilterInput placeholder="9..."
+                title="This is the minimum amount of singer from the group that needs to be present (only useful for groups)"
+                style="width: 40px; margin-left: 5px;" type=search class=textInputFilter
+                (keyup.enter)="onSearchCallKey()"
+                (input)="minimalMembersFilter = minimalMembersFilterInput.value"></label>
     </div>
 
     <div style="display:block; padding-bottom: 5px;">
@@ -107,5 +113,8 @@
 
 
     </div>
+
+    <button type="button" (click)="onSearchCallKey()">Search</button>
+
 
 </div>

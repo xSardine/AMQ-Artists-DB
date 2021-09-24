@@ -16,7 +16,7 @@ export class SearchBarComponent implements OnInit {
   animeFilter: string = "";
   songNameFilter: string = "";
   artistFilter: string = "";
-  maximumRandomsFilter: string = "0";
+  maximumRandomsFilter: string = "3";
   minimalMembersFilter: string = "9";
   selectedCombination: string = "Union";
   animeFilterPartialMatch: boolean = true;
@@ -43,7 +43,7 @@ export class SearchBarComponent implements OnInit {
     });
   }
 
-  onEnterKey(): void {
+  onSearchCallKey(): void {
 
     let body = {};
     let tmp_anime_filter, tmp_songname_filter, tmp_artist_filter;
