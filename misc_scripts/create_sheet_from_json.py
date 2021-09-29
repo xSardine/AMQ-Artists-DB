@@ -1,22 +1,24 @@
 import json
-import re
-from typing import List
-import PR_config
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill
 from openpyxl.styles.colors import Color
 from openpyxl.styles.alignment import Alignment
 from youtubesearchpython import VideosSearch
 
-# todo arial not working
+# ______ General Configuration ______
 
-party_rank_name = PR_config.party_rank_name
-song_list_path = PR_config.json_file
-add_youtube_link = PR_config.add_youtube_link
+# Relative path of the .json file you downloaded,
+# if it's in the same folder as this script, then it's just the file name.
+song_list_path = "mouretsupira_SongList.json"
 
+# Name of the created sheet
+output_file_name = "Mouretsu Pirates Anime Songs Ranking Sheet.xlsx"
 
-# Sheet Configuration
-file_name = party_rank_name + " Anime Songs Ranking Sheet.xlsx"
+# Setting to True slow down the process
+# but gives you full song link when available on youtube
+add_youtube_link = False
+
+# Sheet styling Configuration
 sheet_name = "Sheet1"
 link_color = "1155cc"
 cell_background_color = "cccccc"
@@ -24,9 +26,9 @@ border_color = "949494"
 font_police = "Arial"
 first_line_font_size = 10
 rest_font_size = 10
-# Sheet Configuration
+# Sheet styling Configuration
 
-# End of configuration
+# ______ General Configuration ______
 
 
 def format_song(song):
@@ -60,7 +62,8 @@ def create_workbook(song_list_json):
 
     # Insert values
     row_iter = 2
-    for song in song_list_json:
+    for i, song in enumerate(song_list_json):
+        print("Song #" + str(i + 1) + "/" + str(len(song_list_json)))
         song = format_song(song)
         yt_link = None
         if add_youtube_link:
@@ -109,7 +112,7 @@ def create_workbook(song_list_json):
     # Sorting property
     ws.auto_filter.ref = "A1:G" + str(row_iter - 1)
 
-    wb.save(file_name)
+    wb.save(output_file_name)
 
 
 if __name__ == "__main__":

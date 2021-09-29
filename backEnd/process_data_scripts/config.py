@@ -1954,7 +1954,7 @@ groups_subdivision_list = [
     ["RIP SLYME", ["RYO-Z Oni-san of RIP SLYME"]],
     ["FAKY", ["Lil' Fang (from FAKY)"]],
     ["Oranges & Lemons", ["Youko Ueno", "Masumi Itou"]],
-    ["toi toy toi (kotringo edition)", ["toi toy toi", "kotringo"]],
+    ["toi toy toi (kotringo edition)", ["kotringo"]],
     ["U-ka saegusa IN db", ["Yuuka Saegusa"]],
     [
         "Karen GUY'S",
@@ -3226,10 +3226,7 @@ groups_subdivision_list = [
         ],
     ],
     ["Fling Posse", ["Yusuke Shirai", "Soma Saito", "Yukihiro Nozuyama"]],
-    [
-        "DOKONJOFINGER",
-        ["Kent It\u014d", "Yuki Ono", "Shouhei Komatsu", "Yusuke Shirai"],
-    ],
+    ["DOKONJOFINGER", ["Kent It\u014d", "Shouhei Komatsu"],],
     ["Matenro", ["Sho Hayami", "Ryuichi Kijima", "Kent It\u014d"]],
     [
         "SOARA",
@@ -5408,6 +5405,7 @@ groups_subdivision_list = [
     ],
     ["HIGH and MIGHTY COLOR", ["Halca (SYN)", "Yuusuke (ex. HIGH and MIGHTY COLOR)"]],
     ["Garura Kobayashi", ["Sachiko Kobayashi", "Unshou Ishizuka", "Koichi Sakaguchi"]],
+    ["Pet na Kanojo-tachi", ["Ai Kayano", "Mariko Nakatsu", "Natsumi Takamori"]],
 ]
 
 # ["Kirakira", ["Chika Anzai", "Ibuki Kido", "Yurika Kubo"]]
@@ -5474,6 +5472,7 @@ bang dream
 RONDO
 Ourin Sisters
 eclipse
+most of sbr
 
 ___________________
 composer
