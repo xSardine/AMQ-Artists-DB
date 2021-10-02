@@ -29,6 +29,14 @@ export class SearchRequestService {
 
   }
 
+  artistIdsSearchRequest(body: object): Observable<any> {
+
+    return this.http.post("http://46.101.197.163:81/artist_ids_request", body).pipe(
+      catchError(this.handleError)
+    );;
+
+  }
+
   private handleError(error: HttpErrorResponse) {
     if (error.status === 0) {
       // A client-side or network error occurred. Handle it accordingly.

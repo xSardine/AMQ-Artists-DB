@@ -6,13 +6,19 @@
         title="Search by anime, song name, artist or catbox link" style="width: 420px;" class=textInputFilter
         type=search (keyup.enter)="onSearchCallKey()" (input)="mainFilter = mainFilterInput.value">
 
+    <span class="helpButton" style="float: right; padding-left: 12px;" title="What can I do with that JSON?"
+        onClick="window.open('https://github.com/xSardine/AMQ-Artists-DB/tree/main/misc_scripts#misc-scripts','_blank')">
+        <i class="fa fa-question-circle"></i>
+    </span>
+
     <a class="showFilter" (click)="generateDownloadJsonUri()" [href]="downloadJsonHref" download="{{downloadFileName}}">
-        <i class=" fa fa-download"></i> Download Last Search
+        <i class=" fa fa-download"></i> Download Song List as JSON
     </a>
 
     <span class="showFilter" (click)="showAdvancedFilters=!showAdvancedFilters">
         <i class="fa fa-cog"></i> Toggle Advanced Filters
     </span>
+
 </div>
 
 <br>
@@ -23,6 +29,10 @@
         <label class="check"><input type="checkbox" (change)="showOpenings=!showOpenings" checked> Opening </label>
         <label class="check"><input type="checkbox" (change)="showEndings=!showEndings" checked> Ending </label>
         <label class="check"><input type="checkbox" (change)="showInserts=!showInserts" checked> Insert Song </label>
+        <span class="helpButton" title="Help understanding settings"
+            onClick="window.open('https://github.com/xSardine/AMQ-Artists-DB#filters','_blank')">
+            <i class="fa fa-question-circle"></i>
+        </span>
     </div>
 
 
@@ -86,15 +96,16 @@
 
     </div>
 
-    <div style="display:block; padding-bottom: 8px; padding-right: 6px;">
-        <label>Max Other People<input #maximumRandomsFilterInput placeholder="2..."
-                title="This is the maximum amount of people that are not in your Artist Filter field who are allowed"
+    <div title="This is the maximum amount of people that are not in your Artist Filter field who are allowed"
+        style="display:block; padding-bottom: 8px; padding-right: 6px;">
+        <label>Max Other People<input #maximumRandomsFilterInput placeholder="99..."
                 style="width: 40px; margin-left: 5px;" type=search class=textInputFilter
                 (keyup.enter)="onSearchCallKey()"
                 (input)="maximumRandomsFilter = maximumRandomsFilterInput.value"></label>
 
-        <label style="margin-left: 20px;">Min group members<input #minimalMembersFilterInput placeholder="9..."
-                title="This is the minimum amount of singer from the group that needs to be present (only useful for groups)"
+        <label
+            title="This is the minimum amount of singer from the group that needs to be present (only useful for groups)"
+            style="margin-left: 20px;">Min group members<input #minimalMembersFilterInput placeholder="0..."
                 style="width: 40px; margin-left: 5px;" type=search class=textInputFilter
                 (keyup.enter)="onSearchCallKey()"
                 (input)="minimalMembersFilter = minimalMembersFilterInput.value"></label>

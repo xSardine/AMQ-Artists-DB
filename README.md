@@ -15,7 +15,7 @@ Here are the different parameters `Advanced Filters` lets you configure:
 
 The first 3 are obvious: checking each type of songs will allow this type in the results: OP/ED/INS.
 
-- `Anime Filter`: The string you enter will need to match an anime in the database (currently, only the official name appearing in expand is in the database, that means mainly english).
+- `Anime Filter`: The string you enter will need to match an anime in the database (currently, only half of the anime entries have their romaji names associated, because Expand only gives you the English name).
 - `Song Name Filter`: The string you enter will need to match a song name in the database.
 - `Artist Filter`: The string you enter will need to match an artist in the database: this part is the main enhancement compared to existing database, I will explain it better further down.
 
@@ -26,7 +26,8 @@ The first 3 are obvious: checking each type of songs will allow this type in the
 
 Then `Artist Filter` have 2 more parameters: 
 - `Maximum Amount of Other people`: This is the maximum amount of people that are not in your `Artist Filter` field that are allowed.
-- `Minimal Amount of group members`: This is only relevant if you're inputing a group name. This will ensure a minimal amount of group members there is singing in the song if it is not the group itself.
+- `Minimal Amount of group members`: This is only relevant if you're inputing a group name. This will ensure there is a minimal amount of group members singing in the song if it is not the group itself. 
+  If 0, it will only take the group itself, meaning if all the group members are present in the song but they are not credited as the group itself, it will not include it (Sphere members in Natsuiro Kiseki for example). Setting it to asounded  high number will catch these too but can cause problem for groups with only one singer such as fripside.
 
 Finally:
 - `Filter Combination`:
@@ -45,7 +46,10 @@ Some examples to help you understand better the difficult type of filters.
 
 `Artist Filter` = Trysail | `MinimalAmount` = 2 | `MaximumAmount` = 100 (just put a big number)
 
-- Finally I want every Trysail songs as well as every other songs that have every Trysail members in them (basically TRINITYAiLE)
+- Now I want every Trysail songs as well as every other songs that have every Trysail members in them (basically TRINITYAiLE)
+
+- Finally I want to get **only** fripSide songs (that means i don't want to get Yoshino Nanjo solo songs, only fripSide itself).
+`Artist Filter` = fripSide | `MinimalAmount` = 0 | `MaximumAmount` = 100
 
 `Artist Filter` = Trysail | `MinimalAmount` = 100 (3 would work fine too, since they are 3) | `MaximumAmount` = 100
 
@@ -63,8 +67,8 @@ Default Values:
 - `Anime Filter`, `Song Name Filter`, `Artist Filter` = ""
 - `Partial Match`, `Ignore Special Caracter` = True
 - `Case Sensitive` = False
-- `Maximum Amount of Other Singer` = 0
-- `Minimal Amount of group members` = 20 (basically max)
+- `Maximum Amount of Other Singer` = 99
+- `Minimal Amount of group members` = 0 (so only the group itself)
 - `Filter Combination` = Union
 - `Ignore Duplicate` = False
 
@@ -86,3 +90,5 @@ Feedbacks on the User Interface, new functionalities, etc...
 Let me know if you find any groups that has relevant people in them and not yet added (by relevant, I mean an artist that will make a link between this group and any other group/artist)
 
 Let me know if you find any artists that is not linked together with all their alternative names. Alternative names are proper alternative names such as Minami Kuribayashi / exige, but also database inconsistencies like Ayaka ōhashi, Ayaka Ohashi 
+
+And finally, let me know if you find any songs I'm missing.

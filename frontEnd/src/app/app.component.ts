@@ -18,13 +18,16 @@ export class AppComponent {
 
   songList: any;
 
+  currentlyPlayingArtist: any = ""
+  currentlyPlayingSongName: any = ""
+
   receiveSongList($event: any) {
     this.songList = $event
   }
 
-  playMP3(mp3Link: string) {
+  playMP3(song: any) {
     this.url = null
-    setTimeout(() => { this.url = mp3Link; }, 0)
+    setTimeout(() => { this.url = song.mptrois; this.currentlyPlayingArtist = song.Artist; this.currentlyPlayingSongName = song.SongName }, 0)
   }
 
   toggleTheme() {

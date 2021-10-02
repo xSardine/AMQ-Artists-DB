@@ -1,16 +1,16 @@
 import json
 import re
-import config
+import config_exceptions
 from pathlib import Path
 
 """
 Map songs and artists
 """
 
-splitters = config.splitters
-secondary_splitters = config.secondary_splitters
-splitting_exception = config.splitting_exception
-alternative_names = config.alternative_names
+splitters = config_exceptions.splitters
+secondary_splitters = config_exceptions.secondary_splitters
+splitting_exception = config_exceptions.splitting_exception
+alternative_names = config_exceptions.alternative_names
 
 source_input_file = Path("../data/preprocessed/FusedExpand.json")
 results_output_path = Path("../app/data/")

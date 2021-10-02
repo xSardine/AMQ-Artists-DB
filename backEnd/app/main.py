@@ -1,4 +1,4 @@
-from enum import auto
+from __future__ import annotations
 import json
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -75,12 +75,27 @@ class Search_Request(BaseModel):
         }
 
 
+class Artist_ID_Search_Request(BaseModel):
+
+    artist_ids: List[int] = []
+    group_granularity: Optional[int] = Field(2, ge=0)
+    max_other_artist: Optional[int] = Field(2, ge=0)
+    ignore_duplicate: Optional[bool] = False
+    max_nb_song: Optional[bool] = 250
+    opening_filter: Optional[bool] = True
+    ending_filter: Optional[bool] = True
+    insert_filter: Optional[bool] = True
+
+
 class artist(BaseModel):
 
     id: int
     names: List[str]
-    groups: Optional[List[str]]
-    members: Optional[List[str]]
+    groups: Optional[List[artist]]
+    members: Optional[List[artist]]
+
+
+artist.update_forward_refs()
 
 
 class Song_Entry(BaseModel):
@@ -120,7 +135,12 @@ def format_artist_ids(artist_database, group_database, artist_id):
         temp_list = []
         for artist_group in artist_groups:
             temp_list.append(
-                artist_filter.get_artist_names(artist_database, artist_group)[0]
+                {
+                    "id": artist_group,
+                    "names": artist_filter.get_artist_names(
+                        artist_database, artist_group
+                    ),
+                }
             )
         artist["groups"] = temp_list
 
@@ -131,7 +151,12 @@ def format_artist_ids(artist_database, group_database, artist_id):
         temp_list = []
         for group_member in group_members:
             temp_list.append(
-                artist_filter.get_artist_names(artist_database, group_member)[0]
+                {
+                    "id": group_member,
+                    "names": artist_filter.get_artist_names(
+                        artist_database, group_member
+                    ),
+                }
             )
         artist["members"] = temp_list
 
@@ -212,3 +237,49 @@ async def get_first_n_songs(query: First_N_Songs):
         song["artists"] = artist_list
 
     return data
+
+
+@app.post("/artist_ids_request", response_model=List[Song_Entry])
+async def search_request(query: Artist_ID_Search_Request):
+
+    with open(song_database_path, encoding="utf-8") as json_file:
+        song_database = json.load(json_file)
+
+    with open(artist_database_path, encoding="utf-8") as json_file:
+        artist_database = json.load(json_file)
+
+    with open(group_database_path, encoding="utf-8") as json_file:
+        group_database = json.load(json_file)
+
+    authorized_type = []
+    if query.opening_filter:
+        authorized_type.append(1)
+    if query.ending_filter:
+        authorized_type.append(2)
+    if query.insert_filter:
+        authorized_type.append(3)
+
+    if len(authorized_type) > 0:
+        song_list = get_search_result.get_artists_ids_song_list(
+            song_database,
+            artist_database,
+            group_database,
+            query.artist_ids,
+            query.max_other_artist,
+            query.group_granularity,
+            query.ignore_duplicate,
+            query.max_nb_song,
+            authorized_type,
+        )
+
+        for song in song_list:
+            artist_list = []
+            for artist_id in song["artists"]:
+                artist_list.append(
+                    format_artist_ids(artist_database, group_database, artist_id)
+                )
+            song["artists"] = artist_list
+    else:
+        song_list = []
+
+    return song_list

@@ -105,7 +105,15 @@ def song_meets_search_requirement(
         for members_list in members_lists:
             song_artist_list = []
             for artist in song["artist_ids"]:
-                song_artist_list += get_artists_in_group(group_database, artist)
+
+                if (
+                    group_granularity > 0
+                    or len(members_list) == 1
+                    and str(members_list[0]) not in group_database.keys()
+                ):
+                    song_artist_list += get_artists_in_group(group_database, artist)
+                else:
+                    song_artist_list.append(artist)
 
             (
                 is_in_artist_list,
@@ -150,6 +158,55 @@ def search_artist(
 
         members_list = []
         for artist in artist_id_list:
+            if group_granularity > 0:
+                members_list.append(get_artists_in_group(group_database, artist))
+                if int(artist) not in members_list[len(members_list) - 1]:
+                    members_list[len(members_list) - 1].append(int(artist))
+            else:
+                members_list.append([int(artist)])
+
+        song_list = []
+        for anime in song_database:
+            if len(song_list) >= max_nb_songs:
+                break
+            for song in anime["songs"]:
+                if song_meets_search_requirement(
+                    group_database,
+                    song,
+                    members_list,
+                    group_granularity,
+                    max_other_artist,
+                    authorized_types,
+                ):
+                    romaji = anime["romaji"] if "romaji" in anime.keys() else None
+                    song_list.append(
+                        utils.format_song(anime["annId"], anime["name"], romaji, song)
+                    )
+
+        return song_list
+
+    else:
+        return []
+
+
+def search_artist_ids(
+    song_database,
+    group_database,
+    artist_ids,
+    group_granularity,
+    max_other_artist,
+    max_nb_songs=250,
+    authorized_types=[],
+):
+
+    """
+    Return a list of songs corresponding to the search
+    """
+
+    if len(artist_ids) > 0:
+
+        members_list = []
+        for artist in artist_ids:
             if group_granularity > 0:
                 members_list.append(get_artists_in_group(group_database, artist))
                 if int(artist) not in members_list[len(members_list) - 1]:

@@ -1,12 +1,12 @@
 import json
-import config
+import config_exceptions
 from pathlib import Path
 
 """
 Map groups and members
 """
 
-groups_subdivision = config.groups_subdivision
+groups_subdivision = config_exceptions.groups_subdivision
 
 source_input_file = Path("../app/data/artist_mapping.json")
 results_output_path = Path("../app/data")

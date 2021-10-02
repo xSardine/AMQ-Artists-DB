@@ -157,6 +157,50 @@ def get_search_results(
         max_nb_songs,
         "types:",
         authorized_types,
+        "\n",
+    )
+
+    return song_list
+
+
+def get_artists_ids_song_list(
+    song_database,
+    artist_database,
+    group_database,
+    artist_ids,
+    max_other_artist,
+    group_granularity,
+    ignore_duplicate,
+    max_nb_songs,
+    authorized_types,
+):
+
+    song_list = artist_filter.search_artist_ids(
+        song_database,
+        group_database,
+        artist_ids,
+        group_granularity,
+        max_other_artist,
+        max_nb_songs,
+        authorized_types,
+    )
+
+    song_list = combine_results(song_list, [], [], False, ignore_duplicate)
+
+    print(
+        "\n",
+        datetime.now().time(),
+        ": I have found",
+        len(song_list),
+        "songs for the search",
+        artist_ids,
+        "ignore dups:",
+        ignore_duplicate,
+        "max songs:",
+        max_nb_songs,
+        "types:",
+        authorized_types,
+        "\n",
     )
 
     return song_list

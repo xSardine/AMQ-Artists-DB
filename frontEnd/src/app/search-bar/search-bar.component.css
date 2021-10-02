@@ -24,6 +24,12 @@ input[type="search"]::-webkit-search-cancel-button {
     color: var(--textOnBackground);
 }
 
+.helpButton {
+    padding-left: 30px;
+    cursor: pointer;
+    color: var(--textOnBackground);
+}
+
 .mainFilter {
     position:static;
 }

@@ -44,6 +44,44 @@
     color: var(--textOnBackground);
 }
 
+.deleteLogo {
+    font-size: 15px;
+    cursor: pointer;
+    color: var(--textOnBackground);
+}
+
+.searchLogo {
+    font-size: 15px;
+    cursor: pointer;
+    padding-right: 8px;
+    color: var(--textOnBackground);
+}
+
+
+.container{
+     overflow: hidden;
+     width: 100%;
+     white-space: nowrap;
+}
+.container > div {
+     width: 32.06%;
+     height: auto;
+     float: left;
+     margin: 0 10px 0 0;
+     background-color: blueviolet;
+}
+
+
+.grid {
+  display: grid;
+  grid-gap: 4px;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.grid > div {
+  padding: 10px;
+  background-color: #444;
+}
 
 
 
@@ -58,7 +96,7 @@
     top: 100;
     width: 100%;
     /* Full width */
-    height: 100%;
+    height: 88%;
     /* Full height */
     overflow: auto;
     /* Enable scroll if needed */

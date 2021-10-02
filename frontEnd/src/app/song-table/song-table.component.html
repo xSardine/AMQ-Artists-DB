@@ -4,12 +4,10 @@
     <!-- Modal content -->
     <div (click)="this.doubleClickPreventer = !this.doubleClickPreventer;" class="modal-content">
         <div class="modal-header">
-            <h1><a id="modal-header" class="animeLink" target="_blank" href="{{popUpannURL}}">{{popUpAnime}}</a></h1>
-            <h4>({{romaji}})</h4>
-
+            <h3 style="display: inline-block;" title="{{romaji}}"><a id="modal-header" class="animeLink" target="_blank"
+                    href="{{popUpannURL}}">{{popUpAnime}}</a></h3>
         </div>
         <div class="modal-body">
-            <h2>Song Information</h2>
             <p id="modal-songinfo"></p>
             720p:
             <a id="modal-720-link" class="textLink" target="_blank" href="{{popUpHDLink}}">{{popUpHDLink}}</a>
@@ -19,14 +17,25 @@
             <br>
             mp3:
             <a id="modal-mp3-link" class="textLink" target="_blank" href="{{popUpAudioLink}}">{{popUpAudioLink}}</a>
-            <h2 id="modal-artist-part">Artists Information</h2>
-            <div *ngFor=" let artist of popUpArtistsInfo">
-                <p>Known as: {{artist["names"]}}</p>
-                <p *ngIf="artist['members'] != undefined">Comprised of: {{artist["members"]}}</p>
-                <p *ngIf="artist['groups'] != undefined">Part of: {{artist["groups"]}}</p>
-                <br>
+            <h3 id="modal-artist-part">Artists Information</h3>
+            <div class="grid">
+                <div *ngFor=" let artist of popUpArtistsInfo">
+                    <p style="margin: 5px"><span class="searchLogo" title="Search songs by this artist(s)"
+                            (click)="searchPopUpArtist(artist)">🔎</span>{{artist["names"][0]}}</p>
+                    <p *ngIf="artist['members'] != undefined" style="margin: 3px; margin-top: 10px;"><b>Comprised
+                            of:</b>
+                    </p>
+                    <div *ngFor="let member of artist['members']"><span class="searchLogo"
+                            title="Search songs by this artist"
+                            (click)="searchPopUpArtist(member)">🔎</span>{{member.names[0]}}
+                    </div>
+                    <p *ngIf="artist['groups'] != undefined" style="margin: 3px; margin-top: 10px;"><b>Part of:</b></p>
+                    <div *ngFor="let group of artist['groups']"><span class="searchLogo"
+                            title="Search songs by this artist"
+                            (click)="searchPopUpArtist(group)">🔎</span>{{group.names[0]}}
+                    </div>
+                </div>
             </div>
-
         </div>
         <div class="modal-footer">
             <h3 id="modal-footer"></h3>
@@ -50,9 +59,15 @@
         <td>{{song.Anime}}</td>
         <td>{{song.Type}}</td>
         <td>{{song.SongName}}</td>
-        <td>{{song.Artist}}</td>
-        <td *ngIf="song.mptrois" style="text-align: center; z-index: 15;"><span class="mp3logo"
+        <td><span class="searchLogo" title="Search songs by this artist(s)"
+                (click)="searchArtistId(song.artists)">🔎</span>
+            {{song.Artist}}
+        </td>
+        <td style="text-align: center; z-index: 15;"><span *ngIf="song.mptrois" class="mp3logo"
                 (click)="playMP3music(song)">♫</span>
+        </td>
+        <td style="text-align: center; z-index: 15;"><span class="deleteLogo" title="Delete song from list"
+                (click)="deleteRowEntry(song)">❌</span>
         </td>
     </tr>
 </table>

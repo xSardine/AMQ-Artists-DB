@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { SearchRequestService } from '../core/services/search-request.service';
 
 @Component({
   selector: 'app-song-table',
@@ -12,6 +13,9 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
   `,
 })
 export class SongTableComponent {
+
+  constructor(private searchRequestService: SearchRequestService) {
+  }
 
   @Input() songTable: any
 
@@ -178,10 +182,92 @@ export class SongTableComponent {
     this.romaji = song.Romaji
   }
 
+  removeItemsById(arr: any, id: any) {
+    var i = arr.length;
+    if (i) {   // (not 0)
+      while (--i + 1) {
+        if (i == id) {
+          arr.splice(i, 1);
+        }
+      }
+    }
+  }
+
+  getIndexbyElement(arr: any, element: any) {
+
+    let index = 0
+
+    for (let el in arr) {
+      if (element == arr[el]) {
+        return index
+      }
+      index += 1
+    }
+    return -1
+
+  }
+
   @Output() mp3PlayerClicked = new EventEmitter();
 
   playMP3music(song: any) {
-    this.mp3PlayerClicked.emit(song.mptrois)
+    this.mp3PlayerClicked.emit(song)
+  }
+
+  deleteRowEntry(song: any) {
+    let id = this.getIndexbyElement(this.songTable, song)
+    this.removeItemsById(this.songTable, id);
+  }
+
+  @Output() sendSongListtoTable = new EventEmitter();
+
+  sendMessage(currentSongList: any) {
+    this.sendSongListtoTable.emit(currentSongList)
+  }
+
+  searchArtistId(artists: any) {
+
+    console.log(artists)
+
+    let id_arr = []
+    for (let artist in artists) {
+      id_arr.push(artists[artist].id)
+    }
+
+    let body = {
+      "artist_ids": id_arr,
+      "group_granularity": 0,
+      "max_other_artist": 99,
+      "ignore_duplicate": false,
+      "opening_filter": true,
+      "ending_filter": true,
+      "insert_filter": true,
+    }
+
+    let currentSongList
+    currentSongList = this.searchRequestService.artistIdsSearchRequest(body).subscribe(data => {
+      currentSongList = data
+      this.sendMessage(currentSongList)
+    });
+  }
+
+  searchPopUpArtist(artist: any) {
+
+    let body = {
+      "artist_ids": [artist.id],
+      "group_granularity": 0,
+      "max_other_artist": 99,
+      "ignore_duplicate": false,
+      "opening_filter": true,
+      "ending_filter": true,
+      "insert_filter": true,
+    }
+    let currentSongList
+    currentSongList = this.searchRequestService.artistIdsSearchRequest(body).subscribe(data => {
+      currentSongList = data
+      this.sendMessage(currentSongList)
+      this.showSongInfoPopup = false
+    });
+
   }
 
 
