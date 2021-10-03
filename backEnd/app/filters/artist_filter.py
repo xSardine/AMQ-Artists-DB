@@ -15,7 +15,7 @@ def get_artist_id(
     id_list = []
 
     for id in artist_database.keys():
-        for artist_alt_name in artist_database[id]:
+        for artist_alt_name in artist_database[id]["names"]:
             if (case_sensitive and re.match(artist, artist_alt_name)) or (
                 not case_sensitive and re.match(artist, artist_alt_name, re.IGNORECASE)
             ):
@@ -31,25 +31,29 @@ def get_artist_names(artist_database, artist_id):
     """
 
     artist_id = str(artist_id)
-    return artist_database[artist_id] if artist_id in artist_database else "not found"
+    return (
+        artist_database[artist_id]["names"]
+        if artist_id in artist_database
+        else "not found"
+    )
 
 
-def get_groups_with_artist(group_database, artist_id):
+def get_groups_with_artist(artist_database, artist_id):
 
     """
     Return every group the artist is in (recursively)
     ie. Yuu Serizawa -> [Bunch, of, stuff, but, also, Prizmmy -> PrismBox]
     """
 
-    group_list = []
-    for group in group_database:
-        if str(artist_id) in group_database[group]:
-            group_list.append(int(group))
-            group_list += get_groups_with_artist(group_database, group)
-    return group_list
+    grp_list = []
+    for group in artist_database[str(artist_id)]["groups"]:
+        if group[0] not in grp_list:
+            grp_list.append(group[0])
+
+    return grp_list
 
 
-def get_artists_in_group(group_database, group_id):
+def get_artists_in_group(artist_database, group_id, alt_members_id=0):
 
     """
     Return a list of every artists in a group (recursively)
@@ -59,9 +63,9 @@ def get_artists_in_group(group_database, group_id):
     """
 
     artist_list = []
-    if str(group_id) in group_database.keys():
-        for artist_id in group_database[str(group_id)]:
-            artist_list += get_artists_in_group(group_database, artist_id)
+    if len(artist_database[str(group_id)]["members"]) > 0:
+        for artist_id in artist_database[str(group_id)]["members"][alt_members_id]:
+            artist_list += get_artists_in_group(artist_database, artist_id)
         return artist_list
     else:
         return [int(group_id)]
@@ -90,7 +94,7 @@ def separate_artists_list_by_comparing_with_another(
 
 
 def song_meets_search_requirement(
-    group_database,
+    artist_database,
     song,
     members_lists,
     group_granularity,
@@ -99,8 +103,9 @@ def song_meets_search_requirement(
 ):
 
     """
-    Check that a song meets the groum_granularity and the max_other_artist settings
+    Check that a song meets the group_granularity and the max_other_artist settings
     """
+
     if song["type"] in authorized_types:
         for members_list in members_lists:
             song_artist_list = []
@@ -109,11 +114,13 @@ def song_meets_search_requirement(
                 if (
                     group_granularity > 0
                     or len(members_list) == 1
-                    and str(members_list[0]) not in group_database.keys()
+                    and len(artist_database[str(members_list[0])]["members"]) < 1
                 ):
-                    song_artist_list += get_artists_in_group(group_database, artist)
+                    song_artist_list += get_artists_in_group(
+                        artist_database, artist[0], artist[1]
+                    )
                 else:
-                    song_artist_list.append(artist)
+                    song_artist_list.append(artist[0])
 
             (
                 is_in_artist_list,
@@ -135,7 +142,6 @@ def song_meets_search_requirement(
 def search_artist(
     song_database,
     artist_database,
-    group_database,
     search,
     group_granularity=1,
     max_other_artist=3,
@@ -159,7 +165,13 @@ def search_artist(
         members_list = []
         for artist in artist_id_list:
             if group_granularity > 0:
-                members_list.append(get_artists_in_group(group_database, artist))
+                if len(artist_database[artist]["members"]) > 0:
+                    for i in range(len(artist_database[artist]["members"])):
+                        members_list.append(
+                            get_artists_in_group(artist_database, artist, i)
+                        )
+                else:
+                    members_list.append(get_artists_in_group(artist_database, artist))
                 if int(artist) not in members_list[len(members_list) - 1]:
                     members_list[len(members_list) - 1].append(int(artist))
             else:
@@ -171,7 +183,7 @@ def search_artist(
                 break
             for song in anime["songs"]:
                 if song_meets_search_requirement(
-                    group_database,
+                    artist_database,
                     song,
                     members_list,
                     group_granularity,
@@ -191,7 +203,7 @@ def search_artist(
 
 def search_artist_ids(
     song_database,
-    group_database,
+    artist_database,
     artist_ids,
     group_granularity,
     max_other_artist,
@@ -208,11 +220,13 @@ def search_artist_ids(
         members_list = []
         for artist in artist_ids:
             if group_granularity > 0:
-                members_list.append(get_artists_in_group(group_database, artist))
+                members_list.append(get_artists_in_group(artist_database, artist))
                 if int(artist) not in members_list[len(members_list) - 1]:
                     members_list[len(members_list) - 1].append(int(artist))
             else:
                 members_list.append([int(artist)])
+
+        print(members_list)
 
         song_list = []
         for anime in song_database:
@@ -220,7 +234,7 @@ def search_artist_ids(
                 break
             for song in anime["songs"]:
                 if song_meets_search_requirement(
-                    group_database,
+                    artist_database,
                     song,
                     members_list,
                     group_granularity,

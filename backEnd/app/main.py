@@ -10,7 +10,6 @@ from filters import artist_filter
 database_path = "data/"
 song_database_path = database_path + "expand_mapping.json"
 artist_database_path = database_path + "artist_mapping.json"
-group_database_path = database_path + "group_mapping.json"
 
 
 class Search_Filter(BaseModel):
@@ -124,13 +123,13 @@ app.add_middleware(
 )
 
 
-def format_artist_ids(artist_database, group_database, artist_id):
-    artist = {"id": artist_id}
+def format_artist_ids(artist_database, artist_id):
+    artist = {"id": artist_id[0]}
 
-    alt_names = artist_filter.get_artist_names(artist_database, artist_id)
+    alt_names = artist_filter.get_artist_names(artist_database, artist_id[0])
     artist["names"] = alt_names
 
-    artist_groups = artist_filter.get_groups_with_artist(group_database, artist_id)
+    artist_groups = artist_filter.get_groups_with_artist(artist_database, artist_id[0])
     if len(artist_groups) > 0:
         temp_list = []
         for artist_group in artist_groups:
@@ -144,9 +143,12 @@ def format_artist_ids(artist_database, group_database, artist_id):
             )
         artist["groups"] = temp_list
 
-    group_members = artist_filter.get_artists_in_group(group_database, artist_id)
+    group_members = artist_filter.get_artists_in_group(
+        artist_database, artist_id[0], artist_id[1]
+    )
+
     if group_members != None and not (
-        len(group_members) == 1 and group_members[0] == artist_id
+        len(group_members) == 1 and group_members[0] == artist_id[0]
     ):
         temp_list = []
         for group_member in group_members:
@@ -172,9 +174,6 @@ async def search_request(query: Search_Request):
     with open(artist_database_path, encoding="utf-8") as json_file:
         artist_database = json.load(json_file)
 
-    with open(group_database_path, encoding="utf-8") as json_file:
-        group_database = json.load(json_file)
-
     authorized_type = []
     if query.opening_filter:
         authorized_type.append(1)
@@ -187,7 +186,6 @@ async def search_request(query: Search_Request):
         song_list = get_search_result.get_search_results(
             song_database,
             artist_database,
-            group_database,
             query.anime_search_filter,
             query.song_name_search_filter,
             query.artist_search_filter,
@@ -200,9 +198,7 @@ async def search_request(query: Search_Request):
         for song in song_list:
             artist_list = []
             for artist_id in song["artists"]:
-                artist_list.append(
-                    format_artist_ids(artist_database, group_database, artist_id)
-                )
+                artist_list.append(format_artist_ids(artist_database, artist_id))
             song["artists"] = artist_list
     else:
         song_list = []
@@ -217,9 +213,6 @@ class First_N_Songs(BaseModel):
 @app.post("/get_first_n_songs", response_model=List[Song_Entry])
 async def get_first_n_songs(query: First_N_Songs):
 
-    with open(group_database_path, encoding="utf-8") as json_file:
-        group_database = json.load(json_file)
-
     with open(artist_database_path, encoding="utf-8") as json_file:
         artist_database = json.load(json_file)
 
@@ -231,9 +224,7 @@ async def get_first_n_songs(query: First_N_Songs):
     for song in data:
         artist_list = []
         for artist_id in song["artists"]:
-            artist_list.append(
-                format_artist_ids(artist_database, group_database, artist_id)
-            )
+            artist_list.append(format_artist_ids(artist_database, artist_id))
         song["artists"] = artist_list
 
     return data
@@ -248,9 +239,6 @@ async def search_request(query: Artist_ID_Search_Request):
     with open(artist_database_path, encoding="utf-8") as json_file:
         artist_database = json.load(json_file)
 
-    with open(group_database_path, encoding="utf-8") as json_file:
-        group_database = json.load(json_file)
-
     authorized_type = []
     if query.opening_filter:
         authorized_type.append(1)
@@ -263,7 +251,6 @@ async def search_request(query: Artist_ID_Search_Request):
         song_list = get_search_result.get_artists_ids_song_list(
             song_database,
             artist_database,
-            group_database,
             query.artist_ids,
             query.max_other_artist,
             query.group_granularity,
@@ -275,9 +262,7 @@ async def search_request(query: Artist_ID_Search_Request):
         for song in song_list:
             artist_list = []
             for artist_id in song["artists"]:
-                artist_list.append(
-                    format_artist_ids(artist_database, group_database, artist_id)
-                )
+                artist_list.append(format_artist_ids(artist_database, artist_id))
             song["artists"] = artist_list
     else:
         song_list = []

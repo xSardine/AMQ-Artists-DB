@@ -75,7 +75,6 @@ def get_first_n_songs(song_database, nb_songs):
 def get_search_results(
     song_database,
     artist_database,
-    group_database,
     anime_search_filters,
     song_name_search_filters,
     artist_search_filters,
@@ -98,7 +97,6 @@ def get_search_results(
         artist_result_list = artist_filter.search_artist(
             song_database,
             artist_database,
-            group_database,
             artist_search_filters.search,
             artist_search_filters.group_granularity,
             artist_search_filters.max_other_artist,
@@ -166,7 +164,6 @@ def get_search_results(
 def get_artists_ids_song_list(
     song_database,
     artist_database,
-    group_database,
     artist_ids,
     max_other_artist,
     group_granularity,
@@ -177,7 +174,7 @@ def get_artists_ids_song_list(
 
     song_list = artist_filter.search_artist_ids(
         song_database,
-        group_database,
+        artist_database,
         artist_ids,
         group_granularity,
         max_other_artist,
