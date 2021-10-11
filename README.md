@@ -2,8 +2,6 @@
 
 Test URL: http://46.101.197.163/
 
-Side note: You can click on the annId to open an information panel, yes I need to make it more obvious.
-
 I'm taking in any feedbacks, tho this is just a side project for fun, so I won't promise I will implements your ideas soon (if I will ever). ~~I'll still work more on that than Ege works on AMQ, rest assured~~
 
 # Advanced Filters Documentation
