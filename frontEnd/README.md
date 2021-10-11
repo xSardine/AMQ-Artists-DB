@@ -1,5 +1,3 @@
-# ArtistDB
-
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.2.5.
 
 ## Development server
@@ -25,3 +23,10 @@ Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To u
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+
+
+# Front End
+
+Most of the component are done from scratch because I wanted to train on front end coding, as it is something that I am not familiar with.
+
+Exception is for the mp3 player: https://github.com/vime-js/vime
