@@ -9,6 +9,7 @@
     width: 100%;
     background-color: var(--songTablePairColor);
     margin-bottom: 65px;
+    font-size: 15px;
 }
 
 #table td,
@@ -43,20 +44,6 @@
     cursor: pointer;
     color: var(--textOnBackground);
 }
-
-.deleteLogo {
-    font-size: 15px;
-    cursor: pointer;
-    color: var(--textOnBackground);
-}
-
-.searchLogo {
-    font-size: 15px;
-    cursor: pointer;
-    padding-right: 8px;
-    color: var(--textOnBackground);
-}
-
 
 .container{
      overflow: hidden;
@@ -96,7 +83,7 @@
     top: 100;
     width: 100%;
     /* Full width */
-    height: 88%;
+    height: 69%;
     /* Full height */
     overflow: auto;
     /* Enable scroll if needed */

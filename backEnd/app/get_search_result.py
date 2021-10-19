@@ -138,25 +138,17 @@ def get_search_results(
         max_nb_songs,
     )
 
-    print(
-        "\n",
-        datetime.now().time(),
-        ": I have found",
-        len(song_list),
-        "songs for the search",
-        anime_search_filters,
-        song_name_search_filters,
-        artist_search_filters,
-        "and_logic:",
-        and_logic,
-        "ignore dups:",
-        ignore_duplicate,
-        "max songs:",
-        max_nb_songs,
-        "types:",
-        authorized_types,
-        "\n",
-    )
+    recap_string = f"\n{datetime.now().time()}: I have found {len(song_list)} songs for the search:\n"
+
+    if anime_search_filters:
+        recap_string += f"Anime: {anime_search_filters}\n"
+    if song_name_search_filters:
+        recap_string += f"Song name: {song_name_search_filters}\n"
+    if artist_search_filters:
+        recap_string += f"Artist: {artist_search_filters}\n"
+    recap_string += f"and_logic: {and_logic}, ignore dups: {ignore_duplicate}, max songs: {max_nb_songs}, types: {authorized_types}\n"
+
+    print(recap_string)
 
     return song_list
 

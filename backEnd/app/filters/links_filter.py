@@ -1,5 +1,4 @@
 from filters import utils
-import numpy as np
 
 
 def search_link(

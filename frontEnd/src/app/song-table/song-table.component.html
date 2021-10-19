@@ -20,19 +20,20 @@
             <h3 id="modal-artist-part">Artists Information</h3>
             <div class="grid">
                 <div *ngFor=" let artist of popUpArtistsInfo">
-                    <p style="margin: 5px"><span class="searchLogo" title="Search songs by this artist(s)"
-                            (click)="searchPopUpArtist(artist)">🔎</span>{{artist["names"][0]}}</p>
+                    <p style="margin: 5px"><i style="cursor: pointer; margin-right: 6px;"
+                            title="Search songs by this artist" (click)="searchPopUpArtist(artist)"
+                            class="fa fa-search"></i>{{artist["names"][0]}}</p>
                     <p *ngIf="artist['members'] != undefined" style="margin: 3px; margin-top: 10px;"><b>Comprised
                             of:</b>
                     </p>
-                    <div *ngFor="let member of artist['members']"><span class="searchLogo"
-                            title="Search songs by this artist"
-                            (click)="searchPopUpArtist(member)">🔎</span>{{member.names[0]}}
+                    <div *ngFor="let member of artist['members']"><i style="cursor: pointer; margin-right: 6px;"
+                            title="Search songs by this member" (click)="searchPopUpArtist(member)"
+                            class="fa fa-search"></i>{{member.names[0]}}
                     </div>
                     <p *ngIf="artist['groups'] != undefined" style="margin: 3px; margin-top: 10px;"><b>Part of:</b></p>
-                    <div *ngFor="let group of artist['groups']"><span class="searchLogo"
-                            title="Search songs by this artist"
-                            (click)="searchPopUpArtist(group)">🔎</span>{{group.names[0]}}
+                    <div *ngFor="let group of artist['groups']"><i style="cursor: pointer; margin-right: 6px;"
+                            title="Search songs by this group" (click)="searchPopUpArtist(group)"
+                            class="fa fa-search"></i>{{group.names[0]}}
                     </div>
                 </div>
             </div>
@@ -55,19 +56,24 @@
 
     <!-- BIND ARRAY TO TABLE -->
     <tr *ngFor=" let song of songTable">
-        <td style="cursor: pointer;" (click)="displaySongIngoPopup(song)">{{song.annId}}</td>
+        <td style="white-space: nowrap;">
+            <i style="cursor: pointer; margin-right: 10px;" (click)="displaySongIngoPopup(song)"
+                title="More information" class="fa fa-plus"></i>
+            <i style="cursor: pointer; margin-right: 6px;" title="Search songs in this entry"
+                (click)="searchAnnId(song.annId)" class="fa fa-search"></i>
+            {{song.annId}}
+        </td>
         <td>{{song.Anime}}</td>
-        <td>{{song.Type}}</td>
+        <td style="white-space: nowrap;">{{song.Type}}</td>
         <td>{{song.SongName}}</td>
-        <td><span class="searchLogo" title="Search songs by this artist(s)"
-                (click)="searchArtistId(song.artists)">🔎</span>
+        <td><i style="cursor: pointer; margin-right: 6px;" title="Search songs by this artist(s)"
+                (click)="searchArtistId(song.artists)" class="fa fa-search"></i>
             {{song.Artist}}
         </td>
-        <td style="text-align: center; z-index: 15;"><span *ngIf="song.mptrois" class="mp3logo"
-                (click)="playMP3music(song)">♫</span>
-        </td>
-        <td style="text-align: center; z-index: 15;"><span class="deleteLogo" title="Delete song from list"
-                (click)="deleteRowEntry(song)">❌</span>
+        <td style="text-align: center;"><i *ngIf="song.mptrois" title="Listen to mp3" style="cursor: pointer;"
+                (click)="playMP3music(song)" class="fa fa-music fa-lg"></i></td>
+        <td style="text-align: center;"><i style="cursor: pointer;" class="fa fa-trash fa-lg"
+                title="Delete song from list" (click)="deleteRowEntry(song)" aria-hidden="true"></i>
         </td>
     </tr>
 </table>

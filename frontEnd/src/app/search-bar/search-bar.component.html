@@ -1,23 +1,39 @@
 <div class=mainFilter>
 
-    <button *ngIf="!showAdvancedFilters" type="button" (click)="onSearchCallKey()">Search</button>
+    <div *ngIf="!showAdvancedFilters" style="display: inline;">
+        <button type="button" (click)="onSearchCallKey()">Search</button>
 
-    <input *ngIf="!showAdvancedFilters" #mainFilterInput placeholder="Search by anime, song name, artist or catbox link"
-        title="Search by anime, song name, artist or catbox link" style="width: 420px;" class=textInputFilter
-        type=search (keyup.enter)="onSearchCallKey()" (input)="mainFilter = mainFilterInput.value">
+        <input #mainFilterInput placeholder="Search by anime, song name or artist"
+            title="Search by anime, song name or artist" style="width: 420px;" class=textInputFilter type=search
+            (keyup.enter)="onSearchCallKey()" (input)="mainFilter = mainFilterInput.value">
 
-    <span class="helpButton" style="float: right; padding-left: 12px;" title="What can I do with that JSON?"
-        onClick="window.open('https://github.com/xSardine/AMQ-Artists-DB/tree/main/misc_scripts#misc-scripts','_blank')">
-        <i class="fa fa-question-circle"></i>
-    </span>
+        <label class="check"><input type="checkbox" (change)="showOpenings=!showOpenings" [checked]=showOpenings> OP
+        </label>
+        <label class="check"><input type="checkbox" (change)="showEndings=!showEndings" [checked]=showEndings> ED
+        </label>
+        <label class="check"><input type="checkbox" (change)="showInserts=!showInserts" [checked]=showInserts> INS
+        </label>
 
-    <a class="showFilter" (click)="generateDownloadJsonUri()" [href]="downloadJsonHref" download="{{downloadFileName}}">
-        <i class=" fa fa-download"></i> Download Song List as JSON
-    </a>
+        <label class="check"><input type="checkbox" (change)="ignoreDuplicate=!ignoreDuplicate"
+                [checked]=ignoreDuplicate> Ignore Duplicates
+        </label>
+    </div>
 
-    <span class="showFilter" (click)="showAdvancedFilters=!showAdvancedFilters">
-        <i class="fa fa-cog"></i> Toggle Advanced Filters
-    </span>
+    <div style="display: inline;">
+        <span class="helpButton" style="float: right; padding-left: 12px;" title="What can I do with that JSON?"
+            onClick="window.open('https://github.com/xSardine/AMQ-Artists-DB/tree/main/misc_scripts#misc-scripts','_blank')">
+            <i class="fa fa-question-circle"></i>
+        </span>
+
+        <a class="showFilter" (click)="generateDownloadJsonUri()" [href]="downloadJsonHref"
+            download="{{downloadFileName}}">
+            <i class=" fa fa-download"></i> Download Song List as JSON
+        </a>
+
+        <span class="showFilter" (click)="showAdvancedFilters=!showAdvancedFilters; mainFilter=''">
+            <i class="fa fa-cog"></i> Toggle Advanced Filters
+        </span>
+    </div>
 
 </div>
 
@@ -26,9 +42,12 @@
 <div *ngIf="showAdvancedFilters" class="filters">
 
     <div style="display:block; padding-bottom: 5px;">
-        <label class="check"><input type="checkbox" (change)="showOpenings=!showOpenings" checked> Opening </label>
-        <label class="check"><input type="checkbox" (change)="showEndings=!showEndings" checked> Ending </label>
-        <label class="check"><input type="checkbox" (change)="showInserts=!showInserts" checked> Insert Song </label>
+        <label class="check"><input type="checkbox" (change)="showOpenings=!showOpenings" [checked]=showOpenings> OP
+        </label>
+        <label class="check"><input type="checkbox" (change)="showEndings=!showEndings" [checked]=showEndings> ED
+        </label>
+        <label class="check"><input type="checkbox" (change)="showInserts=!showInserts" [checked]=showInserts> INS
+        </label>
         <span class="helpButton" title="Help understanding settings"
             onClick="window.open('https://github.com/xSardine/AMQ-Artists-DB#filters','_blank')">
             <i class="fa fa-question-circle"></i>
@@ -43,14 +62,16 @@
 
         <label class="check"
             title="If activated, results only have to contain the filter and not match it exactly"><input
-                type="checkbox" (change)="animeFilterPartialMatch=!animeFilterPartialMatch" checked>
+                type="checkbox" (change)="animeFilterPartialMatch=!animeFilterPartialMatch"
+                [checked]=animeFilterPartialMatch>
             Partial Match
         </label>
         <label class="check" title="If activated, it will ignore specials caracters"><input type="checkbox"
-                (change)="animeFilterIgnoreSpecialCaracters=!animeFilterIgnoreSpecialCaracters" checked>
+                (change)="animeFilterIgnoreSpecialCaracters=!animeFilterIgnoreSpecialCaracters"
+                [checked]=animeFilterIgnoreSpecialCaracters>
             Ignore Special Caracters </label>
         <label class="check" title="If activated, matching will be case sensitive"><input type="checkbox"
-                (change)="animeFilterCaseSensitive=!animeFilterCaseSensitive"> Case
+                (change)="animeFilterCaseSensitive=!animeFilterCaseSensitive" [checked]=animeFilterCaseSensitive> Case
             Sensitive
         </label>
 
@@ -63,14 +84,17 @@
 
         <label class="check"
             title="If activated, results only have to contain the filter and not match it exactly"><input
-                type="checkbox" (change)="songNameFilterPartialMatch=!songNameFilterPartialMatch" checked>
+                type="checkbox" (change)="songNameFilterPartialMatch=!songNameFilterPartialMatch"
+                [checked]=songNameFilterPartialMatch>
             Partial Match
         </label>
         <label class="check" title="If activated, it will ignore specials caracters"><input type="checkbox"
-                (change)="songNameFilterIgnoreSpecialCaracters=!songNameFilterIgnoreSpecialCaracters" checked>
+                (change)="songNameFilterIgnoreSpecialCaracters=!songNameFilterIgnoreSpecialCaracters"
+                [checked]=songNameFilterIgnoreSpecialCaracters>
             Ignore Special Caracters </label>
         <label class="check" title="If activated, matching will be case sensitive"><input type="checkbox"
-                (change)="songNameFilterCaseSensitive=!songNameFilterCaseSensitive"> Case
+                (change)="songNameFilterCaseSensitive=!songNameFilterCaseSensitive"
+                [checked]=songNameFilterCaseSensitive> Case
             Sensitive
         </label>
 
@@ -83,14 +107,17 @@
 
         <label class="check"
             title="If activated, results only have to contain the filter and not match it exactly"><input
-                type="checkbox" (change)="artistFilterPartialMatch=!artistFilterPartialMatch" checked>
+                type="checkbox" (change)="artistFilterPartialMatch=!artistFilterPartialMatch"
+                [checked]=artistFilterPartialMatch>
             Partial Match
         </label>
         <label class="check" title="If activated, it will ignore specials caracters"><input type="checkbox"
-                (change)="artistFilterIgnoreSpecialCaracters=!artistFilterIgnoreSpecialCaracters" checked>
+                (change)="artistFilterIgnoreSpecialCaracters=!artistFilterIgnoreSpecialCaracters"
+                [checked]=artistFilterIgnoreSpecialCaracters>
             Ignore Special Caracters </label>
         <label class="check" title="If activated, matching will be case sensitive"><input type="checkbox"
-                (change)="artistFilterCaseSensitive=!artistFilterCaseSensitive"> Case
+                (change)="artistFilterCaseSensitive=!artistFilterCaseSensitive" [checked]=artistFilterCaseSensitive>
+            Case
             Sensitive
         </label>
 
@@ -100,15 +127,15 @@
         style="display:block; padding-bottom: 8px; padding-right: 6px;">
         <label>Max Other People<input #maximumRandomsFilterInput placeholder="99..."
                 style="width: 40px; margin-left: 5px;" type=search class=textInputFilter
-                (keyup.enter)="onSearchCallKey()"
-                (input)="maximumRandomsFilter = maximumRandomsFilterInput.value"></label>
+                (keyup.enter)="onSearchCallKey()" (input)="maximumRandomsFilter = maximumRandomsFilterInput.value"
+                [value]=maximumRandomsFilter></label>
 
         <label
             title="This is the minimum amount of singer from the group that needs to be present (only useful for groups)"
             style="margin-left: 20px;">Min group members<input #minimalMembersFilterInput placeholder="0..."
                 style="width: 40px; margin-left: 5px;" type=search class=textInputFilter
-                (keyup.enter)="onSearchCallKey()"
-                (input)="minimalMembersFilter = minimalMembersFilterInput.value"></label>
+                (keyup.enter)="onSearchCallKey()" (input)="minimalMembersFilter = minimalMembersFilterInput.value"
+                [value]=minimalMembersFilter></label>
     </div>
 
     <div style="display:block; padding-bottom: 5px;">
@@ -119,7 +146,9 @@
             <option title="A song needs to match every filter">Intersection</option>
         </select>
 
-        <label class="check"><input type="checkbox" (change)="ignoreDuplicate=!ignoreDuplicate"> Ignore Duplicates
+        <label class="check"><input type="checkbox" (change)="ignoreDuplicate=!ignoreDuplicate"
+                [checked]=ignoreDuplicate>
+            Ignore Duplicates
         </label>
 
 

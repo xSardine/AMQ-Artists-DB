@@ -2,8 +2,6 @@
 
 Test URL: http://46.101.197.163/
 
-Side note: You can click on the annId to open an information panel, yes I need to make it more obvious.
-
 I'm taking in any feedbacks, tho this is just a side project for fun, so I won't promise I will implements your ideas soon (if I will ever). ~~I'll still work more on that than Ege works on AMQ, rest assured~~
 
 # Advanced Filters Documentation
@@ -94,7 +92,6 @@ Let me know if you find any of these that are wrong in the DB:
 
 ## TODO List
 - ~~dark theme~~
-- ~~search with catbox links~~
 - ~~better information modal window~~
 - ~~download song list as JSON~~
 - ~~mp3 player~~
@@ -103,14 +100,16 @@ Let me know if you find any of these that are wrong in the DB:
 - ~~quick search button for annId~~
 - ~~better access to information modal window to make it more obvious~~
 - ~~script to check validity of current exceptions configuration~~
-- add domain name + domain path to get history
-  - https on fastapi
+- ~~searching for artist name in reversed order~~
 - ~~Update DB to be able to fix edge cases~~
   - ~~different artists with same names~~
   - ~~same group with different artists~~
 - more information in db
   - main singer / backup
   - composer/musicians(?)
+- add domain name + domain path to get history
+  - https on fastapi
+- add date/season on anime entries + date/season filter
 - stabilize database
   - JSON -> SQLITE
   - add UI to update and maintain DB easily

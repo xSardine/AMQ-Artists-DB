@@ -9,14 +9,14 @@ from youtubesearchpython import VideosSearch
 
 # Relative path of the .json file you downloaded,
 # if it's in the same folder as this script, then it's just the file name.
-song_list_path = "mouretsupira_SongList.json"
+song_list_path = "__fripside_SongList.json"
 
 # Name of the created sheet
-output_file_name = "Mouretsu Pirates Anime Songs Ranking Sheet.xlsx"
+output_file_name = "Maaya Sakamoto Anime Songs Ranking Sheet.xlsx"
 
 # Setting to True slow down the process
 # but gives you full song link when available on youtube
-add_youtube_link = False
+add_youtube_link = True
 
 # Sheet styling Configuration
 sheet_name = "Sheet1"
@@ -35,6 +35,7 @@ def format_song(song):
 
     HQlink = song["sept"] if "sept" in song else song["quatre"]
     mp3_link = song["mptrois"] if "mptrois" in song else None
+    print(song["SongName"], mp3_link)
 
     return {
         "anime_name": song["Anime"],
@@ -70,7 +71,10 @@ def create_workbook(song_list_json):
             ytsearch = song["info"].replace('"', "") + " full song"
             videosSearch = VideosSearch(ytsearch, limit=1)
             results = videosSearch.result()
-            yt_link = "https://www.youtube.com/watch?v=" + results["result"][0]["id"]
+            if len(results["result"]):
+                yt_link = (
+                    "https://www.youtube.com/watch?v=" + results["result"][0]["id"]
+                )
         ws.cell(row_iter, 2, song["anime_name"])
         ws.cell(row_iter, 3, song["type"])
         ws.cell(row_iter, 4, song["info"]).hyperlink = song["link"]

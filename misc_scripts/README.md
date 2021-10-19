@@ -9,18 +9,16 @@ Make sure that it will make an environment variable for you when it will ask for
 
 Here are the dependencies for each scripts:
 
-
-- download_song.py:
-
-You need to install ffmpeg: <https://www.ffmpeg.org/>, and set it up as an environment variable too, it is quickly explained here in the "Add ffmpeg to Windows 10 Path" section: <https://windowsloop.com/install-ffmpeg-windows-10/>
-
 - create_sheet_from_json.py:
 ```
 Type these in your terminal:
 python -m pip install openpyxl
-python -m pip install pydrive
-python -m pip install youtubesearchpython
+python -m pip install youtube-search-python
 ```
+
+- download_song.py:
+
+You need to install ffmpeg: <https://www.ffmpeg.org/>, and set it up as an environment variable too, it is quickly explained here in the "Add ffmpeg to Windows 10 Path" section: <https://windowsloop.com/install-ffmpeg-windows-10/>
 
 ## 1.2 - Download the scripts files
 

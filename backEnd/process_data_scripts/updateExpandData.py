@@ -76,6 +76,8 @@ for update_anime in update_file:
                         )
                         print()
                         print()
+                        update_song.pop("versions")
+                        source_anime["songs"].append(update_song)
                     elif -1 in [song["annSongId"] for song in source_anime["songs"]]:
                         print(
                             "LOW WARNING: **might** be a repeat:",

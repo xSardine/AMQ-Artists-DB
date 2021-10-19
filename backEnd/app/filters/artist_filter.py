@@ -7,17 +7,40 @@ def get_artist_id(
 ):
 
     """
-    Return every artists corresponding to the filters
+    Return every artists id corresponding to the filters
     """
 
+    reversed_artist = ""
+
+    if len(re.split(" ", artist)) == 2:
+        reversed_artist = " ".join(reversed(re.split(" ", artist)))
+
     artist = utils.get_regex_search(artist, ignore_special_character, partial_match)
+
+    if reversed_artist:
+        reversed_artist = utils.get_regex_search(
+            reversed_artist, ignore_special_character, partial_match
+        )
 
     id_list = []
 
     for id in artist_database.keys():
         for artist_alt_name in artist_database[id]["names"]:
-            if (case_sensitive and re.match(artist, artist_alt_name)) or (
-                not case_sensitive and re.match(artist, artist_alt_name, re.IGNORECASE)
+            if (
+                case_sensitive
+                and (
+                    re.match(artist, artist_alt_name)
+                    or (reversed_artist and re.match(reversed_artist, artist_alt_name))
+                )
+            ) or (
+                not case_sensitive
+                and (
+                    re.match(artist, artist_alt_name, re.IGNORECASE)
+                    or (
+                        reversed_artist
+                        and (re.match(reversed_artist, artist_alt_name, re.IGNORECASE))
+                    )
+                )
             ):
                 id_list.append(id)
 
@@ -30,11 +53,10 @@ def get_artist_names(artist_database, artist_id):
     Return the list of names corresponding to an artist
     """
 
-    artist_id = str(artist_id)
     return (
-        artist_database[artist_id]["names"]
-        if artist_id in artist_database
-        else "not found"
+        artist_database[str(artist_id)]["names"]
+        if str(artist_id) in artist_database
+        else -1
     )
 
 

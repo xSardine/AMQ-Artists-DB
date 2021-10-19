@@ -32,10 +32,11 @@ def get_artist_id(artist_ids_mapping, artist):
 
 def update_song(song_database, song_id, new_artist, artist_id):
 
+    flag_valid = False
     for anime in song_database:
         for song in anime["songs"]:
             if song["annSongId"] == song_id:
-                print("old:", song)
+                flag_valid = True
                 new_artist_ids = []
                 for artist in song["artist_ids"]:
                     flag_to_update = False
@@ -50,8 +51,8 @@ def update_song(song_database, song_id, new_artist, artist_id):
                     else:
                         new_artist_ids.append(artist)
                 song["artist_ids"] = new_artist_ids
-                print("new:", song)
-                print()
+    if not flag_valid:
+        print("\n", "WARNING: Song", song_id, "NOT FOUND: WARNING", "\n")
 
 
 def add_new_artist(artist_database, new_artist):
@@ -78,6 +79,7 @@ for edge_case in same_name_edge_case:
         update_song(song_database, song_id, edge_case["new_artist"], new_id)
 
 for edge_case in same_group_different_artists:
+    flag_valid = False
     group_id = get_artist_id(artist_database, edge_case["group"])
     for i, alt_config in enumerate(edge_case["alternate_configs"]):
         id_list = []
@@ -86,13 +88,18 @@ for edge_case in same_group_different_artists:
         artist_database[group_id]["members"].append(id_list)
         for anime in song_database:
             for song in anime["songs"]:
-                if song["annSongId"] in alt_config["linked_song"]:
-                    print("old:", song)
+                if song["annSongId"] in alt_config["linked_song"] or (
+                    song["annSongId"] == -1
+                    and edge_case["group"] in song["artist"]
+                    and song["name"] in alt_config["linked_song"]
+                ):
+                    flag_valid = True
                     for artist in song["artist_ids"]:
                         if int(artist[0]) == int(group_id):
                             artist[1] = i + 1
-                    print("new:", song)
-                    print()
+    if not flag_valid:
+        print("\n", "WARNING: Song", song_id, "NOT FOUND: WARNING", "\n")
+
 
 with open(
     results_output_path / Path("artist_mapping.json"), "w", encoding="utf-8"

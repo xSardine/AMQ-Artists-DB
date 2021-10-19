@@ -43,6 +43,11 @@ export class SearchBarComponent implements OnInit {
     });
   }
 
+  ngOnChanges(changes: Event) {
+    console.log("change detected")
+  }
+
+
   onSearchCallKey(): void {
 
     let body = {};
@@ -80,6 +85,12 @@ export class SearchBarComponent implements OnInit {
       }
 
       if (this.artistFilter.length > 0) {
+        if (!this.minimalMembersFilter) {
+          this.minimalMembersFilter = "0"
+        }
+        if (!this.maximumRandomsFilter) {
+          this.maximumRandomsFilter = "99"
+        }
         tmp_artist_filter = {
           "search": this.artistFilter,
           "ignore_special_character": this.artistFilterIgnoreSpecialCaracters,

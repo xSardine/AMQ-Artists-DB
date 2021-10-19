@@ -270,6 +270,27 @@ export class SongTableComponent {
 
   }
 
+  searchAnnId(id: any) {
+
+    console.log(id)
+
+    let body = {
+      "anime_search_filter": {
+        "search": id,
+      },
+      "ignore_duplicate": false,
+      "opening_filter": true,
+      "ending_filter": true,
+      "insert_filter": true,
+    }
+
+    let currentSongList
+    currentSongList = this.searchRequestService.searchRequest(body).subscribe(data => {
+      currentSongList = data
+      this.sendMessage(currentSongList)
+    });
+  }
+
 
 }
 

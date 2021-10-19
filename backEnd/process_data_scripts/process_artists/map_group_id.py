@@ -1,12 +1,12 @@
 import json
-import config_exceptions
+import config_groups
 from pathlib import Path
 
 """
 Map groups and members
 """
 
-groups_subdivision = config_exceptions.groups_subdivision
+groups_subdivision = config_groups.groups_subdivision
 
 source_input_file = Path("../../app/data/artist_mapping.json")
 results_output_path = Path("../../app/data")
@@ -16,13 +16,16 @@ with open(song_database, encoding="utf-8") as json_file:
     song_database = json.load(json_file)
 
 
-def get_artist_id(artist_ids_mapping, artist):
+def get_artist_id(artist_ids_mapping, artist, warning=False):
 
     for id in artist_ids_mapping.keys():
         for artist_alt_name in artist_ids_mapping[id]["names"]:
             if artist_alt_name == artist:
                 return id
-    print(artist, "not found... adding it")
+    if not warning:
+        print(artist, "not found... adding it")
+    else:
+        print("\n", "WARNING: GROUP NAME", artist, "DOES NOT EXIST: WARNING", "\n")
     id = len(artist_ids_mapping.keys())
     artist_ids_mapping[id] = {"names": [artist], "groups": [], "members": []}
     return id
@@ -48,7 +51,7 @@ with open(source_input_file, encoding="utf-8") as json_file:
     print(len(artist_ids_mapping))
 
     for group in groups_subdivision.keys():
-        group_id = get_artist_id(artist_ids_mapping, group)
+        group_id = get_artist_id(artist_ids_mapping, group, warning=True)
         artists_id_list = []
         for artist in groups_subdivision[group]:
             artists_id_list.append(get_artist_id(artist_ids_mapping, artist))

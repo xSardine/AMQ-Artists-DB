@@ -59,6 +59,49 @@ def add_new_artist_to_DB(artist_ids_mapping, artist, id):
     return artist_ids_mapping
 
 
+def check_validity(source_input_file, splitting_exception, alternative_names):
+
+    for exception in splitting_exception:
+        flag_valid = False
+        flag_maybe_valid = False
+        for anime in source_input_file:
+            for song in anime["songs"]:
+                if song["artist"] == exception:
+                    flag_valid = True
+                elif exception in song["artist"]:
+                    flag_maybe_valid = True
+        if not flag_valid:
+            if flag_maybe_valid:
+                print("Split Exception", exception, "MIGHT NOT BE VALID")
+            else:
+                print(
+                    "WARNING: Split Exception",
+                    exception,
+                    "IS NOT A VALID EXCEPTION: WARNING",
+                )
+
+    print("\n\n\n\n")
+    for exception in alternative_names:
+        for name in exception:
+            flag_valid = False
+            flag_maybe_valid = False
+            for anime in source_input_file:
+                for song in anime["songs"]:
+                    if song["artist"] == name:
+                        flag_valid = True
+                    elif name in song["artist"]:
+                        flag_maybe_valid = True
+            if not flag_valid:
+                if flag_maybe_valid:
+                    if len(name) < 6:
+                        print("Alt Name", name, "MIGHT NOT BE VALID")
+                else:
+                    print(
+                        "WARNING: Alt Name", name, "IS NOT an Alt Name: WARNING",
+                    )
+    print("done checking")
+
+
 with open(source_input_file, encoding="utf-8") as json_file:
     data = json.load(json_file)
 
@@ -66,6 +109,8 @@ with open(source_input_file, encoding="utf-8") as json_file:
     for anime in data:
         counter += len(anime["songs"])
     print("There is", counter, "songs in", len(data), "animes in the database")
+
+    check_validity(data, splitting_exception, alternative_names)
 
     artist_ids_mapping = {}
     for anime in data:
