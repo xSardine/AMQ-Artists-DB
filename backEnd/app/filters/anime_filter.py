@@ -2,6 +2,43 @@ import re
 from filters import utils
 
 
+def song_meets_search_requirement(
+    search, song, case_sensitive, authorized_types,
+):
+
+    """
+    Check that a song meets the settings
+    """
+
+    if song["type"] not in authorized_types:
+        return False
+
+    # Check if search match with an anime name
+    if (
+        song["type"] in authorized_types
+        and (
+            not case_sensitive
+            and (
+                re.match(search, song["anime_eng_name"], re.IGNORECASE)
+                or (
+                    song["anime_jp_name"]
+                    and re.match(search, song["anime_jp_name"], re.IGNORECASE)
+                )
+            )
+        )
+        or (
+            case_sensitive
+            and (
+                re.match(search, song["anime_eng_name"])
+                or (song["anime_jp_name"] and re.match(search, song["anime_jp_name"]))
+            )
+        )
+    ):
+        return True
+
+    return False
+
+
 def search_anime(
     song_database,
     search,
@@ -12,51 +49,26 @@ def search_anime(
     authorized_types=[],
 ):
 
-    # If the search is an ANNID
-    if str(search).isdecimal() and int(search) in [
-        anime["annId"] for anime in song_database
-    ]:
+    song_list = []
 
-        song_list = []
-        for anime in song_database:
+    # If the search is an ANNID
+    if str(search).isdecimal():
+        for song in song_database:
             if len(song_list) >= max_nb_songs:
                 break
-            if anime["annId"] == int(search):
-                for song in anime["songs"]:
-                    if song["type"] in authorized_types:
-                        romaji = anime["romaji"] if "romaji" in anime.keys() else None
-                        song_list.append(
-                            utils.format_song(
-                                anime["annId"], anime["name"], romaji, song
-                            )
-                        )
-        return song_list
+            if song["annId"] == int(search) and song["type"] in authorized_types:
+                song_list.append(utils.format_song(song))
 
     # If not
     search = utils.get_regex_search(search, ignore_special_character, partial_match)
 
-    song_list = []
-    for anime in song_database:
+    for song in song_database:
         if len(song_list) >= max_nb_songs:
             break
-        anime_romaji = anime["romaji"] if "romaji" in anime.keys() else None
 
-        if (
-            case_sensitive
-            and (re.match(search, anime["name"]) or re.match(search, anime_romaji))
-        ) or (
-            not case_sensitive
-            and (
-                re.match(search, anime["name"], re.IGNORECASE)
-                or (anime_romaji and re.match(search, anime_romaji, re.IGNORECASE))
-            )
+        if song_meets_search_requirement(
+            search, song, case_sensitive, authorized_types
         ):
-            for song in anime["songs"]:
-                if song["type"] in authorized_types:
-                    song_list.append(
-                        utils.format_song(
-                            anime["annId"], anime["name"], anime_romaji, song
-                        )
-                    )
+            song_list.append(utils.format_song(song))
 
     return song_list

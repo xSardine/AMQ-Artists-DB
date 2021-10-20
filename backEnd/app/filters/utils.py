@@ -7,11 +7,11 @@ ANIME_REGEX_REPLACE_RULES = [
     {"input": "u", "replace": "([uūûúùüǖ]|uu)"},
     {"input": "a", "replace": "[aä@âàáạåæā]"},
     {"input": "c", "replace": "[cč]"},
-    {"input": " ", "replace": "( ?[★☆\\/\\*=\\+·♥∽・〜†×♪→␣:;~\\-?,.!@_]+ ?| )"},
     {"input": "e", "replace": "[eéêëèæē]"},
     {"input": "'", "replace": "['’]"},
     {"input": "n", "replace": "[nñ]"},
     {"input": "2", "replace": "[2²]"},
+    {"input": " ", "replace": "( ?[²★☆\\/\\*=\\+·♥∽・〜†×♪→␣:;~\\-?,.!@_]+ ?| )"},
     {"input": "i", "replace": "[ií]"},
     {"input": "3", "replace": "[3³]"},
     {"input": "x", "replace": "[x×]"},
@@ -33,7 +33,7 @@ def get_regex_search(search, ignore_special_character=True, partial_match=True):
     return "^" + search + "$" if not partial_match else ".*" + search + ".*"
 
 
-def format_song(annId, anime_name, romaji, song):
+def format_song(song):
     if song["type"] == 1:
         type = "Opening " + str(song["number"])
     elif song["type"] == 2:
@@ -42,16 +42,16 @@ def format_song(annId, anime_name, romaji, song):
         type = "Insert Song"
 
     songinfo = {
-        "annId": annId,
-        "Anime": anime_name,
-        "Romaji": romaji,
+        "annId": song["annId"],
+        "Anime": song["anime_eng_name"],
+        "Romaji": song["anime_jp_name"],
         "Type": type,
-        "SongName": song["name"],
+        "SongName": song["song_name"],
         "Artist": song["artist"],
-        "sept": song["examples"]["720"] if "720" in song["examples"] else None,
-        "quatre": song["examples"]["480"] if "480" in song["examples"] else None,
-        "mptrois": song["examples"]["mp3"] if "mp3" in song["examples"] else None,
-        "artists": song["artist_ids"],
+        "sept": song["720"],
+        "quatre": song["480"],
+        "mptrois": song["mp3"],
+        "artists": song["artists_ids"],
     }
 
     return songinfo

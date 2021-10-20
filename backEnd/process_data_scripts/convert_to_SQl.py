@@ -1,0 +1,197 @@
+import sqlite3
+import json
+from pathlib import Path
+
+database = Path("../app/data/Enhanced-AMQ-Database.db")
+song_database_path = Path("../app/data/expand_mapping.json")
+artist_database_path = Path("../app/data/artist_mapping.json")
+
+with open(song_database_path, encoding="utf-8") as json_file:
+    song_database = json.load(json_file)
+with open(artist_database_path, encoding="utf-8") as json_file:
+    artist_database = json.load(json_file)
+
+
+def run_sql_command(cursor, sql_command, data=None):
+
+    """
+    Run the SQL command with nice looking print when failed (no)
+    """
+
+    try:
+        if data is not None:
+            cursor.execute(sql_command, data)
+        else:
+            cursor.execute(sql_command)
+
+        record = cursor.fetchall()
+
+        return record
+
+    except sqlite3.Error as error:
+
+        if data is not None:
+            for param in data:
+                if type(param) == str:
+                    sql_command = sql_command.replace("?", '"' + str(param) + '"', 1)
+                else:
+                    sql_command = sql_command.replace("?", str(param), 1)
+
+        print(
+            "\nError while running this command: \n",
+            sql_command,
+            "\n",
+            error,
+            "\nData: ",
+            data,
+            "\n",
+        )
+        return None
+
+
+def insert_new_artist(cursor, id, alt_id=-1):
+
+    """
+    Insert a new artist in the database
+    """
+
+    sql_insert_artist = "INSERT INTO artists(id, alt_members_id) VALUES(?, ?);"
+
+    run_sql_command(cursor, sql_insert_artist, (id, alt_id))
+
+
+def insert_artist_alt_names(cursor, id, names):
+
+    """
+    Insert all alternative names corresponding to a single artist
+    """
+
+    for name in names:
+
+        sql_insert_artist_name = (
+            "INSERT INTO artist_alt_names(artist_id, name) VALUES(?, ?);"
+        )
+
+        run_sql_command(cursor, sql_insert_artist_name, (id, name))
+
+
+def add_artist_to_group(cursor, artist_id, group_id, group_alt_id):
+
+    """
+    Add an artist to a group
+    """
+
+    sql_add_artist_to_group = "INSERT INTO link_artist_group(artist_id, group_id, group_alt_members_id) VALUES(?, ?, ?)"
+
+    run_sql_command(
+        cursor, sql_add_artist_to_group, (artist_id, group_id, group_alt_id)
+    )
+
+
+def get_anime_ID(cursor, name, romaji):
+
+    """
+    Get the first anime it finds that matches the provided parameters
+    """
+
+    sql_get_anime_ID = "SELECT annId WHERE name = ? and romaji = ?;"
+
+    anime_id = run_sql_command(cursor, sql_get_anime_ID, (name, romaji))
+    if anime_id is not None and len(anime_id) > 0:
+        return anime_id[0][0]
+    return None
+
+
+def insert_anime(cursor, annId, name, romaji):
+
+    """
+    Insert a new anime in the database
+    """
+
+    sql_insert_anime = "INSERT INTO animes(annId, name, romaji) VALUES(?, ?, ?);"
+
+    run_sql_command(cursor, sql_insert_anime, (annId, name, romaji))
+
+
+def insert_song(
+    cursor, annSongId, annId, type, number, name, artist, linkHQ, linkMQ, linkAudio
+):
+
+    """
+    Insert a new song in the database and return the newly created song ID
+    """
+
+    sql_insert_song = "INSERT INTO songs(annSongId, annId, type, number, name, artist, '720p', '480p', 'mp3') VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);"
+
+    run_sql_command(
+        cursor,
+        sql_insert_song,
+        (annSongId, annId, type, number, name, artist, linkHQ, linkMQ, linkAudio),
+    )
+
+    return cursor.lastrowid
+
+
+def link_song_artist(cursor, song_id, artist_id, artist_alt_id):
+
+    """
+    Add a new link between an song and an artist in the table
+    """
+
+    sql_link_song_artist = "INSERT INTO link_song_artist(song_id, artist_id, artist_alt_members_id) VALUES(?, ?, ?);"
+
+    run_sql_command(cursor, sql_link_song_artist, (song_id, artist_id, artist_alt_id))
+
+
+try:
+    sqliteConnection = sqlite3.connect(database)
+    cursor = sqliteConnection.cursor()
+    print("Connection successful :)")
+except sqlite3.Error as error:
+    print("\n", error, "\n")
+
+
+for artist_id in artist_database:
+
+    insert_new_artist(cursor, artist_id)
+    insert_artist_alt_names(cursor, artist_id, artist_database[artist_id]["names"])
+
+    if len(artist_database[artist_id]["members"]) > 0:
+        for i, member_sets in enumerate(artist_database[artist_id]["members"]):
+            insert_new_artist(cursor, artist_id, i)
+            for member_id in member_sets:
+                add_artist_to_group(cursor, member_id, artist_id, i)
+
+for anime in song_database:
+
+    insert_anime(
+        cursor,
+        anime["annId"],
+        anime["name"],
+        anime["romaji"] if "romaji" in anime else None,
+    )
+
+    for song in anime["songs"]:
+
+        links = song["examples"]
+
+        song_id = insert_song(
+            cursor,
+            song["annSongId"],
+            anime["annId"],
+            song["type"],
+            song["number"],
+            song["name"],
+            song["artist"],
+            links["720"] if "720" in links.keys() else None,
+            links["480"] if "480" in links.keys() else None,
+            links["mp3"] if "mp3" in links.keys() else None,
+        )
+
+        for artist in song["artist_ids"]:
+
+            link_song_artist(cursor, song_id, artist[0], artist[1])
+
+sqliteConnection.commit()
+cursor.close()
+sqliteConnection.close()

@@ -1,15 +1,12 @@
 from __future__ import annotations
-import json
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import List, Optional
 import get_search_result
 from filters import artist_filter
-
-database_path = "data/"
-song_database_path = database_path + "expand_mapping.json"
-artist_database_path = database_path + "artist_mapping.json"
+import sql_calls
+import time
 
 
 class Search_Filter(BaseModel):
@@ -168,11 +165,9 @@ def format_artist_ids(artist_database, artist_id):
 @app.post("/search_request", response_model=List[Song_Entry])
 async def search_request(query: Search_Request):
 
-    with open(song_database_path, encoding="utf-8") as json_file:
-        song_database = json.load(json_file)
-
-    with open(artist_database_path, encoding="utf-8") as json_file:
-        artist_database = json.load(json_file)
+    start_time = time.time()
+    song_database = sql_calls.extract_song_database()
+    artist_database = sql_calls.extract_artist_database()
 
     authorized_type = []
     if query.opening_filter:
@@ -182,27 +177,28 @@ async def search_request(query: Search_Request):
     if query.insert_filter:
         authorized_type.append(3)
 
-    if len(authorized_type) > 0:
-        song_list = get_search_result.get_search_results(
-            song_database,
-            artist_database,
-            query.anime_search_filter,
-            query.song_name_search_filter,
-            query.artist_search_filter,
-            query.and_logic,
-            query.ignore_duplicate,
-            query.max_nb_song,
-            authorized_type,
-        )
+    if not authorized_type:
+        return []
 
-        for song in song_list:
-            artist_list = []
-            for artist_id in song["artists"]:
-                artist_list.append(format_artist_ids(artist_database, artist_id))
-            song["artists"] = artist_list
-    else:
-        song_list = []
+    song_list = get_search_result.get_search_results(
+        song_database,
+        artist_database,
+        query.anime_search_filter,
+        query.song_name_search_filter,
+        query.artist_search_filter,
+        query.and_logic,
+        query.ignore_duplicate,
+        query.max_nb_song,
+        authorized_type,
+    )
 
+    for song in song_list:
+        artist_list = []
+        for artist_id in song["artists"]:
+            artist_list.append(format_artist_ids(artist_database, artist_id))
+        song["artists"] = artist_list
+
+    print("--- %s seconds ---" % (time.time() - start_time))
     return song_list
 
 
@@ -213,11 +209,10 @@ class First_N_Songs(BaseModel):
 @app.post("/get_first_n_songs", response_model=List[Song_Entry])
 async def get_first_n_songs(query: First_N_Songs):
 
-    with open(artist_database_path, encoding="utf-8") as json_file:
-        artist_database = json.load(json_file)
-
-    with open(song_database_path, encoding="utf-8") as json_file:
-        song_database = json.load(json_file)
+    start_time = time.time()
+    song_database = sql_calls.extract_song_database()
+    artist_database = sql_calls.extract_artist_database()
+    print("--- %s seconds ---" % (time.time() - start_time))
 
     data = get_search_result.get_first_n_songs(song_database, query.nb_songs)
 
@@ -233,11 +228,8 @@ async def get_first_n_songs(query: First_N_Songs):
 @app.post("/artist_ids_request", response_model=List[Song_Entry])
 async def search_request(query: Artist_ID_Search_Request):
 
-    with open(song_database_path, encoding="utf-8") as json_file:
-        song_database = json.load(json_file)
-
-    with open(artist_database_path, encoding="utf-8") as json_file:
-        artist_database = json.load(json_file)
+    song_database = sql_calls.extract_song_database()
+    artist_database = sql_calls.extract_artist_database()
 
     authorized_type = []
     if query.opening_filter:
@@ -247,24 +239,24 @@ async def search_request(query: Artist_ID_Search_Request):
     if query.insert_filter:
         authorized_type.append(3)
 
-    if len(authorized_type) > 0:
-        song_list = get_search_result.get_artists_ids_song_list(
-            song_database,
-            artist_database,
-            query.artist_ids,
-            query.max_other_artist,
-            query.group_granularity,
-            query.ignore_duplicate,
-            query.max_nb_song,
-            authorized_type,
-        )
+    if not authorized_type:
+        return []
 
-        for song in song_list:
-            artist_list = []
-            for artist_id in song["artists"]:
-                artist_list.append(format_artist_ids(artist_database, artist_id))
-            song["artists"] = artist_list
-    else:
-        song_list = []
+    song_list = get_search_result.get_artists_ids_song_list(
+        song_database,
+        artist_database,
+        query.artist_ids,
+        query.max_other_artist,
+        query.group_granularity,
+        query.ignore_duplicate,
+        query.max_nb_song,
+        authorized_type,
+    )
+
+    for song in song_list:
+        artist_list = []
+        for artist_id in song["artists"]:
+            artist_list.append(format_artist_ids(artist_database, artist_id))
+        song["artists"] = artist_list
 
     return song_list

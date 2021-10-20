@@ -7,15 +7,8 @@ def search_link(
 
     song_list = []
     if "catbox.moe" in search or ".webm" in search or ".mp3" in search:
-        for anime in song_database:
-            for song in anime["songs"]:
-                for song_link in song["examples"].values():
-                    if song_link and search in song_link:
-                        romaji = anime["romaji"] if "romaji" in anime.keys() else None
-                        song_list.append(
-                            utils.format_song(
-                                anime["annId"], anime["name"], romaji, song
-                            )
-                        )
+        for song in song_database:
+            if search in song["720"] or search in song["480"] or search in song["mp3"]:
+                song_list.append(utils.format_song(song))
 
     return song_list

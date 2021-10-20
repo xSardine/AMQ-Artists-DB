@@ -6,17 +6,9 @@ from filters import utils
 from datetime import datetime
 
 
-def is_duplicate_in_list(list, song, ignore_duplicate):
+def is_duplicate_in_list(list, song):
     for song2 in list:
         if song["SongName"] == song2["SongName"] and song["Artist"] == song2["Artist"]:
-            if ignore_duplicate or song["annId"] == song2["annId"]:
-                return True
-    return False
-
-
-def is_song_in_list(song_list, song):
-    for song2 in song_list:
-        if song == song2:
             return True
     return False
 
@@ -36,20 +28,18 @@ def combine_results(
             break
         if and_logic:
             if (
-                (is_song_in_list(artist_song_list, song) or len(artist_song_list) == 0)
-                and (
-                    is_song_in_list(anime_song_list, song) or len(anime_song_list) == 0
-                )
-                and (
-                    is_song_in_list(songname_song_list, song)
-                    or len(songname_song_list) == 0
-                )
+                (not artist_song_list or song in artist_song_list)
+                and (not anime_song_list or song in anime_song_list)
+                and (not songname_song_list or song in songname_song_list)
             ):
-                if not is_duplicate_in_list(final_song_list, song, ignore_duplicate):
+                if not ignore_duplicate or not is_duplicate_in_list(
+                    final_song_list, song
+                ):
                     final_song_list.append(song)
-
         else:
-            if not is_duplicate_in_list(final_song_list, song, ignore_duplicate):
+            if song not in final_song_list and (
+                not ignore_duplicate or not is_duplicate_in_list(final_song_list, song)
+            ):
                 final_song_list.append(song)
 
     return final_song_list
@@ -57,18 +47,12 @@ def combine_results(
 
 def get_first_n_songs(song_database, nb_songs):
 
-    count = 0
     song_list = []
-    for anime in song_database:
-        for song in anime["songs"]:
-            if count < nb_songs:
-                romaji = anime["romaji"] if "romaji" in anime.keys() else None
-                song_list.append(
-                    utils.format_song(anime["annId"], anime["name"], romaji, song)
-                )
-                count += 1
-            else:
-                return song_list
+    for song in song_database:
+        if len(song_list) < nb_songs:
+            song_list.append(utils.format_song(song))
+        else:
+            return song_list
     return song_list
 
 
@@ -114,7 +98,7 @@ def get_search_results(
             anime_search_filters.ignore_special_character,
             anime_search_filters.partial_match,
             anime_search_filters.case_sensitive,
-            max_nb_songs,
+            max_nb_songs - len(artist_result_list),
             authorized_types,
         )
 
@@ -125,7 +109,7 @@ def get_search_results(
             song_name_search_filters.ignore_special_character,
             song_name_search_filters.partial_match,
             song_name_search_filters.case_sensitive,
-            max_nb_songs,
+            max_nb_songs - len(artist_result_list + anime_result_list),
             authorized_types,
         )
 
