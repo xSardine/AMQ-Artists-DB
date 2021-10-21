@@ -268,27 +268,30 @@ def extract_artist_database():
     """
 
     command = """
-    SELECT artists.id, group_concat(artist_alt_names.name, "\$") AS names, group_concat(link_artist_group.group_id) AS groups, 
-    group_concat(link_artist_group.group_alt_members_id) AS groups_set
+	SELECT artists.id, artists.name, group_concat(artist_alt_names.alt_name, "\$") AS alt_names, group_concat(link_artist_group.group_id) AS groups, 
+    group_concat(link_artist_group.group_alt_config_id) AS groups_set
     FROM artists
-    INNER JOIN artist_alt_names ON artists.id = artist_alt_names.artist_id
+    LEFT JOIN artist_alt_names ON artists.id = artist_alt_names.artist_id
     LEFT JOIN link_artist_group ON artists.id = link_artist_group.artist_id
     GROUP BY artists.id;
     """
-    # TODO: command select duplicates of artist alt names and groups, fix
+
     cursor = connect_to_database(database_path)
     artist_database = {}
 
     for artist in run_sql_command(cursor, command):
 
         groups = []
-        if artist[2]:
-            for id, sets in zip(artist[2].split(","), artist[3].split(",")):
+        if artist[3]:
+            for id, sets in zip(artist[3].split(","), artist[4].split(",")):
                 if [int(id), int(sets)] not in groups:
                     groups.append([int(id), int(sets)])
 
         artist_database[str(artist[0])] = {
-            "names": {name for name in artist[1].split("\\$")},
+            "name": artist[1],
+            "alt_names": {name for name in artist[2].split("\\$")}
+            if artist[2]
+            else None,
             "groups": groups,
             "members": [],
         }

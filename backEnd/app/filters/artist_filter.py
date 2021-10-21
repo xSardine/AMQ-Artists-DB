@@ -23,7 +23,7 @@ def get_artist_id(
     id_list = set()
 
     for artist_id in artist_database:
-        for artist_alt_name in artist_database[artist_id]["names"]:
+        for artist_alt_name in get_artist_names(artist_database, artist_id):
             if (
                 not case_sensitive
                 and (
@@ -51,11 +51,14 @@ def get_artist_names(artist_database, artist_id):
     Return the list of names corresponding to an artist
     """
 
-    return (
-        artist_database[str(artist_id)]["names"]
-        if str(artist_id) in artist_database
-        else []
-    )
+    if str(artist_id) not in artist_database:
+        return []
+
+    alt_names = [artist_database[str(artist_id)]["name"]]
+    if artist_database[str(artist_id)]["alt_names"]:
+        for alt_name in artist_database[str(artist_id)]["alt_names"]:
+            alt_names.append(alt_name)
+    return alt_names
 
 
 def get_groups_with_artist(artist_database, artist_id):

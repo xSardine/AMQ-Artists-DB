@@ -109,9 +109,9 @@ class Song_Entry(BaseModel):
 
 
 # Launch API
-app = FastAPI()
+public = FastAPI()
 
-app.add_middleware(
+public.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_credentials=True,
@@ -162,7 +162,7 @@ def format_artist_ids(artist_database, artist_id):
     return artist
 
 
-@app.post("/search_request", response_model=List[Song_Entry])
+@public.post("/search_request", response_model=List[Song_Entry])
 async def search_request(query: Search_Request):
 
     start_time = time.time()
@@ -206,7 +206,7 @@ class First_N_Songs(BaseModel):
     nb_songs: int
 
 
-@app.post("/get_first_n_songs", response_model=List[Song_Entry])
+@public.post("/get_first_n_songs", response_model=List[Song_Entry])
 async def get_first_n_songs(query: First_N_Songs):
 
     start_time = time.time()
@@ -225,7 +225,7 @@ async def get_first_n_songs(query: First_N_Songs):
     return data
 
 
-@app.post("/artist_ids_request", response_model=List[Song_Entry])
+@public.post("/artist_ids_request", response_model=List[Song_Entry])
 async def search_request(query: Artist_ID_Search_Request):
 
     song_database = sql_calls.extract_song_database()
