@@ -2,7 +2,6 @@
  An anisong database with better artists links and search functions
 
 Build with FastAPI: https://fastapi.tiangolo.com/
-Currently the API is just taking datas from JSONs, however I do have an SQL database design in mind.
 
 Database source: 
 - Expand Library from AMQ: https://animemusicquiz.com/
@@ -16,3 +15,13 @@ Then enhanced automatically/semi-automatically/manually:
 - Add manually group members
 - Fix manually edge cases such as different artist with same name
 - Currently: Fixing what has gone through the net
+
+## Start in Local
+
+uvicorn main:app --host 127.0.0.1 --port 8000 --reload
+
+## Start in Production
+
+Using let's encrypt certificate
+
+sudo gunicorn --keyfile=</path_to_privkey/privkey.pem> --certfile=</path_to_fullchain/fullchain.pem> -k uvicorn.workers.UvicornWorker main:app --bind=<ip_adress>

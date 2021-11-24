@@ -4,7 +4,7 @@ import sqlite3
 
 
 """
-Add romaji names taken from the S/A scripts scrapping
+Add romaji names taken from the S/A scripts scrapping when Husa is playing
 """
 
 source_file = Path("../data/preprocessed/FusedExpand.json")

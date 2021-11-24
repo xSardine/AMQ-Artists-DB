@@ -43,11 +43,6 @@ export class SearchBarComponent implements OnInit {
     });
   }
 
-  ngOnChanges(changes: Event) {
-    console.log("change detected")
-  }
-
-
   onSearchCallKey(): void {
 
     let body = {};

@@ -9,14 +9,14 @@ from youtubesearchpython import VideosSearch
 
 # Relative path of the .json file you downloaded,
 # if it's in the same folder as this script, then it's just the file name.
-song_list_path = "__fripside_SongList.json"
+song_list_path = "initial_d_SongList.json"
 
 # Name of the created sheet
-output_file_name = "Maaya Sakamoto Anime Songs Ranking Sheet.xlsx"
+output_file_name = "Initial D Anime Songs Ranking Sheet.xlsx"
 
 # Setting to True slow down the process
 # but gives you full song link when available on youtube
-add_youtube_link = True
+add_youtube_link = False
 
 # Sheet styling Configuration
 sheet_name = "Sheet1"
@@ -33,9 +33,9 @@ rest_font_size = 10
 
 def format_song(song):
 
-    HQlink = song["sept"] if "sept" in song else song["quatre"]
+    HQlink = song["sept"] if ("sept" in song and song["sept"]) else song["quatre"]
     mp3_link = song["mptrois"] if "mptrois" in song else None
-    print(song["SongName"], mp3_link)
+    print(song["SongName"], mp3_link, "\n")
 
     return {
         "anime_name": song["Anime"],

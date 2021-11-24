@@ -47,6 +47,7 @@ for update_anime in update_file:
         flag_song_found = False
         for source_anime in source_file:
             if source_anime["annId"] == update_anime["annId"]:
+                source_anime["name"] = update_anime["name"]
                 for i, source_song in enumerate(source_anime["songs"]):
                     if source_song["annSongId"] == update_song["annSongId"]:
                         flag_song_found = True

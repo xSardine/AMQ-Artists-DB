@@ -1,0 +1,67 @@
+CREATE TABLE animes (
+    "annId" INTEGER NOT NULL PRIMARY KEY,
+    "name" VARCHAR(255) NOT NULL, 
+    "romaji" VARCHAR (255)
+);
+
+CREATE TABLE songs (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+    "annSongId" INTEGER,
+    "annId" INTEGER NOT NULL,
+    "type" INTEGER NOT NULL,
+    "number" INTEGER NOT NULL,
+    "name" VARCHAR(255) NOT NULL,
+    "artist" VARCHAR(255) NOT NULL,
+    "720p" VARCHAR(255),
+    "480p" VARCHAR(255),
+    "mp3" VARCHAR(255),
+    FOREIGN KEY ("annId")
+        REFERENCES animes ("id")
+);
+
+CREATE TABLE artists (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "name" VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE groups (
+    "artist_id" INTEGER NOT NULL,
+    "alt_config_id" INTEGER NOT NULL,
+    FOREIGN KEY ("artist_id")
+        REFERENCES artists ("id"),
+    PRIMARY KEY (artist_id, alt_config_id)
+);
+
+CREATE TABLE artist_alt_names (
+    "artist_id" INTEGER NOT NULL,
+    "alt_name" VARCHAR(255) NOT NULL,
+    FOREIGN KEY ("artist_id")
+        REFERENCES artist ("id"),
+    PRIMARY KEY (artist_id, alt_name)
+);
+
+CREATE TABLE link_song_artist (
+    "song_id" INTEGER NOT NULL,
+    "artist_id" INTEGER NOT NULL,
+    "artist_alt_members_id" INTEGER NOT NULL,
+    FOREIGN KEY ("song_id")
+        REFERENCES songs ("id"),
+    FOREIGN KEY ("artist_id")
+        REFERENCES artists ("id"),
+    FOREIGN KEY ("artist_alt_members_id")
+        REFERENCES artists ("alt_members_id"),
+    PRIMARY KEY (song_id, artist_id, artist_alt_members_id)
+);
+
+create TABLE link_artist_group (
+    "group_id" INTEGER NOT NULL,
+    "group_alt_config_id" INTEGER NOT NULL,
+    "artist_id" INTEGER NOT NULL,
+    FOREIGN KEY ("artist_id")
+        REFERENCES artists ("id"),
+    FOREIGN KEY ("group_id")
+        REFERENCES groups ("artist_id"),
+    FOREIGN KEY ("group_alt_config_id")
+        REFERENCES groups ("alt_config_id"),
+    PRIMARY KEY (artist_id, group_id, group_alt_config_id)
+);

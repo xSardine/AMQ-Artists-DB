@@ -115,7 +115,7 @@ def separate_artists_list_by_comparing_with_another(
     return is_in_artist_list, is_not_in_artist_list
 
 
-def song_meets_search_requirement(
+def song_meets_artist_search_requirements(
     artist_database,
     song,
     members_lists,
@@ -160,6 +160,18 @@ def song_meets_search_requirement(
                 return True
 
 
+def song_meets_search_requirements(search, song, case_sensitive, authorized_types):
+
+    if song["type"] not in authorized_types:
+        return False
+
+    if (not case_sensitive and re.match(search, song["artist"], re.IGNORECASE)) or (
+        case_sensitive and re.match(search, song["artist"])
+    ):
+        return True
+    return False
+
+
 def search_artist(
     song_database,
     artist_database,
@@ -181,8 +193,16 @@ def search_artist(
         artist_database, search, ignore_special_character, partial_match, case_sensitive
     )
 
+    song_list = []
+
     if not artist_id_list:
-        return []
+        search = utils.get_regex_search(search, ignore_special_character, partial_match)
+        for song in song_database:
+            if song_meets_search_requirements(
+                search, song, case_sensitive, authorized_types
+            ):
+                song_list.append(utils.format_song(song))
+        return song_list
 
     members_list = []
     for artist in artist_id_list:
@@ -199,11 +219,10 @@ def search_artist(
         else:
             members_list.append([int(artist)])
 
-    song_list = []
     for song in song_database:
         if len(song_list) >= max_nb_songs:
             break
-        if song_meets_search_requirement(
+        if song_meets_artist_search_requirements(
             artist_database,
             song,
             members_list,
@@ -246,7 +265,7 @@ def search_artist_ids(
     for song in song_database:
         if len(song_list) >= max_nb_songs:
             break
-        if song_meets_search_requirement(
+        if song_meets_artist_search_requirements(
             artist_database,
             song,
             members_list,

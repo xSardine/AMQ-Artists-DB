@@ -1,21 +1,25 @@
 import re
 
 ANIME_REGEX_REPLACE_RULES = [
-    {"input": "ou", "replace": "(ou|ō)"},
-    {"input": "oo", "replace": "(oo|ō)"},
-    {"input": "o", "replace": "[oōóòöôøΦ]"},
+    {"input": "ou", "replace": "(ou|ō|o)"},
+    {"input": "oo", "replace": "(oo|ō|o)"},
+    {"input": "oh", "replace": "(oh|ō|o)"},
+    {"input": "o", "replace": "([oōóòöôøΦο]|ou|oo|oh)"},
     {"input": "u", "replace": "([uūûúùüǖ]|uu)"},
-    {"input": "a", "replace": "[aä@âàáạåæā]"},
+    {"input": "a", "replace": "[aä@âàáạåæā∀]"},
     {"input": "c", "replace": "[cč]"},
-    {"input": "e", "replace": "[eéêëèæē]"},
+    {"input": "e", "replace": "[eéêёëèæē]"},
     {"input": "'", "replace": "['’]"},
     {"input": "n", "replace": "[nñ]"},
     {"input": "2", "replace": "[2²]"},
-    {"input": " ", "replace": "( ?[²★☆\\/\\*=\\+·♥∽・〜†×♪→␣:;~\\-?,.!@_]+ ?| )"},
-    {"input": "i", "replace": "[ií]"},
+    {"input": " ", "replace": "( ?[²★☆\\/\\*=\\+·♥♡∽・〜†×♪→␣:;~\\-?,.!@_]+ ?| )"},
+    {"input": "i", "replace": "[iíί]"},
     {"input": "3", "replace": "[3³]"},
     {"input": "x", "replace": "[x×]"},
-    {"input": "b", "replace": "[bß]"},
+    {"input": "b", "replace": "[bßβ]"},
+    {"input": "r", "replace": "[rЯ]"},
+    {"input": "s", "replace": "[sς]"},
+    {"input": "l", "replace": "[l˥]"},
 ]
 
 

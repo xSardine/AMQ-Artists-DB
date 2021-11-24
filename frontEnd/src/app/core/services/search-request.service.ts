@@ -12,18 +12,19 @@ export class SearchRequestService {
 
   configUrl = 'assets/config.json'
 
-  /*46.101.197.163:81
-    127.0.0.1:8000
+  /*
+    http://127.0.0.1:8000
+    https://anisongdb.com
   */
   getFirstNRequest(): Observable<any> {
-    return this.http.post("http://127.0.0.1:8000/get_first_n_songs", { "nb_songs": 30 }).pipe(
+    return this.http.post("http://127.0.0.1:8000/api/get_first_n_songs", { "nb_songs": 30 }).pipe(
       catchError(this.handleError)
     );;
   }
 
   searchRequest(body: object): Observable<any> {
 
-    return this.http.post("http://127.0.0.1:8000/search_request", body).pipe(
+    return this.http.post("http://127.0.0.1:8000/api/search_request", body).pipe(
       catchError(this.handleError)
     );;
 
@@ -31,7 +32,7 @@ export class SearchRequestService {
 
   artistIdsSearchRequest(body: object): Observable<any> {
 
-    return this.http.post("http://127.0.0.1:8000/artist_ids_request", body).pipe(
+    return this.http.post("http://127.0.0.1:8000/api/artist_ids_request", body).pipe(
       catchError(this.handleError)
     );;
 

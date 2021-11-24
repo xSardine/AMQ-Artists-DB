@@ -11,7 +11,7 @@ export class AppComponent {
 
   constructor(private themeService: ThemeService) { }
 
-  title = 'artistDB';
+  title = 'anisongDB';
 
   @ViewChild('player') player!: Player;
   url: any = "";

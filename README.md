@@ -1,6 +1,6 @@
 # Project Artist Database
 
-Test URL: http://46.101.197.163/
+URL: https://anisongdb.com
 
 I'm taking in any feedbacks, tho this is just a side project for fun, so I won't promise I will implements your ideas soon (if I will ever). ~~I'll still work more on that than Ege works on AMQ, rest assured~~
 
@@ -45,9 +45,11 @@ Some examples to help you understand better the difficult type of filters.
 `Artist Filter` = Trysail | `MinimalAmount` = 2 | `MaximumAmount` = 100 (just put a big number)
 
 - Now I want every Trysail songs as well as every other songs that have every Trysail members in them (basically TRINITYAiLE)
+  
 `Artist Filter` = Trysail | `MinimalAmount` = 100 (3 would work fine too, since they are 3) | `MaximumAmount` = 100
 
 - Finally I want to get **only** fripSide songs (that means i don't want to get Yoshino Nanjo solo songs, only fripSide itself).
+  
 `Artist Filter` = fripSide | `MinimalAmount` = 0 | `MaximumAmount` = 100
 
 - Now, if I want every `Madoka Yonezawa` songs in `White Album`:
@@ -83,11 +85,11 @@ I plan to work on those in the future.
 Feedbacks on the User Interface, new functionalities, etc...
 
 Let me know if you find any of these that are wrong in the DB:
-- Any groups that has relevant people in them and not have their members added yet (by relevant, I mean an artist that will make a link between this group and any other group/artist)
-- Any artists that is not linked together with all their alternative names. Alternative names are proper alternative names such as Minami Kuribayashi / exige, but also database inconsistencies like Ayaka ōhashi, Ayaka Ohashi 
+- Any groups that has relevant people in them and not have their members added yet (by relevant, I mean an artist that will make a link between this group and any other group/artist already in the DB)
+- Any artists that is not linked with all their alternative names. Alternative names are proper alternative names such as Minami Kuribayashi / exige, but also database inconsistencies like Ayaka ōhashi, Ayaka Ohashi 
 - Different artists that have the exact same name such as Minami (Kuribayashi) and Minami (DomexKano), etc...
 - Same artists that have different sets of singers in each songs such as Jam Project, Oratorio, etc...
-- And finally, let me know if you find any songs I'm missing.
+- And finally, let me know if you find any song I'm missing.
 
 
 ## TODO List
@@ -100,6 +102,7 @@ Let me know if you find any of these that are wrong in the DB:
 - ~~quick search button for annId~~
 - ~~better access to information modal window to make it more obvious~~
 - ~~script to check validity of current exceptions configuration~~
+- add an artist dropdown to select them in the artist filter
 - ~~searching for artist name in reversed order~~
 - ~~Update DB to be able to fix edge cases~~
   - ~~different artists with same names~~
@@ -107,14 +110,15 @@ Let me know if you find any of these that are wrong in the DB:
 - more information in db
   - main singer / backup
   - composer/musicians(?)
-- add domain name + domain path to get history
-  - https on fastapi
+- ~~add domain name~~ + domain path to get history
+  - ~~https on fastapi~~
 - add date/season on anime entries + date/season filter
 - stabilize database
-  - JSON -> SQLITE
+  - ~~JSON -> SQLITE~~
   - add UI to update and maintain DB easily
   - prepare new scripts to update easily with expand/third party data adapted to sqlite
 
 ## Thanks:
 Egerod for making https://animemusicquiz.com/
+
 MugitBot for providing me with their database, which helped me for the first iteration https://github.com/CarrC2021/MugiBot
