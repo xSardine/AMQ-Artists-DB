@@ -10,10 +10,10 @@ Map groups and members
 
 groups_subdivision = config2_groups.groups_subdivision
 
-source_input_file = Path("../../public/data/artist_mapping.json")
-results_output_path = Path("../../public/data")
+source_input_file = Path("../../app/data/artist_mapping.json")
+results_output_path = Path("../../app/data")
 
-song_database = Path("../../public/data/expand_mapping.json")
+song_database = Path("../../app/data/expand_mapping.json")
 with open(song_database, encoding="utf-8") as json_file:
     song_database = json.load(json_file)
 

@@ -13,7 +13,7 @@ splitting_exception = config1_exceptions.splitting_exception
 alternative_names = config1_exceptions.alternative_names
 
 source_input_file = Path("../../data/preprocessed/FusedExpand.json")
-results_output_path = Path("../../public/data/")
+results_output_path = Path("../../app/data/")
 
 results_output_path.mkdir(parents=False, exist_ok=True)
 

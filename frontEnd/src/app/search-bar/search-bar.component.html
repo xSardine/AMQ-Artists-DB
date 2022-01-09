@@ -120,7 +120,6 @@
             Case
             Sensitive
         </label>
-
     </div>
 
     <div title="This is the maximum amount of people that are not in your Artist Filter field who are allowed"
@@ -136,6 +135,34 @@
                 style="width: 40px; margin-left: 5px;" type=search class=textInputFilter
                 (keyup.enter)="onSearchCallKey()" (input)="minimalMembersFilter = minimalMembersFilterInput.value"
                 [value]=minimalMembersFilter></label>
+    </div>
+
+    <div style="display:block; padding-bottom: 8px;">
+        <input #composerFilterInput class=textInputFilter placeholder="Search by composer..." type=search
+            title="Search by composer (in construction, if you want to add a composer, DM me!" style="width: 230px;"
+            (keyup.enter)="onSearchCallKey()" (input)="composerFilter = composerFilterInput.value">
+
+        <label class="check"
+            title="If activated, results only have to contain the filter and not match it exactly"><input
+                type="checkbox" (change)="composerFilterPartialMatch=!composerFilterPartialMatch"
+                [checked]=composerFilterPartialMatch>
+            Partial Match
+        </label>
+        <label class="check" title="If activated, it will ignore specials caracters"><input type="checkbox"
+                (change)="composerFilterIgnoreSpecialCaracters=!composerFilterIgnoreSpecialCaracters"
+                [checked]=composerFilterIgnoreSpecialCaracters>
+            Ignore Special Caracters </label>
+        <label class="check" title="If activated, matching will be case sensitive"><input type="checkbox"
+                (change)="composerFilterCaseSensitive=!composerFilterCaseSensitive"
+                [checked]=composerFilterCaseSensitive>
+            Case
+            Sensitive
+        </label>
+        <label class="check" title="If activated, it will also add songs where he only participated in the arrangement">
+            <input type="checkbox" (change)="composerFilterArrangement=!composerFilterArrangement"
+                [checked]=composerFilterArrangement>
+            Arrangement
+        </label>
     </div>
 
     <div style="display:block; padding-bottom: 5px;">

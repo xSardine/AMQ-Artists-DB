@@ -3,7 +3,10 @@ from filters import utils
 
 
 def song_meets_search_requirement(
-    search, song, case_sensitive, authorized_types,
+    search,
+    song,
+    case_sensitive,
+    authorized_types,
 ):
 
     """
@@ -45,21 +48,12 @@ def search_anime(
     ignore_special_character=True,
     partial_match=True,
     case_sensitive=False,
-    max_nb_songs=250,
+    max_nb_songs=300,
     authorized_types=[],
 ):
 
     song_list = []
 
-    # If the search is an ANNID
-    if str(search).isdecimal():
-        for song in song_database:
-            if len(song_list) >= max_nb_songs:
-                break
-            if song["annId"] == int(search) and song["type"] in authorized_types:
-                song_list.append(utils.format_song(song))
-
-    # If not
     search = utils.get_regex_search(search, ignore_special_character, partial_match)
 
     for song in song_database:

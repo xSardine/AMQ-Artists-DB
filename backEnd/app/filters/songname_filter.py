@@ -3,7 +3,10 @@ from filters import utils
 
 
 def song_meets_search_requirement(
-    search, song, case_sensitive, authorized_types,
+    search,
+    song,
+    case_sensitive,
+    authorized_types,
 ):
 
     """
@@ -27,7 +30,7 @@ def search_songName(
     ignore_special_character=True,
     partial_match=True,
     case_sensitive=False,
-    max_nb_songs=250,
+    max_nb_songs=300,
     authorized_types=[],
 ):
 

@@ -38,6 +38,14 @@ export class SearchRequestService {
 
   }
 
+  annIdSearchRequest(body: object): Observable<any> {
+
+    return this.http.post("http://127.0.0.1:8000/api/annId_request", body).pipe(
+      catchError(this.handleError)
+    );;
+
+  }
+
   private handleError(error: HttpErrorResponse) {
     if (error.status === 0) {
       // A client-side or network error occurred. Handle it accordingly.

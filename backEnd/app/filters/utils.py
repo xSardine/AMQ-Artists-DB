@@ -6,14 +6,14 @@ ANIME_REGEX_REPLACE_RULES = [
     {"input": "oh", "replace": "(oh|ō|o)"},
     {"input": "o", "replace": "([oōóòöôøΦο]|ou|oo|oh)"},
     {"input": "u", "replace": "([uūûúùüǖ]|uu)"},
-    {"input": "a", "replace": "[aä@âàáạåæā∀]"},
+    {"input": "a", "replace": "([aä@âàáạåæā∀]|aa)"},
     {"input": "c", "replace": "[cč]"},
     {"input": "e", "replace": "[eéêёëèæē]"},
     {"input": "'", "replace": "['’]"},
     {"input": "n", "replace": "[nñ]"},
     {"input": "2", "replace": "[2²]"},
-    {"input": " ", "replace": "( ?[²★☆\\/\\*=\\+·♥♡∽・〜†×♪→␣:;~\\-?,.!@_]+ ?| )"},
-    {"input": "i", "replace": "[iíί]"},
+    {"input": " ", "replace": "( ?[²★☆\\/\\*=\\+·♥'♡∽・±⇔≒〜†×♪→␣:∞;~\\-?,.!@_] ?| )"},
+    {"input": "i", "replace": "([iíί]|ii)"},
     {"input": "3", "replace": "[3³]"},
     {"input": "x", "replace": "[x×]"},
     {"input": "b", "replace": "[bßβ]"},
@@ -47,6 +47,7 @@ def format_song(song):
 
     songinfo = {
         "annId": song["annId"],
+        "annSongId": song["annSongId"],
         "Anime": song["anime_eng_name"],
         "Romaji": song["anime_jp_name"],
         "Type": type,
@@ -56,6 +57,8 @@ def format_song(song):
         "quatre": song["480"],
         "mptrois": song["mp3"],
         "artists": song["artists_ids"],
+        "composers": song["composers_ids"],
+        "arrangers": song["arrangers_ids"],
     }
 
     return songinfo

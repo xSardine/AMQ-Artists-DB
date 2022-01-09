@@ -9,6 +9,12 @@
         </div>
         <div class="modal-body">
             <p id="modal-songinfo"></p>
+            annId: {{popUpannId}}
+            <br>
+            annSongId: {{popUpannSongId}}
+            <br>
+            {{popUpSongName}} by {{popUpArtist}}
+            <br><br>
             720p:
             <a id="modal-720-link" class="textLink" target="_blank" href="{{popUpHDLink}}">{{popUpHDLink}}</a>
             <br>
@@ -37,6 +43,14 @@
                     </div>
                 </div>
             </div>
+            <h3 id="modal-artist-part">Composers</h3>
+            <div *ngFor=" let composer of popUpComposersInfo">
+                <p>{{composer["names"][0]}}</p>
+            </div>
+            <h3 id="modal-artist-part">Arrangers</h3>
+            <div *ngFor=" let arranger of popUpArrangersInfo">
+                <p>{{arranger["names"][0]}}</p>
+            </div>
         </div>
         <div class="modal-footer">
             <h3 id="modal-footer"></h3>
@@ -62,7 +76,7 @@
                 title="More information" class="fa fa-plus"></i>
             <i style="cursor: pointer; margin-right: 6px;" title="Search songs in this entry"
                 (click)="searchAnnId(song.annId)" class="fa fa-search"></i>
-            {{song.annId}}
+            {{song.annSongId}}
         </td>
         <td>{{song.Anime}}</td>
         <td style="white-space: nowrap;">{{song.Type}}</td>

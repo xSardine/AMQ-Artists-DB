@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 import process_artists.config1_exceptions
 
-song_database = Path("../public/data/expand_mapping.json")
+song_database = Path("../app/data/expand_mapping.json")
 
 with open(song_database, encoding="utf-8") as json_file:
     song_database = json.load(json_file)

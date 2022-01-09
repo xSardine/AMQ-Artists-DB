@@ -119,6 +119,6 @@ Let me know if you find any of these that are wrong in the DB:
   - prepare new scripts to update easily with expand/third party data adapted to sqlite
 
 ## Thanks:
-Egerod for making https://animemusicquiz.com/
+Egerod for making https://animemusicquiz.com/ and the mods maintaining its database.
 
 MugitBot for providing me with their database, which helped me for the first iteration https://github.com/CarrC2021/MugiBot

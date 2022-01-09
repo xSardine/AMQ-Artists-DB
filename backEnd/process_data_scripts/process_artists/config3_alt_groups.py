@@ -5,7 +5,12 @@ same_group_different_artists = [
         "group": "StylipS",
         "alternate_configs": [
             {
-                "members": ["Arisa Noto", "Maho Matsunaga", "Moe Toyota", "Miku Itou"],
+                "members": [
+                    "Arisa Noto",
+                    "Maho Matsunaga",
+                    "Moe Toyota",
+                    "Miku Itou",
+                ],
                 "linked_song": [
                     13264,
                     13265,
@@ -59,7 +64,16 @@ same_group_different_artists = [
             },
             {
                 "members": ["Keiko Kubota", "WAKANA"],
-                "linked_song": [31728, 31729, 31730, 31734, 31735, 8674, 8675, 8676],
+                "linked_song": [
+                    31728,
+                    31729,
+                    31730,
+                    31734,
+                    31735,
+                    8674,
+                    8675,
+                    8676,
+                ],
             },
         ],
     },
@@ -106,8 +120,14 @@ same_group_different_artists = [
     {
         "group": "Colors",
         "alternate_configs": [
-            {"members": ["Sayaka Kitahara", "Ayahi Takagaki"], "linked_song": [13319]},
-            {"members": ["Sayaka Kitahara", "Yu Kobayashi"], "linked_song": [20855]},
+            {
+                "members": ["Sayaka Kitahara", "Ayahi Takagaki"],
+                "linked_song": [13319],
+            },
+            {
+                "members": ["Sayaka Kitahara", "Yu Kobayashi"],
+                "linked_song": [20855],
+            },
         ],
     },
     {
@@ -143,6 +163,7 @@ same_group_different_artists = [
     {
         "group": "supercell",
         "alternate_configs": [
+            {"members": ["Hatsune Miku"], "linked_song": ["Black★Rock Shooter"]},
             {
                 "members": ["Nagi Yanagi"],
                 "linked_song": [8521, 9031, "Kimi no Shiranai Monogatari", 13030],
@@ -415,6 +436,766 @@ same_group_different_artists = [
                 ],
                 "linked_song": [16595, 22106],
             }
+        ],
+    },
+    {
+        "group": "Shiritsu Ebisu Chuugaku",
+        "alternate_configs": [
+            {
+                "members": [
+                    "Rika Mayama",
+                    "Ayaka Yasumoto",
+                    "Mirei Hoshina",
+                    "Hinata Kashiwagi",
+                    "Rina Matsuno",
+                    "Aika Hirota",
+                    "Kaho Kobayashi",
+                    "Riko Nakayama",
+                ],
+                "linked_song": [13736],
+            }
+        ],
+    },
+    {
+        "group": "THE IDOLM@STER CINDERELLA GIRLS LITTLE STARS!",
+        "alternate_configs": [
+            {
+                "members": [
+                    "Ayaka Fukuhara",
+                    "Mina Nagashima",
+                    "Eriko Matsui",
+                    "Maaya Uchida",
+                    "Sayaka Harada",
+                ],
+                "linked_song": [16501],
+            },
+            {
+                "members": [
+                    "Sayuri Hara",
+                    "Azumi Waki",
+                    "Yumiri Hanamori",
+                    "Haruka Yoshimura",
+                    "Rei Matsuzaki",
+                ],
+                "linked_song": [19166],
+            },
+            {
+                "members": [
+                    "Marie Miyake",
+                    "Atsumi Tanezaki",
+                    "Naomi Oozora",
+                    "Hiyori Nitta",
+                    "Ayaka Asai",
+                ],
+                "linked_song": [23989],
+            },
+            {
+                "members": [
+                    "Sumire Uesaka",
+                    "Asaka Imai",
+                    "Yuko Iida",
+                    "Mai Fuchigami",
+                    "Aya Suzaki",
+                ],
+                "linked_song": [23990],
+            },
+            {
+                "members": [
+                    "Misaki Kuno",
+                    "Yuri Noguchi",
+                    "Nanami Yamashita",
+                    "Yuki Kaneko",
+                    "Yuuki Takada",
+                ],
+                "linked_song": [23991],
+            },
+            {
+                "members": [
+                    "Ayana Taketatsu",
+                    "Ruriko Aoki",
+                    "Minori Suzuki",
+                    "Akane Fujita",
+                    "Karin Takahashi",
+                ],
+                "linked_song": [23992],
+            },
+            {
+                "members": [
+                    "Tomoyo Kurosawa",
+                    "Nozomi Yamamoto",
+                    "Amina Satou",
+                    "Makoto Koichi",
+                    "Natsumi Haruse",
+                ],
+                "linked_song": [23993],
+            },
+            {
+                "members": [
+                    "Kiyono Yasuno",
+                    "Hitomi Harada",
+                    "Shino Shimoji",
+                    "Mayumi Kaneko",
+                    "Asami Takano",
+                ],
+                "linked_song": [23994],
+            },
+            {
+                "members": [
+                    "Kotomi Aihara",
+                    "Yuki Nakashima",
+                    "Chiyo Tomaru",
+                    "Natsumi Takamori",
+                    "Ayaka Fujimoto",
+                ],
+                "linked_song": [24014],
+            },
+            {
+                "members": [
+                    "Saori Hayami",
+                    "Rana Morishita",
+                    "Shiki Aoki",
+                    "Haruka Chisuga",
+                    "Tomo Muranaka",
+                ],
+                "linked_song": [24541],
+            },
+            {
+                "members": [
+                    "Seria Fukagawa",
+                    "Larissa Tago Takeda",
+                    "Sayaka Kamitani",
+                    "Chinatsu Akasaki",
+                    "Mako Morino",
+                ],
+                "linked_song": [24681],
+            },
+        ],
+    },
+    {
+        "group": "BiS",
+        "alternate_configs": [
+            {
+                "members": [
+                    "Kika Front Frontale",
+                    "Aya Eightprince",
+                    "Peri Ubu",
+                    "Go Zeela",
+                    "Pan Luna Leafy",
+                    "Hana Hanamiya",
+                    "Muropanako",
+                    "Mewclub",
+                    "Nel Nehru",
+                    "YUiNA EMPiRE",
+                ],
+                "linked_song": [24023],
+            }
+        ],
+    },
+    {
+        "group": "ARCANA PROJECT",
+        "alternate_configs": [
+            {
+                "members": [
+                    "Hana Hanamiya",
+                    "Usa Sakurano",
+                    "Aozora Sorano",
+                    "Hikaru Amano",
+                    "Shion Aida",
+                ],
+                "linked_song": [34417, 35029],
+            }
+        ],
+    },
+    {
+        "group": "EMPiRE",
+        "alternate_configs": [
+            {
+                "members": [
+                    "YU-KI EMPiRE",
+                    "YUKA EMPiRE",
+                    "MAYU EMPiRE",
+                    "MiDORiKO EMPiRE",
+                    "MAHO EMPiRE",
+                    "MiKiNA EMPiRE",
+                ],
+                "linked_song": [23196],
+            },
+            {
+                "members": [
+                    "YU-KI EMPiRE",
+                    "MAYU EMPiRE",
+                    "MiDORiKO EMPiRE",
+                    "MAHO EMPiRE",
+                    "MiKiNA EMPiRE",
+                    "NOW EMPiRE",
+                ],
+                "linked_song": [26470, 32830],
+            },
+        ],
+    },
+    {
+        "group": "Dempagumi.inc",
+        "alternate_configs": [
+            {
+                "members": [
+                    "Risa Aizawa",
+                    "Nemu Yumemi",
+                    "Mirin Furukawa",
+                    "Eimi Naruse",
+                    "Miu Atobe",
+                ],
+                "linked_song": [11355],
+            },
+            {
+                "members": [
+                    "Risa Aizawa",
+                    "Nemu Yumemi",
+                    "Mirin Furukawa",
+                    "Eimi Naruse",
+                    "Ayane Fujisaki",
+                    "Rin Kaname",
+                    "Nagi Nemoto",
+                ],
+                "linked_song": [18079],
+            },
+        ],
+    },
+    {
+        "group": "Niji no Conquistador",
+        "alternate_configs": [
+            {
+                "members": [
+                    "Nagi Nemoto",
+                    "Akari Nakamura",
+                    "Karin Matoba",
+                    "Emiri Suyama",
+                    "Nana Yoshimura",
+                    "Nanami Nishi",
+                    "Hiyori Kinoshita",
+                    "Minari Nagata",
+                    "Yuka Shigematsu",
+                    "Nonoka Okumura",
+                    "Moe Tsurumi",
+                    "Yuka Ito",
+                    "Marino Kai",
+                ],
+                "linked_song": [26627],
+            },
+            {
+                "members": [
+                    "Nagi Nemoto",
+                    "Akari Nakamura",
+                    "Karin Matoba",
+                    "Moe Tsurumi",
+                    "Ao Yamato",
+                    "Nana Yamasaki",
+                    "Ayame Okada",
+                    "Riko Shimizu",
+                    "Airi Hiruta",
+                    "Miyu Kataoka",
+                    "Marina Kumamoto",
+                    "Rio Yamamoto",
+                ],
+                "linked_song": [27660],
+            },
+        ],
+    },
+    {
+        "group": "Shugo Chara Egg!",
+        "alternate_configs": [
+            {
+                "members": ["Akari Saho", "Mizuki Fukumura", "Irori Maeda"],
+                "linked_song": [10513],
+            },
+            {
+                "members": [
+                    "Akari Saho",
+                    "Mizuki Fukumura",
+                    "Irori Maeda",
+                    "Nanami Tanabe",
+                ],
+                "linked_song": [10514],
+            },
+        ],
+    },
+    {
+        "group": "Berryz Kobo",
+        "alternate_configs": [
+            {
+                "members": [
+                    "Saki Shimizu",
+                    "Momoko Tsugunaga",
+                    "Chinami Tokunaga",
+                    "Maasa Sudo",
+                    "Yurina Kumai",
+                    "Risako Sugaya",
+                    "Miyabi Natsuyaki",
+                    "Maiha Ishimura",
+                ],
+                "linked_song": [7180],
+            },
+        ],
+    },
+    {
+        "group": "NEWS",
+        "alternate_configs": [
+            {
+                "members": [
+                    "Takahisa Masuda",
+                    "Yuya Tegoshi",
+                    "Keiichiro Koyama",
+                    "Shigeaki Kato",
+                ],
+                "linked_song": [15392, 30852],
+            },
+            {
+                "members": [
+                    "Takahisa Masuda",
+                    "Keiichiro Koyama",
+                    "Shigeaki Kato",
+                ],
+                "linked_song": [32166, 35048],
+            },
+        ],
+    },
+    {
+        "group": "Hey! Say! JUMP",
+        "alternate_configs": [
+            {
+                "members": [
+                    "Keito Okamoto",
+                    "Ryosuke Yamada",
+                    "Yuri Chinen",
+                    "Yuto Nakajima",
+                    "Daiki Arioka",
+                    "Yuya Takaki",
+                    "Kei Inoo",
+                    "Hikaru Yaotome",
+                    "Kota Yabu",
+                ],
+                "linked_song": [15971, 27133],
+            },
+        ],
+    },
+    {
+        "group": "KinKi Kids",
+        "alternate_configs": [
+            {
+                "members": [
+                    "Koichi Domoto",
+                ],
+                "linked_song": [29685],
+            },
+            {
+                "members": [
+                    "Tsuyoshi Domoto",
+                ],
+                "linked_song": [29686],
+            },
+        ],
+    },
+    {
+        "group": "Matsuri nine.",
+        "alternate_configs": [
+            {
+                "members": [
+                    "Raiga Terasaka",
+                    "Kanade Nonoda",
+                    "Toy Yokoyama",
+                    "Kanda Rikuto",
+                    "Shimizu Takanori",
+                    "Uragami Takuya",
+                    "Takasaki Jukiya",
+                ],
+                "linked_song": [34322],
+            },
+        ],
+    },
+    {
+        "group": "BOYS AND MEN",
+        "alternate_configs": [
+            {
+                "members": [
+                    "Masaru Mizuno",
+                    "Yukihisa Tamura",
+                    "Tatsunori Tsujimoto",
+                    "Yutaka Kobayashi",
+                    "Takafumi Honda",
+                    "Yuuhi",
+                    "Kento Hiramatsu",
+                    "Masato Yoshihara",
+                    "Shunsuke Tanaka",
+                    "Takumi Tsuchida",
+                ],
+                "linked_song": [17760, 30117],
+            },
+            {
+                "members": [
+                    "Masaru Mizuno",
+                    "Yukihisa Tamura",
+                    "Tatsunori Tsujimoto",
+                    "Yutaka Kobayashi",
+                    "Takafumi Honda",
+                    "Yuuhi",
+                    "Kento Hiramatsu",
+                    "Masato Yoshihara",
+                    "Takumi Tsuchida",
+                ],
+                "linked_song": [26587],
+            },
+            {
+                "members": [
+                    "Masaru Mizuno",
+                    "Yukihisa Tamura",
+                    "Tatsunori Tsujimoto",
+                    "Yutaka Kobayashi",
+                    "Takafumi Honda",
+                    "Yuuhi",
+                    "Kento Hiramatsu",
+                    "Masato Yoshihara",
+                ],
+                "linked_song": [33473],
+            },
+        ],
+    },
+    {
+        "group": "ANKH",
+        "alternate_configs": [
+            {
+                "members": [
+                    "Hideki Shibaya",
+                    "Yoshitaka Ono",
+                    "Tooru Hasebe",
+                    "Hideki Matsubara",
+                    "Yasuhisa Soga",
+                ],
+                "linked_song": [31198],
+            },
+        ],
+    },
+    {
+        "group": "m-flo",
+        "alternate_configs": [
+            {
+                "members": [
+                    "Taku Takahashi",
+                    "VERBAL",
+                    "LISA",
+                ],
+                "linked_song": [25122, 29766],
+            },
+        ],
+    },
+    {
+        "group": "DOBERMAN INFINITY",
+        "alternate_configs": [
+            {
+                "members": ["KUBO-C", "P-CHO", "GS", "MAB"],
+                "linked_song": [30640],
+            },
+        ],
+    },
+    {
+        "group": "Idol College",
+        "alternate_configs": [
+            {
+                "members": [
+                    "Momo Izuhara",
+                    "Himeka Kaminaguchi",
+                    "Mai Tozawa",
+                    "Nozomi Kawaoto",
+                    "Rina Kasegawa",
+                    "Ayaka Hirata",
+                    "Ichigo Okazaki",
+                    "Yuuna Kawaji",
+                    "Shiori Tadokoro",
+                    "Anju Kawato",
+                    "Haruna Sato",
+                    "Shioka Ishizuka",
+                    "Minami Chisato",
+                    "Yui Nakajima",
+                    "Yuka Ebihara",
+                    "Juria Tomita",
+                    "Honoka Konno",
+                    "Sora Taguchi",
+                ],
+                "linked_song": [29305],
+            },
+            {
+                "members": [
+                    "Chisato Minami",
+                    "Kisaki Saito",
+                    "Yuka Ebihara",
+                    "Yui Nakajima",
+                    "Julia Tomita",
+                    "Shioka Ishizuka",
+                    "Anju Kawato",
+                    "Hina Kanda",
+                    "Misaki Inaba",
+                    "Nozomi Kawaoto",
+                    "Honoko Konno",
+                    "Kanna Kondo",
+                    "Rina Kasegawa",
+                    "Ichigo Okazaki",
+                    "Yuuna Kawaji",
+                    "Shiori Tadokoro",
+                    "Haruna Sato",
+                ],
+                "linked_song": [14945],
+            },
+        ],
+    },
+    {
+        "group": "Metamorphose",
+        "alternate_configs": [
+            {
+                "members": ["Kaori Oda"],
+                "linked_song": [15126],
+            },
+            {
+                "members": ["Aki Misato"],
+                "linked_song": [15127],
+            },
+            {
+                "members": ["Megumi Ogata"],
+                "linked_song": [15128],
+            },
+            {
+                "members": ["Yoko Ishida"],
+                "linked_song": [15125],
+            },
+        ],
+    },
+    {
+        "group": "sajou no hana",
+        "alternate_configs": [
+            {
+                "members": ["sana (sajou no hana)", "Tatsuya Kitani"],
+                "linked_song": [23143],
+            }
+        ],
+    },
+    {
+        "group": "Sakurakou K-On-bu",
+        "alternate_configs": [
+            {
+                "members": ["Yoko Hikasa"],
+                "linked_song": ['Don\'t say "lazy"'],
+            }
+        ],
+    },
+    {
+        "group": "Ho-Kago Tea Time",
+        "alternate_configs": [
+            {
+                "members": ["Yoko Hikasa"],
+                "linked_song": [
+                    10079,
+                    "Listen!!",
+                    "NO,Thank You!",
+                    10652,
+                    "Singing!",
+                    11115,
+                ],
+            },
+            {
+                "members": ["Aki Toyosaki", "Yoko Hikasa"],
+                "linked_song": [10082, 10648, 11112, 17961],
+            },
+            {
+                "members": [
+                    "Aki Toyosaki",
+                    "Yoko Hikasa",
+                    "Satomi Sato",
+                    "Minako Kotobuki",
+                ],
+                "linked_song": [10654, 11116],
+            },
+        ],
+    },
+    {
+        "group": "XX:me",
+        "alternate_configs": [
+            {
+                "members": ["Haruka Tomatsu"],
+                "linked_song": [19054, 19850],
+            }
+        ],
+    },
+    {
+        "group": "SUPER\u2606GiRLS",
+        "alternate_configs": [
+            {
+                "members": [
+                    "Saori Yasaka",
+                    "Rika Shimura",
+                    "Hikaru Watanabe",
+                    "Rina Miyazaki",
+                    "Rino Katsuta",
+                    "Reira Arai",
+                    "Mirei Tanaka",
+                    "Ruka Mizote",
+                    "Aya Goto",
+                    "Ami Maeshima",
+                ],
+                "linked_song": [28174],
+            },
+            {
+                "members": [
+                    "Rika Shimura",
+                    "Hikaru Watanabe",
+                    "Rina Miyazaki",
+                    "Rino Katsuta",
+                    "Reira Arai",
+                    "Mirei Tanaka",
+                    "Ruka Mizote",
+                    "Ami Maeshima",
+                    "Risa Uchimura",
+                    "Nana Asakawa",
+                    "Koume Watanabe",
+                ],
+                "linked_song": [14911],
+            },
+        ],
+    },
+    {
+        "group": "LinQ",
+        "alternate_configs": [
+            {
+                "members": [
+                    "Natsu Amano",
+                    "Chisei Fukase",
+                    "Miku Ichinose",
+                    "Chiaki Yoshikawa",
+                    "Yumi Takaki",
+                    "Ami Himesaki",
+                    "Asaka Sakai",
+                    "Yusa Sugimoto",
+                    "Mayu Kishida",
+                    "Kurumi Matsumura",
+                    "Naoko Hara",
+                    "Manami Sakura",
+                    "Fuuko Shiira",
+                    "Ayaka Oba",
+                    "Ayano Yamaki",
+                    "Mao Kitayama",
+                    "Maki Ito",
+                    "Kana Fukuyama",
+                    "Aya Maikawa",
+                    "Sakura Araki",
+                    "MYU",
+                    "Kokoro Araki",
+                    "Maina Kohinata",
+                    "Kotone Iwamoto",
+                ],
+                "linked_song": [21505],
+            },
+            {
+                "members": [
+                    "Natsu Amano",
+                    "Chiaki Yoshikawa",
+                    "Yumi Takaki",
+                    "Asaka Sakai",
+                    "Yusa Sugimoto",
+                    "Mayu Momosaki",
+                    "Ayano Yamaki",
+                    "Sakura Araki",
+                    "Rana Kaizuki",
+                ],
+                "linked_song": [15188],
+            },
+            {
+                "members": [
+                    "Natsu Amano",
+                    "Chiaki Yoshikawa",
+                    "Yumi Takaki",
+                    "Asaka Sakai",
+                    "Ayano Yamaki",
+                    "Sakura Araki",
+                    "Rana Kaizuki",
+                    "MYU",
+                ],
+                "linked_song": [15189],
+            },
+        ],
+    },
+    {
+        "group": "GEM",
+        "alternate_configs": [
+            {
+                "members": [
+                    "Yuuki Kanazawa",
+                    "Yuu Morioka",
+                    "Nana Minamiguchi",
+                    "Jurin Kumashiro",
+                    "Kako Oguri",
+                    "Rana Murakami",
+                    "Maya Takeda",
+                    "Maho Iyama",
+                    "Sara Hirano",
+                ],
+                "linked_song": [15115],
+            }
+        ],
+    },
+    {
+        "group": "east²",
+        "alternate_configs": [
+            {
+                "members": [
+                    "Yuzuha Oda",
+                    "Ran Ishii",
+                ],
+                "linked_song": [29826],
+            }
+        ],
+    },
+    {
+        "group": "FictionJunction",
+        "alternate_configs": [
+            {
+                "members": ["FictionJunction YUUKA"],
+                "linked_song": [10100],
+            },
+        ],
+    },
+    {
+        "group": "elfin'",
+        "alternate_configs": [
+            {
+                "members": [
+                    "Miyuu Tsuji",
+                    "Rie Hanafusa",
+                    "Maiko Ogura",
+                    "Ayaka Atsuchi",
+                ],
+                "linked_song": [22507, 26201, 27022],
+            },
+        ],
+    },
+    {
+        "group": "Osomatsu-san All Stars",
+        "alternate_configs": [
+            {
+                "members": [
+                    "Aya Endo",
+                    "Kenichi Suzumura",
+                    "Kazuhiko Inoue",
+                    "Sachi Kokuryu",
+                    "Momoko Saitou",
+                    "Nobuo Tobita",
+                    "Youji Ueda",
+                    "Kujira",
+                    "Takahiro Sakurai",
+                    "Yuichi Nakamura",
+                    "Hiroshi Kamiya",
+                    "Jun Fukuyama",
+                    "Daisuke Ono",
+                    "Miyu Irino",
+                    "Nanami Yamashita",
+                ],
+                "linked_song": [32218],
+            },
         ],
     },
 ]

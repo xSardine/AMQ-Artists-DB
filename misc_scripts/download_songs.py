@@ -5,13 +5,9 @@ import os
 
 # ______ General Configuration ______
 
-# Relative path of the .json file you downloaded,
-# if it's in the same folder as this script, then it's just the file name.
-song_list_path = "_mylife of spring_nobodyk_SongList.json"
-
 # Set what you want to download: mp3, webm, mp4, custom
 # if custom, you need to set your custom parameters further down
-download_type = "mp3"
+download_type = "webm"
 
 # Relative output path where your downloaded files will go
 output_path = "downloaded/"
@@ -92,199 +88,126 @@ def execute_command(command):
     os.system(command)
 
 
-if __name__ == "__main__":
+def download_songs(song_list):
 
-    with open(song_list_path, encoding="utf-8") as json_file:
-        song_list_json = json.load(json_file)
+    for song in song_list:
 
-        Path(output_path).mkdir(exist_ok=True)
+        if overwrite_already_existing_name:
+            ignore_parameter = "-y"
+        else:
+            ignore_parameter = "-n"
 
-        for song in song_list_json:
+        file_name = f"{song['annId']} {song['Anime']} {song['Type']} - {song['SongName']} by {song['Artist']}"
 
-            if overwrite_already_existing_name:
-                ignore_parameter = "-y"
-            else:
-                ignore_parameter = "-n"
+        try:
 
-            file_name = (
-                str(song["annId"])
-                + " "
-                + song["Anime"]
-                + " "
-                + song["Type"]
-                + " - "
-                + song["SongName"]
-                + " by "
-                + song["Artist"]
-            )
+            if download_type == "mp3":
 
-            try:
+                link = song["mptrois"] if "mptrois" in song else None
 
-                if download_type == "mp3":
+                if link:
+
+                    command = f"{ffmpeg} {ignore_parameter} -i {link} {default_mp3_parameters} '{create_file_name_Windows(file_name, output_path, default_mp3_extension)}'"
+
+                else:
+
+                    link = (
+                        song["sept"]
+                        if "sept" in song and song["sept"] != None
+                        else song["quatre"]
+                        if "quatre" in song
+                        else None
+                    )
+
+                    if not link:
+                        raise ValueError("Warning: {file_name} is not uploaded")
+
+                    command = f"{ffmpeg} {ignore_parameter} -i {link} -codec:a libmp3lame -b:a 320k -compression_level 7 '{create_file_name_Windows(file_name, output_path, default_mp3_extension)}'"
+
+            elif download_type == "webm":
+
+                link = (
+                    song["sept"]
+                    if "sept" in song and song["sept"] != None
+                    else song["quatre"]
+                    if "quatre" in song
+                    else None
+                )
+
+                if not link:
+                    raise ValueError(f"Warning: {file_name} have no video uploaded")
+
+                command = f"{ffmpeg} {ignore_parameter} -i {link} {default_webm_parameters} '{create_file_name_Windows(file_name, output_path, default_webm_extension)}'"
+
+            elif download_type == "mp4":
+
+                link = (
+                    song["sept"]
+                    if "sept" in song and song["sept"] != None
+                    else song["quatre"]
+                    if "quatre" in song
+                    else None
+                )
+
+                if not link:
+                    raise ValueError(f"Warning: {file_name} have no video uploaded")
+
+                command = f"{ffmpeg} {ignore_parameter} -i {link} {default_mp4_parameters} '{create_file_name_Windows(file_name, output_path, default_mp4_extension)}'"
+
+            elif download_type == "custom":
+
+                if custom_input == "video":
+
+                    link = (
+                        song["sept"]
+                        if "sept" in song and song["sept"] != None
+                        else song["quatre"]
+                        if "quatre" in song
+                        else None
+                    )
+
+                    if not link:
+                        raise ValueError(f"Warning: {file_name} have no video uploaded")
+
+                    command = f"{ffmpeg} {ignore_parameter} -i {link} {custom_parameters} '{create_file_name_Windows(file_name, output_path, custom_extension)}'"
+
+                elif custom_input == "audio":
 
                     link = song["mptrois"] if "mptrois" in song else None
 
-                    if link:
+                    if not link:
+                        raise ValueError(f"Warning: {file_name} have no mp3 uploaded")
 
-                        command = [
-                            "%s" % ffmpeg,
-                            ignore_parameter,
-                            "-i",
-                            link,
-                            default_mp3_parameters,
-                            '"%s"'
-                            % create_file_name_Windows(
-                                file_name, output_path, default_mp3_extension
-                            ),
-                        ]
-
-                    else:
-                        link = (
-                            song["sept"]
-                            if "sept" in song and song["sept"] != None
-                            else song["quatre"]
-                            if "quatre" in song
-                            else None
-                        )
-
-                        if link:
-
-                            command = [
-                                "%s" % ffmpeg,
-                                ignore_parameter,
-                                "-i",
-                                link,
-                                "-codec:a libmp3lame -b:a 320k -compression_level 7",
-                                '"%s"'
-                                % create_file_name_Windows(
-                                    file_name, output_path, default_mp3_extension
-                                ),
-                            ]
-                        else:
-                            raise ValueError("Warning:", file_name, "is not uploaded")
-
-                elif download_type == "webm":
-
-                    link = (
-                        song["sept"]
-                        if "sept" in song and song["sept"] != None
-                        else song["quatre"]
-                        if "quatre" in song
-                        else None
-                    )
-
-                    if link:
-
-                        command = [
-                            "%s" % ffmpeg,
-                            ignore_parameter,
-                            "-i",
-                            link,
-                            default_webm_parameters,
-                            '"%s"'
-                            % create_file_name_Windows(
-                                file_name, output_path, default_webm_extension
-                            ),
-                        ]
-                    else:
-                        raise ValueError(
-                            "Warning:", file_name, "doesn't have any video uploaded"
-                        )
-
-                elif download_type == "mp4":
-
-                    link = (
-                        song["sept"]
-                        if "sept" in song and song["sept"] != None
-                        else song["quatre"]
-                        if "quatre" in song
-                        else None
-                    )
-
-                    if link:
-                        command = [
-                            "%s" % ffmpeg,
-                            ignore_parameter,
-                            "-i",
-                            link,
-                            default_mp4_parameters,
-                            '"%s"'
-                            % create_file_name_Windows(
-                                file_name, output_path, default_mp4_extension
-                            ),
-                        ]
-                    else:
-                        raise ValueError(
-                            "Warning:", file_name, "doesn't have any video uploaded"
-                        )
-
-                elif download_type == "custom":
-
-                    if custom_input == "video":
-
-                        link = (
-                            song["sept"]
-                            if "sept" in song and song["sept"] != None
-                            else song["quatre"]
-                            if "quatre" in song
-                            else None
-                        )
-
-                        if link:
-
-                            command = [
-                                "%s" % ffmpeg,
-                                ignore_parameter,
-                                "-i",
-                                link,
-                                custom_parameters,
-                                '"%s"'
-                                % create_file_name_Windows(
-                                    file_name, output_path, custom_extension
-                                ),
-                            ]
-                        else:
-                            raise ValueError(
-                                "Warning:",
-                                file_name,
-                                "doesn't have any video uploaded",
-                            )
-
-                    elif custom_input == "audio":
-
-                        link = song["mptrois"] if "mptrois" in song else None
-
-                        if link:
-                            command = [
-                                "%s" % ffmpeg,
-                                ignore_parameter,
-                                "-i",
-                                link,
-                                custom_parameters,
-                                '"%s"'
-                                % create_file_name_Windows(
-                                    file_name, output_path, custom_extension
-                                ),
-                            ]
-
-                        else:
-                            raise ValueError(
-                                "Warning:", file_name, "doesn't have mp3 uploaded",
-                            )
-                    else:
-                        raise ValueError(
-                            "Warning:", custom_input, "is set to a wrong value"
-                        )
+                    command = f"{ffmpeg} {ignore_parameter} -i {link} {custom_parameters} '{create_file_name_Windows(file_name, output_path, custom_extension)}'"
 
                 else:
-                    raise ValueError("Warning, download_type is set to a wrong value")
+                    raise ValueError(
+                        f"Warning: {custom_input} is not a valid value for the custom input parameter"
+                    )
 
-                print(" ".join(command))
-                execute_command(" ".join(command))
-                print()
+            else:
+                raise ValueError(
+                    f"Warning: {download_type} is not a valid value for the download_type parameter"
+                )
 
-            except Exception as e:
-                print(e)
-                print("Failed for", link, "(" + file_name + ")")
-                print()
+            print(command)
+            execute_command(command)
+            print()
 
+        except Exception as e:
+            print(e)
+            print(f"Failed for {link} ({file_name})")
+            print()
+
+
+if __name__ == "__main__":
+
+    Path(output_path).mkdir(exist_ok=True)
+
+    json_path = Path(".")
+    json_list = list(json_path.glob("*.json"))
+
+    for json_ in json_list:
+        with open(json_, encoding="utf-8") as json_file:
+            download_songs(json.load(json_file))
+            exit

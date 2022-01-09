@@ -21,7 +21,9 @@ CREATE TABLE songs (
 
 CREATE TABLE artists (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "name" VARCHAR(255) NOT NULL
+    "name" VARCHAR(255) NOT NULL,
+    "vocalist" BIT NOT NULL,
+    "composer" BIT NOT NULL
 );
 
 CREATE TABLE groups (
@@ -51,6 +53,26 @@ CREATE TABLE link_song_artist (
     FOREIGN KEY ("artist_alt_members_id")
         REFERENCES artists ("alt_members_id"),
     PRIMARY KEY (song_id, artist_id, artist_alt_members_id)
+);
+
+CREATE TABLE link_song_composer (
+    "song_id" INTEGER NOT NULL,
+    "composer_id" INTEGER NOT NULL,
+    FOREIGN KEY ("song_id")
+        REFERENCES songs ("id"),
+    FOREIGN KEY ("composer_id")
+        REFERENCES artists ("id"),
+    PRIMARY KEY (song_id, composer_id)
+);
+
+CREATE TABLE link_song_arranger (
+    "song_id" INTEGER NOT NULL,
+    "arranger_id" INTEGER NOT NULL,
+    FOREIGN KEY ("song_id")
+        REFERENCES songs ("id"),
+    FOREIGN KEY ("arranger_id")
+        REFERENCES artists ("id"),
+    PRIMARY KEY (song_id, arranger_id)
 );
 
 create TABLE link_artist_group (

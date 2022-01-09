@@ -2,9 +2,9 @@ import json
 import config4_same_name
 from pathlib import Path
 
-song_database = Path("../../public/data/expand_mapping.json")
-artist_database = Path("../../public/data/artist_mapping.json")
-results_output_path = Path("../../public/data/")
+song_database = Path("../../app/data/expand_mapping.json")
+artist_database = Path("../../app/data/artist_mapping.json")
+results_output_path = Path("../../app/data/")
 
 results_output_path.mkdir(parents=False, exist_ok=True)
 

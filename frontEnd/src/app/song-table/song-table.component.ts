@@ -31,12 +31,19 @@ export class SongTableComponent {
   doubleClickPreventer: boolean = false;
   romaji: string = ""
 
+  popUpannId: string = "";
+  popUpannSongId: string = "";
+  popUpSongName: string = "";
+  popUpArtist: string = "";
   popUpannURL: string = "";
   popUpAnime: string = "";
   popUpHDLink: string = "";
   popUpMDLink: string = "";
   popUpAudioLink: string = "";
   popUpArtistsInfo = [];
+  popUpComposersInfo = [];
+  popUpArrangersInfo = [];
+
 
   tableHeaders = ["annId", "Anime", "Type", "Song Name", "Artist"];
 
@@ -171,12 +178,19 @@ export class SongTableComponent {
   }
 
   displaySongIngoPopup(song: any) {
+    //console.log(song)
     this.popUpannURL = "https://www.animenewsnetwork.com/encyclopedia/anime.php?id=" + song.annId;
+    this.popUpannId = song.annId;
+    this.popUpannSongId = song.annSongId;
     this.popUpAnime = song.Anime;
+    this.popUpSongName = song.SongName;
+    this.popUpArtist = song.Artist;
     this.popUpHDLink = song.sept;
     this.popUpMDLink = song.quatre;
     this.popUpAudioLink = song.mptrois;
     this.popUpArtistsInfo = song.artists;
+    this.popUpComposersInfo = song.composers;
+    this.popUpArrangersInfo = song.arrangers;
     this.showSongInfoPopup = !this.showSongInfoPopup;
     this.doubleClickPreventer = true;
     this.romaji = song.Romaji
@@ -226,8 +240,6 @@ export class SongTableComponent {
 
   searchArtistId(artists: any) {
 
-    console.log(artists)
-
     let id_arr = []
     for (let artist in artists) {
       id_arr.push(artists[artist].id)
@@ -272,12 +284,8 @@ export class SongTableComponent {
 
   searchAnnId(id: any) {
 
-    console.log(id)
-
     let body = {
-      "anime_search_filter": {
-        "search": id,
-      },
+      "annId": id,
       "ignore_duplicate": false,
       "opening_filter": true,
       "ending_filter": true,
@@ -285,7 +293,7 @@ export class SongTableComponent {
     }
 
     let currentSongList
-    currentSongList = this.searchRequestService.searchRequest(body).subscribe(data => {
+    currentSongList = this.searchRequestService.annIdSearchRequest(body).subscribe(data => {
       currentSongList = data
       this.sendMessage(currentSongList)
     });

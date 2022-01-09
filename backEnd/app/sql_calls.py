@@ -229,15 +229,39 @@ def extract_song_database():
     command = """
     SELECT animes.annId, animes.name, animes.romaji, songs.annSongId, songs.type, songs.number, 
     songs.name, songs.artist, songs."720p", songs."480p", songs.mp3, group_concat(link_song_artist.artist_id) 
-    AS artists_ids, group_concat(link_song_artist.artist_alt_members_id) AS artists_ids_set
+    AS artists_ids, group_concat(link_song_artist.artist_alt_members_id) AS artists_ids_set, group_concat(link_song_composer.composer_id) as composer_ids, group_concat(link_song_arranger.arranger_id) as arranger_ids
     FROM animes
     INNER JOIN songs ON animes.annId = songs.annId
-    INNER JOIN link_song_artist ON songs.id = link_song_artist.song_id
+    LEFT JOIN link_song_artist ON songs.id = link_song_artist.song_id
+    LEFT JOIN link_song_composer ON songs.id = link_song_composer.song_id
+    LEFT JOIN link_song_arranger ON songs.id = link_song_arranger.song_id
     GROUP BY songs.id;
     """
     cursor = connect_to_database(database_path)
     song_database = []
     for song in run_sql_command(cursor, command):
+
+        artist_ids = []
+        if song[11]:
+            for id, sets in zip(song[11].split(","), song[12].split(",")):
+                if int(id) in [int(temp[0]) for temp in artist_ids]:
+                    continue
+                artist_ids.append([int(id), int(sets)])
+
+        composer_ids = []
+        if song[13]:
+            for id in song[13].split(","):
+                if int(id) in composer_ids:
+                    continue
+                composer_ids.append(int(id))
+
+        arranger_ids = []
+        if song[14]:
+            for id in song[14].split(","):
+                if int(id) in arranger_ids:
+                    continue
+                arranger_ids.append(int(id))
+
         song_database.append(
             {
                 "annId": song[0],
@@ -251,12 +275,12 @@ def extract_song_database():
                 "720": song[8],
                 "480": song[9],
                 "mp3": song[10],
-                "artists_ids": [
-                    [int(id), int(set)]
-                    for id, set in zip(song[11].split(","), song[12].split(","))
-                ],
+                "artists_ids": artist_ids,
+                "composers_ids": composer_ids,
+                "arrangers_ids": arranger_ids,
             }
         )
+
     return song_database
 
 
@@ -268,7 +292,7 @@ def extract_artist_database():
     """
 
     command = """
-	SELECT artists.id, artists.name, group_concat(artist_alt_names.alt_name, "\$") AS alt_names, group_concat(link_artist_group.group_id) AS groups, 
+	SELECT artists.id, artists.name, artists.vocalist, artists.composer, group_concat(artist_alt_names.alt_name, "\$") AS alt_names, group_concat(link_artist_group.group_id) AS groups, 
     group_concat(link_artist_group.group_alt_config_id) AS groups_set
     FROM artists
     LEFT JOIN artist_alt_names ON artists.id = artist_alt_names.artist_id
@@ -282,15 +306,17 @@ def extract_artist_database():
     for artist in run_sql_command(cursor, command):
 
         groups = []
-        if artist[3]:
-            for id, sets in zip(artist[3].split(","), artist[4].split(",")):
+        if artist[5]:
+            for id, sets in zip(artist[5].split(","), artist[6].split(",")):
                 if [int(id), int(sets)] not in groups:
                     groups.append([int(id), int(sets)])
 
         artist_database[str(artist[0])] = {
             "name": artist[1],
-            "alt_names": {name for name in artist[2].split("\\$")}
-            if artist[2]
+            "vocalist": artist[2],
+            "composer": artist[3],
+            "alt_names": {name for name in artist[4].split("\\$")}
+            if artist[4]
             else None,
             "groups": groups,
             "members": [],

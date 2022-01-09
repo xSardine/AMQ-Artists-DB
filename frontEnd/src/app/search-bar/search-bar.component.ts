@@ -16,6 +16,7 @@ export class SearchBarComponent implements OnInit {
   animeFilter: string = "";
   songNameFilter: string = "";
   artistFilter: string = "";
+  composerFilter: string = "";
   maximumRandomsFilter: string = "99";
   minimalMembersFilter: string = "0";
   selectedCombination: string = "Union";
@@ -28,6 +29,10 @@ export class SearchBarComponent implements OnInit {
   artistFilterPartialMatch: boolean = true;
   artistFilterIgnoreSpecialCaracters: boolean = true;
   artistFilterCaseSensitive: boolean = false;
+  composerFilterPartialMatch: boolean = true;
+  composerFilterIgnoreSpecialCaracters: boolean = true;
+  composerFilterCaseSensitive: boolean = false;
+  composerFilterArrangement: boolean = false;
   ignoreDuplicate: boolean = false;
   showOpenings: boolean = true;
   showEndings: boolean = true;
@@ -46,7 +51,7 @@ export class SearchBarComponent implements OnInit {
   onSearchCallKey(): void {
 
     let body = {};
-    let tmp_anime_filter, tmp_songname_filter, tmp_artist_filter;
+    let tmp_anime_filter, tmp_songname_filter, tmp_artist_filter, tmp_composer_filter;
     let tmp_select = false;
 
     if (this.selectedCombination == "Intersection") {
@@ -99,10 +104,24 @@ export class SearchBarComponent implements OnInit {
         tmp_artist_filter = undefined;
       }
 
+      if (this.composerFilter.length > 0) {
+        tmp_composer_filter = {
+          "search": this.composerFilter,
+          "ignore_special_character": this.composerFilterIgnoreSpecialCaracters,
+          "partial_match": this.composerFilterPartialMatch,
+          "case_sensitive": this.composerFilterCaseSensitive,
+          "arrangement": this.composerFilterArrangement,
+        }
+      }
+      else {
+        tmp_composer_filter = undefined;
+      }
+
       body = {
         "anime_search_filter": tmp_anime_filter,
         "song_name_search_filter": tmp_songname_filter,
         "artist_search_filter": tmp_artist_filter,
+        "composer_search_filter": tmp_composer_filter,
         "and_logic": tmp_select,
         "ignore_duplicate": this.ignoreDuplicate,
         "opening_filter": this.showOpenings,
@@ -113,32 +132,55 @@ export class SearchBarComponent implements OnInit {
     }
     else {
 
-      body = {
-        "anime_search_filter": {
-          "search": this.mainFilter,
-          "ignore_special_character": this.animeFilterIgnoreSpecialCaracters,
-          "partial_match": this.animeFilterPartialMatch,
-          "case_sensitive": this.animeFilterCaseSensitive,
-        },
-        "song_name_search_filter": {
-          "search": this.mainFilter,
-          "ignore_special_character": this.songNameFilterIgnoreSpecialCaracters,
-          "partial_match": this.songNameFilterPartialMatch,
-          "case_sensitive": this.songNameFilterCaseSensitive,
-        },
-        "artist_search_filter": {
-          "search": this.mainFilter,
-          "ignore_special_character": this.artistFilterIgnoreSpecialCaracters,
-          "partial_match": this.artistFilterPartialMatch,
-          "case_sensitive": this.artistFilterCaseSensitive,
-          "group_granularity": parseInt(this.minimalMembersFilter),
-          "max_other_artist": parseInt(this.maximumRandomsFilter),
-        },
-        "and_logic": tmp_select,
-        "ignore_duplicate": this.ignoreDuplicate,
-        "opening_filter": this.showOpenings,
-        "ending_filter": this.showEndings,
-        "insert_filter": this.showInserts,
+      if (this.mainFilter.length == 0) {
+        body = {
+          "anime_search_filter": undefined,
+          "song_name_search_filter": undefined,
+          "artist_search_filter": undefined,
+          "composer_search_filter": undefined,
+          "and_logic": tmp_select,
+          "ignore_duplicate": this.ignoreDuplicate,
+          "opening_filter": this.showOpenings,
+          "ending_filter": this.showEndings,
+          "insert_filter": this.showInserts,
+        }
+      }
+      else {
+
+        body = {
+          "anime_search_filter": {
+            "search": this.mainFilter,
+            "ignore_special_character": this.animeFilterIgnoreSpecialCaracters,
+            "partial_match": this.animeFilterPartialMatch,
+            "case_sensitive": this.animeFilterCaseSensitive,
+          },
+          "song_name_search_filter": {
+            "search": this.mainFilter,
+            "ignore_special_character": this.songNameFilterIgnoreSpecialCaracters,
+            "partial_match": this.songNameFilterPartialMatch,
+            "case_sensitive": this.songNameFilterCaseSensitive,
+          },
+          "artist_search_filter": {
+            "search": this.mainFilter,
+            "ignore_special_character": this.artistFilterIgnoreSpecialCaracters,
+            "partial_match": this.artistFilterPartialMatch,
+            "case_sensitive": this.artistFilterCaseSensitive,
+            "group_granularity": parseInt(this.minimalMembersFilter),
+            "max_other_artist": parseInt(this.maximumRandomsFilter),
+          },
+          "composer_search_filter": {
+            "search": this.mainFilter,
+            "ignore_special_character": this.composerFilterIgnoreSpecialCaracters,
+            "partial_match": this.composerFilterPartialMatch,
+            "case_sensitive": this.composerFilterCaseSensitive,
+            "arrangement": this.composerFilterArrangement,
+          },
+          "and_logic": tmp_select,
+          "ignore_duplicate": this.ignoreDuplicate,
+          "opening_filter": this.showOpenings,
+          "ending_filter": this.showEndings,
+          "insert_filter": this.showInserts,
+        }
       }
     }
 

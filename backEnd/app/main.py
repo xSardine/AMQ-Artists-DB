@@ -23,6 +23,9 @@ class Search_Filter(BaseModel):
     # How much other artists that are not from the og group do I accept
     max_other_artist: Optional[int] = Field(2, ge=0)
 
+    # for composer search
+    arrangement: Optional[bool] = False
+
     class Config:
         schema_extra = {
             "example": {
@@ -43,9 +46,10 @@ class Search_Request(BaseModel):
     anime_search_filter: Optional[Search_Filter] = []
     song_name_search_filter: Optional[Search_Filter] = []
     artist_search_filter: Optional[Search_Filter] = []
+    composer_search_filter: Optional[Search_Filter] = []
     and_logic: Optional[bool] = True
     ignore_duplicate: Optional[bool] = False
-    max_nb_song: Optional[bool] = 250
+    max_nb_song: Optional[int] = 300
     opening_filter: Optional[bool] = True
     ending_filter: Optional[bool] = True
     insert_filter: Optional[bool] = True
@@ -77,7 +81,17 @@ class Artist_ID_Search_Request(BaseModel):
     group_granularity: Optional[int] = Field(2, ge=0)
     max_other_artist: Optional[int] = Field(2, ge=0)
     ignore_duplicate: Optional[bool] = False
-    max_nb_song: Optional[bool] = 250
+    max_nb_song: Optional[bool] = 300
+    opening_filter: Optional[bool] = True
+    ending_filter: Optional[bool] = True
+    insert_filter: Optional[bool] = True
+
+
+class annId_Search_Request(BaseModel):
+
+    annId: int
+    ignore_duplicate: Optional[bool] = False
+    max_nb_song: Optional[bool] = 300
     opening_filter: Optional[bool] = True
     ending_filter: Optional[bool] = True
     insert_filter: Optional[bool] = True
@@ -97,6 +111,7 @@ artist.update_forward_refs()
 class Song_Entry(BaseModel):
 
     annId: int
+    annSongId: int
     Anime: str
     Romaji: Optional[str]
     Type: str
@@ -106,6 +121,8 @@ class Song_Entry(BaseModel):
     quatre: Optional[str]
     mptrois: Optional[str]
     artists: List[artist]
+    composers: List[artist]
+    arrangers: List[artist]
 
 
 # Launch API
@@ -162,6 +179,24 @@ def format_artist_ids(artist_database, artist_id):
     return artist
 
 
+def format_composer_ids(artist_database, composer_id):
+    composer = {"id": composer_id}
+
+    alt_names = artist_filter.get_artist_names(artist_database, composer_id)
+    composer["names"] = alt_names
+
+    return composer
+
+
+def format_arranger_ids(artist_database, arranger_id):
+    arranger = {"id": arranger_id}
+
+    alt_names = artist_filter.get_artist_names(artist_database, arranger_id)
+    arranger["names"] = alt_names
+
+    return arranger
+
+
 @app.post("/api/search_request", response_model=List[Song_Entry])
 async def search_request(query: Search_Request):
 
@@ -186,6 +221,7 @@ async def search_request(query: Search_Request):
         query.anime_search_filter,
         query.song_name_search_filter,
         query.artist_search_filter,
+        query.composer_search_filter,
         query.and_logic,
         query.ignore_duplicate,
         query.max_nb_song,
@@ -197,6 +233,16 @@ async def search_request(query: Search_Request):
         for artist_id in song["artists"]:
             artist_list.append(format_artist_ids(artist_database, artist_id))
         song["artists"] = artist_list
+
+        composer_list = []
+        for composer_id in song["composers"]:
+            composer_list.append(format_composer_ids(artist_database, composer_id))
+        song["composers"] = composer_list
+
+        arranger_list = []
+        for arranger_id in song["arrangers"]:
+            arranger_list.append(format_arranger_ids(artist_database, arranger_id))
+        song["arrangers"] = arranger_list
 
     print("--- %s seconds ---" % (time.time() - start_time))
     return song_list
@@ -221,6 +267,16 @@ async def get_first_n_songs(query: First_N_Songs):
         for artist_id in song["artists"]:
             artist_list.append(format_artist_ids(artist_database, artist_id))
         song["artists"] = artist_list
+
+        composer_list = []
+        for composer_id in song["composers"]:
+            composer_list.append(format_composer_ids(artist_database, composer_id))
+        song["composers"] = composer_list
+
+        arranger_list = []
+        for arranger_id in song["arrangers"]:
+            arranger_list.append(format_arranger_ids(artist_database, arranger_id))
+        song["arrangers"] = arranger_list
 
     return data
 
@@ -258,5 +314,59 @@ async def search_request(query: Artist_ID_Search_Request):
         for artist_id in song["artists"]:
             artist_list.append(format_artist_ids(artist_database, artist_id))
         song["artists"] = artist_list
+
+        composer_list = []
+        for composer_id in song["composers"]:
+            composer_list.append(format_composer_ids(artist_database, composer_id))
+        song["composers"] = composer_list
+
+        arranger_list = []
+        for arranger_id in song["arrangers"]:
+            arranger_list.append(format_arranger_ids(artist_database, arranger_id))
+        song["arrangers"] = arranger_list
+
+    return song_list
+
+
+@app.post("/api/annId_request", response_model=List[Song_Entry])
+async def search_request(query: annId_Search_Request):
+
+    song_database = sql_calls.extract_song_database()
+    artist_database = sql_calls.extract_artist_database()
+
+    authorized_type = []
+    if query.opening_filter:
+        authorized_type.append(1)
+    if query.ending_filter:
+        authorized_type.append(2)
+    if query.insert_filter:
+        authorized_type.append(3)
+
+    if not authorized_type:
+        return []
+
+    song_list = get_search_result.get_annId_song_list(
+        song_database,
+        query.annId,
+        query.ignore_duplicate,
+        query.max_nb_song,
+        authorized_type,
+    )
+
+    for song in song_list:
+        artist_list = []
+        for artist_id in song["artists"]:
+            artist_list.append(format_artist_ids(artist_database, artist_id))
+        song["artists"] = artist_list
+
+        composer_list = []
+        for composer_id in song["composers"]:
+            composer_list.append(format_composer_ids(artist_database, composer_id))
+        song["composers"] = composer_list
+
+        arranger_list = []
+        for arranger_id in song["arrangers"]:
+            arranger_list.append(format_arranger_ids(artist_database, arranger_id))
+        song["arrangers"] = arranger_list
 
     return song_list

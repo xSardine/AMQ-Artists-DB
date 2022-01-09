@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill
 from openpyxl.styles.colors import Color
@@ -7,16 +8,13 @@ from youtubesearchpython import VideosSearch
 
 # ______ General Configuration ______
 
-# Relative path of the .json file you downloaded,
-# if it's in the same folder as this script, then it's just the file name.
-song_list_path = "initial_d_SongList.json"
-
-# Name of the created sheet
-output_file_name = "Initial D Anime Songs Ranking Sheet.xlsx"
-
 # Setting to True slow down the process
 # but gives you full song link when available on youtube
-add_youtube_link = False
+add_youtube_link = True
+
+# If set to True: will fuse all the json in the folder
+# If set to False: will create one sheet per json in the folder
+fuse_multiple_json = True
 
 # Sheet styling Configuration
 sheet_name = "Sheet1"
@@ -28,7 +26,33 @@ first_line_font_size = 10
 rest_font_size = 10
 # Sheet styling Configuration
 
+YT_LINK = "https://www.youtube.com/watch?v="
+
 # ______ General Configuration ______
+
+
+def song_in_list(song, song_list):
+
+    for song2 in song_list:
+        if (
+            song["annId"] == song2["annId"]
+            and song["Type"] == song2["Type"]
+            and song["SongName"] == song2["SongName"]
+            and song["Artist"] == song2["Artist"]
+        ):
+            return True
+    return False
+
+
+def concat(song_list1, song_list2):
+
+    concat_song_list = song_list1
+
+    for song in song_list2:
+        if not song_in_list(song, concat_song_list):
+            concat_song_list.append(song)
+
+    return concat_song_list
 
 
 def format_song(song):
@@ -40,13 +64,13 @@ def format_song(song):
     return {
         "anime_name": song["Anime"],
         "type": song["Type"],
-        "info": '"' + song["SongName"] + '" by ' + song["Artist"],
+        "info": f"{song['SongName']} by {song['Artist']}",
         "link": HQlink,
         "mp3_link": mp3_link,
     }
 
 
-def create_workbook(song_list_json):
+def create_workbook(raw_song_list, output_file_name):
 
     wb = Workbook()
     ws = wb.active
@@ -63,18 +87,26 @@ def create_workbook(song_list_json):
 
     # Insert values
     row_iter = 2
-    for i, song in enumerate(song_list_json):
-        print("Song #" + str(i + 1) + "/" + str(len(song_list_json)))
-        song = format_song(song)
+    for i, raw_song in enumerate(raw_song_list):
+
+        print(f"Song #{i+1}/{len(raw_song_list)}")
+        song = format_song(raw_song)
+
         yt_link = None
+
         if add_youtube_link:
-            ytsearch = song["info"].replace('"', "") + " full song"
-            videosSearch = VideosSearch(ytsearch, limit=1)
-            results = videosSearch.result()
+
+            ytsearch = f"{song['info']} full song"
+            results = VideosSearch(ytsearch, limit=1).result()
+
+            if not len(results["result"]):
+                print(f"New strategy for {song['info']}")
+                ytsearch = f"{song['anime_name']} {raw_song['SongName']} full song"
+                results = VideosSearch(ytsearch, limit=1).result()
+
             if len(results["result"]):
-                yt_link = (
-                    "https://www.youtube.com/watch?v=" + results["result"][0]["id"]
-                )
+                yt_link = YT_LINK + results["result"][0]["id"]
+
         ws.cell(row_iter, 2, song["anime_name"])
         ws.cell(row_iter, 3, song["type"])
         ws.cell(row_iter, 4, song["info"]).hyperlink = song["link"]
@@ -97,7 +129,7 @@ def create_workbook(song_list_json):
     gray_color = Color(rgb=cell_background_color)
     gray_background = PatternFill(patternType="solid", fgColor=gray_color)
 
-    for line in ws["A1:G" + str(row_iter - 1)]:
+    for line in ws[f"A1:G{row_iter-1}"]:
         for cell in line:
             cell.fill = gray_background
             cell.font = Font(size=rest_font_size, name=font_police)
@@ -109,19 +141,32 @@ def create_workbook(song_list_json):
             cell.font = Font(size=first_line_font_size, bold=True, name=font_police)
 
     # Blue color for links
-    for line in ws["D2:E" + str(row_iter - 1)]:
+    for line in ws[f"D2:E{row_iter-1}"]:
         for cell in line:
             cell.font = Font(color=link_color)
 
     # Sorting property
-    ws.auto_filter.ref = "A1:G" + str(row_iter - 1)
+    ws.auto_filter.ref = f"A1:G{row_iter-1}"
 
     wb.save(output_file_name)
 
 
 if __name__ == "__main__":
 
-    with open(song_list_path, encoding="utf-8") as json_file:
-        song_list_json = json.load(json_file)
+    json_path = Path(".")
+    json_list = list(json_path.glob("*.json"))
 
-    create_workbook(song_list_json)
+    fused_song_list = []
+    for json_ in json_list:
+        with open(json_, encoding="utf-8") as json_file:
+            current_song_list = json.load(json_file)
+            if not fuse_multiple_json:
+                create_workbook(
+                    current_song_list,
+                    f'{json_.stem.replace("_", "").replace("SongList", "")}_PR.xlsx',
+                )
+            else:
+                fused_song_list = concat(fused_song_list, current_song_list)
+
+    if fuse_multiple_json:
+        create_workbook(fused_song_list, "Fused_PR.xlsx")

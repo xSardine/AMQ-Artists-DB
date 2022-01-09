@@ -7,9 +7,9 @@ import sqlite3
 import json
 from pathlib import Path
 
-database = Path("../public/data/Enhanced-AMQ-Database.db")
-song_database_path = Path("../public/data/expand_mapping.json")
-artist_database_path = Path("../public/data/artist_mapping.json")
+database = Path("../app/data/Enhanced-AMQ-Database.db")
+song_database_path = Path("../app/data/expand_mapping.json")
+artist_database_path = Path("../app/data/artist_mapping.json")
 
 with open(song_database_path, encoding="utf-8") as json_file:
     song_database = json.load(json_file)
@@ -54,15 +54,15 @@ def run_sql_command(cursor, sql_command, data=None):
         return None
 
 
-def insert_new_artist(cursor, name):
+def insert_new_artist(cursor, name, is_vocalist, is_composer):
 
     """
     Insert a new artist in the database
     """
 
-    sql_insert_artist = "INSERT INTO artists(name) VALUES(?);"
+    sql_insert_artist = "INSERT INTO artists(name, vocalist, composer) VALUES(?, ?, ?);"
 
-    run_sql_command(cursor, sql_insert_artist, [name])
+    run_sql_command(cursor, sql_insert_artist, [name, is_vocalist, is_composer])
 
     return cursor.lastrowid
 
@@ -160,6 +160,32 @@ def link_song_artist(cursor, song_id, artist_id, artist_alt_id):
     run_sql_command(cursor, sql_link_song_artist, (song_id, artist_id, artist_alt_id))
 
 
+def link_song_composer(cursor, song_id, composer_id):
+
+    """
+    Add a new link between an song and a composer in the table
+    """
+
+    sql_link_song_composer = (
+        "INSERT INTO link_song_composer(song_id, composer_id) VALUES(?, ?);"
+    )
+
+    run_sql_command(cursor, sql_link_song_composer, (song_id, composer_id))
+
+
+def link_song_arranger(cursor, song_id, arranger_id):
+
+    """
+    Add a new link between an song and an arranger in the table
+    """
+
+    sql_link_song_arranger = (
+        "INSERT INTO link_song_arranger(song_id, arranger_id) VALUES(?, ?);"
+    )
+
+    run_sql_command(cursor, sql_link_song_arranger, (song_id, arranger_id))
+
+
 try:
     sqliteConnection = sqlite3.connect(database)
     cursor = sqliteConnection.cursor()
@@ -170,7 +196,13 @@ except sqlite3.Error as error:
 
 for artist_id in artist_database:
 
-    new_artist_id = insert_new_artist(cursor, artist_database[artist_id]["names"][0])
+    new_artist_id = insert_new_artist(
+        cursor,
+        artist_database[artist_id]["names"][0],
+        artist_database[artist_id]["vocalist"],
+        artist_database[artist_id]["composer"],
+    )
+
     if len(artist_database[artist_id]["names"]) > 1:
         insert_artist_alt_names(
             cursor, new_artist_id, artist_database[artist_id]["names"][1:]
@@ -211,6 +243,15 @@ for anime in song_database:
         for artist in song["artist_ids"]:
 
             link_song_artist(cursor, song_id, artist[0] + 1, artist[1])
+
+        if "composer_ids" in song:
+            for composer in song["composer_ids"]:
+                link_song_composer(cursor, song_id, int(composer) + 1)
+
+        if "arranger_ids" in song:
+            for arranger in song["arranger_ids"]:
+                link_song_arranger(cursor, song_id, int(arranger) + 1)
+
 
 sqliteConnection.commit()
 cursor.close()
