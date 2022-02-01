@@ -57,7 +57,7 @@ def create_file_name_Windows(songTitle, path, extension, allowance=255):
     )
 
 
-def create_file_name_common(songTitle, path, bad_characters, extension, allowance=255):
+def create_file_name_common(fileName, path, bad_characters, extension, allowance=255):
     if allowance > 255:
         allowance = 255  # on most common filesystems, including NTFS a filename can not exceed 255 characters
     # assign allowance for things that must be in the file name
@@ -69,9 +69,9 @@ def create_file_name_common(songTitle, path, bad_characters, extension, allowanc
         )
 
     # make sure that user input doesn't contain bad characters
-    songTitle = bad_characters.sub("", songTitle)
+    fileName = bad_characters.sub("", fileName)
     ret = ""
-    for string in [songTitle]:
+    for string in [fileName]:
         length = len(string)
         if allowance - length < 0:
             string = string[:allowance]
@@ -107,7 +107,7 @@ def download_songs(song_list):
 
                 if link:
 
-                    command = f"{ffmpeg} {ignore_parameter} -i {link} {default_mp3_parameters} '{create_file_name_Windows(file_name, output_path, default_mp3_extension)}'"
+                    command = f'{ffmpeg} {ignore_parameter} -i {link} {default_mp3_parameters} "{create_file_name_Windows(file_name, output_path, default_mp3_extension)}"'
 
                 else:
 
@@ -122,7 +122,7 @@ def download_songs(song_list):
                     if not link:
                         raise ValueError("Warning: {file_name} is not uploaded")
 
-                    command = f"{ffmpeg} {ignore_parameter} -i {link} -codec:a libmp3lame -b:a 320k -compression_level 7 '{create_file_name_Windows(file_name, output_path, default_mp3_extension)}'"
+                    command = f'{ffmpeg} {ignore_parameter} -i {link} -codec:a libmp3lame -b:a 320k -compression_level 7 "{create_file_name_Windows(file_name, output_path, default_mp3_extension)}"'
 
             elif download_type == "webm":
 
@@ -137,7 +137,7 @@ def download_songs(song_list):
                 if not link:
                     raise ValueError(f"Warning: {file_name} have no video uploaded")
 
-                command = f"{ffmpeg} {ignore_parameter} -i {link} {default_webm_parameters} '{create_file_name_Windows(file_name, output_path, default_webm_extension)}'"
+                command = f'{ffmpeg} {ignore_parameter} -i {link} {default_webm_parameters} "{create_file_name_Windows(file_name, output_path, default_webm_extension)}"'
 
             elif download_type == "mp4":
 
@@ -152,7 +152,7 @@ def download_songs(song_list):
                 if not link:
                     raise ValueError(f"Warning: {file_name} have no video uploaded")
 
-                command = f"{ffmpeg} {ignore_parameter} -i {link} {default_mp4_parameters} '{create_file_name_Windows(file_name, output_path, default_mp4_extension)}'"
+                command = f'{ffmpeg} {ignore_parameter} -i {link} {default_mp4_parameters} "{create_file_name_Windows(file_name, output_path, default_mp4_extension)}"'
 
             elif download_type == "custom":
 
@@ -169,7 +169,7 @@ def download_songs(song_list):
                     if not link:
                         raise ValueError(f"Warning: {file_name} have no video uploaded")
 
-                    command = f"{ffmpeg} {ignore_parameter} -i {link} {custom_parameters} '{create_file_name_Windows(file_name, output_path, custom_extension)}'"
+                    command = f'{ffmpeg} {ignore_parameter} -i {link} {custom_parameters} "{create_file_name_Windows(file_name, output_path, custom_extension)}"'
 
                 elif custom_input == "audio":
 
@@ -178,7 +178,7 @@ def download_songs(song_list):
                     if not link:
                         raise ValueError(f"Warning: {file_name} have no mp3 uploaded")
 
-                    command = f"{ffmpeg} {ignore_parameter} -i {link} {custom_parameters} '{create_file_name_Windows(file_name, output_path, custom_extension)}'"
+                    command = f'{ffmpeg} {ignore_parameter} -i {link} {custom_parameters} "{create_file_name_Windows(file_name, output_path, custom_extension)}"'
 
                 else:
                     raise ValueError(
