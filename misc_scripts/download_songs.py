@@ -14,7 +14,7 @@ output_path = "downloaded/"
 
 # If True: it will overwrite automatically if the downloaded file name already exist
 # If not: it will throw an error and go to the next song
-overwrite_already_existing_name = True
+overwrite_already_existing_name = False
 
 # ______ General Configuration ______
 
@@ -111,11 +111,14 @@ def download_songs(song_list):
                 album_key = "album"
                 composer_key = "TCOM"
 
-                metadata = f"-metadata {title_key}=\"{song['SongName']}\" -metadata {artist_key}=\"{song['Artist']}\" -metadata {album_key}=\"{song['Anime']}\""
+                artists = [artist["names"][0] for artist in song["artists"]]
+                artist_metadata = "; ".join(artists)
+
+                metadata = f"-metadata {title_key}=\"{song['SongName']}\" -metadata {artist_key}=\"{artist_metadata}\" -metadata {album_key}=\"{song['Anime']}\""
 
                 if song["composers"]:
                     composers = [composer["names"][0] for composer in song["composers"]]
-                    composer_value = ", ".join(composers)
+                    composer_value = "; ".join(composers)
                     metadata += f' -metadata {composer_key}="{composer_value}"'
 
                 if link:
