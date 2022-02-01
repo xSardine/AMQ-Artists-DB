@@ -7,14 +7,14 @@ import os
 
 # Set what you want to download: mp3, webm, mp4, custom
 # if custom, you need to set your custom parameters further down
-download_type = "webm"
+download_type = "mp3"
 
 # Relative output path where your downloaded files will go
 output_path = "downloaded/"
 
 # If True: it will overwrite automatically if the downloaded file name already exist
 # If not: it will throw an error and go to the next song
-overwrite_already_existing_name = False
+overwrite_already_existing_name = True
 
 # ______ General Configuration ______
 
@@ -70,6 +70,7 @@ def create_file_name_common(fileName, path, bad_characters, extension, allowance
 
     # make sure that user input doesn't contain bad characters
     fileName = bad_characters.sub("", fileName)
+    print("\n\n", fileName, "\n")
     ret = ""
     for string in [fileName]:
         length = len(string)
@@ -105,9 +106,21 @@ def download_songs(song_list):
 
                 link = song["mptrois"] if "mptrois" in song else None
 
+                title_key = "title"
+                artist_key = "artist"
+                album_key = "album"
+                composer_key = "TCOM"
+
+                metadata = f"-metadata {title_key}=\"{song['SongName']}\" -metadata {artist_key}=\"{song['Artist']}\" -metadata {album_key}=\"{song['Anime']}\""
+
+                if song["composers"]:
+                    composers = [composer["names"][0] for composer in song["composers"]]
+                    composer_value = ", ".join(composers)
+                    metadata += f' -metadata {composer_key}="{composer_value}"'
+
                 if link:
 
-                    command = f'{ffmpeg} {ignore_parameter} -i {link} {default_mp3_parameters} "{create_file_name_Windows(file_name, output_path, default_mp3_extension)}"'
+                    command = f'{ffmpeg} {ignore_parameter} -i {link} {metadata} {default_mp3_parameters} "{create_file_name_Windows(file_name, output_path, default_mp3_extension)}"'
 
                 else:
 
