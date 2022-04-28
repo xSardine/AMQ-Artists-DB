@@ -29,8 +29,11 @@ Place them in a folder and then place any `.json` file you downloaded in that sa
 
 ## 1.3 - Configuring the scripts
 
-Once you have this, you can configure them to meet your needs. Each script start with a few lines corresponding to the configuration, which are in-between two `General Configuration` lines. If you're interested, you can also check `Advanced Settings` below that, but you probably won't need it for a basic use.
+Once you have this, you can configure them to meet your needs. Each script start with a few lines corresponding to the configuration. They are documented within the scripts, so I won't talk about them here, I let you read what you can do with it.
 
-They will process any .json file that are in their folder. So make sure to move out/delete old .json file for which you have no use anymore.
+## 1.4 Using the scripts
 
-The different parameters are documented within the scripts, so I won't talk about them here.
+The scripts will process any .json file that are in their folder. So make sure to move out/delete old .json file for which you have no use anymore.
+
+To start a script on windows, make sure you did the step 1.1, open a windows shell in the directory: shift+right click the directory (or inside the directory), and `open powershell window`.
+You can now start the script by typing `python 'name-of-script.py'`, for example if you want to start the download script: `python download_song.py`
