@@ -2855,7 +2855,7 @@ groups_subdivision_list = [
     ["mmm", ["Takuya Satou", "Yusuke Shirai", "Shunichi Toki"]],
     ["Naminori Boys", ["Proud of Surf Junkie", "Oaraitry", "mmm"]],
     ["MARIA", ["Maiko Sakae", "Aika Haga"]],
-    ["Kyuuso Nekokami", ["Seiya Yamasaki (Kyuuso Nekokami)"]],
+    ["Kyuuso Nekokami", ["Seiya Yamasaki"]],
     [
         "Four Seasons",
         ["Ikue Ootani", "Megumi Toyoguchi", "Saeko Chiba", "Kai Hirowashi"],
@@ -6152,6 +6152,10 @@ groups_subdivision_list = [
     ["S.E.S.", ["Choi Seong Hee", "Kim Yu Jin", "Yu Yu Yeong"]],
     ["REPLICA", ["Naoko Hamasaki"]],
     ["AkoRiko", ["Ayana Taketatsu", "Yuiko Tatsumi"]],
+    [
+        "Columbia Gasshou-dan",
+        ["Columbia Dansei Gasshou-dan", "Columbia Josei Gasshou-dan"],
+    ],
 ]
 
 

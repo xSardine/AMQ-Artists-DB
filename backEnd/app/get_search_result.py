@@ -8,21 +8,24 @@ from filters import (
     utils,
 )
 from datetime import datetime
+from pathlib import Path
 import timeit
+import json
 
 
-def add_log(log):
-    """Append given text as a new line at the end of file"""
-    # Open the file in append & read mode ('a+')
-    with open("../logs.txt", "a+") as file_object:
-        # Move read cursor to the start of file.
-        file_object.seek(0)
-        # If file is not empty then append '\n'
-        data = file_object.read(100)
-        if len(data) > 0:
-            file_object.write("\n")
-        # Append text at the end of file
-        file_object.write(log)
+def add_log(log_data):
+
+    with open("../logs.json") as json_file:
+        data = json.load(json_file)
+
+    data.append(log_data)
+
+    for key in log_data:
+        print(f"{key}: {log_data[key]}")
+    print()
+
+    with open("../logs.json", "w") as outfile:
+        json.dump(data, outfile)
 
 
 def is_duplicate_in_list(list, song):
@@ -62,6 +65,7 @@ def combine_results(
                 (not artist_song_list or song in artist_song_list)
                 and (not anime_song_list or song in anime_song_list)
                 and (not songname_song_list or song in songname_song_list)
+                and (not composer_result_list or song in composer_result_list)
             ):
                 if not ignore_duplicate or not is_duplicate_in_list(
                     final_song_list, song
@@ -86,6 +90,7 @@ def get_first_n_songs(song_database, nb_songs):
 
 
 def get_search_results(
+    ip_adress,
     song_database,
     artist_database,
     anime_search_filters,
@@ -191,25 +196,55 @@ def get_search_results(
 
     stop = timeit.default_timer()
 
-    log = f"\n{datetime.now().time()}: I have found {len(song_list)} songs for the search:\n"
-
+    logs = {
+        "ip": ip_adress,
+        "date": str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")),
+        "nb_results": len(song_list),
+        "computing_time": round(stop - start, 4),
+    }
     if anime_search_filters:
-        log += f"Anime: {anime_search_filters}\n"
+        logs["anime_filter"] = {
+            "search": anime_search_filters.search,
+            "ignore_special_characters": anime_search_filters.ignore_special_character,
+            "partial_match": anime_search_filters.partial_match,
+            "case_sensitive": anime_search_filters.case_sensitive,
+        }
     if song_name_search_filters:
-        log += f"Song name: {song_name_search_filters}\n"
+        logs["song_filter"] = {
+            "search": song_name_search_filters.search,
+            "ignore_special_characters": song_name_search_filters.ignore_special_character,
+            "partial_match": song_name_search_filters.partial_match,
+            "case_sensitive": song_name_search_filters.case_sensitive,
+        }
     if artist_search_filters:
-        log += f"Artist: {artist_search_filters}\n"
+        logs["artist_filter"] = {
+            "search": artist_search_filters.search,
+            "ignore_special_characters": artist_search_filters.ignore_special_character,
+            "partial_match": artist_search_filters.partial_match,
+            "case_sensitive": artist_search_filters.case_sensitive,
+            "group_granularity": artist_search_filters.group_granularity,
+            "max_other_people": artist_search_filters.max_other_artist,
+        }
     if composer_search_filters:
-        log += f"Composer: {composer_search_filters}\n"
-    log += f"and_logic: {and_logic}, ignore dups: {ignore_duplicate}, max songs: {max_nb_songs}, types: {authorized_types}\n"
-    log += f"Search time: {stop - start}\n"
+        logs["composer_filter"] = {
+            "search": composer_search_filters.search,
+            "ignore_special_characters": composer_search_filters.ignore_special_character,
+            "partial_match": composer_search_filters.partial_match,
+            "case_sensitive": composer_search_filters.case_sensitive,
+            "arrangement": composer_search_filters.arrangement,
+        }
+    logs["is_intersection"] = and_logic
+    logs["ignore_dups"] = ignore_duplicate
+    logs["max_nb_songs"] = max_nb_songs
+    logs["types"] = authorized_types
 
-    add_log(log)
+    add_log(logs)
 
     return song_list
 
 
 def get_artists_ids_song_list(
+    ip_adress,
     song_database,
     artist_database,
     artist_ids,
@@ -239,12 +274,24 @@ def get_artists_ids_song_list(
     log = f"\n{datetime.now().time()}: I have found {len(song_list)} songs for the search {artist_ids}, ignore dups: {ignore_duplicate}, max songs: {max_nb_songs}, types: {authorized_types}\n"
     log += f"Search time: {stop - start}\n"
 
-    add_log(log)
+    add_log(
+        {
+            "ip": ip_adress,
+            "date": str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")),
+            "nb_results": len(song_list),
+            "computing_time": round(stop - start, 4),
+            "artist_ids_filter": artist_ids,
+            "ignore_dups": ignore_duplicate,
+            "max_nb_songs": max_nb_songs,
+            "types": authorized_types,
+        }
+    )
 
     return song_list
 
 
 def get_annId_song_list(
+    ip_adress,
     song_database,
     annId,
     ignore_duplicate,
@@ -268,6 +315,17 @@ def get_annId_song_list(
     log = f"\n{datetime.now().time()}: I have found {len(song_list)} songs for the search {annId}, ignore dups: {ignore_duplicate}, max songs: {max_nb_songs}, types: {authorized_types}\n"
     log += f"Search time: {stop - start}\n"
 
-    add_log(log)
+    add_log(
+        {
+            "ip": ip_adress,
+            "date": str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")),
+            "nb_results": len(song_list),
+            "computing_time": round(stop - start, 4),
+            "annId_filter": annId,
+            "ignore_dups": ignore_duplicate,
+            "max_nb_songs": max_nb_songs,
+            "types": authorized_types,
+        }
+    )
 
     return song_list

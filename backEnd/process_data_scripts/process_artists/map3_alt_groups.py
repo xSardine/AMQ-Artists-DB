@@ -29,46 +29,38 @@ def get_artist_id(artist_ids_mapping, artist):
     return id
 
 
-def update_song(song_database, song_id, new_artist, artist_id):
+def update_song(song_database, song_id, group_id, new_set):
 
     flag_valid = False
+
     for anime in song_database:
         for song in anime["songs"]:
-            if song["annSongId"] == song_id:
+
+            if int(group_id) not in [int(artId[0]) for artId in song["artist_ids"]]:
+                continue
+
+            if type(linked_song) == int:
+
+                if song["annSongId"] != linked_song:
+                    continue
+
                 flag_valid = True
-                new_artist_ids = []
                 for artist in song["artist_ids"]:
-                    flag_to_update = False
-                    for artist_name in artist_database[str(artist[0])]["names"]:
-                        if artist_name in new_artist["artist_name"]:
-                            flag_to_update = True
-                    if flag_to_update:
-                        if new_artist["members"] != []:
-                            new_artist_ids.append([artist_id, 0])
-                        else:
-                            new_artist_ids.append([artist_id, -1])
-                    else:
-                        new_artist_ids.append(artist)
-                song["artist_ids"] = new_artist_ids
+                    if int(artist[0]) == int(group_id):
+                        artist[1] = i + 1
+
+            elif type(linked_song) == str:
+
+                if song["name"] != linked_song:
+                    continue
+
+                flag_valid = True
+                for artist in song["artist_ids"]:
+                    if int(artist[0]) == int(group_id):
+                        artist[1] = i + 1
+
     if not flag_valid:
         print("\n", "WARNING: Song", song_id, "NOT FOUND: WARNING", "\n")
-
-
-def add_new_artist(artist_database, new_artist):
-
-    last_id = int(list(artist_database.keys())[-1])
-    artist_database[last_id + 1] = {
-        "names": new_artist["artist_name"],
-        "groups": [],
-        "members": [],
-    }
-    if len(new_artist["members"]) > 0:
-        id_list = []
-        for artist in new_artist["members"]:
-            id_list.append(get_artist_id(artist_database, artist))
-        artist_database[last_id + 1]["members"].append(id_list)
-
-    return last_id + 1
 
 
 for edge_case in same_group_different_artists:
@@ -78,16 +70,9 @@ for edge_case in same_group_different_artists:
         for artist in alt_config["members"]:
             id_list.append(get_artist_id(artist_database, artist))
         artist_database[group_id]["members"].append(id_list)
-        for anime in song_database:
-            for song in anime["songs"]:
-                if song["annSongId"] in alt_config["linked_song"] or (
-                    song["annSongId"] == -1
-                    and edge_case["group"] in song["artist"]
-                    and song["name"] in alt_config["linked_song"]
-                ):
-                    for artist in song["artist_ids"]:
-                        if int(artist[0]) == int(group_id):
-                            artist[1] = i + 1
+
+        for linked_song in alt_config["linked_song"]:
+            update_song(song_database, linked_song, group_id, i + 1)
 
 with open(
     results_output_path / Path("artist_mapping.json"), "w", encoding="utf-8"

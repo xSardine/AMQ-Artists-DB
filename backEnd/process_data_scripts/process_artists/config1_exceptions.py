@@ -15,6 +15,7 @@ splitting_exception_list = [
             "Humbert Humbert",
         ),
     ),
+    ("POLYSICS with Seiya Yamasaki (Kyuuso Nekokami)", ("POLYSICS", "Seiya Yamasaki",)),
     (
         "Tenshou Gakuen Seito・Kyoushi Ichidou",
         (
