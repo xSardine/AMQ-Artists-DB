@@ -39,9 +39,41 @@ export class SearchBarComponent implements OnInit {
   showInserts: boolean = true;
   showAdvancedFilters: boolean = false;
 
+  rankedTime = false;
+  RankedDisabledTimeLeft = 0
+
   currentSongList: object = []
 
+  checkRankedTime() {
+    let date = new Date()
+    let hour = date.getUTCHours()
+    let minute = date.getUTCMinutes()
+
+    // 20:30 CST   -> 20:30 CET      -> 20:30 JST (all converted to UTC)
+    // West Ranked -> Central Ranked -> East Ranked first half
+    if ((hour == 1 && minute >= 30) || (hour == 18 && minute >= 30) || (hour == 11 && minute >= 30)) {
+      this.RankedDisabledTimeLeft = 91 - minute
+      return true
+    }
+    // 21:30 CST   -> 21:30 CET      -> 21:30 JST (all converted to UTC)
+    // West Ranked -> Central Ranked -> East Ranked second half
+    else if ((hour == 2 && minute <= 30) || (hour == 19 && minute <= 30) || (hour == 12 && minute <= 30)) {
+      this.RankedDisabledTimeLeft = 31 - minute
+      return true
+    }
+    return false
+
+  }
+
   ngOnInit(): void {
+
+    if (this.checkRankedTime()) {
+      this.rankedTime = true;
+    }
+    else {
+      this.rankedTime = false;
+    }
+
     this.currentSongList = this.searchRequestService.getFirstNRequest().subscribe(data => {
       this.currentSongList = data
       this.sendMessage(this.currentSongList)
@@ -54,11 +86,43 @@ export class SearchBarComponent implements OnInit {
     let tmp_anime_filter, tmp_songname_filter, tmp_artist_filter, tmp_composer_filter;
     let tmp_select = false;
 
+    if (this.checkRankedTime()) {
+      this.rankedTime = true;
+    }
+    else {
+      this.rankedTime = false;
+    }
+
     if (this.selectedCombination == "Intersection") {
       tmp_select = true;
     }
 
-    if (this.showAdvancedFilters) {
+
+    if (this.rankedTime) {
+
+      if (this.animeFilter.length > 0) {
+        tmp_anime_filter = {
+          "search": this.animeFilter,
+          "ignore_special_character": this.animeFilterIgnoreSpecialCaracters,
+          "partial_match": this.animeFilterPartialMatch,
+          "case_sensitive": this.animeFilterCaseSensitive,
+        }
+      }
+      else {
+        tmp_anime_filter = undefined;
+      }
+
+      body = {
+        "anime_search_filter": tmp_anime_filter,
+        "and_logic": tmp_select,
+        "ignore_duplicate": this.ignoreDuplicate,
+        "opening_filter": this.showOpenings,
+        "ending_filter": this.showEndings,
+        "insert_filter": this.showInserts,
+      }
+
+    }
+    else if (this.showAdvancedFilters) {
 
       if (this.animeFilter.length > 0) {
         tmp_anime_filter = {

@@ -19,7 +19,7 @@
 }
 
 #table tr:nth-child(even) {
-    background-color:var(--songTableImpairColor);
+    background-color: var(--songTableImpairColor);
 }
 
 #table tr>*:nth-child(0) {
@@ -29,6 +29,11 @@
 
 #table tr:hover {
     background-color: var(--songTableHoverColor);
+}
+
+#table td:hover {
+    cursor: pointer;
+    color: orange;
 }
 
 #table th {
@@ -45,29 +50,30 @@
     color: var(--textOnBackground);
 }
 
-.container{
-     overflow: hidden;
-     width: 100%;
-     white-space: nowrap;
+.container {
+    overflow: hidden;
+    width: 100%;
+    white-space: nowrap;
 }
-.container > div {
-     width: 32.06%;
-     height: auto;
-     float: left;
-     margin: 0 10px 0 0;
-     background-color: blueviolet;
+
+.container>div {
+    width: 32.06%;
+    height: auto;
+    float: left;
+    margin: 0 10px 0 0;
+    background-color: blueviolet;
 }
 
 
 .grid {
-  display: grid;
-  grid-gap: 4px;
-  grid-template-columns: repeat(3, 1fr);
+    display: grid;
+    grid-gap: 4px;
+    grid-template-columns: repeat(3, 1fr);
 }
 
-.grid > div {
-  padding: 10px;
-  background-color: #444;
+.grid>div {
+    padding: 10px;
+    background-color: #444;
 }
 
 
@@ -132,6 +138,11 @@
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     animation-name: animatetop;
     animation-duration: 0.4s
+}
+
+.popUpText:hover {
+    cursor: pointer;
+    color: orange;
 }
 
 /* Add Animation */

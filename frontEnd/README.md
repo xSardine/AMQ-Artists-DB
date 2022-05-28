@@ -1,13 +1,10 @@
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.2.5.
 
-
 # Front End
 
 Most of the component are done from scratch because I wanted to train on front end coding, as it is something that I am not familiar with.
 
-Exception is for the mp3 player: https://github.com/vime-js/vime
-
-
+Exception is for the mp3 player: <https://github.com/vime-js/vime>
 
 ## Development server
 
