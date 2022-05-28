@@ -1,5 +1,5 @@
 from __future__ import annotations
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import List, Optional
@@ -197,7 +197,7 @@ def format_arranger_ids(artist_database, arranger_id):
 
 
 @app.post("/api/search_request", response_model=List[Song_Entry])
-async def search_request(query: Search_Request, request: Request):
+async def search_request(query: Search_Request):
 
     song_database = sql_calls.extract_song_database()
     artist_database = sql_calls.extract_artist_database()
@@ -214,7 +214,6 @@ async def search_request(query: Search_Request, request: Request):
         return []
 
     song_list = get_search_result.get_search_results(
-        request.client.host,
         song_database,
         artist_database,
         query.anime_search_filter,
@@ -278,7 +277,7 @@ async def get_first_n_songs(query: First_N_Songs):
 
 
 @app.post("/api/artist_ids_request", response_model=List[Song_Entry])
-async def search_request(query: Artist_ID_Search_Request, request: Request):
+async def search_request(query: Artist_ID_Search_Request):
 
     song_database = sql_calls.extract_song_database()
     artist_database = sql_calls.extract_artist_database()
@@ -295,7 +294,6 @@ async def search_request(query: Artist_ID_Search_Request, request: Request):
         return []
 
     song_list = get_search_result.get_artists_ids_song_list(
-        request.client.host,
         song_database,
         artist_database,
         query.artist_ids,
@@ -326,7 +324,7 @@ async def search_request(query: Artist_ID_Search_Request, request: Request):
 
 
 @app.post("/api/annId_request", response_model=List[Song_Entry])
-async def search_request(query: annId_Search_Request, request: Request):
+async def search_request(query: annId_Search_Request):
 
     song_database = sql_calls.extract_song_database()
     artist_database = sql_calls.extract_artist_database()
@@ -343,7 +341,6 @@ async def search_request(query: annId_Search_Request, request: Request):
         return []
 
     song_list = get_search_result.get_annId_song_list(
-        request.client.host,
         song_database,
         query.annId,
         query.ignore_duplicate,

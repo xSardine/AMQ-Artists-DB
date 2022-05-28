@@ -90,7 +90,6 @@ def get_first_n_songs(song_database, nb_songs):
 
 
 def get_search_results(
-    ip_adress,
     song_database,
     artist_database,
     anime_search_filters,
@@ -197,7 +196,6 @@ def get_search_results(
     stop = timeit.default_timer()
 
     logs = {
-        "ip": ip_adress,
         "date": str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")),
         "nb_results": len(song_list),
         "computing_time": round(stop - start, 4),
@@ -244,7 +242,6 @@ def get_search_results(
 
 
 def get_artists_ids_song_list(
-    ip_adress,
     song_database,
     artist_database,
     artist_ids,
@@ -276,7 +273,6 @@ def get_artists_ids_song_list(
 
     add_log(
         {
-            "ip": ip_adress,
             "date": str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")),
             "nb_results": len(song_list),
             "computing_time": round(stop - start, 4),
@@ -291,7 +287,6 @@ def get_artists_ids_song_list(
 
 
 def get_annId_song_list(
-    ip_adress,
     song_database,
     annId,
     ignore_duplicate,
@@ -317,7 +312,6 @@ def get_annId_song_list(
 
     add_log(
         {
-            "ip": ip_adress,
             "date": str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")),
             "nb_results": len(song_list),
             "computing_time": round(stop - start, 4),
