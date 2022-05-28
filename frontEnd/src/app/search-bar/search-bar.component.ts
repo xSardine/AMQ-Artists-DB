@@ -38,6 +38,7 @@ export class SearchBarComponent implements OnInit {
   showEndings: boolean = true;
   showInserts: boolean = true;
   showAdvancedFilters: boolean = false;
+  previousBody: any
 
   rankedTime = false;
   RankedDisabledTimeLeft = 0
@@ -80,9 +81,69 @@ export class SearchBarComponent implements OnInit {
     });
   }
 
+  areBodyIdentical(body: any, body2: any): boolean {
+
+    if (this.previousBody) {
+
+      if ((body.anime_search_filter && !body2.anime_search_filter)
+        || (!body.anime_search_filter && body2.anime_search_filter)
+        || (body.artist_search_filter && !body2.artist_search_filter)
+        || (!body.artist_search_filter && body2.artist_search_filter)
+        || (body.song_name_search_filter && !body2.song_name_search_filter)
+        || (!body.song_name_search_filter && body2.song_name_search_filter)
+        || (body.composer_search_filter && !body2.composer_search_filter)
+        || (!body.composer_search_filter && body2.composer_search_filter)) {
+        return false
+      }
+
+      if (body.and_logic != body2.and_logic
+        || body.ending_filter != body2.ending_filter
+        || body.insert_filter != body2.insert_filter
+        || body.opening_filter != body2.opening_filter
+        || body.ignore_duplicate != body2.ignore_duplicate) {
+        return false
+      }
+      if (body.anime_search_filter && body2.anime_search_filter
+        && (body.anime_search_filter.search != body2.anime_search_filter.search
+          || body.anime_search_filter.ignore_special_character != body2.anime_search_filter.ignore_special_character
+          || body.anime_search_filter.partial_match != body2.anime_search_filter.partial_match
+          || body.anime_search_filter.case_sensitive != body2.anime_search_filter.case_sensitive)) {
+        return false
+      }
+      if (body.artist_search_filter && body2.artist_search_filter
+        && (body.artist_search_filter.search != body2.artist_search_filter.search
+          || body.artist_search_filter.ignore_special_character != body2.artist_search_filter.ignore_special_character
+          || body.artist_search_filter.partial_match != body2.artist_search_filter.partial_match
+          || body.artist_search_filter.case_sensitive != body2.artist_search_filter.case_sensitive
+          || body.artist_search_filter.group_granularity != body2.artist_search_filter.group_granularity
+          || body.artist_search_filter.max_other_artist != body2.artist_search_filter.max_other_artist)) {
+        return false
+      }
+      if (body.song_name_search_filter && body2.song_name_search_filter
+        && (body.song_name_search_filter.search != body2.song_name_search_filter.search
+          || body.song_name_search_filter.ignore_special_character != body2.song_name_search_filter.ignore_special_character
+          || body.song_name_search_filter.partial_match != body2.song_name_search_filter.partial_match
+          || body.song_name_search_filter.case_sensitive != body2.song_name_search_filter.case_sensitive)) {
+        return false
+      }
+      if (body.composer_search_filter && body2.composer_search_filter
+        && (body.composer_search_filter.search != body2.composer_search_filter.search
+          || body.composer_search_filter.ignore_special_character != body2.composer_search_filter.ignore_special_character
+          || body.composer_search_filter.partial_match != body2.composer_search_filter.partial_match
+          || body.composer_search_filter.case_sensitive != body2.composer_search_filter.case_sensitive
+          || body.composer_search_filter.arrangement != body2.composer_search_filter.arrangement)) {
+        return false
+      }
+    }
+    else {
+      return false
+    }
+    return true
+  }
+
   onSearchCallKey(): void {
 
-    let body = {};
+    let body: any;
     let tmp_anime_filter, tmp_songname_filter, tmp_artist_filter, tmp_composer_filter;
     let tmp_select = false;
 
@@ -247,6 +308,12 @@ export class SearchBarComponent implements OnInit {
         }
       }
     }
+
+    if (this.areBodyIdentical(body, this.previousBody)) {
+      return
+    }
+
+    this.previousBody = body
 
     this.currentSongList = this.searchRequestService.searchRequest(body).subscribe(data => {
       this.currentSongList = data
