@@ -1,3 +1,4 @@
 /data
 *.pyc
 *.db
+expand_mapping.json

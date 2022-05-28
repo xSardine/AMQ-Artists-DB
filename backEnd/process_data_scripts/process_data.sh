@@ -9,7 +9,6 @@ Help()
    echo
 }
 
-
 while [ -n "$1" ]; do # while loop starts
 
 	case "$1" in
