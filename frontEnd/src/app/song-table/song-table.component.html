@@ -94,7 +94,7 @@
                 (click)="displaySongIngoPopup(song)" title="More information" class="fa fa-plus"></i>
             <i style="cursor: pointer; margin-right: 4px; color:var(--textOnBackground)"
                 title="Search songs in this entry" (click)="searchAnnId(song.annId)" class="fa fa-search"></i>
-            {{song.annSongId}}
+            {{song.annId}}
         </td>
         <td (click)="copyToClipboard(song.Anime)" title="Copy to clipboard"> {{song.Anime}} </td>
         <td (click)="copyToClipboard(song.Type)" title="Copy to clipboard" style="white-space: nowrap;">{{song.Type}}
