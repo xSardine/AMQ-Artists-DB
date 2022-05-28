@@ -270,7 +270,40 @@ same_group_different_artists = [
     },
     {
         "group": "fripSide",
-        "alternate_configs": [{"members": ["nao"], "linked_song": [9498, 22427]}],
+        "alternate_configs": [
+            {"members": ["nao"], "linked_song": [9498, 22427]},
+            {
+                "members": ["Yoshino Nanjou"],
+                "linked_song": [
+                    "only my railgun",
+                    "LEVEL5-judgelight-",
+                    10918,
+                    11105,
+                    11276,
+                    12751,
+                    12752,
+                    "eternal reality",
+                    "Sister's Noise",
+                    "black bullet",
+                    15090,
+                    15382,
+                    15473,
+                    16069,
+                    16070,
+                    16403,
+                    22117,
+                    19126,
+                    16777,
+                    23903,
+                    21794,
+                    27440,
+                    30373,
+                    31181,
+                    35102,
+                    35820,
+                ],
+            },
+        ],
     },
     {
         "group": "Veil",
@@ -307,6 +340,15 @@ same_group_different_artists = [
                     "Tina (FAKY)",
                 ],
                 "linked_song": [13861],
+            },
+            {
+                "members": [
+                    "Lil' Fang",
+                    "Mikako (FAKY)",
+                    "Akina (FAKY)",
+                    "Anna (FAKY)",
+                ],
+                "linked_song": [16713, 21041],
             },
         ],
     },
@@ -772,6 +814,21 @@ same_group_different_artists = [
                     "Kei Inoo",
                     "Hikaru Yaotome",
                     "Kota Yabu",
+                    "Ryutaro Morimoto",
+                ],
+                "linked_song": [5856, 5881],
+            },
+            {
+                "members": [
+                    "Keito Okamoto",
+                    "Ryosuke Yamada",
+                    "Yuri Chinen",
+                    "Yuto Nakajima",
+                    "Daiki Arioka",
+                    "Yuya Takaki",
+                    "Kei Inoo",
+                    "Hikaru Yaotome",
+                    "Kota Yabu",
                 ],
                 "linked_song": [15971, 27133],
             },
@@ -1135,7 +1192,7 @@ same_group_different_artists = [
                     "Sara Hirano",
                 ],
                 "linked_song": [15115],
-            }
+            },
         ],
     },
     {
@@ -1195,6 +1252,181 @@ same_group_different_artists = [
                     "Nanami Yamashita",
                 ],
                 "linked_song": [32218],
+            },
+        ],
+    },
+    {
+        "group": "Teikoku Kageki-dan",
+        "alternate_configs": [
+            {
+                "members": [
+                    "Chisa Yokoyama",
+                    "Urara Takano",
+                    "Mayumi Tanaka",
+                    "Michie Tomizawa",
+                    "Kumiko Nishihara",
+                    "Yuriko Fuchizaki",
+                    "Maya Okamoto",
+                    "Kazue Ikura",
+                ],
+                "linked_song": [2729, 2730, 2731, 2732, 2733, 2734, 2741, 22359],
+            },
+            {
+                "members": ["Moeka Kishimoto", "Ayu Matsuura", "Yuuko Natsuyoshi"],
+                "linked_song": [30880],
+            },
+        ],
+    },
+    {
+        "group": "FURIL",
+        "alternate_configs": [
+            {
+                "members": [
+                    "Kyouko Hikami",
+                    "Yuuko Miyamura",
+                    "Yukana Nogami",
+                    "Yuka Imai",
+                ],
+                "linked_song": [5647, 5648, 29538, 29540],
+            },
+        ],
+    },
+    {
+        "group": "KING & QUEEN",
+        "alternate_configs": [
+            {
+                "members": ["Annerley Gordon"],
+                "linked_song": [19508],
+            },
+        ],
+    },
+    {
+        "group": "Eclipse",
+        "alternate_configs": [
+            {
+                "members": ["Haruka Tomatsu"],
+                "linked_song": [24436],
+            },
+        ],
+    },
+    {
+        "group": "in NO hurry to shout;",
+        "alternate_configs": [
+            {
+                "members": ["Ayahi Takagaki"],
+                "linked_song": [16011, 19012],
+            },
+        ],
+    },
+    {
+        "group": "Little Glee Monster",
+        "alternate_configs": [
+            {
+                "members": [
+                    "Serina Hasegawa",
+                    "Asahi Kobayashi",
+                    "Mayu Yoshida",
+                    "Karen Koga",
+                    "Manaka Fukumoto",
+                    "Maju Arai",
+                ],
+                "linked_song": [14973, 34733],
+            },
+        ],
+    },
+    {
+        "group": "Fairies",
+        "alternate_configs": [
+            {
+                "members": [
+                    "Rikako Inoue",
+                    "Sora Nomoto",
+                    "Momoka Ito",
+                    "Mahiro Hayashida",
+                    "Miki Shimomura",
+                ],
+                "linked_song": [22646],
+            },
+            {
+                "members": [
+                    "Rikako Inoue",
+                    "Sora Nomoto",
+                    "Momoka Ito",
+                    "Mahiro Hayashida",
+                    "Miria Fujita",
+                    "Miki Shimomura",
+                    "Kawane Kiyomura",
+                ],
+                "linked_song": [22645],
+            },
+        ],
+    },
+    {
+        "group": "TEAM SHACHI",
+        "alternate_configs": [
+            {
+                "members": [
+                    "Honoka Akimoto",
+                    "Haruna Sakamoto",
+                    "Nao Sakura",
+                    "Yuzuki Ooguro",
+                    "Yuzu Andou",
+                    "Chiyuri Itou",
+                ],
+                "linked_song": [14499, 15249],
+            },
+            {
+                "members": [
+                    "Honoka Akimoto",
+                    "Haruna Sakamoto",
+                    "Nao Sakura",
+                    "Yuzuki Ooguro",
+                    "Chiyuri Itou",
+                ],
+                "linked_song": [15878, 19291, 33654],
+            },
+            {
+                "members": [
+                    "Honoka Akimoto",
+                    "Nao Sakura",
+                ],
+                "linked_song": [19292],
+            },
+        ],
+    },
+    {
+        "group": "Buzy",
+        "alternate_configs": [
+            {
+                "members": [
+                    "Mao Miyazato",
+                    "Nao Touyama (Buzy)",
+                    "Mayumi Niwa",
+                    "Komugi Kadota",
+                ],
+                "linked_song": [4251],
+            }
+        ],
+    },
+    {
+        "group": "GALNERYUS",
+        "alternate_configs": [
+            {
+                "members": ["Yama-B"],
+                "linked_song": [9252, 9253],
+            }
+        ],
+    },
+    {
+        "group": "Golden Ixion Bomber DT",
+        "alternate_configs": [
+            {
+                "members": ["Hiroshi Kamiya"],
+                "linked_song": [17876],
+            },
+            {
+                "members": ["Takuya Eguchi"],
+                "linked_song": [12547],
             },
         ],
     },

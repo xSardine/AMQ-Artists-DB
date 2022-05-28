@@ -1,3 +1,15 @@
+PRAGMA foreign_keys = 0;
+DROP TABLE IF EXISTS animes;
+DROP TABLE IF EXISTS artist_alt_names;
+DROP TABLE IF EXISTS artists;
+DROP TABLE IF EXISTS groups;
+DROP TABLE IF EXISTS link_artist_group;
+DROP TABLE IF EXISTS link_song_arranger;
+DROP TABLE IF EXISTS link_song_artist;
+DROP TABLE IF EXISTS link_song_composer;
+DROP TABLE IF EXISTS songs;
+PRAGMA foreign_keys = 1;
+
 CREATE TABLE animes (
     "annId" INTEGER NOT NULL PRIMARY KEY,
     "name" VARCHAR(255) NOT NULL, 

@@ -23,4 +23,3 @@ for exception in process_artists.config1_exceptions.alternative_names:
                 print(id, end=" ")
         print()
     print()
-

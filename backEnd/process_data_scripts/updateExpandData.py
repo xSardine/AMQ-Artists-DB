@@ -55,13 +55,13 @@ for update_anime in update_file:
                             source_anime, source_song, update_anime, update_song
                         ):
                             """if source_song["artist"] != update_song["artist"]:
-                                print(
-                                    "WARNING: Artists names were updated!",
-                                    source_song["artist"],
-                                    "-->",
-                                    update_song["artist"],
-                                )
-                                print()"""
+                            print(
+                                "WARNING: Artists names were updated!",
+                                source_song["artist"],
+                                "-->",
+                                update_song["artist"],
+                            )
+                            print()"""
                             modification_counter += 1
                             update_song.pop("versions")
                             source_anime["songs"][i] = update_song

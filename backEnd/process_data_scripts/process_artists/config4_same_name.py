@@ -16,10 +16,10 @@ same_name_edge_case = [
     },
     {
         "new_artist": {
-            "artist_name": ["ELISA"],
+            "artist_name": ["Melody Castellari", "ELISA", "LOU LOU MARINA", "SARAH"],
             "members": [],
         },
-        "linked_song": [19357],
+        "linked_song": [19357, 33165, 33161],
     },
     {
         "new_artist": {
@@ -74,7 +74,7 @@ same_name_edge_case = [
             "artist_name": ["Eve"],
             "members": [],
         },
-        "linked_song": [24088, 24571, 30653, 34728, 30712],
+        "linked_song": [24088, 24571, 30653, 34728, 30712, 36583],
     },
     {
         "new_artist": {
@@ -124,7 +124,7 @@ same_name_edge_case = [
         "linked_song": [29574, 29593, 30205, 32899],
     },
     {
-        "new_artist": {"artist_name": ["LISA"], "members": []},
+        "new_artist": {"artist_name": ["Elisa Sciancalepore", "LISA"], "members": []},
         "linked_song": [19489],
     },
     {
@@ -138,5 +138,20 @@ same_name_edge_case = [
     {
         "new_artist": {"artist_name": ["Yuuyu"], "members": []},
         "linked_song": [23319, 23941],
+    },
+    {
+        "new_artist": {
+            "artist_name": ["ACE"],
+            "members": ["Tatsuhisa Suzuki", "Atsushi Abe", "Junji Majima"],
+        },
+        "linked_song": [19967],
+    },
+    {
+        "new_artist": {"artist_name": ["Me"], "members": []},
+        "linked_song": [36372, 36373],
+    },
+    {
+        "new_artist": {"artist_name": ["Mai"], "members": []},
+        "linked_song": [13596],
     },
 ]

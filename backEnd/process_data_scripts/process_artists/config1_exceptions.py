@@ -9,12 +9,20 @@ secondary_splitters = "・|& | &|&| ,|,| ×|× |×"
 
 splitting_exception_list = [
     (
+        "Me to Humbert Humbert",
+        (
+            "Me",
+            "Humbert Humbert",
+        ),
+    ),
+    (
         "Tenshou Gakuen Seito・Kyoushi Ichidou",
         (
             "Tenshou Gakuen Seito Ichidou",
             "Tenshou Gakuen Kyoushi Ichidou",
         ),
     ),
+    ("JO☆STARS~TOMMY, Coda, JIN~", ("JO☆STARS",)),
     (
         "HoneyWorks meets YURiCa/Hanatan",
         (
@@ -236,6 +244,10 @@ splitting_exception_list = [
         ),
     ),
     (
+        "SawanoHiroyuki[nZk]:Junki Kono & Sho Yonashiro (JO1)",
+        ("SawanoHiroyuki[nZk]", "Junki Kono", "Sho Yonashiro"),
+    ),
+    (
         "Haruna Ikezawa to Kouki Miyata",
         (
             "Haruna Ikezawa",
@@ -339,6 +351,7 @@ splitting_exception_list = [
             "SeiVi-tai",
         ),
     ),
+    ("Tamiya Terashima (Rentrak Japan)", ("Tamiya Terashima",)),
     (
         "Mikako Komatsu to Kana Hanazawa",
         (
@@ -731,6 +744,13 @@ splitting_exception_list = [
         ),
     ),
     (
+        "SawanoHiroyuki[nZk]:Honoka Takahashi",
+        (
+            "SawanoHiroyuki[nZk]",
+            "Honoka Takahashi",
+        ),
+    ),
+    (
         "SawanoHiroyuki[nZk]:Anly",
         (
             "SawanoHiroyuki[nZk]",
@@ -829,7 +849,7 @@ splitting_exception_list = [
     ("MAYA & Z", ("MAYA & Z",)),
     ("Icchi & Naru", ("Icchi & Naru",)),
     (
-        "Licca & Nao",
+        "Licca & Noa",
         (
             "Licca",
             "Noa",
@@ -850,6 +870,14 @@ splitting_exception_list = [
             "Yuji Ohno",
             "Lupintic Six with Friends",
             "Miyuki Sawashiro",
+        ),
+    ),
+    (
+        "Yuji Ohno & Lupintic Six with Friends feat. Lyn Inaizumi",
+        (
+            "Yuji Ohno",
+            "Lupintic Six with Friends",
+            "Lyn Inaizumi",
         ),
     ),
     (
@@ -929,6 +957,13 @@ splitting_exception_list = [
     ("DEJO & BON", ("DEJO & BON",)),
     ("Kakki & Ash Potato", ("Kakki & Ash Potato",)),
     ("Anamu & Maki", ("Anamu & Maki",)),
+    (
+        "G-Eazy (featuring Bente Violet McPherson)",
+        (
+            "G-Eazy",
+            "Bente Violet McPherson",
+        ),
+    ),
     ("SUEMITSU & THE SUEMITH", ("SUEMITSU & THE SUEMITH",)),
     ("TAKAKO&THE CRAZY BOYS", ("TAKAKO&THE CRAZY BOYS",)),
     ("TAKAKO & THE CRAZY BOYS", ("TAKAKO & THE CRAZY BOYS",)),
@@ -960,15 +995,33 @@ splitting_exception_list = [
     ("Rough & Ready", ("Rough & Ready",)),
     ("LOREN&MASH", ("LOREN&MASH",)),
     ("Jack & Betty", ("Jack & Betty",)),
-    ("Sachi & Juri", ("Sachi & Juri",)),
     ("Tackey & Tsubasa", ("Tackey & Tsubasa",)),
     ("AKIMA & NEOS", ("AKIMA & NEOS",)),
     ("Okino, Shuntaro", ("Okino, Shuntaro",)),
+    (
+        "Masayoshi Ooishi (feat. Yukari Tamura)",
+        (
+            "Masayoshi Ooishi",
+            "Yukari Tamura",
+        ),
+    ),
+    (
+        "Masayoshi Ooishi (feat. Hiroki Yasumoto)",
+        ("Masayoshi Ooishi", "Hiroki Yasumoto"),
+    ),
     (
         "HoneyWorks meets Sphere",
         (
             "HoneyWorks",
             "Sphere",
+        ),
+    ),
+    (
+        "CHiCO with HoneyWorks meets Mafumafu",
+        (
+            "CHiCO",
+            "HoneyWorks",
+            "Mafumafu",
         ),
     ),
     (
@@ -2331,6 +2384,7 @@ splitting_exception_list = [
         ),
     ),
     ("Shifo from UNIVERS\u2605L D", ("Shifo",)),
+    ("Ham-chans • Himawari-gumi", ("Ham-chans • Himawari-gumi",)),
     (
         "HARU＆SAYAKA from UNIVERS★LD",
         (
@@ -2365,6 +2419,13 @@ splitting_exception_list = [
         (
             "Jin",
             "Kouta Matsuyama",
+        ),
+    ),
+    (
+        "Jin ft. Shouichi Taguchi from Sentimental Vector",
+        (
+            "Jin",
+            "Shouichi Taguchi",
         ),
     ),
     ("2&", ("2&",)),
@@ -2481,6 +2542,16 @@ splitting_exception_list = [
         ),
     ),
     ("VOICE by Iyami feat. Osomatsu-san All Stars", ("Osomatsu-san All Stars",)),
+    (
+        "Hashiguchikanaderiya hugs The Super Ball",
+        (
+            "Hashiguchikanaderiya",
+            "The Super Ball",
+        ),
+    ),
+    ("Yumi Yoshimura (PUFFY)", ("Yumi Yoshimura",)),
+    ("Ami Onuki (PUFFY)", ("Ami Onuki",)),
+    ("A・ZU・NA", ("A・ZU・NA",)),
 ]
 # 0000
 
@@ -2491,40 +2562,44 @@ for split_exception in splitting_exception_list:
 
 # Alternative Artists names
 alternative_names = [
-    # 90% def to fix
-    ["Fumihiko Tachiki", "Tachiki Fumihiko"],
-    ["Kitagawa Chieko", "Chieko Kitagawa"],
-    ["Seria Fukagawa", "Seria Fukugawa"],
-    ["Suzuko Mimori", "Mimori Suzuko"],
+    # Spaces
     ["Midori Karashima", "Midori Karashima "],
+    ["Akira Sudou", "Akira Sudou "],
+    ["Shabana", "Shabana "],
+    ["G・GRIP", " G・GRIP"],
+    ["Yoshihiro Ike", "Yoshihiro Ike "],
+    ["Kaori Nazuka", "Kaori Nazuka "],
+    ["Yuka Iguchi", "Yuka Iguchi "],
+    ["Kouji Yamamoto", "Koji Yamamoto", "Kouji Yamamoto "],
+    ["Toshio Furukawa", "Toshio Furukawa "],
+    ["Maiko Hashimoto", "Maiko Hashimoto "],
+    # Most likely typo
+    ["Seria Fukagawa", "Seria Fukugawa"],
     ["Mina Katahira", "Mina Kitahara"],
     ["Miho Arakawa", "Miho Arikawa"],
     ["Makoto Furukawa", "Makoto Furukara"],
     ["Merumo Hisaoka", "Meruo Hisaoka"],
-    ["Micheal Brody", "Michael Brady"],
-    ["Teriyuki Tsuchida", "Teruyuki Tsuchida"],
     ["Yuuko Sanpei", "Yuuko Senpei"],
     ["Sadastic Mika Band", "Sadistic Mika Band"],
     ["Tomoko Nakajima", "Toyoko Nakajima"],
     ["Tamurapan", "Taurapan"],
-    ["skankfunk", "shankfunk"],
-    ["Kristen Price", "Kirsten Price"],
-    ["Addie Blaustein", "Maddie Blaustein"],
-    ["Shabana", "Shabana "],
-    ["Itai Toshi", "Itai Toshio"],
-    ["Satomi Majima", "Satomi Mashima"],
-    ["Norman J. Grossfield", "Norman J. Grossfeld"],
-    ["Shining Stars", "Golden Stars"],
     ["Kazue Ikura", "Kazu Ikura"],
-    ["FENCE OF DEFENSE", "FENCE OF DEFENCE"],
-    ["Derek Jackson", "Darek Jackson"],
     ["Takeshi Ike", "Takashi Ike"],
     ["Moyu Arishima", "Moyu Arashima"],
-    ["Maiko Hashimoto", "Maiko Hashimoto "],
-    ["G・GRIP", " G・GRIP"],
     ["Columbia Yurikago-kai", "Columbia Yurikago Kai", "Columubia Yurikago-kai"],
     ["Masako Iwanaga", "Masako Iwanga"],
+    # :weird: english/latin letters = might be credits fault
+    ["Maddie Blaustein", "Madeline Blaustein"],
+    ["Norman J. Grossfield", "Norman J. Grossfeld"],
+    ["Kristen Price", "Kirsten Price"],
+    ["skankfunk", "shankfunk"],
+    ["Micheal Brody", "Michael Brady"],
+    ['Chris "Breeze" Barczynski', 'Chris "Breeze" Barczynsk'],
+    ["'Weird Al' Yankovic", '"WEIRD AL" YANKOVIC'],
+    ["FENCE OF DEFENSE", "FENCE OF DEFENCE"],
+    ["Derek Jackson", "Darek Jackson"],
     # romanization / transcribe, some of them are probably right
+    ["Shining Stars", "Golden Stars"],
     ["CHAGE&ASKA", "Chage & Aska"],
     ["alice nine.", "Alice Nine"],
     ["Hana*Hana", "HANA HANA"],
@@ -2548,10 +2623,7 @@ alternative_names = [
     ["The 5 TEARDROPS", "The5 TEARDROPS"],
     ["Aimee Blackschleger", "Aimee B", "Aimee B."],
     ["Coalamode.", "Coala mode."],
-    ["'Weird Al' Yankovic", '"WEIRD AL" YANKOVIC'],
     ["Bakufu Slump", "Bakufu-Slump"],
-    ["MR.M", "MR. M"],
-    ['Chris "Breeze" Barczynski', 'Chris "Breeze" Barczynsk'],
     ["GagagaSP", "Gagaga SP"],
     ["Escargot", "Escargo"],
     ["Kabuki Rocks", "Kabukibu Rocks"],
@@ -2559,14 +2631,11 @@ alternative_names = [
     ["Kaguyahime", "Kaguya-hime"],
     ["Children's Chorus", "Children Chorus"],
     ["The Blessin' Four", "The Blessen Four"],
-    ["MICKEY B.", "MICKEY B"],
     ["FURIL", "FURIL'"],
     ["Becky♪#", "Becky"],
     ["Dance Man", "Dance☆Man"],
     ["mihimaru GT", "mihimaruGT"],
     ["Platinum Peppers Family", "Platinum Pepper Family"],
-    ["ZA-ZA", "ZAZA"],
-    ["DR.LOVE", "DR. LOVE"],
     ["※-mai-", "※-mai"],
     ["SHINES", "SHINE'S"],
     ["Russell Velázquez", "Russell Velazquez"],
@@ -2574,8 +2643,10 @@ alternative_names = [
     ["Pink Piggies", "Pink Piggys"],
     ["WIZ-KISS", "WIZ•KISS"],
     ["T's WORKSHOP", "T's WORK SHOP"],
-    ["RINK (Mistera Feo)", "RINKU (Mistera Feo)"],
+    ["RINK(Mistera Feo)", "RINKU (Mistera Feo)"],
     # capitalization, some of them are probably right, especially the english one/those written in latin letters
+    ["The S.H.E", "The s.h.e"],
+    ["Passepied", "PASSEPIED"],
     ["Ya-Ya-Yah", "YA-YA-yah"],
     ["PERSONZ", "Personz"],
     ["Yuuka Nishio", "Rinku", "RINKU"],
@@ -2593,10 +2664,7 @@ alternative_names = [
     ["Soraru", "soraru"],
     ["Rumania Montevideo", "rumania montevideo"],
     ["Sweet Velvet", "sweet velvet"],
-    ["TSUNAMI", "TSUNAMi"],
     ["The ROOTLESS", "THE ROOTLESS"],
-    ["Pull Tab to Can", "Pull Tab to Kan"],
-    ["DAVE MC LOUD", "DAVE Mc LOUD"],
     ["Peek-a-Boo", "Peek-A-Boo"],
     ["Salia", "SALIA"],
     ["Tarako", "TARAKO"],
@@ -2614,7 +2682,7 @@ alternative_names = [
     ["singman", "Singman"],
     ["Nothing's Carved In Stone", "Nothing's Carved in Stone"],
     ["Official HIGE DANdism", "Official HiGE DANdism"],
-    ["KIRISAME UNDERTAKER", "Kirisame Undertaker"],
+    ["KíRíSáMé UNDERTAKER", "KIRISAME UNDERTAKER", "Kirisame Undertaker"],
     ["Flower", "FLOWER"],
     ["smileY inc.", "SmileY inc."],
     ["team Hiiragi", "Team Hiiragi"],
@@ -2635,6 +2703,8 @@ alternative_names = [
     ["AKINO", "Akino"],
     ["UNDER GRAPH", "Under Graph"],
     ["Chatmonchy", "chatmonchy"],
+    ["Uyontana", "Wu yon ta na"],
+    ["UNICORN", "Unicorn"],
     ["Shounen Shoujo Gasshou-dan Mizuumi", "Mizuumi Boys & Girls Chorus"],
     # -bu -tai & co
     [
@@ -2642,6 +2712,7 @@ alternative_names = [
         "Nishirokugo Shounen Gasshou-dan",
     ],
     # ou/o/oh/oo (no ô)
+    ["Akemi Satou", "Akemi Sato"],
     ["Yoko Yamauchi", "Youko Yamauchi"],
     ["Tokiko Katou", "Tokiko Kato"],
     ["Akari Kitou", "Akari Kito"],
@@ -2655,21 +2726,19 @@ alternative_names = [
     ["Hoshi no Shoujo-tai", "Hoshi no Shoujo-tai☆"],
     ["Tomohisa Sakou", "Tomohisa Sako"],
     ["Ayuru Oohashi", "Ayuru Ohashi"],
-    ["Ame no Kisaki Shoujo Gasshou-dan", "Amanokisaki Shoujo Gasshou-dan"],
     ["Kanae Itou", "Kanae Ito"],
     ["Yurika Ooyama", "Yurika Ohyama"],
     ["Aya Endou", "Aya Endo"],
     ["Momoko Saitou", "Momoko Saito"],
     ["Chiaki Osawa", "Chiaki Oosawa"],
     ["Kouji Yusa", "Koji Yusa"],
-    ["Ryouko Shintani", "Ryoko Shintani"],
     ["Ryouko Sano", "Ryoko Sano"],
     ["Takurou Yoshida", "Takuro Yoshida"],
     ["Kouhei Doujima", "Kohei Dojima"],
     ["Ayaka Saitou", "Ayaka Saito"],
     ["Hitomi Tohyama", "Hitomi Toyama"],
     ["Youko Honna", "Yoko Honna"],
-    ["Kyouko Hikami", "Kyoko Hikami"],
+    ["Kyouko Hikami", "Kyoko Hikami", "Hikami Kyoko"],
     ["Miwako Saitou", "Miwako Saito"],
     ["Kouichi Yamadera", "Koichi Yamadera", "Kouchi Yamadera"],
     ["Shouko Suzuki", "Shoko Suzuki"],
@@ -2772,11 +2841,14 @@ alternative_names = [
     ["Shizuka Kudou", "Shizuka Kudo"],
     # other weird syllables
     ["Riu Konaka", "Riyu Konaka"],
+    ["Satomi Majima", "Satomi Mashima"],
     ["Mika Okudoi", "Mica Okudoi", "Re-Kiss"],
     ["Kaoru Sasajima", "Kahoru Sasajima"],
     ["Machico Kawana", "Machiko Kawana"],
     ["Rina Honizumi", "Rina Honnizumi"],
     # Prob fine
+    ["Buzy", "BUZY", "COLOR"],
+    ["GALNERYUS", "Galneryus"],
     ["REOL", "Reol"],
     ["SILENT SIREN", "Silent Siren"],
     ["UCO", "uco"],
@@ -2789,6 +2861,23 @@ alternative_names = [
     ["MIWA (BRAVE BIRD)", "MIWA BRAVEBIRD"],
     ["Hikari GENJI SUPER5", "GENJI Super 5"],
     # FINE
+    ["Norio Sakai", "Locomoriser"],
+    ["Naoki Takao", "Naoki", "Locomokaiser"],
+    ["Aya Nozawa", "aya"],
+    ["Kasumi Matsumura", "KASUMI"],
+    ["Mahora Gakuen Chuutoubu 2-A", "Mahora Gakuen Chuutoubu 3-A"],
+    ["Azumi Asakura", "Azumi Yamamoto"],
+    ["Team Syachihoko", "TEAM SHACHI"],
+    ["Nanami Yamashita", "kiracCHU"],
+    ["Kuniaki Haishima", "Mr. Haishima"],
+    ["Yoko Ishida", "NANA", "Mizuho", "YOKO"],
+    ["Sachiko Kobayashi", "Sachi"],
+    ["Juri Ihata", "Juri"],
+    ["Ame no Kisaki Shoujo Gasshou-dan", "Ame no Kisaki Sisters"],
+    ["CIVILIAN", "Lyu:Lyu"],
+    ["Sanae Shintani", "Sana"],
+    ["ZAQ", "Rina Isaku"],
+    ["Tokyo Shounen Shoujo Gasshou-tai", "The Member of LSOT"],
     ["Moka Kamishiraishi", "adieu"],
     ["Kaori Nishina", "ASAKO"],
     ["Hatsune Miku", "Kemurikusa"],
@@ -2804,6 +2893,114 @@ alternative_names = [
     ["Yoko Takahashi", "YAWMIN"],
     ["Shiena Nishizawa", "EXiNA"],
     ["School Food Punishment", "school food punishment"],
+    ["Elena Gobbi Frattini", "LOLITA"],
+    ["Melody Castellari", "JEE BEE"],
+    ["Gianni Coraini", "KEN LASZLO"],
+    ["Ennio Zanini", "FASTWAY", "DUSTY"],
+    ["Chris Lindh", "BOBBY SUMMER"],
+    ["Christian Codenotti", "ACE"],
+    [
+        "Clara Moroni",
+        "LESLIE PARRISH",
+        "CHERRY",
+        "DENISE",
+        "PRISCILLA",
+        "VICKY VALE",
+    ],
+    [
+        "Emanuela Gubinelli",
+        "JILLY",
+        "ANIKA",
+    ],
+    ["Nathalie Aarts", "NATHALIE"],
+    ["Daniela Rando", "MADISON"],
+    ["Giancarlo Pasquini", "DAVE RODGERS"],
+    [
+        "Giordano Gambogi",
+        "TRIUMPH",
+        "D-TEAM",
+        "DJ FORCE",
+        "KASANOVA",
+        "MONEY MAN",
+        "MR.M",
+        "MR. M",
+        "MR.MUSIC",
+    ],
+    ["Claudio Magnani", "ATRIUM", "P. STONE", "TOBY ASH", "SPEEDMAN"],
+    [
+        "Davide Di Marcantonio",
+        "ROBERT PATTON",
+        "THOMAS T",
+        "DAVID DIMA",
+        "DREAM FIGHTERS",
+        "DAVE MC LOUD",
+        "DAVE Mc LOUD",
+        "LOU GRANT",
+    ],
+    ["Michela Capurro", "MICKEY B.", "MICKEY B"],
+    ["Giacomo Caria", "CHRIS T", "NEO"],
+    ["Tomas Marin", "MEGA NRG MAN", "DERRECK SIMONS", "MR.GROOVE"],
+    [
+        "Maurizio De Jorio",
+        "MAX COVERI",
+        "D. ESSEX",
+        "D.ESSEX",
+        "MARKO POLO",
+        "MORRIS",
+        "NIKO",
+        "KEVIN JOHNSON",
+        "DEJO",
+    ],
+    ["Fernando Bonini", "BON", "DR.LOVE", "DR.LPVE", "NANDO"],
+    ["Simone Valeo", "DAVE SIMON", "SYMBOL", "TENSION", "OVERLOAD"],
+    ["Susi Amerio", "SUSAN BELL"],
+    ["Sara Righetto", "SARA"],
+    ["Annerley Gordon", "ANNALISE"],
+    ["Denise De Vincenzo", "NUAGE"],
+    ["Roberto Festari", "JOE BANANA", "GARCON"],
+    ["Federico Rimonti", "JUNGLE BILL", "FRANZ TORNADO"],
+    ["Danillo Lutzoni", "Wild"],
+    ["Karen J. Wainwright", "WAIN L", "KAREN"],
+    ["Michelle Vanni", "MICHAEL BEAT"],
+    ["Antonella Melone", "STARLET"],
+    ["Gian Luca Anceschi", "BLACK POWER"],
+    ["Luca Torchiani", "EUROFUNK", "PAUL HARRIS", "J-STARK"],
+    ["Silvia Ghidini", "VIVI"],
+    ["Silvio Rondelli", "LEO RIVER"],
+    ["Evelin Malferrari", "FUTURA"],
+    ["Marco Rancati", "DANIEL"],
+    ["Mario Tarantola", "TERENCE HOLLER"],
+    ["Jessa Stebbins", "KEN BLAST"],
+    ["Fabio Tordiglione", "J.STORM-GTR"],
+    ["Stefano Brandoni", "DIGITAL PLANET", "SPOCK"],
+    ["Yasuhiko Hoshino", "dino starr"],
+    ["Manuel Caramori", "MANUEL"],
+    ["Matteo Setti", "MATT LAND"],
+    ["Alessia De Boni", "PAMSY"],
+    ["Sara Olivari", "MISTIKA"],
+    ["Riccardo Majorana", "RICH HARD"],
+    ["Christian De Leo", "IDOL", "DAVE", "CHRIS STANTON"],
+    ["Melissa Bianchini", "MELISSA WHITE"],
+    ["Filippo Perbellini", "PHIL"],
+    ["Filippo Cordioli", "JAGER"],
+    ["Alex De Rosso", "ACE WARRIOR"],
+    ["Davide Budriesi", "JEAN LOVE", "BUDDY BO"],
+    ["Fabrizio Rizzolo", "BRAIN ICE"],
+    ["Roberto Tiranti", "POWERFUL T."],
+    ["Nicola Mansueto", "NICK MANSELL"],
+    ["Massimo Galli", "MIKE DANGER"],
+    ["Isabella Branca", "THE WONDER GIRLS"],
+    ["Anna Benedetti", "ANNIE"],
+    ["Diego Mancino", "DE LA VEGA"],
+    [
+        "Elena Ferretti",
+        "ELENA FERRETTI",
+        "HELENA",
+        "SOPHIE",
+        "VICTORIA",
+        "QUEEN OF TIMES",
+        "VALENTINA",
+    ],
     ["Rin", "Mami Suenaga"],
     ["Ayano Yamamoto", "Super Sonico"],
     ["Nemu Yumemi", "Nemu"],
@@ -2877,7 +3074,6 @@ alternative_names = [
     ["Yumi Matsutoya", "Yumi Arai"],
     ["Ushio Hashimoto", "Ushio"],
     ["Ai Kawashima", "♡"],
-    ["PriPara☆All Idol's", "Super PriPara☆All Idol's"],
     ["BUD VIRGIN LOGIC", "BUDVIRGINLOGIC"],
     ["Hyadain", "Nyadain"],
     ["STYLE FIVE", "Iwatobi Machi no Yukai na Nakama-tachi"],
@@ -2893,7 +3089,6 @@ alternative_names = [
     ["Aki Toyosaki", "Melori"],
     ["Current of Air", "COA"],
     ["ERIKA", "Erika Masaki"],
-    ["MEGA NRG MAN", "DERRECK SIMONS", "MR.GROOVE"],
     ["DENKI GROOVE", "Denki Groove"],
     ["Tokyo Arakawa Shounen Shoujo Gasshou-tai", "Arakawa Shounen Shoujo Gasshou-tai"],
     ["Meistersinger", "Tokyo Meistersinger"],
@@ -2913,10 +3108,9 @@ alternative_names = [
     ["Tommy heavenly\u2076", "Tommy february\u2076"],
     ["Koinu", "Riinu (Sutopuri)"],
     ["Haruka Mimura", "VJ Only"],
-    ["Kashitaro Ito", "Itowokashi", "RAGE"],
+    ["Kashitaro Ito", "Kashitaro Itou", "RAGE"],
     ["Ai Shimizu", "Minawa"],
     ["Ayako Kawasumi", "Mahoro"],
-    ["Yoko Ishida", "YOKO"],
     # ["KENN", "SHINJI"],
     ["Eijiro Tai", "Tomo", "TOMO"],
     ["Angel-tai", "Angel '03"],
@@ -2998,8 +3192,15 @@ friends (horimiya)
 Uchuu Shoujo Vanaren-tai
 neuron cream soft
 Sol/Lull BOB
+teikoku kageki dan sakurai taisen 2
+golden ixion bomber dt
 
 weird stuff
 DEATH DEVIL only instrumental
 hokago tea time only instrumental
+team shachi only instrumental
+
+performer not singer
+yoshida brothers
+Kenken
 """

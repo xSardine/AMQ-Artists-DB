@@ -27,9 +27,9 @@ while [ -n "$1" ]; do # while loop starts
 done
 
 cd process_artists
-python map1_artist_id.py
-python map2_group_id.py
-python map3_alt_groups.py
-python map4_same_name.py
-python map5_member_of.py
-python map6_composers.py
+python3 map1_artist_id.py
+python3 map2_group_id.py
+python3 map3_alt_groups.py
+python3 map4_same_name.py
+python3 map5_member_of.py
+python3 map6_composers.py

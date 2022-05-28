@@ -115,7 +115,9 @@ def check_validity(source_input_file, splitting_exception, alternative_names):
                         pass
                 else:
                     print(
-                        "WARNING: Alt Name", name, "IS NOT an Alt Name: WARNING",
+                        "WARNING: Alt Name",
+                        name,
+                        "IS NOT an Alt Name: WARNING",
                     )
 
     print("done checking")

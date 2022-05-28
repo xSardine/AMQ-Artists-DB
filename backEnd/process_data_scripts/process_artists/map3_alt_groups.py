@@ -98,4 +98,3 @@ with open(
     results_output_path / Path("expand_mapping.json"), "w", encoding="utf-8"
 ) as outfile:
     json.dump(song_database, outfile)
-

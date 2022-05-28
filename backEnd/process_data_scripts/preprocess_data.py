@@ -114,4 +114,3 @@ try:
 
 except sqlite3.Error as error:
     print("\n", error, "\n")
-
