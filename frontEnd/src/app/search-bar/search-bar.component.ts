@@ -1,6 +1,7 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { SearchRequestService } from '../core/services/search-request.service';
 import { DomSanitizer, SafeResourceUrl, SafeUrl } from '@angular/platform-browser';
+import { MatomoTracker } from '@ngx-matomo/tracker';
 
 @Component({
   selector: 'app-search-bar',
@@ -9,7 +10,7 @@ import { DomSanitizer, SafeResourceUrl, SafeUrl } from '@angular/platform-browse
 })
 export class SearchBarComponent implements OnInit {
 
-  constructor(private sanitizer: DomSanitizer, private searchRequestService: SearchRequestService) {
+  constructor(private sanitizer: DomSanitizer, private searchRequestService: SearchRequestService, private matomoTracker: MatomoTracker) {
   }
 
   mainFilter: string = "";
@@ -311,6 +312,13 @@ export class SearchBarComponent implements OnInit {
 
     if (this.areBodyIdentical(body, this.previousBody)) {
       return
+    }
+
+    if (this.mainFilter.length > 0) {
+      this.matomoTracker.trackEvent('SearchCall', 'GenericSearch', this.mainFilter);
+    }
+    else {
+      this.matomoTracker.trackEvent('SearchCall', 'AdvancedSearch', `${this.animeFilter}-${this.songNameFilter}-${this.artistFilter}-${this.composerFilter}`)
     }
 
     this.previousBody = body

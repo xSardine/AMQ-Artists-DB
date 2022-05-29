@@ -91,7 +91,9 @@
     <tr *ngFor=" let song of songTable">
         <td (click)="copyToClipboard(song.annSongId)" style="white-space: nowrap;" title="Copy to clipboard">
             <i style="cursor: pointer; margin-right: 8px; color:var(--textOnBackground)"
-                (click)="displaySongIngoPopup(song)" title="More information" class="fa fa-plus"></i>
+                (click)="displaySongIngoPopup(song)" title="More information" class="fa fa-plus"
+                matomoClickCategory="Information" matomoClickAction="Detailed Song Information"
+                matomoClickName="{{song.annSongId}} - {{song.SongName}} - {{song.Artist}}"></i>
             <i style="cursor: pointer; margin-right: 4px; color:var(--textOnBackground)"
                 title="Search songs in this entry" (click)="searchAnnId(song.annId)" class="fa fa-search"></i>
             {{song.annId}}

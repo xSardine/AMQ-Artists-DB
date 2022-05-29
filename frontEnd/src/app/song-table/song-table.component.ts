@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { SearchRequestService } from '../core/services/search-request.service';
+import { MatomoTracker } from '@ngx-matomo/tracker';
 
 @Component({
   selector: 'app-song-table',
@@ -14,7 +15,7 @@ import { SearchRequestService } from '../core/services/search-request.service';
 })
 export class SongTableComponent {
 
-  constructor(private searchRequestService: SearchRequestService) {
+  constructor(private searchRequestService: SearchRequestService, private matomoTracker: MatomoTracker) {
   }
 
   @Input() songTable: any
@@ -277,9 +278,12 @@ export class SongTableComponent {
   searchArtistId(artists: any) {
 
     let id_arr = []
+    let tmpstr = ""
     for (let artist in artists) {
       id_arr.push(artists[artist].id)
+      tmpstr += artists[artist].id + "-"
     }
+    tmpstr = tmpstr.substring(0, tmpstr.length - 1)
 
     let body = {
       "artist_ids": id_arr,
@@ -290,6 +294,8 @@ export class SongTableComponent {
       "ending_filter": true,
       "insert_filter": true,
     }
+
+    this.matomoTracker.trackEvent('SearchCall', 'ArtistID', tmpstr);
 
     let currentSongList
     currentSongList = this.searchRequestService.artistIdsSearchRequest(body).subscribe(data => {
@@ -309,6 +315,9 @@ export class SongTableComponent {
       "ending_filter": true,
       "insert_filter": true,
     }
+
+    this.matomoTracker.trackEvent('SearchCall', 'ArtistID', artist.id);
+
     let currentSongList
     currentSongList = this.searchRequestService.artistIdsSearchRequest(body).subscribe(data => {
       currentSongList = data
@@ -328,12 +337,13 @@ export class SongTableComponent {
       "insert_filter": true,
     }
 
+    this.matomoTracker.trackEvent('SearchCall', 'annID', id);
+
     let currentSongList
     currentSongList = this.searchRequestService.annIdSearchRequest(body).subscribe(data => {
       currentSongList = data
       this.sendMessage(currentSongList)
     });
   }
-
 
 }

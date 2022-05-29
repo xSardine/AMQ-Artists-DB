@@ -6,6 +6,8 @@ import { AppComponent } from './app.component';
 import { SearchBarComponent } from './search-bar/search-bar.component';
 import { SongTableComponent } from './song-table/song-table.component';
 import { VimeModule } from '@vime/angular';
+import { MatomoInitializationMode, NgxMatomoTrackerModule } from '@ngx-matomo/tracker';
+import { NgxMatomoRouterModule } from '@ngx-matomo/router';
 
 @NgModule({
   declarations: [
@@ -18,6 +20,10 @@ import { VimeModule } from '@vime/angular';
     AppRoutingModule,
     BrowserAnimationsModule,
     VimeModule,
+    NgxMatomoTrackerModule.forRoot({
+      mode: MatomoInitializationMode.MANUAL,
+    }),
+    NgxMatomoRouterModule, // Only if you want to enable automatic page views tracking with @angular/router
   ],
   providers: [],
   bootstrap: [AppComponent]
