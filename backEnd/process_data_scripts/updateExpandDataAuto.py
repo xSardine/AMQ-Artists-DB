@@ -3,10 +3,13 @@ from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from ischedule import schedule, run_loop
 import json
 from pathlib import Path
 import time
 import os
+from datetime import datetime
+
 
 # Call Listener to get expand data and store it in a new element that selenium is waiting for
 getExpandScript = """
@@ -36,6 +39,21 @@ waitForExpandLoaded().then((result) => {
 """
 
 
+def add_log(log):
+    print(log)
+    """Append given text as a new line at the end of file"""
+    # Open the file in append & read mode ('a+')
+    with open("updateLogs.txt", "a+") as file_object:
+        # Move read cursor to the start of file.
+        file_object.seek(0)
+        # If file is not empty then append '\n'
+        data = file_object.read(100)
+        if len(data) > 0:
+            file_object.write("\n")
+        # Append text at the end of file
+        file_object.write(log)
+
+
 def selenium_retrieve_data(amq_url, amq_username, amq_password):
     # create driver and open amq
     option = webdriver.ChromeOptions()
@@ -52,14 +70,14 @@ def selenium_retrieve_data(amq_url, amq_username, amq_password):
 
         # Wait few seconds to make sure page is loaded (need to find a better way)
         time.sleep(8)
-        print("Connected to AMQ")
+        add_log("Connected to AMQ")
 
     finally:
         try:
 
             # Execute script
             driver.execute_script(getExpandScript)
-            print("script executed, waiting for promise")
+            add_log("script executed, waiting for promise")
 
             # Wait for new element to be created and get data
             element = WebDriverWait(driver, 120).until(
@@ -96,7 +114,7 @@ def update_data_with_expand(source_data, expand_data):
                 flag_anime_found = True
 
                 if source_anime["name"] != update_anime["name"]:
-                    print(
+                    add_log(
                         f"UPDATE ANIME NAME | {source_anime['name']} -> {update_anime['name']}"
                     )
                     source_anime["name"] = update_anime["name"]
@@ -106,17 +124,17 @@ def update_data_with_expand(source_data, expand_data):
                         continue
                     flag_song_found = True
                     if source_song["name"] != update_song["name"]:
-                        print(
+                        add_log(
                             f"UPDATE SONG NAME | {source_song['annSongId']} {source_song['name']} -> {update_song['name']}"
                         )
                         source_song["name"] = update_song["name"]
                     if source_song["artist"] != update_song["artist"]:
-                        print(
+                        add_log(
                             f"UPDATE SONG ARTIST | {source_song['annSongId']} {source_song['artist']} -> {update_song['artist']}"
                         )
                         source_song["artist"] = update_song["artist"]
                     if source_song["examples"] != update_song["examples"]:
-                        print(
+                        add_log(
                             f"UPDATE SONG LINKS | {source_song['annSongId']} {source_song['examples']} -> {update_song['examples']}"
                         )
                         source_song["examples"] = update_song["examples"]
@@ -129,20 +147,20 @@ def update_data_with_expand(source_data, expand_data):
                 update_song.pop("versions")
                 source_anime["songs"].append(update_song)
                 if similar_song_exist(source_anime, update_song):
-                    print(f"ADD SONG - HIGH THREAT | {update_song}")
+                    add_log(f"ADD SONG - HIGH THREAT | {update_song}")
                 elif -1 in [song["annSongId"] for song in source_anime["songs"]]:
-                    print(f"ADD SONG - LOW THREAT | {update_song}")
+                    add_log(f"ADD SONG - LOW THREAT | {update_song}")
                 else:
-                    print(f"ADD SONG | {update_song}")
+                    add_log(f"ADD SONG | {update_song}")
                 break
 
             # if anime not found
             if not flag_anime_found:
                 songs = []
-                print(f"ADD ANIME | {update_anime['annId']} - {update_anime['name']}")
+                add_log(f"ADD ANIME | {update_anime['annId']} - {update_anime['name']}")
                 for song in update_anime["songs"]:
                     song.pop("versions")
-                    print(f"ADD SONG TO NEW ANIME | {song}")
+                    add_log(f"ADD SONG TO NEW ANIME | {song}")
                     songs.append(song)
                 source_data.append(
                     {
@@ -154,32 +172,49 @@ def update_data_with_expand(source_data, expand_data):
     return source_data
 
 
-if __name__ == "__main__":
-
+def process():
     USERNAME = "purplepinapple9"
     PWD = "purplepinapple9"
     SOURCE_FILE_PATH = Path("../data/preprocessed/FusedExpand.json")
 
     expand_data = selenium_retrieve_data("https://animemusicquiz.com/", USERNAME, PWD)
-    expand_data = expand_data["questions"]
 
     if not expand_data:
-        exit("ERROR WARNING /!\ Couldn't Retrieve Expand: It is undefined")
+        add_log("ERROR WARNING /!\ Couldn't Retrieve Expand: It is undefined")
+    else:
+        with open(SOURCE_FILE_PATH, encoding="utf-8") as json_file:
+            source_data = json.load(json_file)
 
-    with open(SOURCE_FILE_PATH, encoding="utf-8") as json_file:
-        source_data = json.load(json_file)
+        updated_data = update_data_with_expand(source_data, expand_data)
 
-    updated_data = update_data_with_expand(source_data, expand_data)
+        with open(SOURCE_FILE_PATH, "w", encoding="utf-8") as outfile:
+            json.dump(updated_data, outfile)
 
-    with open(SOURCE_FILE_PATH, "w", encoding="utf-8") as outfile:
-        json.dump(updated_data, outfile)
+        os.chdir("process_artists")
+        os.system("map1_artist_id.py")
+        os.system("map2_group_id.py")
+        os.system("map3_alt_groups.py")
+        os.system("map4_same_name.py")
+        os.system("map5_member_of.py")
+        os.system("map6_composers.py")
+        os.system("convert_to_SQL.py")
+        os.chdir("../")
 
-    os.chdir("process_artists")
-    os.system("map1_artist_id.py")
-    os.system("map2_group_id.py")
-    os.system("map3_alt_groups.py")
-    os.system("map4_same_name.py")
-    os.system("map5_member_of.py")
-    os.system("map6_composers.py")
-    os.system("convert_to_SQL.py")
-    # os.system("./process_data.sh")
+        now = datetime.now()
+        with open("../app/check_update.py", "a+") as file_object:
+            # Move read cursor to the start of file.
+            file_object.seek(0)
+            # If file is not empty then append '\n'
+            data = file_object.read(100)
+            if len(data) > 0:
+                file_object.write("\n")
+            # Append text at the end of file
+            file_object.write(f'"Update Done - {now.strftime("%d/%m/%Y %H:%M:%S")}"')
+
+        add_log("Update Done - " + now.strftime("%d/%m/%Y %H:%M:%S"))
+
+
+if __name__ == "__main__":
+    # schedule(process, interval=(1 / 10) * 60 * 60)
+    # run_loop()
+    process()
