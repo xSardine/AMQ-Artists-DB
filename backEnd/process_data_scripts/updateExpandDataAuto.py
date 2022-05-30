@@ -3,12 +3,9 @@ from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from ischedule import schedule, run_loop
-import json
 from pathlib import Path
-import time
-import os
 from datetime import datetime
+import time, os, json
 
 
 # Call Listener to get expand data and store it in a new element that selenium is waiting for
@@ -60,6 +57,7 @@ def selenium_retrieve_data(amq_url, amq_username, amq_password):
     option.add_argument("headless")
     driver = webdriver.Chrome(ChromeDriverManager().install(), options=option)
     driver.get(amq_url)
+    expand = None
 
     try:
 
@@ -69,7 +67,7 @@ def selenium_retrieve_data(amq_url, amq_username, amq_password):
         driver.find_element(By.ID, "loginButton").click()
 
         # Wait few seconds to make sure page is loaded (need to find a better way)
-        time.sleep(8)
+        time.sleep(7)
         add_log("Connected to AMQ")
 
     finally:
@@ -173,12 +171,14 @@ def update_data_with_expand(source_data, expand_data):
 
 
 def process():
-    USERNAME = "purplepinapple9"
-    PWD = "purplepinapple9"
+    AMQ_USERNAME = "purplepinapple9"
+    AMQ_PWD = "purplepinapple9"
     SOURCE_FILE_PATH = Path("../data/preprocessed/FusedExpand.json")
 
-    expand_data = selenium_retrieve_data("https://animemusicquiz.com/", USERNAME, PWD)
-
+    expand_data = selenium_retrieve_data(
+        "https://animemusicquiz.com/", AMQ_USERNAME, AMQ_PWD
+    )
+    expand_data = expand_data["questions"]
     if not expand_data:
         add_log("ERROR WARNING /!\ Couldn't Retrieve Expand: It is undefined")
     else:
@@ -212,6 +212,13 @@ def process():
             file_object.write(f'"Update Done - {now.strftime("%d/%m/%Y %H:%M:%S")}"')
 
         add_log("Update Done - " + now.strftime("%d/%m/%Y %H:%M:%S"))
+        os.system(
+            "scp ../app/data/Enhanced-AMQ-Database.db anthony@anisongdb.com:~/AMQ-Artists-DB/backEnd/app/data/Enhanced-AMQ-Database.db"
+        )
+        os.system(
+            "scp ../app/check_update.py anthony@anisongdb.com:~/AMQ-Artists-DB/backEnd/app/check_update.py"
+        )
+        print("Update sent")
 
 
 if __name__ == "__main__":

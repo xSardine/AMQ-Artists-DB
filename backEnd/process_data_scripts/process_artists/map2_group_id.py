@@ -1,7 +1,6 @@
 import json
 import config2_groups
 from pathlib import Path
-import numpy as np
 from Levenshtein import distance
 
 """
