@@ -107,7 +107,8 @@
                 title="Search songs by this artist(s)" (click)="searchArtistId(song.artists)" class="fa fa-search"></i>
             {{song.Artist}}
         </td>
-        <td *ngIf="!rankedTime" title="Listen to mp3" (click)="playMP3music(song)"
+        <td *ngIf="!rankedTime" title="Listen to mp3" matomoClickCategory="Media" matomoClickAction="MP3Play"
+            matomoClickName="{{song.annSongId}} - {{song.SongName}} - {{song.Artist}}" (click)="playMP3music(song)"
             style="text-align: center; color:var(--textOnBackground)">
             <i *ngIf="song.mptrois" class="fa fa-music fa-lg"></i>
         </td>

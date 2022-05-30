@@ -3,6 +3,7 @@ from os import link
 from pathlib import Path
 import config5_composers
 
+
 song_database_path = Path("../../app/data/expand_mapping.json")
 artist_database_path = Path("../../app/data/artist_mapping.json")
 

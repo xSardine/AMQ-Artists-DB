@@ -15,7 +15,13 @@ splitting_exception_list = [
             "Humbert Humbert",
         ),
     ),
-    ("POLYSICS with Seiya Yamasaki (Kyuuso Nekokami)", ("POLYSICS", "Seiya Yamasaki",)),
+    (
+        "POLYSICS with Seiya Yamasaki (Kyuuso Nekokami)",
+        (
+            "POLYSICS",
+            "Seiya Yamasaki",
+        ),
+    ),
     (
         "Tenshou Gakuen Seito・Kyoushi Ichidou",
         (
@@ -2839,7 +2845,6 @@ alternative_names = [
     ["Yuko Kobayashi", "Yuuko Kobayashi"],
     ["Yuuko Kawai", "Yuko Kawai"],
     ["Yuko Mizutani", "Yuuko Mizutani"],
-    ["Shizuka Kudou", "Shizuka Kudo"],
     # other weird syllables
     ["Riu Konaka", "Riyu Konaka"],
     ["Satomi Majima", "Satomi Mashima"],

@@ -77,23 +77,24 @@ def update_expand_mapping_with_groups(song_database, artist_ids_mapping):
         json.dump(song_database, outfile)
 
 
-with open(source_input_file, encoding="utf-8") as json_file:
-    artist_ids_mapping = json.load(json_file)
+if __name__ == "__main__":
+    with open(source_input_file, encoding="utf-8") as json_file:
+        artist_ids_mapping = json.load(json_file)
 
-    print(len(artist_ids_mapping))
+        print(len(artist_ids_mapping))
 
-    check_groups_duplicate(config2_groups.groups_subdivision_list)
+        check_groups_duplicate(config2_groups.groups_subdivision_list)
 
-    for group in groups_subdivision.keys():
-        group_id = get_artist_id(artist_ids_mapping, group, warning=True)
-        artists_id_list = []
-        for artist in groups_subdivision[group]:
-            artists_id_list.append(get_artist_id(artist_ids_mapping, artist))
-        artist_ids_mapping[group_id]["members"].append(artists_id_list)
-    update_expand_mapping_with_groups(song_database, artist_ids_mapping)
+        for group in groups_subdivision.keys():
+            group_id = get_artist_id(artist_ids_mapping, group, warning=True)
+            artists_id_list = []
+            for artist in groups_subdivision[group]:
+                artists_id_list.append(get_artist_id(artist_ids_mapping, artist))
+            artist_ids_mapping[group_id]["members"].append(artists_id_list)
+        update_expand_mapping_with_groups(song_database, artist_ids_mapping)
 
-if not check_group_new_artists:
-    with open(
-        results_output_path / Path("artist_mapping.json"), "w", encoding="utf-8"
-    ) as outfile:
-        json.dump(artist_ids_mapping, outfile)
+    if not check_group_new_artists:
+        with open(
+            results_output_path / Path("artist_mapping.json"), "w", encoding="utf-8"
+        ) as outfile:
+            json.dump(artist_ids_mapping, outfile)

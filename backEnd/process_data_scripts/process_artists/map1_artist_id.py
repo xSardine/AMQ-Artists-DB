@@ -123,33 +123,35 @@ def check_validity(source_input_file, splitting_exception, alternative_names):
     print("done checking")
 
 
-with open(source_input_file, encoding="utf-8") as json_file:
-    data = json.load(json_file)
+if __name__ == "__main__":
 
-    counter = 0
-    for anime in data:
-        counter += len(anime["songs"])
-    print("There is", counter, "songs in", len(data), "animes in the database")
+    with open(source_input_file, encoding="utf-8") as json_file:
+        data = json.load(json_file)
 
-    check_validity(data, splitting_exception, alternative_names)
+        counter = 0
+        for anime in data:
+            counter += len(anime["songs"])
+        print("There is", counter, "songs in", len(data), "animes in the database")
 
-    artist_ids_mapping = {}
-    for anime in data:
-        for song in anime["songs"]:
-            id_list = []
-            for artist in split_artist(song["artist"]):
-                id = get_artist_id(artist_ids_mapping, artist)
-                id_list.append([id, -1])
-                if id not in artist_ids_mapping.keys():
-                    add_new_artist_to_DB(artist_ids_mapping, artist, id)
-            song["artist_ids"] = id_list
+        check_validity(data, splitting_exception, alternative_names)
 
-with open(
-    results_output_path / Path("artist_mapping.json"), "w", encoding="utf-8"
-) as outfile:
-    json.dump(artist_ids_mapping, outfile)
+        artist_ids_mapping = {}
+        for anime in data:
+            for song in anime["songs"]:
+                id_list = []
+                for artist in split_artist(song["artist"]):
+                    id = get_artist_id(artist_ids_mapping, artist)
+                    id_list.append([id, -1])
+                    if id not in artist_ids_mapping.keys():
+                        add_new_artist_to_DB(artist_ids_mapping, artist, id)
+                song["artist_ids"] = id_list
 
-with open(
-    results_output_path / Path("expand_mapping.json"), "w", encoding="utf-8"
-) as outfile:
-    json.dump(data, outfile)
+    with open(
+        results_output_path / Path("artist_mapping.json"), "w", encoding="utf-8"
+    ) as outfile:
+        json.dump(artist_ids_mapping, outfile)
+
+    with open(
+        results_output_path / Path("expand_mapping.json"), "w", encoding="utf-8"
+    ) as outfile:
+        json.dump(data, outfile)

@@ -71,19 +71,19 @@ def add_new_artist(artist_database, new_artist):
     return last_id + 1
 
 
-for edge_case in same_name_edge_case:
+if __name__ == "__main__":
+    for edge_case in same_name_edge_case:
 
-    new_id = add_new_artist(artist_database, edge_case["new_artist"])
-    for song_id in edge_case["linked_song"]:
-        update_song(song_database, song_id, edge_case["new_artist"], new_id)
+        new_id = add_new_artist(artist_database, edge_case["new_artist"])
+        for song_id in edge_case["linked_song"]:
+            update_song(song_database, song_id, edge_case["new_artist"], new_id)
 
+    with open(
+        results_output_path / Path("artist_mapping.json"), "w", encoding="utf-8"
+    ) as outfile:
+        json.dump(artist_database, outfile)
 
-with open(
-    results_output_path / Path("artist_mapping.json"), "w", encoding="utf-8"
-) as outfile:
-    json.dump(artist_database, outfile)
-
-with open(
-    results_output_path / Path("expand_mapping.json"), "w", encoding="utf-8"
-) as outfile:
-    json.dump(song_database, outfile)
+    with open(
+        results_output_path / Path("expand_mapping.json"), "w", encoding="utf-8"
+    ) as outfile:
+        json.dump(song_database, outfile)

@@ -7,14 +7,119 @@ import sqlite3
 import json
 from pathlib import Path
 
-database = Path("../app/data/Enhanced-AMQ-Database.db")
-song_database_path = Path("../app/data/expand_mapping.json")
-artist_database_path = Path("../app/data/artist_mapping.json")
+database = Path("../../app/data/Enhanced-AMQ-Database.db")
+song_database_path = Path("../../app/data/expand_mapping.json")
+artist_database_path = Path("../../app/data/artist_mapping.json")
 
 with open(song_database_path, encoding="utf-8") as json_file:
     song_database = json.load(json_file)
 with open(artist_database_path, encoding="utf-8") as json_file:
     artist_database = json.load(json_file)
+
+
+RESET_DB_SQL = """
+PRAGMA foreign_keys = 0;
+DROP TABLE IF EXISTS animes;
+DROP TABLE IF EXISTS artist_alt_names;
+DROP TABLE IF EXISTS artists;
+DROP TABLE IF EXISTS groups;
+DROP TABLE IF EXISTS link_artist_group;
+DROP TABLE IF EXISTS link_song_arranger;
+DROP TABLE IF EXISTS link_song_artist;
+DROP TABLE IF EXISTS link_song_composer;
+DROP TABLE IF EXISTS songs;
+PRAGMA foreign_keys = 1;
+
+CREATE TABLE animes (
+    "annId" INTEGER NOT NULL PRIMARY KEY,
+    "name" VARCHAR(255) NOT NULL, 
+    "romaji" VARCHAR (255)
+);
+
+CREATE TABLE songs (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+    "annSongId" INTEGER,
+    "annId" INTEGER NOT NULL,
+    "type" INTEGER NOT NULL,
+    "number" INTEGER NOT NULL,
+    "name" VARCHAR(255) NOT NULL,
+    "artist" VARCHAR(255) NOT NULL,
+    "720p" VARCHAR(255),
+    "480p" VARCHAR(255),
+    "mp3" VARCHAR(255),
+    FOREIGN KEY ("annId")
+        REFERENCES animes ("id")
+);
+
+CREATE TABLE artists (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "name" VARCHAR(255) NOT NULL,
+    "vocalist" BIT NOT NULL,
+    "composer" BIT NOT NULL
+);
+
+CREATE TABLE groups (
+    "artist_id" INTEGER NOT NULL,
+    "alt_config_id" INTEGER NOT NULL,
+    FOREIGN KEY ("artist_id")
+        REFERENCES artists ("id"),
+    PRIMARY KEY (artist_id, alt_config_id)
+);
+
+CREATE TABLE artist_alt_names (
+    "artist_id" INTEGER NOT NULL,
+    "alt_name" VARCHAR(255) NOT NULL,
+    FOREIGN KEY ("artist_id")
+        REFERENCES artist ("id"),
+    PRIMARY KEY (artist_id, alt_name)
+);
+
+CREATE TABLE link_song_artist (
+    "song_id" INTEGER NOT NULL,
+    "artist_id" INTEGER NOT NULL,
+    "artist_alt_members_id" INTEGER NOT NULL,
+    FOREIGN KEY ("song_id")
+        REFERENCES songs ("id"),
+    FOREIGN KEY ("artist_id")
+        REFERENCES artists ("id"),
+    FOREIGN KEY ("artist_alt_members_id")
+        REFERENCES artists ("alt_members_id"),
+    PRIMARY KEY (song_id, artist_id, artist_alt_members_id)
+);
+
+CREATE TABLE link_song_composer (
+    "song_id" INTEGER NOT NULL,
+    "composer_id" INTEGER NOT NULL,
+    FOREIGN KEY ("song_id")
+        REFERENCES songs ("id"),
+    FOREIGN KEY ("composer_id")
+        REFERENCES artists ("id"),
+    PRIMARY KEY (song_id, composer_id)
+);
+
+CREATE TABLE link_song_arranger (
+    "song_id" INTEGER NOT NULL,
+    "arranger_id" INTEGER NOT NULL,
+    FOREIGN KEY ("song_id")
+        REFERENCES songs ("id"),
+    FOREIGN KEY ("arranger_id")
+        REFERENCES artists ("id"),
+    PRIMARY KEY (song_id, arranger_id)
+);
+
+create TABLE link_artist_group (
+    "group_id" INTEGER NOT NULL,
+    "group_alt_config_id" INTEGER NOT NULL,
+    "artist_id" INTEGER NOT NULL,
+    FOREIGN KEY ("artist_id")
+        REFERENCES artists ("id"),
+    FOREIGN KEY ("group_id")
+        REFERENCES groups ("artist_id"),
+    FOREIGN KEY ("group_alt_config_id")
+        REFERENCES groups ("alt_config_id"),
+    PRIMARY KEY (artist_id, group_id, group_alt_config_id)
+);
+"""
 
 
 def run_sql_command(cursor, sql_command, data=None):
@@ -189,6 +294,18 @@ def link_song_arranger(cursor, song_id, arranger_id):
 try:
     sqliteConnection = sqlite3.connect(database)
     cursor = sqliteConnection.cursor()
+    for command in RESET_DB_SQL.split(";"):
+        run_sql_command(cursor, command)
+    sqliteConnection.commit()
+    cursor.close()
+    sqliteConnection.close()
+    print("Reset successful :)")
+except sqlite3.Error as error:
+    print("\n", error, "\n")
+
+try:
+    sqliteConnection = sqlite3.connect(database)
+    cursor = sqliteConnection.cursor()
     print("Connection successful :)")
 except sqlite3.Error as error:
     print("\n", error, "\n")
@@ -256,3 +373,4 @@ for anime in song_database:
 sqliteConnection.commit()
 cursor.close()
 sqliteConnection.close()
+print("Convertion Done :)")

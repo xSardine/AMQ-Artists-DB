@@ -127,7 +127,7 @@ groups_subdivision_list = [
     ["TRY FORCE", ["Hironobu Kageyama"]],
     ["Kirakira", ["DEARDROPS", "CaS", "d2b"]],
     ["Like Uncolored Velvet", ["AiRI"]],
-    ["Ushirogami Hikaretai", ["Shizuka Kudou", "Akiko Ikuina", "Makiko Saito"]],
+    ["Ushirogami Hikaretai", ["Shizuka Kudo", "Akiko Ikuina", "Makiko Saito"]],
     ["Two for all", ["Kaori Ishihara", "Kaede Hondo"]],
     ["Haitoku Pistols", ["Yoko Hikasa"]],
     ["sweet ARMS", ["Iori Nomizu", "Misuzu Togashi", "Kaori Sadohara"]],

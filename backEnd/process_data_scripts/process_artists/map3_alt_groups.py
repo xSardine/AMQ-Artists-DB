@@ -63,23 +63,24 @@ def update_song(song_database, song_id, group_id, new_set):
         print("\n", "WARNING: Song", song_id, "NOT FOUND: WARNING", "\n")
 
 
-for edge_case in same_group_different_artists:
-    group_id = get_artist_id(artist_database, edge_case["group"])
-    for i, alt_config in enumerate(edge_case["alternate_configs"]):
-        id_list = []
-        for artist in alt_config["members"]:
-            id_list.append(get_artist_id(artist_database, artist))
-        artist_database[group_id]["members"].append(id_list)
+if __name__ == "__main__":
+    for edge_case in same_group_different_artists:
+        group_id = get_artist_id(artist_database, edge_case["group"])
+        for i, alt_config in enumerate(edge_case["alternate_configs"]):
+            id_list = []
+            for artist in alt_config["members"]:
+                id_list.append(get_artist_id(artist_database, artist))
+            artist_database[group_id]["members"].append(id_list)
 
-        for linked_song in alt_config["linked_song"]:
-            update_song(song_database, linked_song, group_id, i + 1)
+            for linked_song in alt_config["linked_song"]:
+                update_song(song_database, linked_song, group_id, i + 1)
 
-with open(
-    results_output_path / Path("artist_mapping.json"), "w", encoding="utf-8"
-) as outfile:
-    json.dump(artist_database, outfile)
+    with open(
+        results_output_path / Path("artist_mapping.json"), "w", encoding="utf-8"
+    ) as outfile:
+        json.dump(artist_database, outfile)
 
-with open(
-    results_output_path / Path("expand_mapping.json"), "w", encoding="utf-8"
-) as outfile:
-    json.dump(song_database, outfile)
+    with open(
+        results_output_path / Path("expand_mapping.json"), "w", encoding="utf-8"
+    ) as outfile:
+        json.dump(song_database, outfile)
