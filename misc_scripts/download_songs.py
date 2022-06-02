@@ -98,7 +98,7 @@ def download_songs(song_list):
         else:
             ignore_parameter = "-n"
 
-        file_name = f"{song['annId']} {song['Anime']} {song['Type']} - {song['SongName']} by {song['Artist']}"
+        file_name = f"{song['annId']} {song['animeExpandName']} {song['songType']} - {song['songName']} by {song['artist']}"
 
         try:
 
@@ -114,7 +114,7 @@ def download_songs(song_list):
                 artists = [artist["names"][0] for artist in song["artists"]]
                 artist_metadata = "; ".join(artists)
 
-                metadata = f"-metadata {title_key}=\"{song['SongName']}\" -metadata {artist_key}=\"{artist_metadata}\" -metadata {album_key}=\"{song['Anime']}\""
+                metadata = f"-metadata {title_key}=\"{song['songName']}\" -metadata {artist_key}=\"{artist_metadata}\" -metadata {album_key}=\"{song['animeExpandName']}\""
 
                 if song["composers"]:
                     composers = [composer["names"][0] for composer in song["composers"]]

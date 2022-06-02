@@ -10,7 +10,7 @@ from youtubesearchpython import VideosSearch
 
 # Setting to True slow down the process
 # but gives you full song link when available on youtube
-add_youtube_link = True
+add_youtube_link = False
 
 # If set to True: will fuse all the json in the folder
 # If set to False: will create one sheet per json in the folder
@@ -36,9 +36,9 @@ def song_in_list(song, song_list):
     for song2 in song_list:
         if (
             song["annId"] == song2["annId"]
-            and song["Type"] == song2["Type"]
-            and song["SongName"] == song2["SongName"]
-            and song["Artist"] == song2["Artist"]
+            and song["songType"] == song2["songType"]
+            and song["songName"] == song2["songName"]
+            and song["artist"] == song2["artist"]
         ):
             return True
     return False
@@ -59,12 +59,14 @@ def format_song(song):
 
     HQlink = song["sept"] if ("sept" in song and song["sept"]) else song["quatre"]
     mp3_link = song["mptrois"] if "mptrois" in song else None
-    print(song["SongName"], mp3_link, "\n")
+    print(song["songName"], mp3_link, "\n")
 
     return {
-        "anime_name": song["Anime"],
-        "type": song["Type"],
-        "info": f"{song['SongName']} by {song['Artist']}",
+        "anime_name": song["animeJPName"]
+        if "animeJPName" in song
+        else song["animeExpandName"],
+        "type": song["songType"],
+        "info": f"{song['songName']} by {song['artist']}",
         "link": HQlink,
         "mp3_link": mp3_link,
     }
@@ -101,7 +103,7 @@ def create_workbook(raw_song_list, output_file_name):
 
             if not len(results["result"]):
                 print(f"New strategy for {song['info']}")
-                ytsearch = f"{song['anime_name']} {raw_song['SongName']} full song"
+                ytsearch = f"{song['anime_name']} {raw_song['songName']} full song"
                 results = VideosSearch(ytsearch, limit=1).result()
 
             if len(results["result"]):
