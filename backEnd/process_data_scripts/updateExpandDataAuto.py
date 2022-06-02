@@ -131,11 +131,41 @@ def update_data_with_expand(source_data, expand_data):
                             f"UPDATE SONG ARTIST | {source_song['annSongId']} {source_song['artist']} -> {update_song['artist']}"
                         )
                         source_song["artist"] = update_song["artist"]
-                    if source_song["examples"] != update_song["examples"]:
-                        add_log(
-                            f"UPDATE SONG LINKS | {source_song['annSongId']} {source_song['examples']} -> {update_song['examples']}"
+                    if (
+                        "720" in update_song["examples"]
+                        and "openings.moe" not in update_song["examples"]["720"]
+                        and (
+                            "720" not in source_song["examples"]
+                            or source_song["examples"]["720"]
+                            != update_song["examples"]["720"]
                         )
-                        source_song["examples"] = update_song["examples"]
+                    ):
+                        add_log(
+                            f"UPDATE 720 SONG LINKS | {source_song['annSongId']} {source_song['examples']['720'] if '720' in source_song['examples'] else None} -> {update_song['examples']['720']}"
+                        )
+                        source_song["examples"]["720"] = update_song["examples"]["720"]
+                    if (
+                        "480" in update_song["examples"]
+                        and "openings.moe" not in update_song["examples"]["480"]
+                        and (
+                            "480" not in source_song["examples"]
+                            or source_song["examples"]["480"]
+                            != update_song["examples"]["480"]
+                        )
+                    ):
+                        add_log(
+                            f"UPDATE 480 SONG LINKS | {source_song['annSongId']} {source_song['examples']['480'] if '480' in source_song['examples'] else None} -> {update_song['examples']['480']}"
+                        )
+                        source_song["examples"]["480"] = update_song["examples"]["480"]
+                    if "mp3" in update_song["examples"] and (
+                        "mp3" not in source_song["examples"]
+                        or source_song["examples"]["mp3"]
+                        != update_song["examples"]["mp3"]
+                    ):
+                        add_log(
+                            f"UPDATE mp3 SONG LINKS | {source_song['annSongId']} {source_song['examples']['mp3'] if 'mp3' in source_song['examples'] else None} -> {update_song['examples']['mp3']}"
+                        )
+                        source_song["examples"]["mp3"] = update_song["examples"]["mp3"]
                     break
 
                 if flag_song_found:
@@ -175,13 +205,19 @@ def process():
     AMQ_PWD = "purplepinapple9"
     SOURCE_FILE_PATH = Path("../data/preprocessed/FusedExpand.json")
 
-    expand_data = selenium_retrieve_data(
-        "https://animemusicquiz.com/", AMQ_USERNAME, AMQ_PWD
-    )
-    expand_data = expand_data["questions"]
+    # expand_data = selenium_retrieve_data(
+    #    "https://animemusicquiz.com/", AMQ_USERNAME, AMQ_PWD
+    # )
+    # expand_data = expand_data["questions"]
+    with open("../data/source/expand.json", encoding="utf-8") as json_file:
+        expand_data = json.load(json_file)
     if not expand_data:
         add_log("ERROR WARNING /!\ Couldn't Retrieve Expand: It is undefined")
     else:
+
+        with open("../data/source/expand.json", "w", encoding="utf-8") as outfile:
+            json.dump(expand_data, outfile)
+
         with open(SOURCE_FILE_PATH, encoding="utf-8") as json_file:
             source_data = json.load(json_file)
 

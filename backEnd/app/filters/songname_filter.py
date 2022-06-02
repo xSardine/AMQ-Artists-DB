@@ -13,11 +13,11 @@ def song_meets_search_requirement(
     Check that a song meets the settings
     """
 
-    if song["type"] not in authorized_types:
+    if song["songType"] not in authorized_types:
         return False
 
-    if (not case_sensitive and re.match(search, song["song_name"], re.IGNORECASE)) or (
-        case_sensitive and re.match(search, song["song_name"])
+    if (not case_sensitive and re.match(search, song["songName"], re.IGNORECASE)) or (
+        case_sensitive and re.match(search, song["songName"])
     ):
         return True
 

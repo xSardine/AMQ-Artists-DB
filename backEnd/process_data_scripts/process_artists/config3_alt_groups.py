@@ -271,7 +271,7 @@ same_group_different_artists = [
     {
         "group": "fripSide",
         "alternate_configs": [
-            {"members": ["nao"], "linked_song": [9498, 22427]},
+            {"members": ["nao"], "linked_song": [9498, 9499, 22427, 22428]},
             {
                 "members": ["Yoshino Nanjou"],
                 "linked_song": [
@@ -283,7 +283,7 @@ same_group_different_artists = [
                     12751,
                     12752,
                     "eternal reality",
-                    "Sister's Noise",
+                    "sister's noise",
                     "black bullet",
                     15090,
                     15382,

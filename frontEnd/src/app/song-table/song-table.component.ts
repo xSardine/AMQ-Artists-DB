@@ -36,12 +36,15 @@ export class SongTableComponent {
   ascendingOrder: boolean = false;
   showSongInfoPopup: boolean = false;
   doubleClickPreventer: boolean = false;
-  romaji: string = ""
+  animeJPName: string = ""
 
   popUpannId: string = "";
+  popUpVintage: string = "";
+  popUpAnimeType: string = "";
   popUpannSongId: string = "";
   popUpSongName: string = "";
   popUpArtist: string = "";
+  popUpSongDiff: string = "";
   popUpannURL: string = "";
   popUpAnime: string = "";
   popUpHDLink: string = "";
@@ -109,7 +112,7 @@ export class SongTableComponent {
   compareTwoSong(colName: string, a: any, b: any) {
 
     if (colName == "Type") {
-      let comparison = this.compareSongType(a["Type"], b["Type"])
+      let comparison = this.compareSongType(a["songType"], b["songType"])
       if (comparison == 1) {
         return this.ascendingOrder ? -1 : 1;
       }
@@ -138,7 +141,7 @@ export class SongTableComponent {
       }
       else {
         if (colName == "annId" || colName == "Anime") {
-          return this.compareSongType(a["Type"], b["Type"]);
+          return this.compareSongType(a["songType"], b["songType"]);
         }
         else {
           if (a["annId"] < b["annId"]) {
@@ -215,13 +218,15 @@ export class SongTableComponent {
   }
 
   displaySongIngoPopup(song: any) {
-    //console.log(song)
     this.popUpannURL = "https://www.animenewsnetwork.com/encyclopedia/anime.php?id=" + song.annId;
     this.popUpannId = song.annId;
+    this.popUpVintage = song.animeVintage;
+    this.popUpAnimeType = song.animeType;
     this.popUpannSongId = song.annSongId;
-    this.popUpAnime = song.Anime;
-    this.popUpSongName = song.SongName;
-    this.popUpArtist = song.Artist;
+    this.popUpAnime = song.animeExpandName;
+    this.popUpSongName = song.songName;
+    this.popUpArtist = song.artist;
+    this.popUpSongDiff = song.songDifficulty;
     this.popUpHDLink = song.sept;
     this.popUpMDLink = song.quatre;
     this.popUpAudioLink = song.mptrois;
@@ -230,7 +235,7 @@ export class SongTableComponent {
     this.popUpArrangersInfo = song.arrangers;
     this.showSongInfoPopup = !this.showSongInfoPopup;
     this.doubleClickPreventer = true;
-    this.romaji = song.Romaji
+    this.animeJPName = song.animeJPName
   }
 
   removeItemsById(arr: any, id: any) {

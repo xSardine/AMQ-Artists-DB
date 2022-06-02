@@ -41,9 +41,9 @@ def get_regex_search(search, ignore_special_character=True, partial_match=True):
 
 
 def format_song(song):
-    if song["type"] == 1:
+    if song["songType"] == 1:
         type = "Opening " + str(song["number"])
-    elif song["type"] == 2:
+    elif song["songType"] == 2:
         type = "Ending " + str(song["number"])
     else:
         type = "Insert Song"
@@ -51,11 +51,15 @@ def format_song(song):
     songinfo = {
         "annId": song["annId"],
         "annSongId": song["annSongId"],
-        "Anime": song["anime_eng_name"],
-        "Romaji": song["anime_jp_name"],
-        "Type": type,
-        "SongName": song["song_name"],
-        "Artist": song["artist"],
+        "animeExpandName": song["nameExpand"],
+        "animeENName": song["nameEN"],
+        "animeJPName": song["nameJP"],
+        "animeVintage": song["vintage"],
+        "animeType": song["animeType"],
+        "songType": type,
+        "songName": song["songName"],
+        "artist": song["artist"],
+        "songDifficulty": song["songDifficulty"],
         "sept": song["720"],
         "quatre": song["480"],
         "mptrois": song["mp3"],

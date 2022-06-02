@@ -13,27 +13,26 @@ def song_meets_search_requirement(
     Check that a song meets the settings
     """
 
-    if song["type"] not in authorized_types:
+    if song["songType"] not in authorized_types:
         return False
 
     # Check if search match with an anime name
     if (
-        song["type"] in authorized_types
+        song["songType"] in authorized_types
         and (
             not case_sensitive
             and (
-                re.match(search, song["anime_eng_name"], re.IGNORECASE)
-                or (
-                    song["anime_jp_name"]
-                    and re.match(search, song["anime_jp_name"], re.IGNORECASE)
-                )
+                re.match(search, song["nameExpand"], re.IGNORECASE)
+                or (song["nameJP"] and re.match(search, song["nameJP"], re.IGNORECASE))
+                or (song["nameEN"] and re.match(search, song["nameEN"], re.IGNORECASE))
             )
         )
         or (
             case_sensitive
             and (
-                re.match(search, song["anime_eng_name"])
-                or (song["anime_jp_name"] and re.match(search, song["anime_jp_name"]))
+                re.match(search, song["nameExpand"])
+                or (song["nameJP"] and re.match(search, song["nameJP"]))
+                or (song["nameEN"] and re.match(search, song["nameEN"]))
             )
         )
     ):

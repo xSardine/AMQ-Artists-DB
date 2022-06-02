@@ -13,7 +13,10 @@ PRAGMA foreign_keys = 1;
 CREATE TABLE animes (
     "annId" INTEGER NOT NULL PRIMARY KEY,
     "name" VARCHAR(255) NOT NULL, 
-    "romaji" VARCHAR (255)
+    "nameEN" VARCHAR (255),
+    "nameJP" VARCHAR (255),
+    "vintage" VARCHAR (255),
+    "type" VARCHAR (255)
 );
 
 CREATE TABLE songs (
@@ -24,11 +27,12 @@ CREATE TABLE songs (
     "number" INTEGER NOT NULL,
     "name" VARCHAR(255) NOT NULL,
     "artist" VARCHAR(255) NOT NULL,
+    "songDifficulty" FLOAT,
     "720p" VARCHAR(255),
     "480p" VARCHAR(255),
     "mp3" VARCHAR(255),
     FOREIGN KEY ("annId")
-        REFERENCES animes ("id")
+        REFERENCES animes ("annId")
 );
 
 CREATE TABLE artists (
@@ -99,3 +103,20 @@ create TABLE link_artist_group (
         REFERENCES groups ("alt_config_id"),
     PRIMARY KEY (artist_id, group_id, group_alt_config_id)
 );
+
+
+create TABLE link_anime_genre (
+    "annId" INTEGER NOT NULL,
+    "genre" VARCHAR(255),
+    FOREIGN KEY ("annId")
+        REFERENCES animes ("annId"),
+    PRIMARY KEY (annId, genre)
+);
+
+
+create TABLE link_anime_tag (
+    "annId" INTEGER NOT NULL,
+    "tag" VARCHAR(255),
+    FOREIGN KEY ("annId")
+        REFERENCES animes ("annId"),
+    PRIMARY KEY (annId, tag)

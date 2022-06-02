@@ -76,7 +76,7 @@ def song_meets_composer_search_requirements(
     authorized_types,
 ):
 
-    if song["type"] not in authorized_types:
+    if song["songType"] not in authorized_types:
         return False
 
     for composer in composer_id_list:

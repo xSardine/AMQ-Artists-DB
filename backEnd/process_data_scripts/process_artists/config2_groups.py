@@ -9,7 +9,7 @@ groups_subdivision_list = [
         [
             "Kana Asumi",
             "Kana Hanazawa",
-            "Youko Hikasa",
+            "Yoko Hikasa",
             "Ai Kayano",
             "Ibuki Kido",
             "Ayaka Suwa",
@@ -228,7 +228,6 @@ groups_subdivision_list = [
     ["TRUSTRICK", ["Sayaka Kanda"]],
     ["Galileo Galilei", ["Yuuki Ozaki"]],
     ["fripSide", ["Hisayo Abe", "Mao Uesugi"]],
-    ["fripSide NAO project!", ["nao"]],
     [
         "Fruit Tart (4-nin ver.)",
         [
@@ -893,7 +892,7 @@ groups_subdivision_list = [
             "Ai Nonaka",
             "Asami Sanada",
             "Miyu Matsuki",
-            "Yuko Goto",
+            "Yuuko Gotou",
             "Marina Inoue",
             "Asuka Tanii",
             "Yuu Kobayashi",
@@ -951,7 +950,7 @@ groups_subdivision_list = [
         "Love Planet Five ~I've special unit~",
         ["KOTOKO", "Mami Kawada", "MELL", "Eiko Shimamiya", "Kaori Utatsuki"],
     ],
-    ["Etsuko Yakushimaru Metro Orchestra", ["Etsuko Yakushimaru"]],
+    ["Etsuko Yakushimaru Metropolitan Orchestra", ["Etsuko Yakushimaru"]],
     [
         "EXILE TRIBE",
         ["GENERATIONS", "THE RAMPAGE", "FANTASTICS", "Sandaime J SOUL BROTHERS"],
@@ -1591,7 +1590,7 @@ groups_subdivision_list = [
         [
             "Aya Hirano",
             "Tomokazu Sugita",
-            "Yuko Goto",
+            "Yuuko Gotou",
             "Minori Chihara",
             "Daisuke Ono",
         ],
@@ -1935,7 +1934,7 @@ groups_subdivision_list = [
     ],
     ["Naria\u2606Girls", ["Seria Fukagawa", "Aoi Koga", "Yuuki Kuwahara"]],
     [
-        "Choro-gonzu",
+        "Chorogons",
         [
             "Yuuki Kuwahara",
             "Maria Naganawa",
@@ -2122,7 +2121,7 @@ groups_subdivision_list = [
         [
             "Aguri Oonishi",
             "Mayu Sagara",
-            "Shuu Uchida",
+            "Shu Uchida",
             "Tomoyo Takayanagi",
             "Yukina Shuto",
         ],
@@ -2954,7 +2953,7 @@ groups_subdivision_list = [
     ["Phantasm", ["Yui Sakakibara"]],
     ["London Boots 1-go 2-go", ["Atsushi Tamura", "Ryo Tamura"]],
     ["jealkb", ["Atsushi Tamura"]],
-    ["Fine★Rein", ["Yuko Goto", "Megumi Kojima"]],
+    ["Fine★Rein", ["Yuuko Gotou", "Megumi Kojima"]],
     [
         "Columbia Animation Stars",
         [
@@ -6156,6 +6155,9 @@ groups_subdivision_list = [
         "Columbia Gasshou-dan",
         ["Columbia Dansei Gasshou-dan", "Columbia Josei Gasshou-dan"],
     ],
+    ["Atena☆", ["Rie Kugimiya", "Megumi Toyoguchi", "Mamiko Noto"]],
+    ["Touen no San Shimai", ["Nami Kurokawa", "Mai Goto", "Hiroka Nishizawa"]],
+    ["Kazoe-Yakuman Shimai", ["Tae Okajima", "Chihiro Umehara", "Kozue Yoshizumi"]],
 ]
 
 

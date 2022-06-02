@@ -65,13 +65,13 @@ def get_anime_info_from_anime_id(cursor, anime_id):
     {
         annId
         english_name
-        romaji_name
+        nameJP
     }
     """
 
     command = "SELECT * FROM animes WHERE annId == ?;"
     anime = run_sql_command(cursor, command, [anime_id])[0]
-    return {"annId": anime[0], "english_name": anime[1], "romaji_name": anime[2]}
+    return {"annId": anime[0], "english_name": anime[1], "nameJP": anime[2]}
 
 
 def get_songs_ID_from_anime_ID(cursor, anime_id):
@@ -227,8 +227,8 @@ def extract_song_database():
     """
 
     command = """
-    SELECT animes.annId, animes.name, animes.romaji, songs.annSongId, songs.type, songs.number, 
-    songs.name, songs.artist, songs."720p", songs."480p", songs.mp3, group_concat(link_song_artist.artist_id) 
+    SELECT animes.annId, animes.name, animes.nameJP, animes.nameEN, animes.vintage, animes.type, songs.annSongId, songs.type, songs.number, 
+    songs.name, songs.artist, songs.songDifficulty, songs."720p", songs."480p", songs.mp3, group_concat(link_song_artist.artist_id) 
     AS artists_ids, group_concat(link_song_artist.artist_alt_members_id) AS artists_ids_set, group_concat(link_song_composer.composer_id) as composer_ids, group_concat(link_song_arranger.arranger_id) as arranger_ids
     FROM animes
     INNER JOIN songs ON animes.annId = songs.annId
@@ -242,22 +242,22 @@ def extract_song_database():
     for song in run_sql_command(cursor, command):
 
         artist_ids = []
-        if song[11]:
-            for id, sets in zip(song[11].split(","), song[12].split(",")):
+        if song[15]:
+            for id, sets in zip(song[15].split(","), song[16].split(",")):
                 if int(id) in [int(temp[0]) for temp in artist_ids]:
                     continue
                 artist_ids.append([int(id), int(sets)])
 
         composer_ids = []
-        if song[13]:
-            for id in song[13].split(","):
+        if song[17]:
+            for id in song[17].split(","):
                 if int(id) in composer_ids:
                     continue
                 composer_ids.append(int(id))
 
         arranger_ids = []
-        if song[14]:
-            for id in song[14].split(","):
+        if song[18]:
+            for id in song[18].split(","):
                 if int(id) in arranger_ids:
                     continue
                 arranger_ids.append(int(id))
@@ -265,16 +265,20 @@ def extract_song_database():
         song_database.append(
             {
                 "annId": song[0],
-                "anime_eng_name": song[1],
-                "anime_jp_name": song[2],
-                "annSongId": song[3],
-                "type": song[4],
-                "number": song[5],
-                "song_name": song[6],
-                "artist": song[7],
-                "720": song[8],
-                "480": song[9],
-                "mp3": song[10],
+                "nameExpand": song[1],
+                "nameEN": song[2],
+                "nameJP": song[3],
+                "vintage": song[4],
+                "animeType": song[5],
+                "annSongId": song[6],
+                "songType": song[7],
+                "number": song[8],
+                "songName": song[9],
+                "artist": song[10],
+                "songDifficulty": song[11],
+                "720": song[12],
+                "480": song[13],
+                "mp3": song[14],
                 "artists_ids": artist_ids,
                 "composers_ids": composer_ids,
                 "arrangers_ids": arranger_ids,

@@ -8,7 +8,6 @@ Database source:
 
 - Expand Library from AMQ: <https://animemusicquiz.com/>
 - MugiBotDatabase: Data collected from in game as well as Ranked pastebins. <https://github.com/CarrC2021/MugiBot>
-- Data collected by Husa when playing with the S/A script on AMQ (mainly for getting romaji names)
 
 Then enhanced automatically/semi-automatically/manually:
 

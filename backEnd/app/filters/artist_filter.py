@@ -128,7 +128,7 @@ def song_meets_artist_search_requirements(
     Check that a song meets the group_granularity and the max_other_artist settings
     """
 
-    if song["type"] not in authorized_types:
+    if song["songType"] not in authorized_types:
         return False
 
     for members_list in members_lists:
@@ -162,7 +162,7 @@ def song_meets_artist_search_requirements(
 
 def song_meets_search_requirements(search, song, case_sensitive, authorized_types):
 
-    if song["type"] not in authorized_types:
+    if song["songType"] not in authorized_types:
         return False
 
     if (not case_sensitive and re.match(search, song["artist"], re.IGNORECASE)) or (

@@ -15,7 +15,7 @@ def search_annId(
         for song in song_database:
             if len(song_list) >= max_nb_songs:
                 break
-            if song["annId"] == int(annId) and song["type"] in authorized_types:
+            if song["annId"] == int(annId) and song["songType"] in authorized_types:
                 song_list.append(utils.format_song(song))
 
     return song_list

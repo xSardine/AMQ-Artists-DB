@@ -502,7 +502,7 @@ composer_database = [
         "songs": [
             14792,
             11448,
-            "Red Fraction",
+            "Red fraction",
             "Red fraction IO drive mix",
             11284,
             "Tenjou o Kakeru Mono-tachi",
@@ -1667,7 +1667,6 @@ composer_database = [
             9152,
             9133,
             9120,
-            9121,
             9135,
             9155,
             967,

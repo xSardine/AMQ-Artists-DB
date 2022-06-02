@@ -27,13 +27,18 @@ DROP TABLE IF EXISTS link_artist_group;
 DROP TABLE IF EXISTS link_song_arranger;
 DROP TABLE IF EXISTS link_song_artist;
 DROP TABLE IF EXISTS link_song_composer;
+DROP TABLE IF EXISTS link_anime_genre;
+DROP TABLE IF EXISTS link_anime_tag;
 DROP TABLE IF EXISTS songs;
 PRAGMA foreign_keys = 1;
 
 CREATE TABLE animes (
     "annId" INTEGER NOT NULL PRIMARY KEY,
     "name" VARCHAR(255) NOT NULL, 
-    "romaji" VARCHAR (255)
+    "nameEN" VARCHAR (255),
+    "nameJP" VARCHAR (255),
+    "vintage" VARCHAR (255),
+    "type" VARCHAR (255)
 );
 
 CREATE TABLE songs (
@@ -44,11 +49,12 @@ CREATE TABLE songs (
     "number" INTEGER NOT NULL,
     "name" VARCHAR(255) NOT NULL,
     "artist" VARCHAR(255) NOT NULL,
+    "songDifficulty" FLOAT,
     "720p" VARCHAR(255),
     "480p" VARCHAR(255),
     "mp3" VARCHAR(255),
     FOREIGN KEY ("annId")
-        REFERENCES animes ("id")
+        REFERENCES animes ("annId")
 );
 
 CREATE TABLE artists (
@@ -118,6 +124,24 @@ create TABLE link_artist_group (
     FOREIGN KEY ("group_alt_config_id")
         REFERENCES groups ("alt_config_id"),
     PRIMARY KEY (artist_id, group_id, group_alt_config_id)
+);
+
+
+create TABLE link_anime_genre (
+    "annId" INTEGER NOT NULL,
+    "genre" VARCHAR(255),
+    FOREIGN KEY ("annId")
+        REFERENCES animes ("annId"),
+    PRIMARY KEY (annId, genre)
+);
+
+
+create TABLE link_anime_tag (
+    "annId" INTEGER NOT NULL,
+    "tag" VARCHAR(255),
+    FOREIGN KEY ("annId")
+        REFERENCES animes ("annId"),
+    PRIMARY KEY (annId, tag)
 );
 """
 
@@ -210,45 +234,68 @@ def add_artist_to_group(cursor, artist_id, group_id, group_alt_id):
     )
 
 
-def get_anime_ID(cursor, name, romaji):
+def get_anime_ID(cursor, name, nameJP):
 
     """
     Get the first anime it finds that matches the provided parameters
     """
 
-    sql_get_anime_ID = "SELECT annId WHERE name = ? and romaji = ?;"
+    sql_get_anime_ID = "SELECT annId WHERE name = ? and nameJP = ?;"
 
-    anime_id = run_sql_command(cursor, sql_get_anime_ID, (name, romaji))
+    anime_id = run_sql_command(cursor, sql_get_anime_ID, (name, nameJP))
     if anime_id is not None and len(anime_id) > 0:
         return anime_id[0][0]
     return None
 
 
-def insert_anime(cursor, annId, name, romaji):
+def insert_anime(cursor, annId, name, nameEN, nameJP, vintage, type):
 
     """
     Insert a new anime in the database
     """
 
-    sql_insert_anime = "INSERT INTO animes(annId, name, romaji) VALUES(?, ?, ?);"
+    sql_insert_anime = "INSERT INTO animes(annId, name, nameEN, nameJP, vintage, type) VALUES(?, ?, ?, ?, ?, ?);"
 
-    run_sql_command(cursor, sql_insert_anime, (annId, name, romaji))
+    run_sql_command(
+        cursor, sql_insert_anime, (annId, name, nameEN, nameJP, vintage, type)
+    )
 
 
 def insert_song(
-    cursor, annSongId, annId, type, number, name, artist, linkHQ, linkMQ, linkAudio
+    cursor,
+    annSongId,
+    annId,
+    type,
+    number,
+    name,
+    artist,
+    songDifficulty,
+    linkHQ,
+    linkMQ,
+    linkAudio,
 ):
 
     """
     Insert a new song in the database and return the newly created song ID
     """
 
-    sql_insert_song = "INSERT INTO songs(annSongId, annId, type, number, name, artist, '720p', '480p', 'mp3') VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);"
+    sql_insert_song = "INSERT INTO songs(annSongId, annId, type, number, name, artist, songDifficulty, '720p', '480p', 'mp3') VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
 
     run_sql_command(
         cursor,
         sql_insert_song,
-        (annSongId, annId, type, number, name, artist, linkHQ, linkMQ, linkAudio),
+        (
+            annSongId,
+            annId,
+            type,
+            number,
+            name,
+            artist,
+            songDifficulty,
+            linkHQ,
+            linkMQ,
+            linkAudio,
+        ),
     )
 
     return cursor.lastrowid
@@ -289,6 +336,28 @@ def link_song_arranger(cursor, song_id, arranger_id):
     )
 
     run_sql_command(cursor, sql_link_song_arranger, (song_id, arranger_id))
+
+
+def link_anime_tag(cursor, annId, tag):
+
+    """
+    Add a new link between an anime and a tag
+    """
+
+    sql_link_song_arranger = "INSERT INTO link_anime_tag(annId, tag) VALUES(?, ?);"
+
+    run_sql_command(cursor, sql_link_song_arranger, (annId, tag))
+
+
+def link_anime_genre(cursor, annId, genre):
+
+    """
+    Add a new link between an anime and a genre
+    """
+
+    sql_link_song_arranger = "INSERT INTO link_anime_genre(annId, genre) VALUES(?, ?);"
+
+    run_sql_command(cursor, sql_link_song_arranger, (annId, genre))
 
 
 try:
@@ -337,8 +406,19 @@ for anime in song_database:
         cursor,
         anime["annId"],
         anime["name"],
-        anime["romaji"] if "romaji" in anime else None,
+        anime["nameJP"] if "nameJP" in anime else None,
+        anime["nameEN"] if "nameEN" in anime else None,
+        anime["vintage"] if "vintage" in anime else None,
+        anime["type"] if "type" in anime else None,
     )
+
+    if "tags" in anime:
+        for tag in anime["tags"]:
+            link_anime_tag(cursor, anime["annId"], tag)
+
+    if "genres" in anime:
+        for genre in anime["genres"]:
+            link_anime_genre(cursor, anime["annId"], genre)
 
     for song in anime["songs"]:
 
@@ -352,6 +432,7 @@ for anime in song_database:
             song["number"],
             song["name"],
             song["artist"],
+            song["songDifficulty"] if "songDifficulty" in song else None,
             links["720"] if "720" in links.keys() else None,
             links["480"] if "480" in links.keys() else None,
             links["mp3"] if "mp3" in links.keys() else None,
