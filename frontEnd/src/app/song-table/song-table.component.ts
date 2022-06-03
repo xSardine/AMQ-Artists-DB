@@ -95,7 +95,7 @@ export class SongTableComponent {
 
 
     if (colName == "Song Name") {
-      colName = "SongName"
+      colName = "songName"
     }
 
     if (this.lastColName != colName) {

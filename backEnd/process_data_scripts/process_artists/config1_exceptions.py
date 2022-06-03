@@ -2383,6 +2383,7 @@ splitting_exception_list = [
             "Takuro Sugawara",
         ),
     ),
+    ("Anna (BON-BON BLANCO)", ("ANNA",)),
     (
         "Jin ft. Takumi Yoshida from phatmans after school",
         (

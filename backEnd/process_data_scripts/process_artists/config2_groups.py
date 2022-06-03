@@ -6158,6 +6158,7 @@ groups_subdivision_list = [
     ["Atena☆", ["Rie Kugimiya", "Megumi Toyoguchi", "Mamiko Noto"]],
     ["Touen no San Shimai", ["Nami Kurokawa", "Mai Goto", "Hiroka Nishizawa"]],
     ["Kazoe-Yakuman Shimai", ["Tae Okajima", "Chihiro Umehara", "Kozue Yoshizumi"]],
+    ["BON-BON BLANCO", ["ANNA"]],
 ]
 
 

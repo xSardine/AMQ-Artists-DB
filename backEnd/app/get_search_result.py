@@ -19,17 +19,13 @@ def add_log(log_data):
 
     data.append(log_data)
 
-    for key in log_data:
-        print(f"{key}: {log_data[key]}")
-    print()
-
     with open("../logs.json", "w") as outfile:
         json.dump(data, outfile)
 
 
 def is_duplicate_in_list(list, song):
     for song2 in list:
-        if song["SongName"] == song2["SongName"] and song["Artist"] == song2["Artist"]:
+        if song["songName"] == song2["songName"] and song["artist"] == song2["artist"]:
             return True
     return False
 
@@ -102,6 +98,48 @@ def get_search_results(
 ):
 
     start = timeit.default_timer()
+
+    logs = {
+        "date": str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")),
+    }
+    if anime_search_filters:
+        logs["anime_filter"] = {
+            "search": anime_search_filters.search,
+            "ignore_special_characters": anime_search_filters.ignore_special_character,
+            "partial_match": anime_search_filters.partial_match,
+            "case_sensitive": anime_search_filters.case_sensitive,
+        }
+    if song_name_search_filters:
+        logs["song_filter"] = {
+            "search": song_name_search_filters.search,
+            "ignore_special_characters": song_name_search_filters.ignore_special_character,
+            "partial_match": song_name_search_filters.partial_match,
+            "case_sensitive": song_name_search_filters.case_sensitive,
+        }
+    if artist_search_filters:
+        logs["artist_filter"] = {
+            "search": artist_search_filters.search,
+            "ignore_special_characters": artist_search_filters.ignore_special_character,
+            "partial_match": artist_search_filters.partial_match,
+            "case_sensitive": artist_search_filters.case_sensitive,
+            "group_granularity": artist_search_filters.group_granularity,
+            "max_other_people": artist_search_filters.max_other_artist,
+        }
+    if composer_search_filters:
+        logs["composer_filter"] = {
+            "search": composer_search_filters.search,
+            "ignore_special_characters": composer_search_filters.ignore_special_character,
+            "partial_match": composer_search_filters.partial_match,
+            "case_sensitive": composer_search_filters.case_sensitive,
+            "arrangement": composer_search_filters.arrangement,
+        }
+    logs["is_intersection"] = and_logic
+    logs["ignore_dups"] = ignore_duplicate
+    logs["max_nb_songs"] = max_nb_songs
+    logs["types"] = authorized_types
+
+    for key in logs:
+        print(f"{key}: {logs[key]}")
 
     artist_result_list = []
     anime_result_list = []
@@ -193,49 +231,12 @@ def get_search_results(
     )
 
     stop = timeit.default_timer()
-
-    logs = {
-        "date": str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")),
-        "nb_results": len(song_list),
-        "computing_time": round(stop - start, 4),
-    }
-    if anime_search_filters:
-        logs["anime_filter"] = {
-            "search": anime_search_filters.search,
-            "ignore_special_characters": anime_search_filters.ignore_special_character,
-            "partial_match": anime_search_filters.partial_match,
-            "case_sensitive": anime_search_filters.case_sensitive,
-        }
-    if song_name_search_filters:
-        logs["song_filter"] = {
-            "search": song_name_search_filters.search,
-            "ignore_special_characters": song_name_search_filters.ignore_special_character,
-            "partial_match": song_name_search_filters.partial_match,
-            "case_sensitive": song_name_search_filters.case_sensitive,
-        }
-    if artist_search_filters:
-        logs["artist_filter"] = {
-            "search": artist_search_filters.search,
-            "ignore_special_characters": artist_search_filters.ignore_special_character,
-            "partial_match": artist_search_filters.partial_match,
-            "case_sensitive": artist_search_filters.case_sensitive,
-            "group_granularity": artist_search_filters.group_granularity,
-            "max_other_people": artist_search_filters.max_other_artist,
-        }
-    if composer_search_filters:
-        logs["composer_filter"] = {
-            "search": composer_search_filters.search,
-            "ignore_special_characters": composer_search_filters.ignore_special_character,
-            "partial_match": composer_search_filters.partial_match,
-            "case_sensitive": composer_search_filters.case_sensitive,
-            "arrangement": composer_search_filters.arrangement,
-        }
-    logs["is_intersection"] = and_logic
-    logs["ignore_dups"] = ignore_duplicate
-    logs["max_nb_songs"] = max_nb_songs
-    logs["types"] = authorized_types
-
+    logs["computing_time"] = round(stop - start, 4)
+    logs["nb_results"] = len(song_list)
     add_log(logs)
+    print(f"computing_time: {logs['computing_time']}")
+    print(f"nb_results: {logs['nb_results']}")
+    print()
 
     return song_list
 
@@ -253,6 +254,17 @@ def get_artists_ids_song_list(
 
     start = timeit.default_timer()
 
+    logs = {
+        "date": str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")),
+        "artist_ids_filter": artist_ids,
+        "ignore_dups": ignore_duplicate,
+        "max_nb_songs": max_nb_songs,
+        "types": authorized_types,
+    }
+
+    for key in logs:
+        print(f"{key}: {logs[key]}")
+
     song_list = artist_filter.search_artist_ids(
         song_database,
         artist_database,
@@ -267,20 +279,12 @@ def get_artists_ids_song_list(
 
     stop = timeit.default_timer()
 
-    log = f"\n{datetime.now().time()}: I have found {len(song_list)} songs for the search {artist_ids}, ignore dups: {ignore_duplicate}, max songs: {max_nb_songs}, types: {authorized_types}\n"
-    log += f"Search time: {stop - start}\n"
-
-    add_log(
-        {
-            "date": str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")),
-            "nb_results": len(song_list),
-            "computing_time": round(stop - start, 4),
-            "artist_ids_filter": artist_ids,
-            "ignore_dups": ignore_duplicate,
-            "max_nb_songs": max_nb_songs,
-            "types": authorized_types,
-        }
-    )
+    logs["computing_time"] = round(stop - start, 4)
+    logs["nb_results"] = len(song_list)
+    add_log(logs)
+    print(f"computing_time: {logs['computing_time']}")
+    print(f"nb_results: {logs['nb_results']}")
+    print()
 
     return song_list
 
@@ -295,6 +299,17 @@ def get_annId_song_list(
 
     start = timeit.default_timer()
 
+    logs = {
+        "date": str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")),
+        "annId_filter": annId,
+        "ignore_dups": ignore_duplicate,
+        "max_nb_songs": max_nb_songs,
+        "types": authorized_types,
+    }
+
+    for key in logs:
+        print(f"{key}: {logs[key]}")
+
     song_list = annId_filter.search_annId(
         song_database,
         annId,
@@ -302,23 +317,15 @@ def get_annId_song_list(
         authorized_types,
     )
 
-    stop = timeit.default_timer()
-
     song_list = combine_results(song_list, [], [], [], [], False, ignore_duplicate)
 
-    log = f"\n{datetime.now().time()}: I have found {len(song_list)} songs for the search {annId}, ignore dups: {ignore_duplicate}, max songs: {max_nb_songs}, types: {authorized_types}\n"
-    log += f"Search time: {stop - start}\n"
+    stop = timeit.default_timer()
 
-    add_log(
-        {
-            "date": str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")),
-            "nb_results": len(song_list),
-            "computing_time": round(stop - start, 4),
-            "annId_filter": annId,
-            "ignore_dups": ignore_duplicate,
-            "max_nb_songs": max_nb_songs,
-            "types": authorized_types,
-        }
-    )
+    logs["computing_time"] = round(stop - start, 4)
+    logs["nb_results"] = len(song_list)
+    add_log(logs)
+    print(f"computing_time: {logs['computing_time']}")
+    print(f"nb_results: {logs['nb_results']}")
+    print()
 
     return song_list
