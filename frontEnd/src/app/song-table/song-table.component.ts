@@ -93,10 +93,16 @@ export class SongTableComponent {
       return;
     }
 
-
     if (colName == "Song Name") {
       colName = "songName"
     }
+    if (colName == "Artist") {
+      colName = "artist"
+    }
+    if (colName == "Anime") {
+      colName = "animeExpandName"
+    }
+
 
     if (this.lastColName != colName) {
       this.ascendingOrder = false;
