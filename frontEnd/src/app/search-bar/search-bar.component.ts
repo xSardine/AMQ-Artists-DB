@@ -342,7 +342,8 @@ export class SearchBarComponent implements OnInit {
       this.downloadFileName = this.mainFilter.replace(" ", "") + "_SongList.json"
     }
     else {
-      this.downloadFileName = this.animeFilter.replace(" ", "") + "_" + this.songNameFilter.replace(" ", "") + "_" + this.artistFilter.replace(" ", "") + "_SongList.json"
+      this.downloadFileName = this.animeFilter.replace(" ", "") + "_" + this.songNameFilter.replace(" ", "") + "_" + this.artistFilter.replace(" ", "") + "_" + this.composerFilter.replace(" ", "") + "_SongList.json"
+      this.downloadFileName = this.downloadFileName.replace("__", "")
     }
     let theJSON = JSON.stringify(this.currentSongList);
     let blob = new Blob([theJSON], { type: 'text/json' });

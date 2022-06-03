@@ -31,7 +31,7 @@
     background-color: var(--songTableHoverColor);
 }
 
-#table td:hover {
+.copyable:hover {
     cursor: pointer;
     color: orange;
 }

@@ -5,26 +5,23 @@
     <div (click)="this.doubleClickPreventer = !this.doubleClickPreventer;" class="modal-content">
         <div class="modal-header">
             <h3 style="display: inline-block;" title="{{animeJPName}}"><a id="modal-header" class="animeLink"
-                    target="_blank" href="{{popUpannURL}}">{{popUpAnime}} ({{popUpAnimeType}})</a></h3>
+                    target="_blank" href="{{popUpannURL}}">{{popUpAnime}}
+                    ({{popUpAnimeType}})</a><span style="margin-left: 20px;">{{popUpVintage}}</span></h3>
         </div>
         <div class="modal-body">
             <p id="modal-songinfo"></p>
             <span class="popUpText" title="Copy annId to clipboard" (click)="copyToClipboard(popUpannId)">
-                annId: {{popUpannId}}</span>
-            <br>
-            <span class="popUpText" title="Copy vintage to clipboard" (click)="copyToClipboard(popUpVintage)">
-                vintage: {{popUpVintage}}</span>
-            <br>
-            <span class="popUpText" title="Copy annSongId to clipboard" (click)="copyToClipboard(popUpannSongId)">
+                annId: {{popUpannId}}</span> <span class="popUpText" style="margin-left: 20px;"
+                title="Copy annSongId to clipboard" (click)="copyToClipboard(popUpannSongId)">
                 annSongId: {{popUpannSongId}}</span>
             <br>
             <span class="popUpText" title="Copy Song Difficulty to clipboard" (click)="copyToClipboard(popUpSongDiff)">
                 Song Difficulty: {{popUpSongDiff}}% <small>**Data collected on 2022-06-02</small> </span>
-            <br>
+            <br><br>
             <span class="popUpText" title="Copy song infos to clipboard"
                 (click)='copyToClipboard("\"" + popUpSongName + "\" by " + popUpArtist)'>
                 "{{popUpSongName}}" by {{popUpArtist}}</span>
-            <br><br>
+            <br>
             <span class="popUpText" title="Copy 720p link to clipboard" (click)="copyToClipboard(popUpHDLink)">
                 720p: </span>
             <a id="modal-720-link" class="textLink" target="_blank" href="{{popUpHDLink}}">{{popUpHDLink}}</a>
@@ -95,33 +92,44 @@
 
     <!-- BIND ARRAY TO TABLE -->
     <tr *ngFor=" let song of songTable">
-        <td (click)="copyToClipboard(song.annId)" style="white-space: nowrap;" title="Copy to clipboard">
+        <td style="white-space: nowrap;">
             <i style="cursor: pointer; margin-right: 8px; color:var(--textOnBackground)"
                 (click)="displaySongIngoPopup(song)" title="More information" class="fa fa-plus"
                 matomoClickCategory="Information" matomoClickAction="Detailed Song Information"
                 matomoClickName="{{song.annSongId}} - {{song.songName}} - {{song.artist}}"></i>
             <i style="cursor: pointer; margin-right: 4px; color:var(--textOnBackground)"
                 title="Search songs in this entry" (click)="searchAnnId(song.annId)" class="fa fa-search"></i>
-            {{song.annId}}
+            <span class="copyable" title="Copy to clipboard" (click)="copyToClipboard(song.annId)">{{song.annId}}</span>
         </td>
-        <td (click)="copyToClipboard(song.animeExpandName)" title="Copy to clipboard"> {{song.animeExpandName}} </td>
-        <td (click)="copyToClipboard(song.songType)" title="Copy to clipboard" style="white-space: nowrap;">
-            {{song.songType}}
+
+        <td>
+            <span class="copyable" title="Copy to clipboard"
+                (click)="copyToClipboard(song.animeExpandName)">{{song.animeExpandName}}</span>
         </td>
-        <td (click)="copyToClipboard(song.songName)" title="Copy to clipboard"> {{song.songName}} </td>
-        <td (click)="copyToClipboard(song.artist)" title="Copy to clipboard"> <i *ngIf="!rankedTime"
-                style="cursor: pointer; margin-right: 6px; color:var(--textOnBackground)"
+
+        <td style="white-space: nowrap;">
+            <span class="copyable" title="Copy to clipboard"
+                (click)="copyToClipboard(song.songType)">{{song.songType}}</span>
+        </td>
+
+        <td> <span class="copyable" title="Copy to clipboard"
+                (click)="copyToClipboard(song.songName)">{{song.songName}}</span> </td>
+
+        <td> <i *ngIf="!rankedTime" style="cursor: pointer; margin-right: 6px; color:var(--textOnBackground)"
                 title="Search songs by this artist(s)" (click)="searchArtistId(song.artists)" class="fa fa-search"></i>
-            {{song.artist}}
+            <span class="copyable" title="Copy to clipboard"
+                (click)="copyToClipboard(song.artist)">{{song.artist}}</span>
         </td>
+
         <td *ngIf="!rankedTime" title="Listen to mp3" matomoClickCategory="Media" matomoClickAction="MP3Play"
             matomoClickName="{{song.annSongId}} - {{song.songName}} - {{song.artist}}" (click)="playMP3music(song)"
-            style="text-align: center; color:var(--textOnBackground)">
+            style="text-align: center; color:var(--textOnBackground); cursor: pointer;">
             <i *ngIf="song.mptrois" class="fa fa-music fa-lg"></i>
         </td>
-        <td title="Delete song from list" (click)="deleteRowEntry(song)"
-            style="text-align: center; color:var(--textOnBackground)"><i class="fa fa-trash fa-lg"
-                aria-hidden="true"></i>
+
+        <td style="text-align: center; color:var(--textOnBackground)"><span title="Delete song from list"
+                (click)="deleteRowEntry(song)" style=" cursor: pointer;"><i class="fa fa-trash fa-lg"
+                    aria-hidden="true"></i></span>
         </td>
     </tr>
 </table>
