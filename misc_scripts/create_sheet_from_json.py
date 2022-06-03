@@ -63,7 +63,7 @@ def format_song(song):
 
     return {
         "anime_name": song["animeJPName"]
-        if "animeJPName" in song
+        if ("animeJPName" in song and song["animeJPName"])
         else song["animeExpandName"],
         "type": song["songType"],
         "info": f"{song['songName']} by {song['artist']}",
