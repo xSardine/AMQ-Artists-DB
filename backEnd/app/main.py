@@ -254,11 +254,6 @@ async def get_50_random_songs():
 
     data = get_search_result.get_50_random_songs(song_database)
 
-    import json
-
-    with open("data.json", "w") as outfile:
-        json.dump(data, outfile)
-
     for song in data:
         artist_list = []
         for artist_id in song["artists"]:
