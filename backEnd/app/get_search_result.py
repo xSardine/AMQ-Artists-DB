@@ -10,6 +10,8 @@ from filters import (
 from datetime import datetime
 import timeit
 import json
+import random
+from datetime import datetime
 
 
 def add_log(log_data):
@@ -76,14 +78,11 @@ def combine_results(
     return final_song_list
 
 
-def get_first_n_songs(song_database, nb_songs):
+def get_50_random_songs(song_database):
 
     song_list = []
-    for song in song_database:
-        if len(song_list) < nb_songs:
-            song_list.append(utils.format_song(song))
-        else:
-            return song_list
+    for i in range(50):
+        song_list.append(utils.format_song(random.choice(song_database)))
     return song_list
 
 
@@ -150,6 +149,28 @@ def get_search_results(
     annId_result_list = []
     composer_result_list = []
 
+    date = datetime.utcnow()
+    is_ranked = False
+    # If ranked time UTC
+    if (
+        # CST
+        (
+            (date.hour == 1 and date.minute <= 30)
+            or (date.hour == 2 and date.minute >= 30)
+        )
+        # JST
+        or (
+            (date.hour == 11 and date.minute <= 30)
+            or (date.hour == 12 and date.minute >= 30)
+        )
+        # CET
+        or (
+            (date.hour == 18 and date.minute <= 30)
+            or (date.hour == 19 and date.minute >= 30)
+        )
+    ):
+        is_ranked = True
+
     # if main filter
     if (
         type(anime_search_filters) != list
@@ -159,12 +180,13 @@ def get_search_results(
         and song_name_search_filters.search == artist_search_filters.search
     ):
 
-        # search for .webm and .mp3
-        link_search = links_filter.search_link(
-            song_database, anime_search_filters.search
-        )
-        if len(link_search) > 0:
-            return link_search
+        if not is_ranked:
+            # search for .webm and .mp3
+            link_search = links_filter.search_link(
+                song_database, anime_search_filters.search
+            )
+            if len(link_search) > 0:
+                return link_search
 
         # search for annID
 
@@ -184,7 +206,7 @@ def get_search_results(
             authorized_types,
         )
 
-    if type(artist_search_filters) != list:
+    if type(artist_search_filters) != list and not is_ranked:
         artist_result_list = artist_filter.search_artist(
             song_database,
             artist_database,
@@ -198,7 +220,7 @@ def get_search_results(
             authorized_types,
         )
 
-    if type(song_name_search_filters) != list:
+    if type(song_name_search_filters) != list and not is_ranked:
         songname_result_list = songname_filter.search_songName(
             song_database,
             song_name_search_filters.search,
@@ -209,7 +231,7 @@ def get_search_results(
             authorized_types,
         )
 
-    if type(composer_search_filters) != list:
+    if type(composer_search_filters) != list and not is_ranked:
         composer_result_list = composer_filter.search_composer(
             song_database,
             artist_database,

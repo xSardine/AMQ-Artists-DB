@@ -48,7 +48,6 @@ class Search_Request(BaseModel):
     composer_search_filter: Optional[Search_Filter] = []
     and_logic: Optional[bool] = True
     ignore_duplicate: Optional[bool] = False
-    max_nb_song: Optional[int] = 300
     opening_filter: Optional[bool] = True
     ending_filter: Optional[bool] = True
     insert_filter: Optional[bool] = True
@@ -80,7 +79,6 @@ class Artist_ID_Search_Request(BaseModel):
     group_granularity: Optional[int] = Field(2, ge=0)
     max_other_artist: Optional[int] = Field(2, ge=0)
     ignore_duplicate: Optional[bool] = False
-    max_nb_song: Optional[bool] = 300
     opening_filter: Optional[bool] = True
     ending_filter: Optional[bool] = True
     insert_filter: Optional[bool] = True
@@ -90,7 +88,6 @@ class annId_Search_Request(BaseModel):
 
     annId: int
     ignore_duplicate: Optional[bool] = False
-    max_nb_song: Optional[bool] = 300
     opening_filter: Optional[bool] = True
     ending_filter: Optional[bool] = True
     insert_filter: Optional[bool] = True
@@ -226,7 +223,7 @@ async def search_request(query: Search_Request):
         query.composer_search_filter,
         query.and_logic,
         query.ignore_duplicate,
-        query.max_nb_song,
+        300,
         authorized_type,
     )
 
@@ -249,17 +246,18 @@ async def search_request(query: Search_Request):
     return song_list
 
 
-class First_N_Songs(BaseModel):
-    nb_songs: int
-
-
-@app.post("/api/get_first_n_songs", response_model=List[Song_Entry])
-async def get_first_n_songs(query: First_N_Songs):
+@app.post("/api/get_50_random_songs", response_model=List[Song_Entry])
+async def get_50_random_songs():
 
     song_database = sql_calls.extract_song_database()
     artist_database = sql_calls.extract_artist_database()
 
-    data = get_search_result.get_first_n_songs(song_database, query.nb_songs)
+    data = get_search_result.get_50_random_songs(song_database)
+
+    import json
+
+    with open("data.json", "w") as outfile:
+        json.dump(data, outfile)
 
     for song in data:
         artist_list = []
@@ -304,7 +302,7 @@ async def search_request(query: Artist_ID_Search_Request):
         query.max_other_artist,
         query.group_granularity,
         query.ignore_duplicate,
-        query.max_nb_song,
+        300,
         authorized_type,
     )
 
@@ -348,7 +346,7 @@ async def search_request(query: annId_Search_Request):
         song_database,
         query.annId,
         query.ignore_duplicate,
-        query.max_nb_song,
+        300,
         authorized_type,
     )
 

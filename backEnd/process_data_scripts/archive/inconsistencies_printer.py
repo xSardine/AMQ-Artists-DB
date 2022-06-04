@@ -17,7 +17,7 @@ for exception in process_artists.config1_exceptions.alternative_names:
         for anime in song_database:
             id_list = set()
             for song in anime["songs"]:
-                if alt_name in song["artist"]:
+                if alt_name in song["songArtist"]:
                     id_list.add(anime["annId"])
             for id in id_list:
                 print(id, end=" ")

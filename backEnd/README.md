@@ -18,18 +18,6 @@ Then enhanced automatically/semi-automatically/manually:
 - Fix manually edge cases such as different artist with same name
 - Currently: Fixing what has gone through the net
 
-## Get expand.json
-
-```js
-new Listener("expandLibrary questions", (payload) => {
-  console.log(payload)
-}).bindListener()
-socket.sendCommand({
-    type: "library",
-    command: "expandLibrary questions"
-})
-```
-
 ## Start in Local
 
 uvicorn main:app --host 127.0.0.1 --port 8000 --reload

@@ -19,7 +19,7 @@ export class SearchRequestService {
   api_url = "https://anisongdb.com"
 
   getFirstNRequest(): Observable<any> {
-    return this.http.post(this.api_url + "/api/get_first_n_songs", { "nb_songs": 30 }).pipe(
+    return this.http.post(this.api_url + "/api/get_50_random_songs", {}).pipe(
       catchError(this.handleError)
     );;
   }
