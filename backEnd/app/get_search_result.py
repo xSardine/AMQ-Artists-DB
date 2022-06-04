@@ -155,18 +155,18 @@ def get_search_results(
     if (
         # CST
         (
-            (date.hour == 1 and date.minute <= 30)
-            or (date.hour == 2 and date.minute >= 30)
+            (date.hour == 1 and date.minute >= 30)
+            or (date.hour == 2 and date.minute <= 30)
         )
         # JST
         or (
-            (date.hour == 11 and date.minute <= 30)
-            or (date.hour == 12 and date.minute >= 30)
+            (date.hour == 11 and date.minute >= 30)
+            or (date.hour == 12 and date.minute <= 30)
         )
         # CET
         or (
-            (date.hour == 18 and date.minute <= 30)
-            or (date.hour == 19 and date.minute >= 30)
+            (date.hour == 18 and date.minute >= 30)
+            or (date.hour == 19 and date.minute <= 30)
         )
     ):
         is_ranked = True
