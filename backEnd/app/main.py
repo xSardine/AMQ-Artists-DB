@@ -118,11 +118,11 @@ class Song_Entry(BaseModel):
     animeType: Optional[str]
     songType: str
     songName: str
-    artist: str
+    songArtist: str
     songDifficulty: Optional[float]
-    sept: Optional[str]
-    quatre: Optional[str]
-    mptrois: Optional[str]
+    HQ: Optional[str]
+    MQ: Optional[str]
+    audio: Optional[str]
     artists: List[artist]
     composers: List[artist]
     arrangers: List[artist]

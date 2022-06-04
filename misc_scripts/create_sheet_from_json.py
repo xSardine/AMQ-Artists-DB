@@ -10,11 +10,11 @@ from youtubesearchpython import VideosSearch
 
 # Setting to True slow down the process
 # but gives you full song link when available on youtube
-add_youtube_link = False
+add_youtube_link = True
 
 # If set to True: will fuse all the json in the folder
 # If set to False: will create one sheet per json in the folder
-fuse_multiple_json = True
+fuse_multiple_json = False
 
 # Sheet styling Configuration
 sheet_name = "Sheet1"
@@ -38,7 +38,7 @@ def song_in_list(song, song_list):
             song["annId"] == song2["annId"]
             and song["songType"] == song2["songType"]
             and song["songName"] == song2["songName"]
-            and song["artist"] == song2["artist"]
+            and song["songArtist"] == song2["songArtist"]
         ):
             return True
     return False
@@ -57,18 +57,18 @@ def concat(song_list1, song_list2):
 
 def format_song(song):
 
-    HQlink = song["sept"] if ("sept" in song and song["sept"]) else song["quatre"]
-    mp3_link = song["mptrois"] if "mptrois" in song else None
+    HQlink = song["HQ"] if ("HQ" in song and song["HQ"]) else song["MQ"]
+    mp3_link = song["audio"] if "audio" in song else None
     print(song["songName"], mp3_link, "\n")
 
     return {
-        "anime_name": song["animeJPName"]
+        "animeName": song["animeJPName"]
         if ("animeJPName" in song and song["animeJPName"])
         else song["animeExpandName"],
-        "type": song["songType"],
-        "info": f"{song['songName']} by {song['artist']}",
-        "link": HQlink,
-        "mp3_link": mp3_link,
+        "songType": song["songType"],
+        "songInfo": f"{song['songName']} by {song['songArtist']}",
+        "video_link": HQlink,
+        "audio_link": mp3_link,
     }
 
 
@@ -98,21 +98,21 @@ def create_workbook(raw_song_list, output_file_name):
 
         if add_youtube_link:
 
-            ytsearch = f"{song['info']} full song"
+            ytsearch = f"{song['songInfo']} full song"
             results = VideosSearch(ytsearch, limit=1).result()
 
             if not len(results["result"]):
-                print(f"New strategy for {song['info']}")
-                ytsearch = f"{song['anime_name']} {raw_song['songName']} full song"
+                print(f"New strategy for {song['songInfo']}")
+                ytsearch = f"{song['animeName']} {raw_song['songName']} full song"
                 results = VideosSearch(ytsearch, limit=1).result()
 
             if len(results["result"]):
                 yt_link = YT_LINK + results["result"][0]["id"]
 
-        ws.cell(row_iter, 2, song["anime_name"])
-        ws.cell(row_iter, 3, song["type"])
-        ws.cell(row_iter, 4, song["info"]).hyperlink = song["link"]
-        ws.cell(row_iter, 5, "Link").hyperlink = song["mp3_link"]
+        ws.cell(row_iter, 2, song["animeName"])
+        ws.cell(row_iter, 3, song["songType"])
+        ws.cell(row_iter, 4, song["songInfo"]).hyperlink = song["video_link"]
+        ws.cell(row_iter, 5, "Link").hyperlink = song["audio_link"]
         ws.cell(row_iter, 6, "Link").hyperlink = yt_link
         row_iter += 1
 

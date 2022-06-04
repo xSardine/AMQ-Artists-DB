@@ -6,6 +6,34 @@ from selenium.webdriver.support import expected_conditions as EC
 from pathlib import Path
 from datetime import datetime
 import time, os, json
+import sys, getopt
+
+
+def help():
+    print(
+        """Usage: python updateExpandDataAuto.py [-h|--update]
+            -h: show this panel
+            --update: scrap AMQ expand data to update"""
+    )
+
+
+def main(argv):
+
+    update = False
+
+    try:
+        opts, args = getopt.getopt(argv, "h", ["update"])
+    except getopt.GetoptError:
+        help()
+        sys.exit(2)
+    for opt, arg in opts:
+        if opt == "-h":
+            help()
+            sys.exit()
+        elif opt == "--update":
+            update = True
+
+    return update
 
 
 # Call Listener to get expand data and store it in a new element that selenium is waiting for
@@ -91,8 +119,8 @@ def similar_song_exist(source_anime, update_song):
 
     for song in source_anime["songs"]:
         if song["annSongId"] == -1 and (
-            song["name"] == update_song["name"]
-            or song["artist"] == update_song["artist"]
+            song["songName"] == update_song["name"]
+            or song["songArtist"] == update_song["artist"]
         ):
             return True
     return False
@@ -111,69 +139,102 @@ def update_data_with_expand(source_data, expand_data):
 
                 flag_anime_found = True
 
-                if source_anime["name"] != update_anime["name"]:
+                if source_anime["animeExpandName"] != update_anime["name"]:
                     add_log(
-                        f"UPDATE ANIME NAME | {source_anime['name']} -> {update_anime['name']}"
+                        f"UPDATE animeExpandName | {source_anime['animeExpandName']} -> {update_anime['name']}"
                     )
-                    source_anime["name"] = update_anime["name"]
+                    source_anime["animeExpandName"] = update_anime["name"]
 
                 for i, source_song in enumerate(source_anime["songs"]):
                     if source_song["annSongId"] != update_song["annSongId"]:
                         continue
                     flag_song_found = True
-                    if source_song["name"] != update_song["name"]:
+
+                    if source_song["songType"] != update_song["type"]:
                         add_log(
-                            f"UPDATE SONG NAME | {source_song['annSongId']} {source_song['name']} -> {update_song['name']}"
+                            f"UPDATE songType | {source_song['annSongId']} {source_song['songType']} -> {update_song['type']}"
                         )
-                        source_song["name"] = update_song["name"]
-                    if source_song["artist"] != update_song["artist"]:
+                        source_song["songType"] = update_song["type"]
+
+                    if source_song["songNumber"] != update_song["number"]:
                         add_log(
-                            f"UPDATE SONG ARTIST | {source_song['annSongId']} {source_song['artist']} -> {update_song['artist']}"
+                            f"UPDATE songNumber | {source_song['annSongId']} {source_song['songNumber']} -> {update_song['number']}"
                         )
-                        source_song["artist"] = update_song["artist"]
+                        source_song["songNumber"] = update_song["number"]
+
+                    if source_song["songName"] != update_song["name"]:
+                        add_log(
+                            f"UPDATE songName | {source_song['annSongId']} {source_song['songName']} -> {update_song['name']}"
+                        )
+                        source_song["songName"] = update_song["name"]
+
+                    if source_song["songArtist"] != update_song["artist"]:
+                        add_log(
+                            f"UPDATE songArtist | {source_song['annSongId']} {source_song['songArtist']} -> {update_song['artist']}"
+                        )
+                        source_song["songArtist"] = update_song["artist"]
                     if (
                         "720" in update_song["examples"]
                         and "openings.moe" not in update_song["examples"]["720"]
                         and (
-                            "720" not in source_song["examples"]
-                            or source_song["examples"]["720"]
+                            "HQ" not in source_song["links"]
+                            or source_song["links"]["HQ"]
                             != update_song["examples"]["720"]
                         )
                     ):
+                        print(source_song)
+                        print(update_song)
                         add_log(
-                            f"UPDATE 720 SONG LINKS | {source_song['annSongId']} {source_song['examples']['720'] if '720' in source_song['examples'] else None} -> {update_song['examples']['720']}"
+                            f"UPDATE 720 SONG LINKS | {source_song['annSongId']} {source_song['links']['HQ'] if 'HQ' in source_song['links'] else None} -> {update_song['examples']['720']}"
                         )
-                        source_song["examples"]["720"] = update_song["examples"]["720"]
+                        source_song["links"]["HQ"] = update_song["examples"]["720"]
                     if (
                         "480" in update_song["examples"]
                         and "openings.moe" not in update_song["examples"]["480"]
                         and (
-                            "480" not in source_song["examples"]
-                            or source_song["examples"]["480"]
+                            "MQ" not in source_song["links"]
+                            or source_song["links"]["MQ"]
                             != update_song["examples"]["480"]
                         )
                     ):
                         add_log(
-                            f"UPDATE 480 SONG LINKS | {source_song['annSongId']} {source_song['examples']['480'] if '480' in source_song['examples'] else None} -> {update_song['examples']['480']}"
+                            f"UPDATE 480 SONG LINKS | {source_song['annSongId']} {source_song['links']['MQ'] if 'MQ' in source_song['links'] else None} -> {update_song['examples']['480']}"
                         )
-                        source_song["examples"]["480"] = update_song["examples"]["480"]
+                        source_song["links"]["MQ"] = update_song["examples"]["480"]
                     if "mp3" in update_song["examples"] and (
-                        "mp3" not in source_song["examples"]
-                        or source_song["examples"]["mp3"]
+                        "audio" not in source_song["links"]
+                        or source_song["links"]["audio"]
                         != update_song["examples"]["mp3"]
                     ):
                         add_log(
-                            f"UPDATE mp3 SONG LINKS | {source_song['annSongId']} {source_song['examples']['mp3'] if 'mp3' in source_song['examples'] else None} -> {update_song['examples']['mp3']}"
+                            f"UPDATE mp3 SONG LINKS | {source_song['annSongId']} {source_song['links']['audio'] if 'audio' in source_song['links'] else None} -> {update_song['examples']['mp3']}"
                         )
-                        source_song["examples"]["mp3"] = update_song["examples"]["mp3"]
+                        source_song["links"]["audio"] = update_song["examples"]["mp3"]
                     break
 
                 if flag_song_found:
                     continue
 
                 # If anime found but song not found
-                update_song.pop("versions")
-                source_anime["songs"].append(update_song)
+                new_song = {
+                    "annSongId": update_song["annSongId"],
+                    "songType": update_song["type"],
+                    "songNumber": update_song["number"],
+                    "songName": update_song["name"],
+                    "songArtist": update_song["artist"],
+                    "links": {
+                        "HQ": update_song["examples"]["720"]
+                        if "720" in update_song["examples"]
+                        else None,
+                        "MQ": update_song["examples"]["480"]
+                        if "480" in update_song["examples"]
+                        else None,
+                        "audio": update_song["examples"]["mp3"]
+                        if "mp3" in update_song["examples"]
+                        else None,
+                    },
+                }
+                source_anime["songs"].append(new_song)
                 if similar_song_exist(source_anime, update_song):
                     add_log(f"ADD SONG - HIGH THREAT | {update_song}")
                 elif -1 in [song["annSongId"] for song in source_anime["songs"]]:
@@ -187,30 +248,49 @@ def update_data_with_expand(source_data, expand_data):
                 songs = []
                 add_log(f"ADD ANIME | {update_anime['annId']} - {update_anime['name']}")
                 for song in update_anime["songs"]:
-                    song.pop("versions")
-                    add_log(f"ADD SONG TO NEW ANIME | {song}")
-                    songs.append(song)
+                    new_song = {
+                        "annSongId": song["annSongId"],
+                        "songType": song["type"],
+                        "songNumber": song["number"],
+                        "songName": song["name"],
+                        "songArtist": song["artist"],
+                        "links": {
+                            "HQ": song["examples"]["720"]
+                            if "720" in song["examples"]
+                            else None,
+                            "MQ": song["examples"]["480"]
+                            if "480" in song["examples"]
+                            else None,
+                            "audio": song["examples"]["mp3"]
+                            if "mp3" in song["examples"]
+                            else None,
+                        },
+                    }
+                    add_log(f"ADD SONG TO NEW ANIME | {new_song}")
+                    songs.append(new_song)
                 source_data.append(
                     {
                         "annId": update_anime["annId"],
-                        "name": update_anime["name"],
+                        "animeExpandName": update_anime["name"],
                         "songs": songs,
                     }
                 )
     return source_data
 
 
-def process():
+def process(update):
     AMQ_USERNAME = "purplepinapple9"
     AMQ_PWD = "purplepinapple9"
     SOURCE_FILE_PATH = Path("../data/preprocessed/FusedExpand.json")
 
-    # expand_data = selenium_retrieve_data(
-    #    "https://animemusicquiz.com/", AMQ_USERNAME, AMQ_PWD
-    # )
-    # expand_data = expand_data["questions"]
-    with open("../data/source/expand.json", encoding="utf-8") as json_file:
-        expand_data = json.load(json_file)
+    if update:
+        expand_data = selenium_retrieve_data(
+            "https://animemusicquiz.com/", AMQ_USERNAME, AMQ_PWD
+        )
+        expand_data = expand_data["questions"]
+    else:
+        with open("../data/source/expand.json", encoding="utf-8") as json_file:
+            expand_data = json.load(json_file)
     if not expand_data:
         add_log("ERROR WARNING /!\ Couldn't Retrieve Expand: It is undefined")
     else:
@@ -223,7 +303,7 @@ def process():
 
         updated_data = update_data_with_expand(source_data, expand_data)
 
-        with open(SOURCE_FILE_PATH, "w", encoding="utf-8") as outfile:
+        with open("fusedExpand.json", "w", encoding="utf-8") as outfile:
             json.dump(updated_data, outfile)
 
         os.chdir("process_artists")
@@ -260,4 +340,5 @@ def process():
 if __name__ == "__main__":
     # schedule(process, interval=(1 / 10) * 60 * 60)
     # run_loop()
-    process()
+    update = main(sys.argv[1:])
+    process(update)

@@ -97,7 +97,7 @@ export class SongTableComponent {
       colName = "songName"
     }
     if (colName == "Artist") {
-      colName = "artist"
+      colName = "songArtist"
     }
     if (colName == "Anime") {
       colName = "animeExpandName"
@@ -231,11 +231,11 @@ export class SongTableComponent {
     this.popUpannSongId = song.annSongId;
     this.popUpAnime = song.animeExpandName;
     this.popUpSongName = song.songName;
-    this.popUpArtist = song.artist;
+    this.popUpArtist = song.songArtist;
     this.popUpSongDiff = song.songDifficulty;
-    this.popUpHDLink = song.sept;
-    this.popUpMDLink = song.quatre;
-    this.popUpAudioLink = song.mptrois;
+    this.popUpHDLink = song.HQ;
+    this.popUpMDLink = song.MQ;
+    this.popUpAudioLink = song.audio;
     this.popUpArtistsInfo = song.artists;
     this.popUpComposersInfo = song.composers;
     this.popUpArrangersInfo = song.arrangers;

@@ -7,30 +7,32 @@ DROP TABLE IF EXISTS link_artist_group;
 DROP TABLE IF EXISTS link_song_arranger;
 DROP TABLE IF EXISTS link_song_artist;
 DROP TABLE IF EXISTS link_song_composer;
+DROP TABLE IF EXISTS link_anime_genre;
+DROP TABLE IF EXISTS link_anime_tag;
 DROP TABLE IF EXISTS songs;
 PRAGMA foreign_keys = 1;
 
 CREATE TABLE animes (
     "annId" INTEGER NOT NULL PRIMARY KEY,
-    "name" VARCHAR(255) NOT NULL, 
-    "nameEN" VARCHAR (255),
-    "nameJP" VARCHAR (255),
-    "vintage" VARCHAR (255),
-    "type" VARCHAR (255)
+    "animeExpandName" VARCHAR(255) NOT NULL, 
+    "animeENName" VARCHAR (255),
+    "animeJPName" VARCHAR (255),
+    "animeVintage" VARCHAR (255),
+    "animeType" VARCHAR (255)
 );
 
 CREATE TABLE songs (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
     "annSongId" INTEGER,
     "annId" INTEGER NOT NULL,
-    "type" INTEGER NOT NULL,
-    "number" INTEGER NOT NULL,
-    "name" VARCHAR(255) NOT NULL,
-    "artist" VARCHAR(255) NOT NULL,
+    "songType" INTEGER NOT NULL,
+    "songNumber" INTEGER NOT NULL,
+    "songName" VARCHAR(255) NOT NULL,
+    "songArtist" VARCHAR(255) NOT NULL,
     "songDifficulty" FLOAT,
-    "720p" VARCHAR(255),
-    "480p" VARCHAR(255),
-    "mp3" VARCHAR(255),
+    "HQ" VARCHAR(255),
+    "MQ" VARCHAR(255),
+    "audio" VARCHAR(255),
     FOREIGN KEY ("annId")
         REFERENCES animes ("annId")
 );
@@ -120,3 +122,4 @@ create TABLE link_anime_tag (
     FOREIGN KEY ("annId")
         REFERENCES animes ("annId"),
     PRIMARY KEY (annId, tag)
+);

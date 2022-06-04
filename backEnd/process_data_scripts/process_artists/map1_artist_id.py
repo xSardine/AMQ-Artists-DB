@@ -82,9 +82,9 @@ def check_validity(source_input_file, splitting_exception, alternative_names):
         flag_maybe_valid = False
         for anime in source_input_file:
             for song in anime["songs"]:
-                if song["artist"] == exception:
+                if song["songArtist"] == exception:
                     flag_valid = True
-                elif exception in song["artist"]:
+                elif exception in song["songArtist"]:
                     flag_maybe_valid = True
         if not flag_valid:
             if flag_maybe_valid:
@@ -104,9 +104,9 @@ def check_validity(source_input_file, splitting_exception, alternative_names):
             flag_maybe_valid = False
             for anime in source_input_file:
                 for song in anime["songs"]:
-                    if song["artist"] == name:
+                    if song["songArtist"] == name:
                         flag_valid = True
-                    elif name in song["artist"]:
+                    elif name in song["songArtist"]:
                         flag_maybe_valid = True
             if not flag_valid:
                 if flag_maybe_valid:
@@ -139,7 +139,7 @@ if __name__ == "__main__":
         for anime in data:
             for song in anime["songs"]:
                 id_list = []
-                for artist in split_artist(song["artist"]):
+                for artist in split_artist(song["songArtist"]):
                     id = get_artist_id(artist_ids_mapping, artist)
                     id_list.append([id, -1])
                     if id not in artist_ids_mapping.keys():

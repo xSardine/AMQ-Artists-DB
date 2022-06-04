@@ -96,7 +96,7 @@
             <i style="cursor: pointer; margin-right: 8px; color:var(--textOnBackground)"
                 (click)="displaySongIngoPopup(song)" title="More information" class="fa fa-plus"
                 matomoClickCategory="Information" matomoClickAction="Detailed Song Information"
-                matomoClickName="{{song.annSongId}} - {{song.songName}} - {{song.artist}}"></i>
+                matomoClickName="{{song.annSongId}} - {{song.songName}} - {{song.songArtist}}"></i>
             <i style="cursor: pointer; margin-right: 4px; color:var(--textOnBackground)"
                 title="Search songs in this entry" (click)="searchAnnId(song.annId)" class="fa fa-search"></i>
             <span class="copyable" title="Copy to clipboard" (click)="copyToClipboard(song.annId)">{{song.annId}}</span>
@@ -118,13 +118,13 @@
         <td> <i *ngIf="!rankedTime" style="cursor: pointer; margin-right: 6px; color:var(--textOnBackground)"
                 title="Search songs by this artist(s)" (click)="searchArtistId(song.artists)" class="fa fa-search"></i>
             <span class="copyable" title="Copy to clipboard"
-                (click)="copyToClipboard(song.artist)">{{song.artist}}</span>
+                (click)="copyToClipboard(song.songArtist)">{{song.songArtist}}</span>
         </td>
 
         <td *ngIf="!rankedTime" title="Listen to mp3" matomoClickCategory="Media" matomoClickAction="MP3Play"
-            matomoClickName="{{song.annSongId}} - {{song.songName}} - {{song.artist}}" (click)="playMP3music(song)"
+            matomoClickName="{{song.annSongId}} - {{song.songName}} - {{song.songArtist}}" (click)="playMP3music(song)"
             style="text-align: center; color:var(--textOnBackground); cursor: pointer;">
-            <i *ngIf="song.mptrois" class="fa fa-music fa-lg"></i>
+            <i *ngIf="song.audio" class="fa fa-music fa-lg"></i>
         </td>
 
         <td style="text-align: center; color:var(--textOnBackground)"><span title="Delete song from list"

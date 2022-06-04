@@ -25,7 +25,10 @@ def add_log(log_data):
 
 def is_duplicate_in_list(list, song):
     for song2 in list:
-        if song["songName"] == song2["songName"] and song["artist"] == song2["artist"]:
+        if (
+            song["songName"] == song2["songName"]
+            and song["songArtist"] == song2["songArtist"]
+        ):
             return True
     return False
 

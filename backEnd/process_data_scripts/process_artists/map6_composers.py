@@ -78,7 +78,7 @@ def process_composer_database(song_database, artist_database, composer_database)
                 for anime in song_database:
                     for song in anime["songs"]:
 
-                        if artist not in song["artist"]:
+                        if artist not in song["songArtist"]:
                             continue
 
                         flag = True
@@ -93,7 +93,7 @@ def process_composer_database(song_database, artist_database, composer_database)
                                 continue
                             song["arranger_ids"].append(arranger)
                 if not flag:
-                    print("artist field sub not found", artist)
+                    print("songArtist field sub not found", artist)
 
         if "artists_ids" in item:
 
@@ -146,7 +146,7 @@ def process_composer_database(song_database, artist_database, composer_database)
 
                         elif type(linked_song) == str:
 
-                            if song["name"] != linked_song:
+                            if song["songName"] != linked_song:
                                 continue
 
                             flag = True
@@ -163,8 +163,8 @@ def process_composer_database(song_database, artist_database, composer_database)
                         elif type(linked_song) == list:
 
                             if (
-                                song["name"] != linked_song[0]
-                                or song["artist"] != linked_song[1]
+                                song["songName"] != linked_song[0]
+                                or song["songArtist"] != linked_song[1]
                             ):
                                 continue
 
@@ -206,7 +206,7 @@ def process_fix_exception(song_database, artist_database, fix_exception):
                 for anime in song_database:
                     for song in anime["songs"]:
 
-                        if artist not in song["artist"]:
+                        if artist not in song["songArtist"]:
                             continue
 
                         flag = True
@@ -223,7 +223,7 @@ def process_fix_exception(song_database, artist_database, fix_exception):
                                 continue
                             song["arranger_ids"].append(arranger)
                 if not flag:
-                    print("artist field sub not found", artist)
+                    print("songArtist field sub not found", artist)
 
         if "artists_ids" in item:
 
@@ -280,7 +280,7 @@ def process_fix_exception(song_database, artist_database, fix_exception):
 
                         elif type(linked_song) == str:
 
-                            if song["name"] != linked_song:
+                            if song["songName"] != linked_song:
                                 continue
 
                             song["composer_ids"] = []
@@ -299,8 +299,8 @@ def process_fix_exception(song_database, artist_database, fix_exception):
                         elif type(linked_song) == list:
 
                             if (
-                                song["name"] != linked_song[0]
-                                or song["artist"] != linked_song[1]
+                                song["songName"] != linked_song[0]
+                                or song["songArtist"] != linked_song[1]
                             ):
                                 continue
 

@@ -165,8 +165,8 @@ def song_meets_search_requirements(search, song, case_sensitive, authorized_type
     if song["songType"] not in authorized_types:
         return False
 
-    if (not case_sensitive and re.match(search, song["artist"], re.IGNORECASE)) or (
-        case_sensitive and re.match(search, song["artist"])
+    if (not case_sensitive and re.match(search, song["songArtist"], re.IGNORECASE)) or (
+        case_sensitive and re.match(search, song["songArtist"])
     ):
         return True
     return False

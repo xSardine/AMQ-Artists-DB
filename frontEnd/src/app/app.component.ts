@@ -27,7 +27,7 @@ export class AppComponent {
 
   playMP3(song: any) {
     this.url = null
-    setTimeout(() => { this.url = song.mptrois; this.currentlyPlayingArtist = song.Artist; this.currentlyPlayingSongName = song.SongName }, 0)
+    setTimeout(() => { this.url = song.audio; this.currentlyPlayingArtist = song.songArtist; this.currentlyPlayingSongName = song.songName }, 0)
   }
 
   toggleTheme() {

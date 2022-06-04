@@ -98,13 +98,13 @@ def download_songs(song_list):
         else:
             ignore_parameter = "-n"
 
-        file_name = f"{song['annId']} {song['animeExpandName']} {song['songType']} - {song['songName']} by {song['artist']}"
+        file_name = f"{song['annId']} {song['animeExpandName']} {song['songType']} - {song['songName']} by {song['songArtist']}"
 
         try:
 
             if download_type == "mp3":
 
-                link = song["mptrois"] if "mptrois" in song else None
+                link = song["audio"] if "audio" in song else None
 
                 title_key = "title"
                 artist_key = "artist"
@@ -128,10 +128,10 @@ def download_songs(song_list):
                 else:
 
                     link = (
-                        song["sept"]
-                        if "sept" in song and song["sept"] != None
-                        else song["quatre"]
-                        if "quatre" in song
+                        song["HQ"]
+                        if "HQ" in song and song["HQ"]
+                        else song["MQ"]
+                        if "MQ" in song
                         else None
                     )
 
@@ -143,10 +143,10 @@ def download_songs(song_list):
             elif download_type == "webm":
 
                 link = (
-                    song["sept"]
-                    if "sept" in song and song["sept"] != None
-                    else song["quatre"]
-                    if "quatre" in song
+                    song["HQ"]
+                    if "HQ" in song and song["HQ"]
+                    else song["MQ"]
+                    if "MQ" in song
                     else None
                 )
 
@@ -158,10 +158,10 @@ def download_songs(song_list):
             elif download_type == "mp4":
 
                 link = (
-                    song["sept"]
-                    if "sept" in song and song["sept"] != None
+                    song["HQ"]
+                    if "HQ" in song and song["MQ"]
                     else song["quatre"]
-                    if "quatre" in song
+                    if "MQ" in song
                     else None
                 )
 
@@ -175,10 +175,10 @@ def download_songs(song_list):
                 if custom_input == "video":
 
                     link = (
-                        song["sept"]
-                        if "sept" in song and song["sept"] != None
-                        else song["quatre"]
-                        if "quatre" in song
+                        song["HQ"]
+                        if "HQ" in song and song["HQ"]
+                        else song["MQ"]
+                        if "MQ" in song
                         else None
                     )
 
@@ -189,7 +189,7 @@ def download_songs(song_list):
 
                 elif custom_input == "audio":
 
-                    link = song["mptrois"] if "mptrois" in song else None
+                    link = song["audio"] if "audio" in song else None
 
                     if not link:
                         raise ValueError(f"Warning: {file_name} have no mp3 uploaded")

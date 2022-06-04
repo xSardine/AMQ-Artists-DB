@@ -22,17 +22,23 @@ def song_meets_search_requirement(
         and (
             not case_sensitive
             and (
-                re.match(search, song["nameExpand"], re.IGNORECASE)
-                or (song["nameJP"] and re.match(search, song["nameJP"], re.IGNORECASE))
-                or (song["nameEN"] and re.match(search, song["nameEN"], re.IGNORECASE))
+                re.match(search, song["animeExpandName"], re.IGNORECASE)
+                or (
+                    song["animeJPName"]
+                    and re.match(search, song["animeJPName"], re.IGNORECASE)
+                )
+                or (
+                    song["animeENName"]
+                    and re.match(search, song["animeENName"], re.IGNORECASE)
+                )
             )
         )
         or (
             case_sensitive
             and (
-                re.match(search, song["nameExpand"])
-                or (song["nameJP"] and re.match(search, song["nameJP"]))
-                or (song["nameEN"] and re.match(search, song["nameEN"]))
+                re.match(search, song["animeExpandName"])
+                or (song["animeJPName"] and re.match(search, song["animeJPName"]))
+                or (song["animeENName"] and re.match(search, song["animeENName"]))
             )
         )
     ):

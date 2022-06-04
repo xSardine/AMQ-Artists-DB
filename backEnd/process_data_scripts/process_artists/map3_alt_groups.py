@@ -51,7 +51,7 @@ def update_song(song_database, song_id, group_id, new_set):
 
             elif type(linked_song) == str:
 
-                if song["name"] != linked_song:
+                if song["songName"] != linked_song:
                     continue
 
                 flag_valid = True

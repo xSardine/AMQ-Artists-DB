@@ -42,27 +42,27 @@ def get_regex_search(search, ignore_special_character=True, partial_match=True):
 
 def format_song(song):
     if song["songType"] == 1:
-        type = "Opening " + str(song["number"])
+        type = "Opening " + str(song["songNumber"])
     elif song["songType"] == 2:
-        type = "Ending " + str(song["number"])
+        type = "Ending " + str(song["songNumber"])
     else:
         type = "Insert Song"
 
     songinfo = {
         "annId": song["annId"],
         "annSongId": song["annSongId"],
-        "animeExpandName": song["nameExpand"],
-        "animeENName": song["nameEN"],
-        "animeJPName": song["nameJP"],
-        "animeVintage": song["vintage"],
+        "animeExpandName": song["animeExpandName"],
+        "animeENName": song["animeENName"],
+        "animeJPName": song["animeJPName"],
+        "animeVintage": song["animeVintage"],
         "animeType": song["animeType"],
         "songType": type,
         "songName": song["songName"],
-        "artist": song["artist"],
+        "songArtist": song["songArtist"],
         "songDifficulty": song["songDifficulty"],
-        "sept": song["720"],
-        "quatre": song["480"],
-        "mptrois": song["mp3"],
+        "HQ": song["HQ"],
+        "MQ": song["MQ"],
+        "audio": song["audio"],
         "artists": song["artists_ids"],
         "composers": song["composers_ids"],
         "arrangers": song["arrangers_ids"],

@@ -64,14 +64,14 @@ def get_anime_info_from_anime_id(cursor, anime_id):
     Return the content of animes table for that anime ID
     {
         annId
-        english_name
-        nameJP
+        animeExpandName
+        animeJPName
     }
     """
 
     command = "SELECT * FROM animes WHERE annId == ?;"
     anime = run_sql_command(cursor, command, [anime_id])[0]
-    return {"annId": anime[0], "english_name": anime[1], "nameJP": anime[2]}
+    return {"annId": anime[0], "animeExpandName": anime[1], "animeJPName": anime[2]}
 
 
 def get_songs_ID_from_anime_ID(cursor, anime_id):
@@ -91,13 +91,13 @@ def get_song_info_from_song_ID(cursor, song_id):
     {
         songId
         annSongId
-        type
-        number
-        name
-        artist
-        720
-        480
-        mp3
+        songType
+        songNumber
+        songName
+        songArtist
+        HQ
+        MQ
+        audio
     }
     """
 
@@ -106,13 +106,13 @@ def get_song_info_from_song_ID(cursor, song_id):
     return {
         "songId": song[0],
         "annSongId": song[1],
-        "type": song[2],
-        "number": song[3],
-        "name": song[4],
-        "artist": song[5],
-        "720": song[6],
-        "480": song[7],
-        "mp3": song[8],
+        "songType": song[2],
+        "songNumber": song[3],
+        "songName": song[4],
+        "songArtist": song[5],
+        "HQ": song[6],
+        "MQ": song[7],
+        "audio": song[8],
     }
 
 
@@ -227,8 +227,8 @@ def extract_song_database():
     """
 
     command = """
-    SELECT animes.annId, animes.name, animes.nameJP, animes.nameEN, animes.vintage, animes.type, songs.annSongId, songs.type, songs.number, 
-    songs.name, songs.artist, songs.songDifficulty, songs."720p", songs."480p", songs.mp3, group_concat(link_song_artist.artist_id) 
+    SELECT animes.annId, animes.animeExpandName, animes.animeJPName, animes.animeENName, animes.animeVintage, animes.animeType, songs.annSongId, songs.songType, songs.songNumber, 
+    songs.songName, songs.songArtist, songs.songDifficulty, songs.HQ, songs.MQ, songs.audio, group_concat(link_song_artist.artist_id) 
     AS artists_ids, group_concat(link_song_artist.artist_alt_members_id) AS artists_ids_set, group_concat(link_song_composer.composer_id) as composer_ids, group_concat(link_song_arranger.arranger_id) as arranger_ids
     FROM animes
     INNER JOIN songs ON animes.annId = songs.annId
@@ -265,20 +265,20 @@ def extract_song_database():
         song_database.append(
             {
                 "annId": song[0],
-                "nameExpand": song[1],
-                "nameEN": song[2],
-                "nameJP": song[3],
-                "vintage": song[4],
+                "animeExpandName": song[1],
+                "animeJPName": song[2],
+                "animeENName": song[3],
+                "animeVintage": song[4],
                 "animeType": song[5],
                 "annSongId": song[6],
                 "songType": song[7],
-                "number": song[8],
+                "songNumber": song[8],
                 "songName": song[9],
-                "artist": song[10],
+                "songArtist": song[10],
                 "songDifficulty": song[11],
-                "720": song[12],
-                "480": song[13],
-                "mp3": song[14],
+                "HQ": song[12],
+                "MQ": song[13],
+                "audio": song[14],
                 "artists_ids": artist_ids,
                 "composers_ids": composer_ids,
                 "arrangers_ids": arranger_ids,
