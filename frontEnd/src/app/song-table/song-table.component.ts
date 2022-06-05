@@ -53,7 +53,7 @@ export class SongTableComponent {
   popUpArtistsInfo = [];
   popUpComposersInfo = [];
   popUpArrangersInfo = [];
-
+  previousBody: any
 
   tableHeaders = ["annId", "Anime", "Type", "Song Name", "Artist"];
 
@@ -286,6 +286,51 @@ export class SongTableComponent {
     this.sendSongListtoTable.emit(currentSongList)
   }
 
+  areBodyIdenticalannIdSearch(body: any, body2: any): boolean {
+
+    if (!this.previousBody || !this.previousBody.annId) {
+      return false
+    }
+
+    if (body.annId != body2.annId
+      || body.ignore_duplicate != body2.ignore_duplicate
+      || body.opening_filter != body2.opening_filter
+      || body.ending_filter != body2.ending_filter
+      || body.insert_filter != body2.insert_filter) {
+      return false
+    }
+
+    return true
+  }
+
+  areBodyIdenticalArtistSearch(body: any, body2: any): boolean {
+
+    if (!this.previousBody || !this.previousBody.artist_ids) {
+      return false
+    }
+
+    if (body.artist_ids.length != body2.artist_ids.length) {
+      return false
+    }
+
+    for (let artist in body.artist_ids) {
+      if (body.artist_ids[artist] != body2.artist_ids[artist]) {
+        return false
+      }
+    }
+
+    if (body.group_granularity != body2.group_granularity
+      || body.max_other_artist != body2.max_other_artist
+      || body.ignore_duplicate != body2.ignore_duplicate
+      || body.opening_filter != body2.opening_filter
+      || body.ending_filter != body2.ending_filter
+      || body.insert_filter != body2.insert_filter) {
+      return false
+    }
+
+    return true
+  }
+
   searchArtistId(artists: any) {
 
     let id_arr = []
@@ -306,7 +351,13 @@ export class SongTableComponent {
       "insert_filter": true,
     }
 
+    if (this.areBodyIdenticalArtistSearch(body, this.previousBody)) {
+      return
+    }
+
     this.matomoTracker.trackEvent('SearchCall', 'ArtistID', tmpstr);
+
+    this.previousBody = body
 
     let currentSongList
     currentSongList = this.searchRequestService.artistIdsSearchRequest(body).subscribe(data => {
@@ -327,7 +378,13 @@ export class SongTableComponent {
       "insert_filter": true,
     }
 
+    if (this.areBodyIdenticalArtistSearch(body, this.previousBody)) {
+      return
+    }
+
     this.matomoTracker.trackEvent('SearchCall', 'ArtistID', artist.id);
+
+    this.previousBody = body
 
     let currentSongList
     currentSongList = this.searchRequestService.artistIdsSearchRequest(body).subscribe(data => {
@@ -348,7 +405,13 @@ export class SongTableComponent {
       "insert_filter": true,
     }
 
+    if (this.areBodyIdenticalannIdSearch(body, this.previousBody)) {
+      return
+    }
+
     this.matomoTracker.trackEvent('SearchCall', 'annID', id);
+
+    this.previousBody = body
 
     let currentSongList
     currentSongList = this.searchRequestService.annIdSearchRequest(body).subscribe(data => {

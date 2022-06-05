@@ -82,7 +82,7 @@ export class SearchBarComponent implements OnInit {
     });
   }
 
-  areBodyIdentical(body: any, body2: any): boolean {
+  areBodyIdenticalBaseSearch(body: any, body2: any): boolean {
 
     if (this.previousBody) {
 
@@ -310,7 +310,7 @@ export class SearchBarComponent implements OnInit {
       }
     }
 
-    if (this.areBodyIdentical(body, this.previousBody)) {
+    if (this.areBodyIdenticalBaseSearch(body, this.previousBody)) {
       return
     }
 
