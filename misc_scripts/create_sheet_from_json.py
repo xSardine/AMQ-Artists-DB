@@ -10,7 +10,7 @@ from youtubesearchpython import VideosSearch
 
 # Setting to True slow down the process
 # but gives you full song link when available on youtube
-add_youtube_link = True
+add_youtube_link = False
 
 # If set to True: will fuse all the json in the folder
 # If set to False: will create one sheet per json in the folder
@@ -149,6 +149,9 @@ def create_workbook(raw_song_list, output_file_name):
 
     # Sorting property
     ws.auto_filter.ref = f"A1:G{row_iter-1}"
+
+    # Freeze First line
+    ws.freeze_panes = "A2"
 
     wb.save(output_file_name)
 
