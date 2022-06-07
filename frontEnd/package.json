@@ -19,8 +19,6 @@
     "@angular/platform-browser": "~13.3.10",
     "@angular/platform-browser-dynamic": "~13.3.10",
     "@angular/router": "~13.3.10",
-    "@ngx-matomo/router": "^2.4.2",
-    "@ngx-matomo/tracker": "^2.4.2",
     "@vime/angular": "^5.0.33",
     "font-awesome": "^4.7.0",
     "rxjs": "~6.6.0",

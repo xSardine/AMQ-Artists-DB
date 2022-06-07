@@ -25,7 +25,7 @@ Then `Artist Filter` have 2 more parameters:
 
 - `Maximum Amount of Other people`: This is the maximum amount of people that are not in your `Artist Filter` field that are allowed. So if you didn't input a group, `1` mean no more than duet.
 - `Minimal Amount of group members`: This is only relevant if you're inputing a group name. This will ensure there is a minimal amount of group members singing in the song if it is not the group itself.
-  If 0, it will only take the group itself, meaning if all the group members are present in the song but they are not credited as the group itself, it will not include it (Sphere members in Natsuiro Kiseki for example). Setting it to a  high number will catch these too but can cause problem for groups with only one singer such as fripside.
+  If 0, it will only take the group itself, meaning if all the group members are present in the song but they are not credited as the group itself, it will not include it (Sphere members in Natsuiro Kiseki for example). Setting it to a high number will catch these too but is dumb for groups with only one singer such as fripside where you will catch all Yoshinon Nanjou's.
 
 Finally:
 
@@ -82,3 +82,8 @@ Let me know if you find any of these that are wrong in the DB:
 Egerod for making <https://animemusicquiz.com/> and the mods maintaining its database.
 
 MugitBot for providing me with their database, which helped me for the first iteration <https://github.com/CarrC2021/MugiBot>
+
+# Temporary command savings
+
+scp -r * anthony@anisongdb.com:~/tmpAngularApp/
+scp Enhanced-AMQ-Database.db anthony@anisongdb.com:~/AMQ-Artists-DB/backEnd/app/data/Enhanced-AMQ-Database.db

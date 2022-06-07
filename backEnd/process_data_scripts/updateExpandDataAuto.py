@@ -68,7 +68,7 @@ def add_log(log):
     print(log)
     """Append given text as a new line at the end of file"""
     # Open the file in append & read mode ('a+')
-    with open("updateLogs.txt", "a+") as file_object:
+    with open("updateLogs.txt", "a+", encoding="utf-8") as file_object:
         # Move read cursor to the start of file.
         file_object.seek(0)
         # If file is not empty then append '\n'
@@ -182,8 +182,6 @@ def update_data_with_expand(source_data, expand_data):
                             != update_song["examples"]["720"]
                         )
                     ):
-                        print(source_song)
-                        print(update_song)
                         add_log(
                             f"UPDATE 720 SONG LINKS | {source_song['annSongId']} {source_song['links']['HQ'] if 'HQ' in source_song['links'] else None} -> {update_song['examples']['720']}"
                         )
@@ -303,7 +301,7 @@ def process(update):
 
         updated_data = update_data_with_expand(source_data, expand_data)
 
-        with open("fusedExpand.json", "w", encoding="utf-8") as outfile:
+        with open(SOURCE_FILE_PATH, "w", encoding="utf-8") as outfile:
             json.dump(updated_data, outfile)
 
         os.chdir("process_artists")

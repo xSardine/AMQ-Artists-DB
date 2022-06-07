@@ -1,6 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { SearchRequestService } from '../core/services/search-request.service';
-import { MatomoTracker } from '@ngx-matomo/tracker';
 
 @Component({
   selector: 'app-song-table',
@@ -15,7 +14,7 @@ import { MatomoTracker } from '@ngx-matomo/tracker';
 })
 export class SongTableComponent {
 
-  constructor(private searchRequestService: SearchRequestService, private matomoTracker: MatomoTracker) {
+  constructor(private searchRequestService: SearchRequestService) {
   }
 
   @Input() songTable: any
@@ -355,8 +354,6 @@ export class SongTableComponent {
       return
     }
 
-    this.matomoTracker.trackEvent('SearchCall', 'ArtistID', tmpstr);
-
     this.previousBody = body
 
     let currentSongList
@@ -382,8 +379,6 @@ export class SongTableComponent {
       return
     }
 
-    this.matomoTracker.trackEvent('SearchCall', 'ArtistID', artist.id);
-
     this.previousBody = body
 
     let currentSongList
@@ -408,8 +403,6 @@ export class SongTableComponent {
     if (this.areBodyIdenticalannIdSearch(body, this.previousBody)) {
       return
     }
-
-    this.matomoTracker.trackEvent('SearchCall', 'annID', id);
 
     this.previousBody = body
 
