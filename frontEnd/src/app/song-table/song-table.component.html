@@ -38,7 +38,7 @@
                 <div *ngFor=" let artist of popUpArtistsInfo">
                     <p style="margin: 5px">
                         <i *ngIf="!rankedTime" style="cursor: pointer; margin-right: 6px;"
-                            title="Search songs by this artist" (click)="searchPopUpArtist(artist)"
+                            title="Search songs by this artist" (click)="searchArtistIds(artist)"
                             class="fa fa-search"></i>
                         <span class="popUpText" title="Copy artist to clipboard"
                             (click)="copyToClipboard(artist['names'][0])">{{artist["names"][0]}}</span>
@@ -48,7 +48,7 @@
                     </p>
                     <div *ngFor="let member of artist['members']">
                         <i *ngIf="!rankedTime" style="cursor: pointer; margin-right: 6px;"
-                            title="Search songs by this member" (click)="searchPopUpArtist(member)"
+                            title="Search songs by this member" (click)="searchArtistIds(member)"
                             class="fa fa-search"></i>
                         <span class="popUpText" title="Copy member to clipboard"
                             (click)="copyToClipboard(member.names[0])">{{member.names[0]}}</span>
@@ -56,7 +56,7 @@
                     <p *ngIf="artist['groups'] != undefined" style="margin: 3px; margin-top: 10px;"><b>Part of:</b></p>
                     <div *ngFor="let group of artist['groups']">
                         <i *ngIf="!rankedTime" style="cursor: pointer; margin-right: 6px;"
-                            title="Search songs by this group" (click)="searchPopUpArtist(group)"
+                            title="Search songs by this group" (click)="searchArtistIds(group)"
                             class="fa fa-search"></i>
                         <span class="popUpText" title="Copy group to clipboard"
                             (click)="copyToClipboard(group.names[0])">{{group.names[0]}}</span>
@@ -115,7 +115,7 @@
                 (click)="copyToClipboard(song.songName)">{{song.songName}}</span> </td>
 
         <td> <i *ngIf="!rankedTime" style="cursor: pointer; margin-right: 6px; color:var(--textOnBackground)"
-                title="Search songs by this artist(s)" (click)="searchArtistId(song.artists)" class="fa fa-search"></i>
+                title="Search songs by this artist(s)" (click)="searchArtistIds(song.artists)" class="fa fa-search"></i>
             <span class="copyable" title="Copy to clipboard"
                 (click)="copyToClipboard(song.songArtist)">{{song.songArtist}}</span>
         </td>

@@ -18,6 +18,22 @@ export class SongTableComponent {
   }
 
   @Input() songTable: any
+  @Input() previousBody: any
+
+  @Output() mp3PlayerClicked = new EventEmitter();
+  playMP3music(song: any) {
+    this.mp3PlayerClicked.emit(song)
+  }
+
+  @Output() sendSongListtoTable = new EventEmitter();
+  sendSongList(currentSongList: any) {
+    this.sendSongListtoTable.emit(currentSongList)
+  }
+
+  @Output() sendPreviousBody = new EventEmitter();
+  sendPrevBody(body: any) {
+    this.sendPreviousBody.emit(body)
+  }
 
   ngOnChanges(changes: Event) {
     if (this.checkRankedTime()) {
@@ -53,7 +69,6 @@ export class SongTableComponent {
   popUpArtistsInfo = [];
   popUpComposersInfo = [];
   popUpArrangersInfo = [];
-  previousBody: any
   currentAverage: any
 
   tableHeaders = ["annId", "Anime", "Type", "Song Name", "Artist"];
@@ -291,30 +306,20 @@ export class SongTableComponent {
 
   }
 
-  @Output() mp3PlayerClicked = new EventEmitter();
-
-  playMP3music(song: any) {
-    this.mp3PlayerClicked.emit(song)
-  }
-
   deleteRowEntry(song: any) {
     let id = this.getIndexbyElement(this.songTable, song)
     this.removeItemsById(this.songTable, id);
     this.currentAverage = this.calculateAverage(this.songTable)
   }
 
-  @Output() sendSongListtoTable = new EventEmitter();
-
-  sendMessage(currentSongList: any) {
-    this.sendSongListtoTable.emit(currentSongList)
-  }
-
   areBodyIdenticalannIdSearch(body: any, body2: any): boolean {
 
+    // if the previous search wasn't an annId search
     if (!this.previousBody || !this.previousBody.annId) {
       return false
     }
 
+    // if the annId search settings were different
     if (body.annId != body2.annId
       || body.ignore_duplicate != body2.ignore_duplicate
       || body.opening_filter != body2.opening_filter
@@ -328,20 +333,24 @@ export class SongTableComponent {
 
   areBodyIdenticalArtistSearch(body: any, body2: any): boolean {
 
+    // if the previous search wasn't an artist_id search
     if (!this.previousBody || !this.previousBody.artist_ids) {
       return false
     }
 
+    // if the amount of ids searched is different
     if (body.artist_ids.length != body2.artist_ids.length) {
       return false
     }
 
+    // if the arrays are different
     for (let artist in body.artist_ids) {
       if (body.artist_ids[artist] != body2.artist_ids[artist]) {
         return false
       }
     }
 
+    // if the artist ids search settings are different
     if (body.group_granularity != body2.group_granularity
       || body.max_other_artist != body2.max_other_artist
       || body.ignore_duplicate != body2.ignore_duplicate
@@ -354,15 +363,19 @@ export class SongTableComponent {
     return true
   }
 
-  searchArtistId(artists: any) {
+  searchArtistIds(artists: any) {
 
-    let id_arr = []
-    let tmpstr = ""
-    for (let artist in artists) {
-      id_arr.push(artists[artist].id)
-      tmpstr += artists[artist].id + "-"
+
+    let id_arr
+    if (artists.id) {
+      id_arr = [artists.id]
     }
-    tmpstr = tmpstr.substring(0, tmpstr.length - 1)
+    else {
+      id_arr = []
+      for (let artist in artists) {
+        id_arr.push(artists[artist].id)
+      }
+    }
 
     let body = {
       "artist_ids": id_arr,
@@ -379,39 +392,13 @@ export class SongTableComponent {
     }
 
     this.previousBody = body
+    this.sendPrevBody(body)
 
     let currentSongList
     currentSongList = this.searchRequestService.artistIdsSearchRequest(body).subscribe(data => {
       currentSongList = data
-      this.sendMessage(currentSongList)
+      this.sendSongList(currentSongList)
     });
-  }
-
-  searchPopUpArtist(artist: any) {
-
-    let body = {
-      "artist_ids": [artist.id],
-      "group_granularity": 0,
-      "max_other_artist": 99,
-      "ignore_duplicate": false,
-      "opening_filter": true,
-      "ending_filter": true,
-      "insert_filter": true,
-    }
-
-    if (this.areBodyIdenticalArtistSearch(body, this.previousBody)) {
-      return
-    }
-
-    this.previousBody = body
-
-    let currentSongList
-    currentSongList = this.searchRequestService.artistIdsSearchRequest(body).subscribe(data => {
-      currentSongList = data
-      this.sendMessage(currentSongList)
-      this.showSongInfoPopup = false
-    });
-
   }
 
   searchAnnId(id: any) {
@@ -429,11 +416,12 @@ export class SongTableComponent {
     }
 
     this.previousBody = body
+    this.sendPrevBody(body)
 
     let currentSongList
     currentSongList = this.searchRequestService.annIdSearchRequest(body).subscribe(data => {
       currentSongList = data
-      this.sendMessage(currentSongList)
+      this.sendSongList(currentSongList)
     });
   }
 

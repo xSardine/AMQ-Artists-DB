@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { SearchRequestService } from '../core/services/search-request.service';
 import { DomSanitizer, SafeResourceUrl, SafeUrl } from '@angular/platform-browser';
 
@@ -10,6 +10,18 @@ import { DomSanitizer, SafeResourceUrl, SafeUrl } from '@angular/platform-browse
 export class SearchBarComponent implements OnInit {
 
   constructor(private sanitizer: DomSanitizer, private searchRequestService: SearchRequestService) {
+  }
+
+  @Input() previousBody: any
+
+  @Output() sendSongListtoTable = new EventEmitter();
+  sendSongList(currentSongList: any) {
+    this.sendSongListtoTable.emit(currentSongList)
+  }
+
+  @Output() sendPreviousBody = new EventEmitter();
+  sendPrevBody(body: any) {
+    this.sendPreviousBody.emit(body)
   }
 
   mainFilter: string = "";
@@ -38,7 +50,6 @@ export class SearchBarComponent implements OnInit {
   showEndings: boolean = true;
   showInserts: boolean = true;
   showAdvancedFilters: boolean = false;
-  previousBody: any
 
   rankedTime = false;
   RankedDisabledTimeLeft = 0
@@ -77,67 +88,77 @@ export class SearchBarComponent implements OnInit {
 
     this.currentSongList = this.searchRequestService.getFirstNRequest().subscribe(data => {
       this.currentSongList = data
-      this.sendMessage(this.currentSongList)
+      this.sendSongList(this.currentSongList)
     });
   }
 
   areBodyIdenticalBaseSearch(body: any, body2: any): boolean {
 
-    if (this.previousBody) {
-
-      if ((body.anime_search_filter && !body2.anime_search_filter)
-        || (!body.anime_search_filter && body2.anime_search_filter)
-        || (body.artist_search_filter && !body2.artist_search_filter)
-        || (!body.artist_search_filter && body2.artist_search_filter)
-        || (body.song_name_search_filter && !body2.song_name_search_filter)
-        || (!body.song_name_search_filter && body2.song_name_search_filter)
-        || (body.composer_search_filter && !body2.composer_search_filter)
-        || (!body.composer_search_filter && body2.composer_search_filter)) {
-        return false
-      }
-
-      if (body.and_logic != body2.and_logic
-        || body.ending_filter != body2.ending_filter
-        || body.insert_filter != body2.insert_filter
-        || body.opening_filter != body2.opening_filter
-        || body.ignore_duplicate != body2.ignore_duplicate) {
-        return false
-      }
-      if (body.anime_search_filter && body2.anime_search_filter
-        && (body.anime_search_filter.search != body2.anime_search_filter.search
-          || body.anime_search_filter.ignore_special_character != body2.anime_search_filter.ignore_special_character
-          || body.anime_search_filter.partial_match != body2.anime_search_filter.partial_match
-          || body.anime_search_filter.case_sensitive != body2.anime_search_filter.case_sensitive)) {
-        return false
-      }
-      if (body.artist_search_filter && body2.artist_search_filter
-        && (body.artist_search_filter.search != body2.artist_search_filter.search
-          || body.artist_search_filter.ignore_special_character != body2.artist_search_filter.ignore_special_character
-          || body.artist_search_filter.partial_match != body2.artist_search_filter.partial_match
-          || body.artist_search_filter.case_sensitive != body2.artist_search_filter.case_sensitive
-          || body.artist_search_filter.group_granularity != body2.artist_search_filter.group_granularity
-          || body.artist_search_filter.max_other_artist != body2.artist_search_filter.max_other_artist)) {
-        return false
-      }
-      if (body.song_name_search_filter && body2.song_name_search_filter
-        && (body.song_name_search_filter.search != body2.song_name_search_filter.search
-          || body.song_name_search_filter.ignore_special_character != body2.song_name_search_filter.ignore_special_character
-          || body.song_name_search_filter.partial_match != body2.song_name_search_filter.partial_match
-          || body.song_name_search_filter.case_sensitive != body2.song_name_search_filter.case_sensitive)) {
-        return false
-      }
-      if (body.composer_search_filter && body2.composer_search_filter
-        && (body.composer_search_filter.search != body2.composer_search_filter.search
-          || body.composer_search_filter.ignore_special_character != body2.composer_search_filter.ignore_special_character
-          || body.composer_search_filter.partial_match != body2.composer_search_filter.partial_match
-          || body.composer_search_filter.case_sensitive != body2.composer_search_filter.case_sensitive
-          || body.composer_search_filter.arrangement != body2.composer_search_filter.arrangement)) {
-        return false
-      }
-    }
-    else {
+    // if there wasn't any search prior to that
+    if (!this.previousBody) {
       return false
     }
+
+    // If the search filters used are different
+    if ((body.anime_search_filter && !body2.anime_search_filter)
+      || (!body.anime_search_filter && body2.anime_search_filter)
+      || (body.artist_search_filter && !body2.artist_search_filter)
+      || (!body.artist_search_filter && body2.artist_search_filter)
+      || (body.song_name_search_filter && !body2.song_name_search_filter)
+      || (!body.song_name_search_filter && body2.song_name_search_filter)
+      || (body.composer_search_filter && !body2.composer_search_filter)
+      || (!body.composer_search_filter && body2.composer_search_filter)) {
+      return false
+    }
+
+    // if the general settings are different
+    if (body.and_logic != body2.and_logic
+      || body.ending_filter != body2.ending_filter
+      || body.insert_filter != body2.insert_filter
+      || body.opening_filter != body2.opening_filter
+      || body.ignore_duplicate != body2.ignore_duplicate) {
+      return false
+    }
+
+    // if the anime filters are different
+    if (body.anime_search_filter && body2.anime_search_filter
+      && (body.anime_search_filter.search != body2.anime_search_filter.search
+        || body.anime_search_filter.ignore_special_character != body2.anime_search_filter.ignore_special_character
+        || body.anime_search_filter.partial_match != body2.anime_search_filter.partial_match
+        || body.anime_search_filter.case_sensitive != body2.anime_search_filter.case_sensitive)) {
+      return false
+    }
+
+    // if the artist filters are different
+    if (body.artist_search_filter && body2.artist_search_filter
+      && (body.artist_search_filter.search != body2.artist_search_filter.search
+        || body.artist_search_filter.ignore_special_character != body2.artist_search_filter.ignore_special_character
+        || body.artist_search_filter.partial_match != body2.artist_search_filter.partial_match
+        || body.artist_search_filter.case_sensitive != body2.artist_search_filter.case_sensitive
+        || body.artist_search_filter.group_granularity != body2.artist_search_filter.group_granularity
+        || body.artist_search_filter.max_other_artist != body2.artist_search_filter.max_other_artist)) {
+      return false
+    }
+
+    // if the song name filters are different
+    if (body.song_name_search_filter && body2.song_name_search_filter
+      && (body.song_name_search_filter.search != body2.song_name_search_filter.search
+        || body.song_name_search_filter.ignore_special_character != body2.song_name_search_filter.ignore_special_character
+        || body.song_name_search_filter.partial_match != body2.song_name_search_filter.partial_match
+        || body.song_name_search_filter.case_sensitive != body2.song_name_search_filter.case_sensitive)) {
+      return false
+    }
+
+    // if the composer filters are different
+    if (body.composer_search_filter && body2.composer_search_filter
+      && (body.composer_search_filter.search != body2.composer_search_filter.search
+        || body.composer_search_filter.ignore_special_character != body2.composer_search_filter.ignore_special_character
+        || body.composer_search_filter.partial_match != body2.composer_search_filter.partial_match
+        || body.composer_search_filter.case_sensitive != body2.composer_search_filter.case_sensitive
+        || body.composer_search_filter.arrangement != body2.composer_search_filter.arrangement)) {
+      return false
+    }
+
     return true
   }
 
@@ -314,10 +335,11 @@ export class SearchBarComponent implements OnInit {
     }
 
     this.previousBody = body
+    this.sendPrevBody(body)
 
     this.currentSongList = this.searchRequestService.searchRequest(body).subscribe(data => {
       this.currentSongList = data
-      this.sendMessage(this.currentSongList)
+      this.sendSongList(this.currentSongList)
     });
   }
 
@@ -344,10 +366,5 @@ export class SearchBarComponent implements OnInit {
     this.downloadJsonHref = uri;
   }
 
-  @Output() sendSongListtoTable = new EventEmitter();
-
-  sendMessage(currentSongList: any) {
-    this.sendSongListtoTable.emit(currentSongList)
-  }
 
 }

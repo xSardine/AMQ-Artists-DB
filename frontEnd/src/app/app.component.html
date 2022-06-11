@@ -34,9 +34,12 @@
 
 
 <div class="content" role="main">
-  <app-search-bar (sendSongListtoTable)="receiveSongList($event)"></app-search-bar>
-  <app-song-table (sendSongListtoTable)="receiveSongList($event)" (mp3PlayerClicked)="playMP3($event)"
-    [songTable]="songList"></app-song-table>
+  <app-search-bar (sendPreviousBody)="receivePreviousBody($event)" [previousBody]="previousBody"
+    (sendSongListtoTable)="receiveSongList($event)">
+  </app-search-bar>
+  <app-song-table (sendPreviousBody)="receivePreviousBody($event)" [previousBody]="previousBody"
+    (sendSongListtoTable)="receiveSongList($event)" (mp3PlayerClicked)="playMP3($event)" [songTable]="songList">
+  </app-song-table>
 </div>
 
 

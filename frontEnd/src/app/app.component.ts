@@ -17,12 +17,17 @@ export class AppComponent {
   url: any = "";
 
   songList: any;
+  previousBody: any;
 
   currentlyPlayingArtist: any = ""
   currentlyPlayingSongName: any = ""
 
   receiveSongList($event: any) {
     this.songList = $event
+  }
+
+  receivePreviousBody($event: any) {
+    this.previousBody = $event
   }
 
   playMP3(song: any) {
