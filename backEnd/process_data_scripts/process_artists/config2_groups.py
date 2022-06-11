@@ -2484,7 +2484,7 @@ groups_subdivision_list = [
     ["the High-Lows", ["Hiroto Koumoto"]],
     ["THE BLUE HEARTS", ["Hiroto Koumoto"]],
     ["PUFFY", ["Yumi Yoshimura", "Ami Onuki"]],
-    ["MAKE-UP", ["NoB"]],
+    ["MAKE-UP", ["Nobuo Yamada"]],
     [
         "HUMMING BIRD",
         [
@@ -6159,6 +6159,24 @@ groups_subdivision_list = [
     ["Touen no San Shimai", ["Nami Kurokawa", "Mai Goto", "Hiroka Nishizawa"]],
     ["Kazoe-Yakuman Shimai", ["Tae Okajima", "Chihiro Umehara", "Kozue Yoshizumi"]],
     ["BON-BON BLANCO", ["ANNA"]],
+    ["NiNa", ["YUKI", "Kate Pierson"]],
+    ["AKIMA & NEOS", ["Akima Tsuneo", "NEOS"]],
+    ["Mi", ["Maika Itou", "Aya Shimizu", "Yuriko Date"]],
+    [
+        "Luminous Girls All Stars",
+        [
+            "Yuu Asakawa",
+            "Yui Horie",
+            "Mayumi Iizuka",
+            "Shiho Kikuchi",
+            "Nami Miyahara",
+            "Manabi Mizuno",
+            "Chiharu Tezuka",
+            "Hiromi Tamura",
+            "Nao Suzuki",
+        ],
+    ],
+    ["Mermaid", ["Hiromi Tamura", "Nao Suzuki", "Yukari Asakura"]],
 ]
 
 

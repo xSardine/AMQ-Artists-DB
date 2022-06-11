@@ -27,6 +27,7 @@ export class SongTableComponent {
       this.rankedTime = false
     }
     this.ascendingOrder = false;
+    this.currentAverage = this.calculateAverage(this.songTable)
     this.sortFunction("annId");
   }
 
@@ -53,6 +54,7 @@ export class SongTableComponent {
   popUpComposersInfo = [];
   popUpArrangersInfo = [];
   previousBody: any
+  currentAverage: any
 
   tableHeaders = ["annId", "Anime", "Type", "Song Name", "Artist"];
 
@@ -83,6 +85,27 @@ export class SongTableComponent {
   copyToClipboard(copytext: string) {
     navigator.clipboard.writeText(copytext);
     return;
+  }
+
+  calculateAverage(array: any) {
+
+    var diffs = []
+
+    for (let song in array) {
+      if (array[song].songDifficulty) {
+        diffs.push(array[song].songDifficulty)
+      }
+    }
+
+    var total = 0;
+    var count = 0;
+
+    diffs.forEach(function (item: any, index: any) {
+      total += item;
+      count++;
+    });
+
+    return (total / count).toFixed(1);
   }
 
 
@@ -277,6 +300,7 @@ export class SongTableComponent {
   deleteRowEntry(song: any) {
     let id = this.getIndexbyElement(this.songTable, song)
     this.removeItemsById(this.songTable, id);
+    this.currentAverage = this.calculateAverage(this.songTable)
   }
 
   @Output() sendSongListtoTable = new EventEmitter();

@@ -37,6 +37,13 @@ splitting_exception_list = [
             "YURiCa/Hanatan",
         ),
     ),
+    (
+        "ReyMagtoto-NonoyTan",
+        (
+            "RAY MAGTOTO",
+            "NONOY TAN",
+        ),
+    ),
     ("OxT", ("OxT",)),
     ("Hironobu Kageyama & BROADWAY", ("Hironobu Kageyama & BROADWAY",)),
     ("Fear, and Loathing in Las Vegas", ("Fear, and Loathing in Las Vegas",)),
@@ -1117,6 +1124,7 @@ splitting_exception_list = [
             "Aya Hirano",
         ),
     ),
+    ("Bach/Gounod", ("Johann Sebastian Bach/Charles Gounod",)),
     ("Run Girls, Run!", ("Run Girls, Run!",)),
     ("Wake Up, Girls!", ("Wake Up, Girls!",)),
     ("Wake Up, May'n!", ("Wake Up, May'n!",)),
@@ -1127,6 +1135,13 @@ splitting_exception_list = [
             "Fuuri from STAR☆ANIS",
             "Sunao from STAR☆ANIS",
             "Risuko from STAR☆ANIS",
+        ),
+    ),
+    (
+        "yama (feat. Nakimushi)",
+        (
+            "yama",
+            "Nakimushi",
         ),
     ),
     (
@@ -2867,6 +2882,7 @@ alternative_names = [
     ["MIWA (BRAVE BIRD)", "MIWA BRAVEBIRD"],
     ["Hikari GENJI SUPER5", "GENJI Super 5"],
     # FINE
+    ["MAKE-UP", "MAKE UP PROJECT"],
     ["fripSide", "fripSide NAO project!"],
     ["Norio Sakai", "Locomoriser"],
     ["Naoki Takao", "Naoki", "Locomokaiser"],
@@ -2900,6 +2916,7 @@ alternative_names = [
     ["Yoko Takahashi", "YAWMIN"],
     ["Shiena Nishizawa", "EXiNA"],
     ["School Food Punishment", "school food punishment"],
+    ["Titine Schijvens", "Tea Tea Ne"],
     ["Elena Gobbi Frattini", "LOLITA"],
     ["Melody Castellari", "JEE BEE"],
     ["Gianni Coraini", "KEN LASZLO"],
@@ -3150,7 +3167,7 @@ alternative_names = [
         "JAM Project (Hironobu Kageyama)",
     ],
     ["Hiroshi Kitadani", "Hiroshi Kitadani (JAM Project)"],
-    ["Masami Okui", "Masami Okui (JAM Project)"],
+    ["Masami Okui", "MASAMI", "Masami Okui (JAM Project)"],
     [
         "Yoshiki Fukuyama",
         "Yoshiki Fukuyama (JAM Project)",

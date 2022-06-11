@@ -140,9 +140,7 @@ def update_data_with_expand(source_data, expand_data):
                 flag_anime_found = True
 
                 if source_anime["animeExpandName"] != update_anime["name"]:
-                    add_log(
-                        f"UPDATE animeExpandName | {source_anime['animeExpandName']} -> {update_anime['name']}"
-                    )
+                    # add_log(f"UPDATE animeExpandName | {source_anime['animeExpandName']} -> {update_anime['name']}")
                     source_anime["animeExpandName"] = update_anime["name"]
 
                 for i, source_song in enumerate(source_anime["songs"]):
@@ -182,9 +180,7 @@ def update_data_with_expand(source_data, expand_data):
                             != update_song["examples"]["720"]
                         )
                     ):
-                        add_log(
-                            f"UPDATE 720 SONG LINKS | {source_song['annSongId']} {source_song['links']['HQ'] if 'HQ' in source_song['links'] else None} -> {update_song['examples']['720']}"
-                        )
+                        # add_log(f"UPDATE 720 SONG LINKS | {source_song['annSongId']} {source_song['links']['HQ'] if 'HQ' in source_song['links'] else None} -> {update_song['examples']['720']}")
                         source_song["links"]["HQ"] = update_song["examples"]["720"]
                     if (
                         "480" in update_song["examples"]
@@ -195,18 +191,14 @@ def update_data_with_expand(source_data, expand_data):
                             != update_song["examples"]["480"]
                         )
                     ):
-                        add_log(
-                            f"UPDATE 480 SONG LINKS | {source_song['annSongId']} {source_song['links']['MQ'] if 'MQ' in source_song['links'] else None} -> {update_song['examples']['480']}"
-                        )
+                        # add_log(f"UPDATE 480 SONG LINKS | {source_song['annSongId']} {source_song['links']['MQ'] if 'MQ' in source_song['links'] else None} -> {update_song['examples']['480']}")
                         source_song["links"]["MQ"] = update_song["examples"]["480"]
                     if "mp3" in update_song["examples"] and (
                         "audio" not in source_song["links"]
                         or source_song["links"]["audio"]
                         != update_song["examples"]["mp3"]
                     ):
-                        add_log(
-                            f"UPDATE mp3 SONG LINKS | {source_song['annSongId']} {source_song['links']['audio'] if 'audio' in source_song['links'] else None} -> {update_song['examples']['mp3']}"
-                        )
+                        # add_log(f"UPDATE mp3 SONG LINKS | {source_song['annSongId']} {source_song['links']['audio'] if 'audio' in source_song['links'] else None} -> {update_song['examples']['mp3']}")
                         source_song["links"]["audio"] = update_song["examples"]["mp3"]
                     break
 
@@ -311,6 +303,7 @@ def process(update):
         os.system("map4_same_name.py")
         os.system("map5_member_of.py")
         os.system("map6_composers.py")
+        os.system("map7_composersAuto.py")
         os.system("convert_to_SQL.py")
         os.chdir("../")
 
