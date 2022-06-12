@@ -159,8 +159,8 @@ def download_songs(song_list):
 
                 link = (
                     song["HQ"]
-                    if "HQ" in song and song["MQ"]
-                    else song["quatre"]
+                    if "HQ" in song and song["HQ"]
+                    else song["MQ"]
                     if "MQ" in song
                     else None
                 )

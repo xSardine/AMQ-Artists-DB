@@ -1430,4 +1430,45 @@ same_group_different_artists = [
             },
         ],
     },
+    {
+        "group": "Momoiro Clover Z",
+        "alternate_configs": [
+            {
+                "members": [
+                    "Kanako Momota",
+                    "Shiori Tamai",
+                    "Momoka Ariyasu",
+                    "Ayaka Sasaki",
+                    "Reni Takagi",
+                ],
+                "linked_song": [
+                    14780,
+                    32517,
+                    14807,
+                    14806,
+                    10760,
+                    10761,
+                    12566,
+                    13654,
+                    13655,
+                    15724,
+                    10949,
+                    12504,
+                    25909,
+                    11730,
+                ],
+            },
+            {
+                "members": [
+                    "Kanako Momota",
+                    "Shiori Tamai",
+                    "Momoka Ariyasu",
+                    "Ayaka Sasaki",
+                    "Reni Takagi",
+                    "Akari Hayami",
+                ],
+                "linked_song": [10970, 10905],
+            },
+        ],
+    },
 ]

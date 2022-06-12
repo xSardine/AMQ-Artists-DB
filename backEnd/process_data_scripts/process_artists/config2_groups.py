@@ -6177,6 +6177,27 @@ groups_subdivision_list = [
         ],
     ],
     ["Mermaid", ["Hiromi Tamura", "Nao Suzuki", "Yukari Asakura"]],
+    [
+        "Momoiro Clover Z",
+        ["Kanako Momota", "Shiori Tamai", "Ayaka Sasaki", "Reni Takagi"],
+    ],
+    ["Macaroni Enpitsu", ["Hattori"]],
+    [
+        "GuilDrops",
+        [
+            "Yori Ehara",
+            "Marina Yamada",
+            "Yua Nagae",
+            "Yurie Kozakai",
+            "Shuu Natani",
+            "Shizuku Hoshinoya",
+        ],
+    ],
+    [
+        "Need Cool Quality",
+        ["Kaya Okuno", "Maika Takai", "Yuuki Wakai", "Ayano Yamamoto"],
+    ],
+    ["LUNA SEA", ["Ryuuichi Kawamura"]],
 ]
 
 

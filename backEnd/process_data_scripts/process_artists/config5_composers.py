@@ -21,6 +21,8 @@ to_remove_composer = [
     "Skrillex",
     "Ryo Kunihiko",
     "Kevin Penkin",
+    "Masahiro Andou",
+    "Toshiyuki Oomori",
     #
     "Satoru Kosaki",
     "Seatbelts",
