@@ -2919,6 +2919,7 @@ alternative_names = [
     ["Titine Schijvens", "Tea Tea Ne"],
     ["Elena Gobbi Frattini", "LOLITA"],
     ["Melody Castellari", "JEE BEE"],
+    ["Hisayoshi Suganuma", "Gorou Mutsumi"],
     ["Gianni Coraini", "KEN LASZLO"],
     ["Ennio Zanini", "FASTWAY", "DUSTY"],
     ["Chris Lindh", "BOBBY SUMMER"],

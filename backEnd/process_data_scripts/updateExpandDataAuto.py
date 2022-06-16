@@ -322,9 +322,6 @@ def process(update):
         os.system(
             "scp ../app/data/Enhanced-AMQ-Database.db anthony@anisongdb.com:~/AMQ-Artists-DB/backEnd/app/data/Enhanced-AMQ-Database.db"
         )
-        os.system(
-            "scp ../app/check_update.py anthony@anisongdb.com:~/AMQ-Artists-DB/backEnd/app/check_update.py"
-        )
         print("Update sent")
 
 

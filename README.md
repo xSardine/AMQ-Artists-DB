@@ -4,9 +4,9 @@ URL: <https://anisongdb.com>
 
 I'm taking in any feedbacks, tho this is just a side project for fun, so I won't promise I will implements your ideas soon (if I will ever). ~~I'll still work more on that than Ege works on AMQ, rest assured~~
 
-# Advanced Filters Documentation
-
 The main reason I decided to make this was because I felt like there wasn't any database that was fulfilling my wishes. So I decided to make one myself.
+
+# Advanced Filters Documentation
 
 ## Filters
 
@@ -17,9 +17,9 @@ Here are the different parameters `Advanced Filters` lets you configure:
 - `Artist Filter`: The string you enter will need to match an artist in the database: this part is the main enhancement compared to existing database, I will explain it better further down.
 
 - Each of this filters has 3 boxes linked to it that you can check:
-    - - `Partial Match`: If checked the string will only have to match part of what is in the database. I.E: Let's say you search for `frip`, it will detect `fripSide`, however for artist like `angela` and `YUI`, unchecking it will let you avoid catching stuff like `Angela Aki` or `Yui Horie`.
-    - - `Ignore Special Caracters`: If checked, it will ignore specials caracters such as ☆, ♪, ō vs ou, etc...
-    - - `Case Sensitive`: If checked, it will make your search case sensitive. I.E: If you want to disambiguate people like `ERIKA` (Erika Masaki from Tales of Zestiria and Cocotama), and `Erika` (random ass VA in Animal Yokocho).
+  - - `Partial Match`: If checked the string will only have to match part of what is in the database. I.E: Let's say you search for `frip`, it will detect `fripSide`, however for artist like `angela` and `YUI`, unchecking it will let you avoid catching stuff like `Angela Aki` or `Yui Horie`.
+  - - `Ignore Special Caracters`: If checked, it will ignore specials caracters such as ☆, ♪, ō vs ou, etc...
+  - - `Case Sensitive`: If checked, it will make your search case sensitive. I.E: If you want to disambiguate people like `ERIKA` (Erika Masaki from Tales of Zestiria and Cocotama), and `Erika` (random ass VA in Animal Yokocho).
 
 Then `Artist Filter` have 2 more parameters:
 
@@ -30,8 +30,8 @@ Then `Artist Filter` have 2 more parameters:
 Finally:
 
 - `Filter Combination`:
-    - - `Union`: The song informations will have to match at least one the filter that you entered (anime/song name/artist).
-    - - `Intersection`: The song informations will have to match every filter that you entered.
+  - - `Union`: The song informations will have to match at least one the filter that you entered (anime/song name/artist).
+  - - `Intersection`: The song informations will have to match every filter that you entered.
 - `Ignore Duplicate`: This will ignore duplicates and only take into account the first instance of [Song Name by Artist] that it has encountered. (Different sets of artists are not considered duplicates)
 
 # Known Database Issues
@@ -82,8 +82,3 @@ Let me know if you find any of these that are wrong in the DB:
 Egerod for making <https://animemusicquiz.com/> and the mods maintaining its database.
 
 MugitBot for providing me with their database, which helped me for the first iteration <https://github.com/CarrC2021/MugiBot>
-
-# Temporary command savings
-
-scp -r * anthony@anisongdb.com:~/tmpAngularApp/
-scp Enhanced-AMQ-Database.db anthony@anisongdb.com:~/AMQ-Artists-DB/backEnd/app/data/Enhanced-AMQ-Database.db

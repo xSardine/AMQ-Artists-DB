@@ -404,7 +404,7 @@ groups_subdivision_list = [
         [
             "Sally Amaki",
             "Ruri Umino",
-            "Mizuha Kuroaka",
+            "Mizuha Kuraoka",
             "Nagomi Saijou",
             "Kanae Shirosawa",
             "Reina Miyase",
@@ -6198,6 +6198,14 @@ groups_subdivision_list = [
         ["Kaya Okuno", "Maika Takai", "Yuuki Wakai", "Ayano Yamamoto"],
     ],
     ["LUNA SEA", ["Ryuuichi Kawamura"]],
+    ["SPIRIT LEVEL", ["Masaaki Endoh"]],
+    ["Chibikko Trio", ["Aya Hirano", "Shizuka Hasegawa", "Mei Shimizu"]],
+    ["ABOUT17", ["Hiroaki Yoshida", "Takurou Nakakuni", "Mitsuaki Hoshi"]],
+    [
+        "PROJECT ARMS",
+        ["Shinichirou Miki", "Nobutoshi Kanna", "Minami Takayama", "Yuji Ueda"],
+    ],
+    ["TAKAO & THE VIEW", ["Mamoru Takao"]],
 ]
 
 
