@@ -278,12 +278,6 @@ def process(update):
             "https://animemusicquiz.com/", AMQ_USERNAME, AMQ_PWD
         )
         expand_data = expand_data["questions"]
-    else:
-        with open("../data/source/expand.json", encoding="utf-8") as json_file:
-            expand_data = json.load(json_file)
-    if not expand_data:
-        add_log("ERROR WARNING /!\ Couldn't Retrieve Expand: It is undefined")
-    else:
 
         with open("../data/source/expand.json", "w", encoding="utf-8") as outfile:
             json.dump(expand_data, outfile)
@@ -296,33 +290,33 @@ def process(update):
         with open(SOURCE_FILE_PATH, "w", encoding="utf-8") as outfile:
             json.dump(updated_data, outfile)
 
-        os.chdir("process_artists")
-        os.system("map1_artist_id.py")
-        os.system("map2_group_id.py")
-        os.system("map3_alt_groups.py")
-        os.system("map4_same_name.py")
-        os.system("map5_member_of.py")
-        os.system("map6_composers.py")
-        os.system("map7_composersAuto.py")
-        os.system("convert_to_SQL.py")
-        os.chdir("../")
+    os.chdir("process_artists")
+    os.system("map1_artist_id.py")
+    os.system("map2_group_id.py")
+    os.system("map3_alt_groups.py")
+    os.system("map4_same_name.py")
+    os.system("map5_member_of.py")
+    os.system("map6_composers.py")
+    os.system("map7_composersAuto.py")
+    os.system("convert_to_SQL.py")
+    os.chdir("../")
 
-        now = datetime.now()
-        with open("../app/check_update.py", "a+") as file_object:
-            # Move read cursor to the start of file.
-            file_object.seek(0)
-            # If file is not empty then append '\n'
-            data = file_object.read(100)
-            if len(data) > 0:
-                file_object.write("\n")
-            # Append text at the end of file
-            file_object.write(f'"Update Done - {now.strftime("%d/%m/%Y %H:%M:%S")}"')
+    now = datetime.now()
+    with open("../app/check_update.py", "a+") as file_object:
+        # Move read cursor to the start of file.
+        file_object.seek(0)
+        # If file is not empty then append '\n'
+        data = file_object.read(100)
+        if len(data) > 0:
+            file_object.write("\n")
+        # Append text at the end of file
+        file_object.write(f'"Update Done - {now.strftime("%d/%m/%Y %H:%M:%S")}"')
 
-        add_log("Update Done - " + now.strftime("%d/%m/%Y %H:%M:%S"))
-        os.system(
-            "scp ../app/data/Enhanced-AMQ-Database.db anthony@anisongdb.com:~/AMQ-Artists-DB/backEnd/app/data/Enhanced-AMQ-Database.db"
-        )
-        print("Update sent")
+    add_log("Update Done - " + now.strftime("%d/%m/%Y %H:%M:%S"))
+    os.system(
+        "scp ../app/data/Enhanced-AMQ-Database.db anthony@anisongdb.com:~/AMQ-Artists-DB/backEnd/app/data/Enhanced-AMQ-Database.db"
+    )
+    print("Update sent")
 
 
 if __name__ == "__main__":

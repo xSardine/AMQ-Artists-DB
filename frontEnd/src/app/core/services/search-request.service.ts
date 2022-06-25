@@ -16,7 +16,7 @@ export class SearchRequestService {
   http://127.0.0.1:8000
   https://anisongdb.com
   */
-  api_url = "https://anisongdb.com"
+  api_url = "http://127.0.0.1:8000"
 
   getFirstNRequest(): Observable<any> {
     return this.http.post(this.api_url + "/api/get_50_random_songs", {}).pipe(

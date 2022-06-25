@@ -24,6 +24,9 @@ to_remove_composer = [
     "Masahiro Andou",
     "Toshiyuki Oomori",
     #
+    "Taisei Iwasaki",
+    "Q-MHz",
+    "Void_Chords",
     "Satoru Kosaki",
     "Seatbelts",
     "Utsu-P",
@@ -37,6 +40,10 @@ to_remove_composer = [
 ]
 # Multiple people with same name
 # Yuuyu
+
+# todo composers
+# "Daisuke Asakura",
+# Ryo vs ryo
 
 composer_database = [
     {
@@ -525,6 +532,7 @@ composer_database = [
             22643,
             5371,
             "X-encounter",
+            36883,
         ],
         "composers": ["Kazuya Takase"],
         "arrangers": ["Kazuya Takase"],

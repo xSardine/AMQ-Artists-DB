@@ -1471,4 +1471,118 @@ same_group_different_artists = [
             },
         ],
     },
+    {
+        "group": "Maneki-kecak",
+        "alternate_configs": [
+            {
+                "members": [
+                    "Miyu Nakagawa",
+                    "Rin Miyauchi",
+                    "Reona Matsushita",
+                    "Chiai Fujikawa",
+                    "Mio Fukase",
+                ],
+                "linked_song": [19093],
+            },
+        ],
+    },
+    {
+        "group": "T-Pistonz",
+        "alternate_configs": [
+            {
+                "members": ["Ton Niino"],
+                "linked_song": [9884, 21293, 26439],
+            },
+        ],
+    },
+    {
+        "group": "DJ OZMA",
+        "alternate_configs": [
+            {
+                "members": ["Show Ayanokoji"],
+                "linked_song": [9327],
+            },
+        ],
+    },
+    {
+        "group": "dream",
+        "alternate_configs": [
+            {
+                "members": [
+                    "Yu Hasebe",
+                    "Kana Tachibana",
+                    "Risa Ai",
+                    "Sayaka Yamamoto",
+                    "Erie Abe",
+                    "Aya Takamoto",
+                    "Dream Ami",
+                    "Shizuka Nishida",
+                ],
+                "linked_song": [2494, 4128, 5826],
+            },
+            {
+                "members": [
+                    "Yu Hasebe",
+                    "Kana Tachibana",
+                    "Sayaka Yamamoto",
+                    "Erie Abe",
+                    "Aya Takamoto",
+                    "Dream Ami",
+                    "Shizuka Nishida",
+                ],
+                "linked_song": [7016],
+            },
+        ],
+    },
+    {
+        "group": "Uma Musume",
+        "alternate_configs": [
+            {
+                "members": [
+                    "Yuuka Aisaka",
+                    "Ayami Fujino",
+                    "Haruno Inoue",
+                    "Eriko Matsui",
+                    "Yuka Ootsubo",
+                    "Naomi Oozora",
+                    "Iori Saeki",
+                    "Yukina Shuto",
+                    "Tomoyo Takayanagi",
+                    "Yuiko Tatsumi",
+                    "Sora Tokui",
+                    "Hitomi Ueda",
+                    "Azumi Waki",
+                    "Misaki Watada",
+                    "Yui Watanabe",
+                    "Kana Yuuki",
+                    "Ruriko Aoki",
+                    "Afumi Hashi",
+                    "Chisa Kimura",
+                    "Akari Kitou",
+                    "Yui Kondou",
+                    "Marika Kouno",
+                    "Hikari Kubota",
+                    "Lynn",
+                    "Machico",
+                    "Kaori Maeda",
+                    "Rena Maeda",
+                    "Hiyori Nitta",
+                    "Ayaka Ohashi",
+                    "Saori Oonishi",
+                    "Azusa Tadokoro",
+                    "Minami Takahashi",
+                ],
+                "linked_song": [20763],
+            },
+        ],
+    },
+    {
+        "group": "fhána",
+        "alternate_configs": [
+            {
+                "members": ["towana", "Junichi Satou"],
+                "linked_song": [13703, "Hoshikuzu no Interlude", 15292, 21701, 34286],
+            },
+        ],
+    },
 ]

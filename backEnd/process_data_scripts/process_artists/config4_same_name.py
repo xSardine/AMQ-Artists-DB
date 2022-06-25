@@ -112,10 +112,6 @@ same_name_edge_case = [
         "linked_song": [3365],
     },
     {
-        "new_artist": {"artist_name": ["Pon"], "members": []},
-        "linked_song": [23285],
-    },
-    {
         "new_artist": {"artist_name": ["MIYU"], "members": []},
         "linked_song": [29160],
     },
