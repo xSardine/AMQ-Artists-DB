@@ -7,9 +7,9 @@ import sqlite3
 import json
 from pathlib import Path
 
-database = Path("../../app/data/Enhanced-AMQ-Database.db")
-song_database_path = Path("../../app/data/expand_mapping.json")
-artist_database_path = Path("../../app/data/artist_mapping.json")
+database = Path("../app/data/Enhanced-AMQ-Database.db")
+song_database_path = Path("../app/data/song_database.json")
+artist_database_path = Path("../app/data/artist_database.json")
 
 with open(song_database_path, encoding="utf-8") as json_file:
     song_database = json.load(json_file)

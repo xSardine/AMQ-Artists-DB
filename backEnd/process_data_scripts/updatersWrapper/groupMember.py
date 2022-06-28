@@ -1,0 +1,237 @@
+import json
+import utils
+
+
+song_database_path = "../../app/data/song_database.json"
+artist_database_path = "../../app/data/artist_database.json"
+
+with open(song_database_path, encoding="utf-8") as json_file:
+    song_database = json.load(json_file)
+with open(artist_database_path, encoding="utf-8") as json_file:
+    artist_database = json.load(json_file)
+
+
+def add_member_group_links(group_id, group_members, line_up_id):
+    # add new group link to new line up members
+    for member in group_members:
+        print(
+            f"adding link '{group_id},{line_up_id}' to {artist_database[member[0]]['names'][0]}"
+        )
+        artist_database[member[0]]["groups"].append([group_id, line_up_id])
+
+
+def remove_member_group_links(group_id, line_up_id):
+    group = artist_database[group_id]
+    for member in group["members"][line_up_id]:
+        for j, groupT in enumerate(artist_database[member[0]]["groups"]):
+            if groupT[0] == group_id and groupT[1] == line_up_id:
+                print(
+                    f"removed link '{group_id},{line_up_id}' from {artist_database[member[0]]['names'][0]}"
+                )
+                artist_database[member[0]]["groups"].pop(j)
+
+
+def update_new_line_up_in_song_database(group_id, line_up_id, update_songs, mode):
+
+    if mode not in ["edit", "addAll", "addSub"]:
+        print("CHOOSE A CORRECT MODE")
+        exit(1)
+
+    print("\nUpdated Song:")
+    if mode == "addAll":
+        for anime in song_database:
+            for song in anime["songs"]:
+                for artist in song["artist_ids"]:
+                    if artist[0] == group_id:
+                        print(song["songName"])
+                        artist[1] = line_up_id
+        print()
+        return
+
+    if mode == "addSub":
+        for update_song in update_songs:
+            flag_song = False
+            for anime in song_database:
+                for song in anime["songs"]:
+                    if utils.check_same_song(song, update_song):
+                        flag_artist = False
+                        for aid in song["artist_ids"]:
+                            if group_id == aid[0]:
+                                flag_song = True
+                                flag_artist = True
+                                aid[1] = line_up_id
+                                print(song["songName"])
+                        if not flag_artist:
+                            print(
+                                f"{update_song} FOUND BUT NOT THE RIGHT ARTIST, CANCELING"
+                            )
+                            exit(0)
+            if not flag_song:
+                print(f"{update_song} NOT FOUND, CANCELING")
+                exit(0)
+
+    if mode == "edit":
+        for update_song in update_songs:
+            flag_song = False
+            for anime in song_database:
+                for song in anime["songs"]:
+                    if utils.check_same_song(song, update_song):
+                        flag_artist = False
+                        for aid in song["artist_ids"]:
+                            if group_id != aid[0]:
+                                continue
+                            flag_song = True
+                            flag_artist = True
+                            if aid[1] == line_up_id:
+                                print(f"- {song['songName']} (line up to 0)")
+                                aid[1] = 0
+                            else:
+                                print(f"+ {song['songName']}")
+                                aid[1] = line_up_id
+                        if not flag_artist:
+                            print(
+                                f"{update_song} FOUND BUT NOT THE RIGHT ARTIST, CANCELING"
+                            )
+                            exit(0)
+            if not flag_song:
+                print(f"{update_song} NOT FOUND, CANCELING")
+                exit(0)
+
+    print()
+
+
+def process(update):
+
+    group_id = utils.get_artist_id(song_database, artist_database, update["group"])
+    group = artist_database[group_id]
+
+    group_members = []
+    for member in update["members"]:
+        if type(member) == list:
+            line_up_id = member[1]
+            member = member[0]
+        else:
+            member_id = utils.get_artist_id(
+                song_database, artist_database, member, not_exist_ok=True
+            )
+            if artist_database[member_id]["members"]:
+                print(f"defaulting line up to 0 for group {member}")
+                line_up_id = 0
+            else:
+                line_up_id = -1
+        group_members.append([member_id, line_up_id])
+
+    group_recap_str1 = f"group {group['names'][0]}: {' | '.join(utils.get_example_song_for_artist(song_database, group_id)[:min(3, len(utils.get_example_song_for_artist(song_database, group_id)))])}"
+
+    group_recap_str2 = ""
+    for member in group_members:
+        if member[0] in artist_database:
+            group_recap_str2 += f"{artist_database[member[0]]['names'][0]} {member}> {' | '.join(utils.get_example_song_for_artist(song_database, member[0])[:min(3, len(utils.get_example_song_for_artist(song_database, member[0])))])}\n"
+        else:
+            group_recap_str2 += f"NEW {member[0]}\n"
+
+    if not group["members"]:
+
+        print(
+            f"No Line Up found for {update['group']}, automatically adding to every songs\n"
+        )
+
+        group["members"] = [group_members]
+
+        add_member_group_links(group_id, group_members, line_up_id)
+
+        # change line up for any group containing this group as it is now a group
+        for artist in artist_database:
+            artist = artist_database[artist]
+            for line_up in artist["members"]:
+                for member in line_up:
+                    if member[0] == group_id:
+                        print(f"Swapping to line up 0 in {artist['names'][0]}")
+                        member[1] = 0
+
+        update_new_line_up_in_song_database(group_id, 0, [], "addAll")
+
+        validation_message = f"You will add the first line-up to every song by the {group_recap_str1}\nDo you validate this change ?\n"
+        validation = utils.ask_validation(validation_message)
+        if not validation:
+            print("User Cancelled")
+            return
+
+    else:
+
+        line_ups = "\n"
+        for i, line_up in enumerate(group["members"]):
+            line_up = [artist_database[l[0]]["names"][0] for l in line_up]
+            line_ups += f"{i}: {', '.join(line_up)}\n"
+        line_up_id = utils.ask_integer_input(
+            f"There are already line-ups linked to this group, input the one you want to update or -1 if you want to add a new one:\n{line_ups}",
+            range(-1, len(group["members"])),
+        )
+
+        if line_up_id != -1:
+
+            remove_member_group_links(group_id, line_up_id)
+
+            add_member_group_links(group_id, group_members, line_up_id)
+
+            print()
+            update_new_line_up_in_song_database(
+                group_id, line_up_id, update["linked_songs"], "edit"
+            )
+
+            group["members"][line_up_id] = group_members
+
+            validation_message = f"You will update line-up n°{line_up_id} of the {group_recap_str1}\nThis line up will be composed of:\n{group_recap_str2}\nDo you validate this change ?\n"
+            validation = utils.ask_validation(validation_message)
+            if not validation:
+                print("USER CANCELLED")
+                return
+
+        else:
+
+            line_up_id = len(group["members"])
+
+            if not update["linked_songs"]:
+
+                validation_message = f"There are no songs to link to this line up, are you sure you want to continue ?\n"
+                validation = utils.ask_validation(validation_message)
+                if not validation:
+                    print("USER CANCELLED")
+                    return
+
+            add_member_group_links(group_id, group_members, line_up_id)
+
+            group["members"].append(group_members)
+
+            update_new_line_up_in_song_database(
+                group_id, line_up_id, update["linked_songs"], "addSub"
+            )
+
+            validation_message = f"You will add a new line-up (n°{line_up_id}) to the {group_recap_str1}\non the songs {update['linked_songs']}\nThis line up will be composed of:\n{group_recap_str2}\nDo you validate this change ?\n"
+            validation = utils.ask_validation(validation_message)
+            if not validation:
+                print("USER CANCELLED")
+                return
+
+    with open(song_database_path, "w", encoding="utf-8") as outfile:
+        json.dump(song_database, outfile)
+    with open(artist_database_path, "w", encoding="utf-8") as outfile:
+        json.dump(artist_database, outfile)
+
+
+"""
+enter the "group", and the "member" of the line up to add/update
+if there are not any line up yet, will add automatically to line up 0, and link every song by this artist
+if there are line up already, will ask you to either edit existing one or create a new one:
+    - edit existing one will swap old line up with new line up, and if linked_songs will also add/remove song linked depending of their current state
+    - add a new one will create a new line up and link any song in linked_songs
+"""
+update = {
+    "group": "fripSide",
+    "members": ["Mao Uesugi", "Kana Hanazawa"],
+    "linked_songs": [9498, 9499],
+}
+
+process(update)
+
+# remove old groups on update

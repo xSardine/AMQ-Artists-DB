@@ -1,6 +1,7 @@
-/data
 *.pyc
 *.db
-expand_mapping.json
-counter.py
 commands.txt
+song_database.json
+expand_database.json
+__pycache__/
+randomScripts/
