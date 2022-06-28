@@ -249,7 +249,6 @@ splitting_exception_list = [
     ("Let's Go BOYS & GIRLS", ("Let's Go BOYS & GIRLS",)),
     ("Shirai Takako &CRAZY BOYS", ("Shirai Takako &CRAZY BOYS",)),
     ("TOSS & TURN", ("TOSS & TURN",)),
-    ("Chage & Aska", ("Chage & Aska",)),
     ("CHAGE&ASKA", ("CHAGE&ASKA",)),
     ("Earth, Wind & Fire", ("Earth, Wind & Fire",)),
     ("Oranges & Lemons", ("Oranges & Lemons",)),
@@ -357,7 +356,6 @@ splitting_exception_list = [
     ("Re+sa", ("Re+sa",)),
     ("+Plus", ("+Plus",)),
     ("T-Pistonz+KMC", ("T-Pistonz+KMC",)),
-    ("T-Pistonz+KMZ", ("T-Pistonz+KMZ",)),
     ("Alchemy+", ("Alchemy+",)),
     ("stella quintet+", ("stella quintet+",)),
     ("YU+KI", ("YU+KI",)),
@@ -388,6 +386,7 @@ splitting_exception_list = [
     ("Bach/Gounod", ("Johann Sebastian Bach/Charles Gounod",)),
     ("m-flo\u2665DOPING PANDA", ("m-flo", "DOPING PANDA")),
     ## removing longer strings (removing longer string to avoid having dumb artists names)
+    ("Kevin Penkin (ft.Elspeth Bawden)", ("Kevin Penkin", "Elspeth Bawden")),
     ("livetune adding Fukase from SEKAI NO OWARI", ("livetune", "Fukase")),
     ("livetune adding Rin Oikawa (from Q;Indivi)", ("livetune", "Rin Oikawa")),
     ("Tamiya Terashima (Rentrak Japan)", ("Tamiya Terashima",)),
@@ -1155,38 +1154,20 @@ for split_exception in splitting_exception_list:
 # Alternative Artists names
 alternative_names = [
     # Most likely typo
-    [
-        "Columbia Yurikago-kai",
-        "Columbia Yurikago Kai",
-        "Columubia Yurikago-kai",
-    ],  # columubia checked, kago kai not too much songs
-    ["Asami Sanada", " Asami Sanada"],
-    ["T-Pistonz", "T-Pistonz+KMC", "T-Pistonz+KMZ"],
+    ["Columbia Yurikago-kai", "Columbia Yurikago Kai"],  # kago kai not too much songs
     # :weird: english/latin letters = might be credits fault MASAKO IWANAGA
     ["Maddie Blaustein", "Madeline Blaustein"],
     ["Norman J. Grossfield", "Norman J. Grossfeld"],
     ["Kristen Price", "Kirsten Price"],
-    ["skankfunk", "shankfunk"],
     ["Micheal Brody", "Michael Brady"],
     ['Chris "Breeze" Barczynski', 'Chris "Breeze" Barczynsk'],
     ["'Weird Al' Yankovic", '"WEIRD AL" YANKOVIC'],
-    ["FENCE OF DEFENSE", "FENCE OF DEFENCE"],
-    ["Derek Jackson", "Darek Jackson"],
     # romanization / transcribe, some of them are probably right
-    ["Shining Stars", "Golden Stars"],
-    ["CHAGE&ASKA", "Chage & Aska"],
-    ["alice nine.", "Alice Nine"],
-    ["Hana*Hana", "HANA HANA"],
     ["ROOT FIVE", "\u221a5"],
     ["m.o.v.e", "move"],
     ["TAKAKO & THE CRAZY BOYS", "TAKAKO&THE CRAZY BOYS", "Shirai Takako &CRAZY BOYS"],
     ["OKINO.SHUNTARO", "Okino, Shuntaro"],
-    ["Larissa Tago Takeda", "Rarisa Tago Takeda"],
-    ["Miracle☆StAr", "Miracle StAr"],
-    ["Osomatsu-san All Stars", "Osomatsu-san Allstars"],
     ["tofubeats", "tofubeat"],
-    ["ZEN-LA ROCK", "ZEN-LA-ROCK"],
-    ["SPARK!! SOUND!! SHOW!!", "SPARK!!SOUND!!SHOW!!"],
     ["Dark Cherries", "Dark Cherry"],
     ["FT ISLAND", "FTISLAND"],
     ["Team.Nekokan [Neko]", "Team Nekokan [Neko]"],
@@ -1285,6 +1266,7 @@ alternative_names = [
         "Nishirokugo Shounen Gasshou-dan",
     ],
     # ou/o/oh/oo (no ô)
+    ["Marika Kohno", "Marika Kouno"],
     ["Kouji Yamamoto", "Koji Yamamoto"],
     ["Akemi Satou", "Akemi Sato"],
     ["Yoko Yamauchi", "Youko Yamauchi"],
@@ -1314,7 +1296,7 @@ alternative_names = [
     ["Youko Honna", "Yoko Honna"],
     ["Kyouko Hikami", "Kyoko Hikami", "Hikami Kyoko"],
     ["Miwako Saitou", "Miwako Saito"],
-    ["Kouichi Yamadera", "Koichi Yamadera", "Kouchi Yamadera"],
+    ["Kouichi Yamadera", "Koichi Yamadera"],
     ["Shouko Suzuki", "Shoko Suzuki"],
     ["Youko Nagayama", "Yoko Nagayama"],
     ["Miki Itou", "Miki Ito"],
@@ -1348,7 +1330,6 @@ alternative_names = [
     ["Kenjiro Tsuda", "Kenjirou Tsuda"],
     ["Satomi Satou", "Satomi Sato"],
     ["Satoru Kousaki", "Satoru Kosaki", "Satoru Kosaki (MONACA)"],
-    ["Yo Hitoto", "You Hitoto"],
     ["Ryou Horikawa", "Ryo Horikawa"],
     ["Yougo Kouno", "Yogo Kono"],
     ["Youko Seri", "Yoko Seri"],
@@ -1435,6 +1416,7 @@ alternative_names = [
     ["IKUO", "Ikuo"],
     ['SOIL & "PIMP" SESSIONS', 'SOIL&"PIMP"SESSIONS'],
     # FINE
+    ["T-Pistonz", "T-Pistonz+KMC"],
     ["Masako Iwanaga", "MASAKO IWANAGA"],
     ["Kazue Ikura", "Kazu Ikura"],
     ["New Cinema Tokage", "NewCinema Tokage"],

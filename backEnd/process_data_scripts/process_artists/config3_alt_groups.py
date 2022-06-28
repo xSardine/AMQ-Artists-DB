@@ -1585,4 +1585,23 @@ same_group_different_artists = [
             },
         ],
     },
+    {
+        "group": "Nijigasaki Gakuen School Idol Doukoukai",
+        "alternate_configs": [
+            {
+                "members": [
+                    "Akari Kitou",
+                    "Miyu Kubota",
+                    "Tomori Kusunoki",
+                    "Kaori Maeda",
+                    "Natsumi Murakami",
+                    "Aguri Oonishi",
+                    "Mayu Sagara",
+                    "Maria Sashide",
+                    "Chiemi Tanaka",
+                ],
+                "linked_song": [31261, 31192, 32236],
+            },
+        ],
+    },
 ]

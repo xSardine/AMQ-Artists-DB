@@ -3306,15 +3306,18 @@ groups_subdivision_list = [
     [
         "Nijigasaki Gakuen School Idol Doukoukai",
         [
-            "Akari Kitou",
-            "Miyu Kubota",
             "Tomori Kusunoki",
-            "Kaori Maeda",
-            "Natsumi Murakami",
-            "Aguri Oonishi",
-            "Mayu Sagara",
-            "Maria Sashide",
+            "Akina Houmoto",
+            "Akari Kitou",
             "Chiemi Tanaka",
+            "Shu Uchida",
+            "Aguri Oonishi",
+            "Mokea Koizumi",
+            "Miyu Kubota",
+            "Maria Sashide",
+            "Mayu Sagara",
+            "Natsumi Murakami",
+            "Kaori Maeda",
         ],
     ],
     [
@@ -5104,7 +5107,7 @@ groups_subdivision_list = [
         ],
     ],
     ["OKAMOTO'S", ["Sho Okamoto"]],
-    ["Da-iCE", ["Yuudai Ohno", "Souta Hanamura"]],
+    ["Da-iCE", ["Sota Hanamura", "Taiki Kudo", "Yudai Ohno"]],
     ["Folder5", ["Hikari Mitsushima", "arie", "AKINA", "Moe Ishihara", "Aka Natsu"]],
     [
         "Folder",
@@ -6429,6 +6432,7 @@ groups_subdivision_list = [
     ["FLEET", ["Junichi Satou"]],
     ["Rocket-dan", ["Inuko Inuyama", "Shinichirou Miki", "Megumi Hayashibara"]],
     ["Musashi to Kojirou", ["Shinichirou Miki", "Megumi Hayashibara"]],
+    ["FENCE OF DEFENSE", ["Masatoshi Nishimura"]],
 ]
 
 
