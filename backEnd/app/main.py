@@ -97,6 +97,7 @@ class artist(BaseModel):
 
     id: int
     names: List[str]
+    line_up_id: Optional[int]
     groups: Optional[List[artist]]
     members: Optional[List[artist]]
 
@@ -137,62 +138,56 @@ app.add_middleware(
 )
 
 
-def format_artist_ids(artist_database, artist_id):
-    artist = {"id": artist_id[0]}
+def format_artist_ids(artist_database, artist_id, artist_line_up=-1):
 
-    alt_names = artist_filter.get_artist_names(artist_database, artist_id[0])
-    artist["names"] = alt_names
+    artist = artist_database[str(artist_id)]
 
-    artist_groups = artist_filter.get_groups_with_artist(artist_database, artist_id[0])
-    if len(artist_groups) > 0:
-        temp_list = []
-        for artist_group in artist_groups:
-            temp_list.append(
-                {
-                    "id": artist_group,
-                    "names": artist_filter.get_artist_names(
-                        artist_database, artist_group
-                    ),
-                }
-            )
-        artist["groups"] = temp_list
+    formatted_artist = {
+        "id": artist_id,
+        "names": artist["names"],
+    }
 
-    group_members = artist_filter.get_artists_in_group(
-        artist_database, artist_id[0], artist_id[1]
-    )
+    if artist_line_up != -1:
+        formatted_artist["line_up_id"] = artist_line_up
 
-    if group_members != None and not (
-        len(group_members) == 1 and group_members[0] == artist_id[0]
-    ):
-        temp_list = []
-        for group_member in group_members:
-            temp_list.append(
-                {
-                    "id": group_member,
-                    "names": artist_filter.get_artist_names(
-                        artist_database, group_member
-                    ),
-                }
-            )
-        artist["members"] = temp_list
+    if artist["groups"]:
+        formatted_group_list = []
+        for group_id, group_line_up_id in artist["groups"]:
+            current_group = {
+                "id": group_id,
+                "names": artist_database[str(group_id)]["names"],
+            }
+            if group_line_up_id != -1:
+                current_group["line_up_id"] = group_line_up_id
+            formatted_group_list.append(current_group)
+        formatted_artist["groups"] = formatted_group_list
 
-    return artist
+    if artist_line_up != -1 and artist["members"]:
+        formatted_member_list = []
+        for member_id, member_line_up_id in artist["members"][artist_line_up]:
+            current_member = {
+                "id": member_id,
+                "names": artist_database[str(member_id)]["names"],
+            }
+            if member_line_up_id:
+                current_member["line_up_id"] = member_line_up_id
+            formatted_member_list.append(current_member)
+        formatted_artist["members"] = formatted_member_list
+
+    return formatted_artist
 
 
 def format_composer_ids(artist_database, composer_id):
     composer = {"id": composer_id}
 
-    alt_names = artist_filter.get_artist_names(artist_database, composer_id)
-    composer["names"] = alt_names
+    composer["names"] = artist_database[str(composer_id)]["names"]
 
     return composer
 
 
 def format_arranger_ids(artist_database, arranger_id):
     arranger = {"id": arranger_id}
-
-    alt_names = artist_filter.get_artist_names(artist_database, arranger_id)
-    arranger["names"] = alt_names
+    arranger["names"] = artist_database[str(arranger_id)]["names"]
 
     return arranger
 
@@ -229,8 +224,10 @@ async def search_request(query: Search_Request):
 
     for song in song_list:
         artist_list = []
-        for artist_id in song["artists"]:
-            artist_list.append(format_artist_ids(artist_database, artist_id))
+        for artist_id, artist_line_up in song["artists"]:
+            artist_list.append(
+                format_artist_ids(artist_database, artist_id, artist_line_up)
+            )
         song["artists"] = artist_list
 
         composer_list = []
@@ -256,8 +253,10 @@ async def get_50_random_songs():
 
     for song in data:
         artist_list = []
-        for artist_id in song["artists"]:
-            artist_list.append(format_artist_ids(artist_database, artist_id))
+        for artist_id, artist_line_up in song["artists"]:
+            artist_list.append(
+                format_artist_ids(artist_database, artist_id, artist_line_up)
+            )
         song["artists"] = artist_list
 
         composer_list = []
@@ -303,8 +302,10 @@ async def search_request(query: Artist_ID_Search_Request):
 
     for song in song_list:
         artist_list = []
-        for artist_id in song["artists"]:
-            artist_list.append(format_artist_ids(artist_database, artist_id))
+        for artist_id, artist_line_up in song["artists"]:
+            artist_list.append(
+                format_artist_ids(artist_database, artist_id, artist_line_up)
+            )
         song["artists"] = artist_list
 
         composer_list = []

@@ -25,7 +25,7 @@ def get_composer_id(
     for composer_id in artist_database:
         if not artist_database[composer_id]["composer"]:
             continue
-        for composer_alt_name in get_composer_names(artist_database, composer_id):
+        for composer_alt_name in artist_database[str(composer_id)]["names"]:
             if (
                 not case_sensitive
                 and (
@@ -51,22 +51,6 @@ def get_composer_id(
             ):
                 id_list.add(composer_id)
     return id_list
-
-
-def get_composer_names(artist_database, composer_id):
-
-    """
-    Return the list of names corresponding to an composer
-    """
-
-    if str(composer_id) not in artist_database:
-        return []
-
-    alt_names = [artist_database[str(composer_id)]["name"]]
-    if artist_database[str(composer_id)]["alt_names"]:
-        for alt_name in artist_database[str(composer_id)]["alt_names"]:
-            alt_names.append(alt_name)
-    return alt_names
 
 
 def song_meets_composer_search_requirements(

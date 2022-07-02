@@ -1,4 +1,5 @@
 import re
+from tokenize import group
 from filters import utils
 
 
@@ -23,42 +24,26 @@ def get_artist_id(
     id_list = set()
 
     for artist_id in artist_database:
-        for artist_alt_name in get_artist_names(artist_database, artist_id):
+        for name in artist_database[artist_id]["names"]:
             if (
                 not case_sensitive
                 and (
-                    re.match(artist, artist_alt_name, re.IGNORECASE)
+                    re.match(artist, name, re.IGNORECASE)
                     or (
                         reversed_artist
-                        and (re.match(reversed_artist, artist_alt_name, re.IGNORECASE))
+                        and (re.match(reversed_artist, name, re.IGNORECASE))
                     )
                 )
             ) or (
                 case_sensitive
                 and (
-                    re.match(artist, artist_alt_name)
-                    or (reversed_artist and re.match(reversed_artist, artist_alt_name))
+                    re.match(artist, name)
+                    or (reversed_artist and re.match(reversed_artist, name))
                 )
             ):
                 id_list.add(artist_id)
 
     return id_list
-
-
-def get_artist_names(artist_database, artist_id):
-
-    """
-    Return the list of names corresponding to an artist
-    """
-
-    if str(artist_id) not in artist_database:
-        return []
-
-    alt_names = [artist_database[str(artist_id)]["name"]]
-    if artist_database[str(artist_id)]["alt_names"]:
-        for alt_name in artist_database[str(artist_id)]["alt_names"]:
-            alt_names.append(alt_name)
-    return alt_names
 
 
 def get_groups_with_artist(artist_database, artist_id):
@@ -75,7 +60,7 @@ def get_groups_with_artist(artist_database, artist_id):
     )
 
 
-def get_artists_in_group(artist_database, group_id, alt_members_id=0):
+def get_artists_in_group(artist_database, group_id, member_line_up_id=0):
 
     """
     Return a list of every artists in a group (recursively)
@@ -85,12 +70,14 @@ def get_artists_in_group(artist_database, group_id, alt_members_id=0):
     """
 
     artist_list = []
-    if len(artist_database[str(group_id)]["members"]) > 0:
-        for artist_id in artist_database[str(group_id)]["members"][alt_members_id]:
-            artist_list += get_artists_in_group(artist_database, artist_id)
-        return artist_list
-    else:
+
+    if member_line_up_id == -1:
         return [int(group_id)]
+
+    for member in artist_database[str(group_id)]["members"][member_line_up_id]:
+        artist_list += get_artists_in_group(artist_database, member[0], member[1])
+
+    return artist_list
 
 
 def separate_artists_list_by_comparing_with_another(
@@ -213,7 +200,7 @@ def search_artist(
                         get_artists_in_group(artist_database, artist, i)
                     )
             else:
-                members_list.append(get_artists_in_group(artist_database, artist))
+                members_list.append(get_artists_in_group(artist_database, artist, -1))
             if int(artist) not in members_list[len(members_list) - 1]:
                 members_list[len(members_list) - 1].append(int(artist))
         else:
@@ -255,6 +242,7 @@ def search_artist_ids(
     members_list = []
     for artist in artist_ids:
         if group_granularity > 0:
+            # TODO right now it's never used, but if i ever do it will not work
             members_list.append(get_artists_in_group(artist_database, artist))
             if int(artist) not in members_list[len(members_list) - 1]:
                 members_list[len(members_list) - 1].append(int(artist))

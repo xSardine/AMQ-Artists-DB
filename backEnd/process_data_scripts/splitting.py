@@ -386,7 +386,7 @@ splitting_exception_list = [
     ("Bach/Gounod", ("Johann Sebastian Bach/Charles Gounod",)),
     ("m-flo\u2665DOPING PANDA", ("m-flo", "DOPING PANDA")),
     ## removing longer strings (removing longer string to avoid having dumb artists names)
-    ("Kevin Penkin (ft.Elspeth Bawden)", ("Kevin Penkin", "Elspeth Bawden")),
+    ("Kevin Penkin (ft. Elspeth Bawden)", ("Kevin Penkin", "Elspeth Bawden")),
     ("livetune adding Fukase from SEKAI NO OWARI", ("livetune", "Fukase")),
     ("livetune adding Rin Oikawa (from Q;Indivi)", ("livetune", "Rin Oikawa")),
     ("Tamiya Terashima (Rentrak Japan)", ("Tamiya Terashima",)),
@@ -1153,9 +1153,7 @@ for split_exception in splitting_exception_list:
 
 # Alternative Artists names
 alternative_names = [
-    # Most likely typo
-    ["Columbia Yurikago-kai", "Columbia Yurikago Kai"],  # kago kai not too much songs
-    # :weird: english/latin letters = might be credits fault MASAKO IWANAGA
+    # :weird: english/latin letters = might be credits fault
     ["Maddie Blaustein", "Madeline Blaustein"],
     ["Norman J. Grossfield", "Norman J. Grossfeld"],
     ["Kristen Price", "Kirsten Price"],
@@ -1176,18 +1174,12 @@ alternative_names = [
     ["First Lemon Angels", "Ikki LemonAngel"],
     ["The 5 TEARDROPS", "The5 TEARDROPS"],
     ["Aimee Blackschleger", "Aimee B", "Aimee B."],
-    ["Coalamode.", "Coala mode."],
-    ["Bakufu Slump", "Bakufu-Slump"],
     ["GagagaSP", "Gagaga SP"],
-    ["Escargot", "Escargo"],
     ["Kabuki Rocks", "Kabukibu Rocks"],
     ["Bonny Jacks", "Bonnie Jacks"],
-    ["Kaguyahime", "Kaguya-hime"],
     ["Children's Chorus", "Children Chorus"],
-    ["The Blessin' Four", "The Blessen Four"],
     ["FURIL", "FURIL'"],
     ["Becky♪#", "Becky"],
-    ["Dance Man", "Dance☆Man"],
     ["mihimaru GT", "mihimaruGT"],
     ["Platinum Peppers Family", "Platinum Pepper Family"],
     ["※-mai-", "※-mai"],
@@ -1265,6 +1257,7 @@ alternative_names = [
         "Nishirokugou Shounen Gasshou-dan",
         "Nishirokugo Shounen Gasshou-dan",
     ],
+    ["Columbia Yurikago-kai", "Columbia Yurikago Kai"],  # kago kai not too much songs
     # ou/o/oh/oo (no ô)
     ["Marika Kohno", "Marika Kouno"],
     ["Kouji Yamamoto", "Koji Yamamoto"],
@@ -1391,6 +1384,7 @@ alternative_names = [
     ["Yuko Kobayashi", "Yuuko Kobayashi"],
     ["Yuuko Kawai", "Yuko Kawai"],
     ["Yuko Mizutani", "Yuuko Mizutani"],
+    ["MANA", "Mana"],
     # other weird syllables
     ["Riu Konaka", "Riyu Konaka"],
     ["Satomi Majima", "Satomi Mashima"],
