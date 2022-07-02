@@ -348,8 +348,10 @@ async def search_request(query: annId_Search_Request):
 
     for song in song_list:
         artist_list = []
-        for artist_id in song["artists"]:
-            artist_list.append(format_artist_ids(artist_database, artist_id))
+        for artist_id, artist_line_up in song["artists"]:
+            artist_list.append(
+                format_artist_ids(artist_database, artist_id, artist_line_up)
+            )
         song["artists"] = artist_list
 
         composer_list = []
