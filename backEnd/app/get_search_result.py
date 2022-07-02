@@ -16,6 +16,10 @@ from datetime import datetime
 
 def add_log(log_data):
 
+    """
+    Cancelled for now TODO
+    """
+
     with open("../logs.json") as json_file:
         data = json.load(json_file)
 

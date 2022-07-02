@@ -229,7 +229,7 @@ def extract_song_database():
     command = """
     SELECT animes.annId, animes.animeExpandName, animes.animeJPName, animes.animeENName, animes.animeVintage, animes.animeType, songs.annSongId, songs.songType, songs.songNumber, 
     songs.songName, songs.songArtist, songs.songDifficulty, songs.HQ, songs.MQ, songs.audio, group_concat(link_song_artist.artist_id) 
-    AS artists_ids, group_concat(link_song_artist.artist_alt_members_id) AS artists_ids_set, group_concat(link_song_composer.composer_id) as composer_ids, group_concat(link_song_arranger.arranger_id) as arranger_ids
+    AS artists_ids, group_concat(link_song_artist.artist_line_up_id) AS artists_ids_set, group_concat(link_song_composer.composer_id) as composer_ids, group_concat(link_song_arranger.arranger_id) as arranger_ids
     FROM animes
     INNER JOIN songs ON animes.annId = songs.annId
     LEFT JOIN link_song_artist ON songs.id = link_song_artist.song_id
@@ -295,41 +295,85 @@ def extract_artist_database():
     Extract the artist database
     """
 
-    command = """
-	SELECT artists.id, artists.name, artists.vocalist, artists.composer, group_concat(artist_alt_names.alt_name, "\$") AS alt_names, group_concat(link_artist_group.group_id) AS groups, 
-    group_concat(link_artist_group.group_alt_config_id) AS groups_set
-    FROM artists
-    LEFT JOIN artist_alt_names ON artists.id = artist_alt_names.artist_id
-    LEFT JOIN link_artist_group ON artists.id = link_artist_group.artist_id
-    GROUP BY artists.id;
-    """
-
     cursor = connect_to_database(database_path)
     artist_database = {}
 
-    for artist in run_sql_command(cursor, command):
+    extract_basic_info = """
+    SELECT artists.id, group_concat(artist_names.name, "\$") AS names, artists.vocalist, artists.composer
+    FROM artists
+    LEFT JOIN artist_names ON artists.id = artist_names.artist_id
+    GROUP BY artists.id
+    """
 
-        groups = []
-        if artist[5]:
-            for id, sets in zip(artist[5].split(","), artist[6].split(",")):
-                if [int(id), int(sets)] not in groups:
-                    groups.append([int(id), int(sets)])
+    basic_info = run_sql_command(cursor, extract_basic_info)
 
-        artist_database[str(artist[0])] = {
-            "name": artist[1],
-            "vocalist": artist[2],
-            "composer": artist[3],
-            "alt_names": {name for name in artist[4].split("\\$")}
-            if artist[4]
-            else None,
-            "groups": groups,
+    extract_artist_groups = """
+    SELECT artists.id, group_concat(link_artist_group.group_id) AS groups, group_concat(link_artist_group.group_line_up_id) as groups_line_up
+    FROM artists
+    LEFT JOIN link_artist_group ON artists.id = link_artist_group.member_id
+	GROUP BY artists.id
+    """
+
+    artist_groups = run_sql_command(cursor, extract_artist_groups)
+
+    extract_group_members = """
+    SELECT artists.id, group_concat(link_artist_group.member_id) AS members, group_concat(link_artist_group.member_line_up_id) as members_line_up
+    FROM artists
+    LEFT JOIN link_artist_group ON artists.id = link_artist_group.group_id
+	GROUP BY artists.id
+    """
+
+    group_members = run_sql_command(cursor, extract_group_members)
+
+    if len(basic_info) != len(artist_groups) or len(basic_info) != len(group_members):
+        print("ERROR EXTRACTING ARTIST DATABASE")
+        return {}
+
+    artist_database = {}
+    for info, groups in zip(basic_info, artist_groups):
+
+        if info[0] != groups[0]:
+            print("ERROR EXTRACTING ARTIST DATABASE")
+            return {}
+
+        artist_database[str(info[0])] = {
+            "names": info[1].split("\$"),
+            "groups": [
+                [group, int(line_up)]
+                for group, line_up in zip(groups[1].split(","), groups[2].split(","))
+            ]
+            if groups[1]
+            else [],
             "members": [],
+            "vocalist": True if info[2] else False,
+            "composer": True if info[3] else False,
         }
 
-    for artist in artist_database:
-        for group in artist_database[artist]["groups"]:
-            while len(artist_database[str(group[0])]["members"]) <= group[1]:
-                artist_database[str(group[0])]["members"].append(set())
-            artist_database[str(group[0])]["members"][group[1]].add(int(artist))
+    for info, members in zip(basic_info, group_members):
+
+        if info[0] != members[0]:
+            print("ERROR EXTRACTING ARTIST DATABASE")
+            return {}
+
+        if not members[1]:
+            continue
+
+        for member_id, line_up in zip(members[1].split(","), members[2].split(",")):
+            member = artist_database[str(member_id)]
+            for group_id, group_line_up in member["groups"]:
+                if int(group_id) == int(info[0]):
+                    while (
+                        len(artist_database[str(info[0])]["members"]) <= group_line_up
+                    ):
+                        artist_database[str(info[0])]["members"].append([])
+                    if member_id not in [
+                        mid[0]
+                        for mid in artist_database[str(info[0])]["members"][
+                            group_line_up
+                        ]
+                    ]:
+                        artist_database[str(info[0])]["members"][group_line_up].append(
+                            [member_id, int(line_up)]
+                        )
 
     return artist_database

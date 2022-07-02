@@ -10,49 +10,43 @@ with open(artist_database_path, encoding="utf-8") as json_file:
     artist_database = json.load(json_file)
 
 
-def process(update):
+def process():
 
-    if not update["songs"]:
+    linked_song = utils.ask_song_ids()
+
+    if not linked_song:
         print("You need to input songs for which to add the composing team !")
         return
 
-    composers_ids = []
-    for composer in update["composers"]:
-        line_up_id = -1
-        if type(composer) == list:
-            line_up_id = composer[1]
-            composer = composer[0]
-        composer_id = utils.get_artist_id(
-            song_database, artist_database, composer, not_exist_ok=True
-        )
-        composers_ids.append([composer_id, line_up_id])
+    composers_ids = utils.ask_line_up(
+        "Please select the composer line up\n",
+        song_database,
+        artist_database,
+        not_exist_ok=True,
+    )
 
-    arrangers_ids = []
-    for arranger in update["arrangers"]:
-        line_up_id = -1
-        if type(arranger) == list:
-            line_up_id = arranger[1]
-            arranger = arranger[0]
-        arranger_id = utils.get_artist_id(
-            song_database, artist_database, arranger, not_exist_ok=True
-        )
-        arrangers_ids.append([arranger_id, line_up_id])
+    arrangers_ids = utils.ask_line_up(
+        "Please select the arranger line up\n",
+        song_database,
+        artist_database,
+        not_exist_ok=True,
+    )
 
-    for update_song in update["songs"]:
+    for update_song in linked_song:
         flag_song = False
         for anime in song_database:
             for song in anime["songs"]:
                 if utils.check_same_song(song, update_song):
                     flag_song = True
                     print(song["songName"])
-                    if update["composers"]:
+                    if composers_ids:
                         old_composers = [
                             artist_database[comp[0]]["names"][0]
                             for comp in song["composer_ids"]
                         ]
                         print(f"Swapping composers from {old_composers}")
                         song["composer_ids"] = composers_ids
-                    if update["arrangers"]:
+                    if arrangers_ids:
                         old_arrangers = [
                             artist_database[arr[0]]["names"][0]
                             for arr in song["arranger_ids"]
@@ -64,17 +58,17 @@ def process(update):
             exit(1)
 
     composer_str = (
-        f"You will be adding {update['composers']} ({composers_ids}) in the composers field"
-        if update["composers"]
+        f"You will be adding {composers_ids} ({composers_ids}) in the composers field"
+        if composers_ids
         else "You will not be touching the composer"
     )
     arranger_str = (
-        f"You will be adding {update['arrangers']} ({arrangers_ids}) in the arrangers field"
-        if update["arrangers"]
+        f"You will be adding {arrangers_ids} ({arrangers_ids}) in the arrangers field"
+        if arrangers_ids
         else "You will not be touching the arranger"
     )
 
-    validation_message = f"\nThis change will affect the following songs: {update['songs']}\n{composer_str}\n{arranger_str}\nDo you wish to proceed ?\n"
+    validation_message = f"\nThis change will affect the following songs: {linked_song}\n{composer_str}\n{arranger_str}\nDo you wish to proceed ?\n"
     validation = utils.ask_validation(validation_message)
     if not validation:
         print("User cancelled changes")
@@ -86,10 +80,10 @@ def process(update):
         json.dump(artist_database, outfile)
 
 
-update = {
+up = {
     "songs": [1, 2],
     "composers": ["Hiroyuki Sawano", "Composing Genius"],
     "arrangers": ["SausageTime"],
 }
 
-process(update)
+process()

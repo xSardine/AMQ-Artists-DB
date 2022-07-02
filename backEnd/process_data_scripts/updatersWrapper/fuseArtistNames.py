@@ -40,23 +40,25 @@ def get_fused_artist(ids):
     }
 
 
-def process(names_to_fuse):
+def process():
 
-    if len(names_to_fuse) < 2:
-        print("You need two names or more to start this process")
+    ids = utils.ask_line_up(
+        "Type in the artist line up you want to fuse (first one will be the center)\n",
+        song_database,
+        artist_database,
+    )
+
+    ids = [id[0] for id in ids]
+
+    if len(ids) < 2:
+        print("You need two people or more to start this process, cancelled")
         return
-
-    ids = []
-    for name in names_to_fuse:
-        id = utils.get_artist_id(song_database, artist_database, name)
-        ids.append(id)
 
     recap_artist = ""
     for artist in ids:
-        recap_artist += f"{artist}> {artist_database[artist]['names'][0]} - {artist_database[artist]['groups']} - {artist_database[artist]['members']}\n"
+        recap_artist += f"{artist}> {artist_database[artist]['names']} - {artist_database[artist]['groups']} - {artist_database[artist]['members']}\n"
 
-    ask_input_msg = f"I found the following artists, which one should be the center:\n{recap_artist}"
-    center_id = str(utils.ask_integer_input(ask_input_msg, [int(id) for id in ids]))
+    center_id = ids[0]
 
     print()
     for anime in song_database:
@@ -83,10 +85,8 @@ def process(names_to_fuse):
 
     with open(song_database_path, "w", encoding="utf-8") as outfile:
         json.dump(song_database, outfile)
-    with open(artist_database, "w", encoding="utf-8") as outfile:
-        json.dump(artist_database_path, outfile)
+    with open(artist_database_path, "w", encoding="utf-8") as outfile:
+        json.dump(artist_database, outfile)
 
 
-names_to_fuse = []
-
-process(names_to_fuse)
+process()

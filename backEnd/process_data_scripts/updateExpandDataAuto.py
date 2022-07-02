@@ -8,10 +8,48 @@ from datetime import datetime
 import time, json, re
 import sys, os, getopt
 import splitting
+from updatersWrapper import utils
 
 splitters = splitting.splitters
 secondary_splitters = splitting.secondary_splitters
 splitting_exception = splitting.splitting_exception
+
+
+def check_validity(song_database, splitting_exception):
+
+    is_valid = True
+
+    splitexcep = [exception[0] for exception in splitting.splitting_exception_list]
+    for i, exception in enumerate(splitexcep):
+        for exception2 in splitexcep[i + 1 :]:
+            if exception == exception2:
+                print(f"WARNING: duplicate for {exception}")
+                is_valid = False
+    print("Checking Duplicate Done\n")
+
+    for exception in splitting_exception:
+        flag_valid = False
+        flag_maybe_valid = False
+        for anime in song_database:
+            for song in anime["songs"]:
+                if song["songArtist"] == exception:
+                    flag_valid = True
+                elif exception in song["songArtist"]:
+                    flag_maybe_valid = True
+        if not flag_valid:
+            if flag_maybe_valid:
+                print("Split Exception", exception, "MIGHT NOT BE VALID")
+            else:
+                print(
+                    "WARNING: Split Exception",
+                    exception,
+                    "IS NOT A VALID EXCEPTION: WARNING",
+                )
+                is_valid = False
+
+    print("done checking")
+
+    return is_valid
 
 
 # Call Listener to get expand data and store it in a new element that selenium is waiting for
@@ -70,8 +108,8 @@ def main(argv):
 
 
 def add_log(log):
-    print(log)
     """Append given text as a new line at the end of file"""
+    print(log)
     # Open the file in append & read mode ('a+')
     with open("updateLogs.txt", "a+", encoding="utf-8") as file_object:
         # Move read cursor to the start of file.
@@ -131,7 +169,7 @@ def similar_song_exist(source_anime, new_song):
     return False
 
 
-def format_new_song(artist_database, song):
+def format_new_song(song_database, artist_database, song):
     new_song = {
         "annSongId": song["annSongId"],
         "songType": song["type"],
@@ -144,11 +182,18 @@ def format_new_song(artist_database, song):
             "audio": song["examples"]["mp3"] if "mp3" in song["examples"] else None,
         },
     }
+
     splitted_artist = split_artist(new_song["songArtist"])
-    new_song["artist_ids"] = [
-        [artist_id, -1]
-        for artist_id in get_artist_id_list(artist_database, splitted_artist)
-    ]
+    add_log(f"{new_song['songArtist']} -> {splitted_artist}")
+
+    new_song["artist_ids"] = []
+    for artist_id in get_artist_id_list(
+        song_database, artist_database, splitted_artist
+    ):
+        line_up_id = -1
+        if artist_database[artist_id]["members"]:
+            line_up_id = 0
+        new_song["artist_ids"].append([artist_id, line_up_id])
     new_song["composer_ids"] = []
     new_song["arranger_ids"] = []
     return new_song
@@ -173,46 +218,57 @@ def split_artist(artist):
     return new_list
 
 
-def add_new_artist_to_DB(artist_database, artist, id):
-    if str(id) not in artist_database:
-        artist_database[id] = {
-            "names": [artist],
-            "groups": [],
-            "members": [],
-            "vocalist": True,
-            "composer": False,
-        }
-
-
-def get_artist_id(artist_database, artist):
-
-    ids = []
-    for id in artist_database.keys():
-        if artist in artist_database[id]["names"]:
-            ids.append(id)
-
-    # if no IDs found, create new id
-    if not ids:
-        new_id = int(list(artist_database.keys())[-1]) + 1
-        add_log(f"<CHECK> NEW ARTIST: {artist}")
-        add_new_artist_to_DB(artist_database, artist, new_id)
-        return new_id
-    # else default to first ID and throw a TODO if multiple IDs found
-    if len(ids) > 1:
-        add_log(
-            f"<TODO> '{artist}' has is linked to multiple IDs: {ids}, defaulting to {ids[0]}"
-        )
-    return ids[0]
-
-
-def get_artist_id_list(artist_database, artist_list):
+def get_artist_id_list(song_database, artist_database, artist_list):
 
     artist_id_list = []
 
     for artist in artist_list:
-        artist_id_list.append(int(get_artist_id(artist_database, artist)))
+        artist_id_list.append(
+            utils.get_artist_id(
+                song_database, artist_database, artist, not_exist_ok=True
+            )
+        )
 
     return artist_id_list
+
+
+def update_artist_names(song_database, artist_database, old_name, new_name):
+
+    old_names = sorted(split_artist(old_name))
+    new_names = sorted(split_artist(new_name))
+
+    if len(old_names) != len(new_names):
+        add_log(f"<TODO IMPORTANT> {old_name} → {new_name}  CANT PROCESS\n")
+        return
+
+    for old, new in zip(old_names, new_names):
+        if old == new:
+            continue
+
+        artist_id = utils.get_artist_id(song_database, artist_database, old)
+
+        if new not in artist_database[artist_id]["names"]:
+            add_log(f"+{new} ← {artist_id}")
+            artist_database[artist_id]["names"].append(new)
+
+        nb_songs = 0
+        for anime in song_database:
+            for song in anime["songs"]:
+                if artist_id not in [id[0] for id in song["artist_ids"]]:
+                    continue
+                if old in song["songArtist"]:
+                    nb_songs += 1
+
+        if nb_songs <= 1:
+            add_log(f"-{old} ← {artist_id}")
+            artist_database[artist_id]["names"].pop(
+                artist_database[artist_id]["names"].index(old)
+            )
+        else:
+            add_log(f"<CHECK> Keeping {old} in {artist_id}")
+
+        add_log(", ".join(artist_database[artist_id]["names"]))
+        add_log("")
 
 
 def update_data_with_expand(song_database, artist_database, expand_data):
@@ -250,14 +306,17 @@ def update_data_with_expand(song_database, artist_database, expand_data):
                         source_song["songNumber"] = update_song["number"]
 
                     if source_song["songName"] != update_song["name"]:
-                        add_log(
-                            f"UPDATE songName | {source_song['annSongId']} {source_song['songName']} -> {update_song['name']}"
-                        )
                         source_song["songName"] = update_song["name"]
 
                     if source_song["songArtist"] != update_song["artist"]:
                         add_log(
                             f"UPDATE songArtist | {source_song['annSongId']} {source_song['songArtist']} -> {update_song['artist']}"
+                        )
+                        update_artist_names(
+                            song_database,
+                            artist_database,
+                            source_song["songArtist"],
+                            update_song["artist"],
                         )
                         source_song["songArtist"] = update_song["artist"]
                     if (
@@ -295,13 +354,15 @@ def update_data_with_expand(song_database, artist_database, expand_data):
                     continue
 
                 # If anime found but song not found
-                new_song = format_new_song(artist_database, update_song)
+                add_log(
+                    f"\n{source_anime['animeExpandName']} : {update_song['name']} by {update_song['artist']}"
+                )
+                new_song = format_new_song(song_database, artist_database, update_song)
                 source_anime["songs"].append(new_song)
-                log = f"ADD SONG TO {source_anime['animeExpandName']}"
                 if similar_song_exist(source_anime, new_song):
-                    add_log(f"<TODO> {log} | {new_song}")
+                    add_log(f"\n\n<TODO> {new_song}\n\n")
                 else:
-                    add_log(f"{log} | {new_song}")
+                    add_log(f"{new_song}\n")
                 break
 
             # if anime not found
@@ -309,8 +370,9 @@ def update_data_with_expand(song_database, artist_database, expand_data):
                 songs = []
                 add_log(f"ADD ANIME | {update_anime['annId']} - {update_anime['name']}")
                 for song in update_anime["songs"]:
-                    new_song = format_new_song(artist_database, song)
-                    add_log(f"ADD SONG TO NEW ANIME | {new_song}")
+                    add_log(f"{song['name']} by {song['artist']}")
+                    new_song = format_new_song(song_database, artist_database, song)
+                    add_log(f"{new_song}\n")
                     songs.append(new_song)
                 song_database.append(
                     {
@@ -334,6 +396,11 @@ def process(update):
     with open(artist_database_path, encoding="utf-8") as json_file:
         artist_database = json.load(json_file)
 
+    is_valid = check_validity(song_database, splitting_exception)
+    if not is_valid:
+        print("WARNING - ERRORS IN THE CONFIG")
+    print()
+
     if update:
 
         expand_data = selenium_retrieve_data(
@@ -349,6 +416,13 @@ def process(update):
             expand_data = json.load(json_file)
 
     update_data_with_expand(song_database, artist_database, expand_data)
+
+    validation_message = "Do you want to confirm this update ?\n"
+    validation = utils.ask_validation(validation_message)
+
+    if not validation:
+        print("User Cancelled")
+        return
 
     with open(song_database_path, "w", encoding="utf-8") as outfile:
         json.dump(song_database, outfile)
