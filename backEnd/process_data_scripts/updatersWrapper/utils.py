@@ -1,3 +1,4 @@
+from functools import partial
 import re
 
 ANIME_REGEX_REPLACE_RULES = [
@@ -216,33 +217,45 @@ def get_artist_id(
     not_exist_ok=False,
     vocalist=True,
     composing=False,
+    partial_match=True,
+    exact_match=False,
 ):
 
-    artist_regex = get_regex_search(artist)
-
     ids = []
-    for id in artist_database.keys():
-        flag = False
-        for name in artist_database[id]["names"]:
-            if re.match(artist_regex, name, re.IGNORECASE):
-                flag = True
-        if flag:
-            ids.append(id)
+    if not exact_match:
 
-    # if no IDs found
+        if partial_match:
 
-    if ids and len(ids) > 10:
-        print("Too much results, removing partial match")
-        artist_regex = get_regex_search(artist, partial_match=False)
-        ids = []
+            artist_regex = get_regex_search(artist)
+
+            for id in artist_database.keys():
+                flag = False
+                for name in artist_database[id]["names"]:
+                    if re.match(artist_regex, name, re.IGNORECASE):
+                        flag = True
+                if flag:
+                    ids.append(id)
+
+        if not partial_match or (ids and len(ids) > 10):
+            if partial_match:
+                print("Too much results, removing partial match")
+            artist_regex = get_regex_search(artist, partial_match=False)
+            ids = []
+            for id in artist_database.keys():
+                flag = False
+                for name in artist_database[id]["names"]:
+                    if re.match(artist_regex, name, re.IGNORECASE):
+                        flag = True
+                if flag:
+                    ids.append(id)
+
+    else:
+
         for id in artist_database.keys():
-            flag = False
-            for name in artist_database[id]["names"]:
-                if re.match(artist_regex, name, re.IGNORECASE):
-                    flag = True
-            if flag:
+            if artist in artist_database[id]["names"] and id not in ids:
                 ids.append(id)
 
+    # if no IDs found
     if not ids:
         if not not_exist_ok:
             print(f"{artist} NOT FOUND, CANCELLED")

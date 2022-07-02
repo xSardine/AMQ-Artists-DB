@@ -20,6 +20,7 @@ def add_log(log_data):
     Cancelled for now TODO
     """
 
+    """
     with open("../logs.json") as json_file:
         data = json.load(json_file)
 
@@ -27,6 +28,8 @@ def add_log(log_data):
 
     with open("../logs.json", "w") as outfile:
         json.dump(data, outfile)
+    """
+    return
 
 
 def is_duplicate_in_list(list, song):

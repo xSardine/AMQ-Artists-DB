@@ -1,4 +1,5 @@
 import re
+from tokenize import group
 from filters import utils
 
 
@@ -199,7 +200,7 @@ def search_artist(
                         get_artists_in_group(artist_database, artist, i)
                     )
             else:
-                members_list.append(get_artists_in_group(artist_database, artist))
+                members_list.append(get_artists_in_group(artist_database, artist, -1))
             if int(artist) not in members_list[len(members_list) - 1]:
                 members_list[len(members_list) - 1].append(int(artist))
         else:
@@ -241,6 +242,7 @@ def search_artist_ids(
     members_list = []
     for artist in artist_ids:
         if group_granularity > 0:
+            # TODO right now it's never used, but if i ever do it will not work
             members_list.append(get_artists_in_group(artist_database, artist))
             if int(artist) not in members_list[len(members_list) - 1]:
                 members_list[len(members_list) - 1].append(int(artist))

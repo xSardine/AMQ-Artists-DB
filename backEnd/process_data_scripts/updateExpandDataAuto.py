@@ -225,7 +225,11 @@ def get_artist_id_list(song_database, artist_database, artist_list):
     for artist in artist_list:
         artist_id_list.append(
             utils.get_artist_id(
-                song_database, artist_database, artist, not_exist_ok=True
+                song_database,
+                artist_database,
+                artist,
+                not_exist_ok=True,
+                exact_match=True,
             )
         )
 

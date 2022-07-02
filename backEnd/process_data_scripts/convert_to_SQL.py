@@ -57,7 +57,7 @@ CREATE TABLE songs (
 );
 
 CREATE TABLE artists (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "id" INTEGER NOT NULL PRIMARY KEY,
     "vocalist" BIT NOT NULL,
     "composer" BIT NOT NULL
 );
@@ -184,15 +184,15 @@ def run_sql_command(cursor, sql_command, data=None):
         exit()
 
 
-def insert_new_artist(cursor, is_vocalist, is_composer):
+def insert_new_artist(cursor, id, is_vocalist, is_composer):
 
     """
     Insert a new artist in the database
     """
 
-    sql_insert_artist = "INSERT INTO artists(vocalist, composer) VALUES(?, ?);"
+    sql_insert_artist = "INSERT INTO artists(id, vocalist, composer) VALUES(?, ?, ?);"
 
-    run_sql_command(cursor, sql_insert_artist, [is_vocalist, is_composer])
+    run_sql_command(cursor, sql_insert_artist, [id, is_vocalist, is_composer])
 
     return cursor.lastrowid
 
@@ -393,6 +393,7 @@ for artist_id in artist_database:
 
     new_artist_id = insert_new_artist(
         cursor,
+        artist_id,
         artist_database[artist_id]["vocalist"],
         artist_database[artist_id]["composer"],
     )
