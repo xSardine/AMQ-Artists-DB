@@ -69,28 +69,19 @@ def extract_artist_database():
     cursor = connect_to_database(database_path)
 
     extract_basic_info = """
-    SELECT artists.id, group_concat(artist_names.name, "\$") AS names, artists.vocalist, artists.composer
-    FROM artists
-    LEFT JOIN artist_names ON artists.id = artist_names.artist_id
-    GROUP BY artists.id
+    SELECT id, names, vocalist, composer FROM artistsNames
     """
 
     basic_info = run_sql_command(cursor, extract_basic_info)
 
     extract_artist_groups = """
-    SELECT artists.id, group_concat(link_artist_group.group_id) AS groups, group_concat(link_artist_group.group_line_up_id) as groups_line_up
-    FROM artists
-    LEFT JOIN link_artist_group ON artists.id = link_artist_group.member_id
-	GROUP BY artists.id
+    SELECT id, groups, groups_line_up FROM artistsGroups
     """
 
     artist_groups = run_sql_command(cursor, extract_artist_groups)
 
     extract_group_members = """
-    SELECT artists.id, group_concat(link_artist_group.member_id) AS members, group_concat(link_artist_group.member_line_up_id) as members_line_up
-    FROM artists
-    LEFT JOIN link_artist_group ON artists.id = link_artist_group.group_id
-	GROUP BY artists.id
+    SELECT id, members, members_line_up FROM artistsMembers
     """
 
     group_members = run_sql_command(cursor, extract_group_members)
