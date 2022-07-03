@@ -9,7 +9,7 @@ database_path = local_path / Path("Enhanced-AMQ-Database.db")
 
 
 @lru_cache(maxsize=None)
-def extract_song_database():
+def extract_anime_database():
 
     """
     Extract the song database
@@ -21,7 +21,7 @@ def extract_song_database():
 
     cursor = connect_to_database(database_path)
 
-    song_database = {}
+    anime_database = {}
     for song in run_sql_command(cursor, command):
 
         artist_ids = []
@@ -45,28 +45,18 @@ def extract_song_database():
                     continue
                 arranger_ids.append(int(id))
 
-        song_database[song[6]] = {
-            "annId": song[0],
-            "animeExpandName": song[1],
-            "animeJPName": song[2],
-            "animeENName": song[3],
-            "animeVintage": song[4],
-            "animeType": song[5],
-            "annSongId": song[7],
-            "songType": song[8],
-            "songNumber": song[9],
-            "songName": song[10],
-            "songArtist": song[11],
-            "songDifficulty": song[16],
-            "HQ": song[17],
-            "MQ": song[18],
-            "audio": song[19],
-            "artists_ids": artist_ids,
-            "composers_ids": composer_ids,
-            "arrangers_ids": arranger_ids,
-        }
+        if song[0] not in anime_database:
+            anime_database[song[0]] = {
+                "animeExpandName": song[1],
+                "animeJPName": song[2],
+                "animeENName": song[3],
+                "animeVintage": song[4],
+                "animeType": song[5],
+                "songs": [],
+            }
+        anime_database[song[0]]["songs"].append(song)
 
-    return song_database
+    return anime_database
 
 
 @lru_cache(maxsize=None)

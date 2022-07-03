@@ -2,6 +2,7 @@ import utils, sql_calls
 from datetime import datetime
 import timeit
 from datetime import datetime
+import re
 
 
 def add_main_log(
@@ -97,6 +98,7 @@ def combine_results(
     max_nb_songs=300,
 ):
 
+    songId_done = []
     final_song_list = []
     for song in (
         annId_songs_list
@@ -109,8 +111,7 @@ def combine_results(
         if len(final_song_list) >= max_nb_songs:
             break
 
-        if song in final_song_list:
-            print("skip", song)
+        if song[6] in songId_done:
             continue
 
         if and_logic:
@@ -123,9 +124,11 @@ def combine_results(
                 if not ignore_duplicate or not is_duplicate_in_list(
                     final_song_list, song
                 ):
+                    songId_done.append(song[6])
                     final_song_list.append(utils.format_song(artist_database, song))
         else:
             if not ignore_duplicate or not is_duplicate_in_list(final_song_list, song):
+                songId_done.append(song[6])
                 final_song_list.append(utils.format_song(artist_database, song))
 
     return final_song_list
@@ -337,13 +340,19 @@ def get_search_results(
             anime_search_filters.search, anime_search_filters.partial_match
         )
 
-        annIds_list = sql_calls.get_annId_from_anime(
-            cursor, anime_search, authorized_types
-        )
+        anime_database = sql_calls.extract_anime_database()
 
-        anime_songs_list = sql_calls.get_songs_list_from_annIds(
-            cursor, annIds_list, authorized_types
-        )
+        anime_songs_list = []
+        for annId in anime_database:
+            anime = anime_database[annId]
+            if not anime["animeJPName"]:
+                if re.match(anime_search, anime["animeExpandName"].lower()):
+                    anime_songs_list += anime["songs"]
+            else:
+                if re.match(anime_search, anime["animeJPName"].lower()) or re.match(
+                    anime_search, anime["animeENName"].lower()
+                ):
+                    anime_songs_list += anime["songs"]
 
     print(f"Anime: {round(timeit.default_timer() - start, 4)}")
     start = timeit.default_timer()
