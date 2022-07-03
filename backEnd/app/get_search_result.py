@@ -2,7 +2,6 @@ import utils, sql_calls
 from datetime import datetime
 import timeit
 from datetime import datetime
-import numpy as np
 
 
 def add_main_log(
@@ -242,14 +241,15 @@ def process_artist(
                     members.append(artist)
 
     groups = []
-    for artist in np.unique(artist_ids + members):
+
+    for artist in list(set(artist_ids + members)):
         for group in artist_database[str(artist)]["groups"]:
             groups.append(group)
 
     # Extract every song IDs containing an artist we have
     songIds = sql_calls.get_songs_ids_from_artist_ids(
         cursor,
-        np.unique(artist_ids + [group[0] for group in groups] + members),
+        list(set(artist_ids + [group[0] for group in groups] + members)),
     )
 
     # Extract the full info of those song IDs
@@ -468,7 +468,7 @@ def get_artists_ids_song_list(
             groups.append(group)
 
     songIds = sql_calls.get_songs_ids_from_artist_ids(
-        cursor, np.unique(artist_ids + [group[0] for group in groups])
+        cursor, list(set(artist_ids + [group[0] for group in groups]))
     )
 
     songs = sql_calls.get_song_list_from_songIds(cursor, songIds, authorized_types)
