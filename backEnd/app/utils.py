@@ -42,7 +42,7 @@ def apply_regex_rules(search):
 def get_regex_search(og_search, partial_match=True, swap_words=False):
 
     search = og_search.lower()
-    search = escapeRegExp(og_search)
+    search = escapeRegExp(search)
     search = apply_regex_rules(search)
     search = "^" + search + "$" if not partial_match else ".*" + search + ".*"
 
