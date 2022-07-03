@@ -18,10 +18,8 @@ Here are the different parameters `Advanced Filters` lets you configure:
 - `Song Name Filter`: The string you enter will need to match a song name in the database.
 - `Artist Filter`: The string you enter will need to match an artist in the database: this part is the main enhancement compared to existing database, I will explain it better further down.
 
-- Each of this filters has 3 boxes linked to it that you can check:
-    - - `Partial Match`: If checked the string will only have to match part of what is in the database. I.E: Let's say you search for `frip`, it will detect `fripSide`, however for artist like `angela` and `YUI`, unchecking it will let you avoid catching stuff like `Angela Aki` or `Yui Horie`.
-    - - `Ignore Special Caracters`: If checked, it will ignore specials caracters such as ☆, ♪, ō vs ou, etc...
-    - - `Case Sensitive`: If checked, it will make your search case sensitive. I.E: If you want to disambiguate people like `ERIKA` (Erika Masaki from Tales of Zestiria and Cocotama), and `Erika` (random ass VA in Animal Yokocho).
+- Each of this filters has a box that can be checked:
+  - - `Partial Match`: If checked the string will only have to match part of what is in the database. I.E: Let's say you search for `frip`, it will detect `fripSide`, however for artist like `angela` and `YUI`, unchecking it will let you avoid catching stuff like `Angela Aki` or `Yui Horie`.
 
 Then `Artist Filter` have 2 more parameters:
 
@@ -32,8 +30,8 @@ Then `Artist Filter` have 2 more parameters:
 Finally:
 
 - `Filter Combination`:
-    - - `Union`: The song informations will have to match at least one the filter that you entered (anime/song name/artist).
-    - - `Intersection`: The song informations will have to match every filter that you entered.
+  - - `Union`: The song informations will have to match at least one the filter that you entered (anime/song name/artist).
+  - - `Intersection`: The song informations will have to match every filter that you entered.
 - `Ignore Duplicate`: This will ignore duplicates and only take into account the first instance of [Song Name by Artist] that it has encountered. (Different sets of artists are not considered duplicates)
 
 # Known Database Issues
