@@ -1,11 +1,31 @@
-from ast import Return
 import sqlite3, re
 from pathlib import Path
 from functools import lru_cache
-
+import timeit
 
 local_path = Path("data")
 database_path = local_path / Path("Enhanced-AMQ-Database.db")
+
+
+@lru_cache(maxsize=None)
+def extract_song_database():
+
+    """
+    Extract the song database
+    """
+
+    command = """
+    SELECT * FROM songsFull;
+    """
+
+    cursor = connect_to_database(database_path)
+
+    song_database = {}
+    for song in run_sql_command(cursor, command):
+
+        song_database[song[6]] = song
+
+    return song_database
 
 
 @lru_cache(maxsize=None)
@@ -23,27 +43,6 @@ def extract_anime_database():
 
     anime_database = {}
     for song in run_sql_command(cursor, command):
-
-        artist_ids = []
-        if song[12]:
-            for id, sets in zip(song[12].split(","), song[13].split(",")):
-                if int(id) in [int(temp[0]) for temp in artist_ids]:
-                    continue
-                artist_ids.append([int(id), int(sets)])
-
-        composer_ids = []
-        if song[14]:
-            for id in song[14].split(","):
-                if int(id) in composer_ids:
-                    continue
-                composer_ids.append(int(id))
-
-        arranger_ids = []
-        if song[15]:
-            for id in song[15].split(","):
-                if int(id) in arranger_ids:
-                    continue
-                arranger_ids.append(int(id))
 
         if song[0] not in anime_database:
             anime_database[song[0]] = {
@@ -218,11 +217,17 @@ def get_annId_from_anime(cursor, regex, authorized_types=[1, 2, 3]):
 
 def get_song_list_from_song_name(cursor, regex, authorized_types=[1, 2, 3]):
 
+    start = timeit.default_timer()
     # TODO Indexes on lower ?
     get_animeID_from_animeName = f"SELECT * from songsFull WHERE songType IN ({','.join('?'*len(authorized_types))}) AND lower(songName) REGEXP ? LIMIT 300"
-    return run_sql_command(
+    results = run_sql_command(
         cursor, get_animeID_from_animeName, authorized_types + [regex]
     )
+    print()
+    print(len(results))
+    print(f"Song List from Song Name SQL: {round(timeit.default_timer() - start, 4)}")
+    print()
+    return results
 
 
 def get_song_list_from_songArtist(cursor, regex, authorized_types=[1, 2, 3]):
@@ -232,12 +237,6 @@ def get_song_list_from_songArtist(cursor, regex, authorized_types=[1, 2, 3]):
     return run_sql_command(
         cursor, get_song_list_from_songArtist, authorized_types + [regex]
     )
-
-
-def get_song_list_from_songIds(cursor, songIds, authorized_types):
-
-    get_songs_from_songs_ids = f"SELECT * from songsFull WHERE songType IN ({','.join('?'*len(authorized_types))}) AND songId IN ({','.join('?'*len(songIds))})"
-    return run_sql_command(cursor, get_songs_from_songs_ids, authorized_types + songIds)
 
 
 def get_songs_ids_from_artist_ids(cursor, artist_ids):

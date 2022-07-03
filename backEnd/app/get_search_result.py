@@ -79,11 +79,11 @@ def is_ranked_time():
     return False
 
 
-def is_duplicate_in_list(list, song):
-    for song2 in list:
+def get_duplicate_in_list(list, song):
+    for i, song2 in enumerate(list):
         if song[10] == song2["songName"] and song[11] == song2["songArtist"]:
-            return True
-    return False
+            return i
+    return -1
 
 
 def combine_results(
@@ -114,6 +114,7 @@ def combine_results(
         if song[6] in songId_done:
             continue
 
+        duplicate_ID = get_duplicate_in_list(final_song_list, song)
         if and_logic:
             if (
                 (not artist_songs_list or song in artist_songs_list)
@@ -121,15 +122,25 @@ def combine_results(
                 and (not songName_songs_list or song in songName_songs_list)
                 and (not composer_songs_list or song in composer_songs_list)
             ):
-                if not ignore_duplicate or not is_duplicate_in_list(
-                    final_song_list, song
-                ):
+                if not ignore_duplicate or duplicate_ID == -1:
                     songId_done.append(song[6])
                     final_song_list.append(utils.format_song(artist_database, song))
+                else:
+                    if final_song_list[duplicate_ID]["annId"] > song[0]:
+                        songId_done.append(song[6])
+                        final_song_list[duplicate_ID] = utils.format_song(
+                            artist_database, song
+                        )
         else:
-            if not ignore_duplicate or not is_duplicate_in_list(final_song_list, song):
+            if not ignore_duplicate or duplicate_ID == -1:
                 songId_done.append(song[6])
                 final_song_list.append(utils.format_song(artist_database, song))
+            else:
+                if final_song_list[duplicate_ID]["annId"] > song[0]:
+                    songId_done.append(song[6])
+                    final_song_list[duplicate_ID] = utils.format_song(
+                        artist_database, song
+                    )
 
     return final_song_list
 
@@ -208,8 +219,20 @@ def check_meets_artists_requirements(
     return False
 
 
+def get_song_list_from_songIds_JSON(song_database, songIds, authorized_types):
+
+    song_list = []
+
+    for songId in songIds:
+        if song_database[songId][8] in authorized_types:
+            song_list.append(song_database[songId])
+
+    return song_list
+
+
 def process_artist(
     cursor,
+    song_database,
     artist_database,
     search,
     partial_match,
@@ -217,6 +240,7 @@ def process_artist(
     group_granularity,
     max_other_artist,
 ):
+
     artist_search = utils.get_regex_search(search, partial_match, swap_words=True)
 
     artist_ids = sql_calls.get_artist_ids_from_regex(cursor, artist_search)
@@ -244,7 +268,6 @@ def process_artist(
                     members.append(artist)
 
     groups = []
-
     for artist in list(set(artist_ids + members)):
         for group in artist_database[str(artist)]["groups"]:
             groups.append(group)
@@ -255,9 +278,8 @@ def process_artist(
         list(set(artist_ids + [group[0] for group in groups] + members)),
     )
 
-    # Extract the full info of those song IDs
-    artist_songs_list = sql_calls.get_song_list_from_songIds(
-        cursor, songIds, authorized_types
+    artist_songs_list = get_song_list_from_songIds_JSON(
+        song_database, songIds, authorized_types
     )
 
     final_song_list = []
@@ -288,6 +310,8 @@ def get_search_results(
 
     cursor = sql_calls.connect_to_database(sql_calls.database_path)
 
+    song_database = sql_calls.extract_song_database()
+    anime_database = sql_calls.extract_anime_database()
     artist_database = sql_calls.extract_artist_database()
 
     add_main_log(
@@ -340,19 +364,21 @@ def get_search_results(
             anime_search_filters.search, anime_search_filters.partial_match
         )
 
-        anime_database = sql_calls.extract_anime_database()
-
         anime_songs_list = []
         for annId in anime_database:
             anime = anime_database[annId]
             if not anime["animeJPName"]:
                 if re.match(anime_search, anime["animeExpandName"].lower()):
-                    anime_songs_list += anime["songs"]
+                    for song in anime["songs"]:
+                        if song[8] in authorized_types:
+                            anime_songs_list.append(song)
             else:
                 if re.match(anime_search, anime["animeJPName"].lower()) or re.match(
                     anime_search, anime["animeENName"].lower()
                 ):
-                    anime_songs_list += anime["songs"]
+                    for song in anime["songs"]:
+                        if song[8] in authorized_types:
+                            anime_songs_list.append(song)
 
     print(f"Anime: {round(timeit.default_timer() - start, 4)}")
     start = timeit.default_timer()
@@ -365,9 +391,13 @@ def get_search_results(
             song_name_search_filters.search, song_name_search_filters.partial_match
         )
 
-        songName_songs_list = sql_calls.get_song_list_from_song_name(
-            cursor, songName_search, authorized_types
-        )
+        songName_songs_list = []
+        for songId in song_database:
+            song = song_database[songId]
+            if song[8] in authorized_types and re.match(
+                songName_search, song[10].lower()
+            ):
+                songName_songs_list.append(song)
 
     print(f"Song Name: {round(timeit.default_timer() - start, 4)}")
     start = timeit.default_timer()
@@ -380,6 +410,7 @@ def get_search_results(
 
         artist_songs_list, artist_ids = process_artist(
             cursor,
+            song_database,
             artist_database,
             artist_search_filters.search,
             artist_search_filters.partial_match,
@@ -413,8 +444,8 @@ def get_search_results(
                 cursor, artist_ids, composer_search_filters.arrangement
             )
 
-            composer_songs_list = sql_calls.get_song_list_from_songIds(
-                cursor, songIds, authorized_types
+            composer_songs_list = get_song_list_from_songIds_JSON(
+                song_database, songIds, authorized_types
             )
 
     print(f"Composers: {round(timeit.default_timer() - start, 4)}")
@@ -480,7 +511,9 @@ def get_artists_ids_song_list(
         cursor, list(set(artist_ids + [group[0] for group in groups]))
     )
 
-    songs = sql_calls.get_song_list_from_songIds(cursor, songIds, authorized_types)
+    song_database = sql_calls.extract_song_database()
+
+    songs = get_song_list_from_songIds_JSON(song_database, songIds, authorized_types)
 
     final_songs = []
     for song in songs:
