@@ -29,15 +29,26 @@ DROP TABLE IF EXISTS link_song_composer;
 DROP TABLE IF EXISTS link_anime_genre;
 DROP TABLE IF EXISTS link_anime_tag;
 DROP TABLE IF EXISTS songs;
+DROP VIEW IF EXISTS artistsNames;
+DROP VIEW IF EXISTS artistsMembers;
+DROP VIEW IF EXISTS artistsLineUps;
+DROP VIEW IF EXISTS artistsGroups;
+DROP VIEW IF EXISTS artistsFull;
+DROP VIEW IF EXISTS songsAnimes;
+DROP VIEW IF EXISTS songsArtists;
+DROP VIEW IF EXISTS songsComposers;
+DROP VIEW IF EXISTS songsArrangers;
+DROP VIEW IF EXISTS songsFull;
+
 PRAGMA foreign_keys = 1;
 
 CREATE TABLE animes (
     "annId" INTEGER NOT NULL PRIMARY KEY,
     "animeExpandName" VARCHAR(255) NOT NULL, 
-    "animeENName" VARCHAR (255),
-    "animeJPName" VARCHAR (255),
-    "animeVintage" VARCHAR (255),
-    "animeType" VARCHAR (255)
+    "animeENName" VARCHAR(255),
+    "animeJPName" VARCHAR(255),
+    "animeVintage" VARCHAR(255),
+    "animeType" VARCHAR(255)
 );
 
 CREATE TABLE songs (
@@ -71,11 +82,12 @@ CREATE TABLE groups (
 );
 
 CREATE TABLE artist_names (
+    "inserted_order" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
     "artist_id" INTEGER NOT NULL,
     "name" VARCHAR(255) NOT NULL,
     FOREIGN KEY ("artist_id")
         REFERENCES artist ("id"),
-    PRIMARY KEY (artist_id, name)
+    UNIQUE (artist_id, name)
 );
 
 CREATE TABLE link_song_artist (
@@ -144,6 +156,71 @@ create TABLE link_anime_tag (
         REFERENCES animes ("annId"),
     PRIMARY KEY (annId, tag)
 );
+
+
+CREATE VIEW artistsNames AS 
+SELECT orderedNames.inserted_order, artists.id, group_concat(orderedNames.name, "\$") AS names, artists.vocalist, artists.composer
+FROM artists
+LEFT JOIN (SELECT * FROM artist_names ORDER BY artist_names.inserted_order) AS orderedNames
+ON artists.id = orderedNames.artist_id
+GROUP BY artists.id;
+
+CREATE VIEW artistsMembers AS 
+SELECT artists.id, group_concat(link_artist_group.member_id) AS members, group_concat(link_artist_group.member_line_up_id) as members_line_up 
+FROM artists
+LEFT JOIN link_artist_group ON artists.id = link_artist_group.group_id 
+GROUP BY artists.id;
+
+CREATE VIEW artistsGroups AS 
+SELECT artists.id, group_concat(link_artist_group.group_id) AS groups, group_concat(link_artist_group.group_line_up_id) as groups_line_up 
+FROM artists 
+LEFT JOIN link_artist_group ON artists.id = link_artist_group.member_id 
+GROUP BY artists.id;
+
+CREATE VIEW artistsLineUps AS 
+SELECT artists.id, artistsNames.names, link_artist_group.group_line_up_id, group_concat(link_artist_group.member_id) AS members, group_concat(link_artist_group.member_line_up_id) as members_line_up 
+FROM artists 
+LEFT JOIN link_artist_group ON artists.id = link_artist_group.group_id
+LEFT JOIN artistsNames ON artists.id = artistsNames.id
+GROUP BY artists.id, link_artist_group.group_line_up_id;
+
+CREATE VIEW artistsFull AS
+SELECT artistsNames.id, artistsNames.names, artistsNames.vocalist, artistsNames.composer, artistsMembers.members, artistsMembers.members_line_up, artistsGroups.groups, artistsGroups.groups_line_up
+FROM artistsNames
+INNER JOIN artistsMembers ON artistsNames.id = artistsMembers.id
+INNER JOIN artistsGroups ON artistsNames.id = artistsGroups.id;
+
+CREATE VIEW songsAnimes AS
+SELECT animes.annId, animes.animeExpandName, animes.animeJPName, animes.animeENName, animes.animeVintage, animes.animeType, 
+songs.id as songId, songs.annSongId, songs.songType, songs.songNumber, songs.songName, songs.songArtist, songs.songDifficulty, songs.HQ, songs.MQ, songs.audio
+FROM animes
+LEFT JOIN songs ON animes.annId = songs.annId;
+
+CREATE VIEW songsArtists AS
+SELECT songs.id as songId, group_concat(link_song_artist.artist_id) AS artists, group_concat(link_song_artist.artist_line_up_id) AS artists_line_up
+FROM songs 
+LEFT JOIN link_song_artist ON songs.id = link_song_artist.song_id
+GROUP BY songs.id;
+
+CREATE VIEW songsComposers AS
+SELECT songs.id as songId, group_concat(link_song_composer.composer_id) AS composers
+FROM songs
+LEFT JOIN link_song_composer ON songs.id = link_song_composer.song_id
+GROUP BY songs.id;
+
+CREATE VIEW songsArrangers AS
+SELECT songs.id as songId, group_concat(link_song_arranger.arranger_id) AS arrangers
+FROM songs
+LEFT JOIN link_song_arranger ON songs.id = link_song_arranger.song_id
+GROUP BY songs.id;
+
+CREATE VIEW songsFull AS
+SELECT songsAnimes.annId, songsAnimes.animeExpandName, songsAnimes.animeJPName, songsAnimes.animeENName, songsAnimes.animeVintage, songsAnimes.animeType, 
+songsAnimes.songId, songsAnimes.annSongId, songsAnimes.songType, songsAnimes.songNumber, songsAnimes.songName, songsAnimes.songArtist, songsArtists.artists, songsArtists.artists_line_up, songsComposers.composers, songsArrangers.arrangers, songsAnimes.songDifficulty, songsAnimes.HQ, songsAnimes.MQ, songsAnimes.audio
+FROM songsAnimes
+INNER JOIN songsArtists ON songsAnimes.songId = songsArtists.songId
+INNER JOIN songsComposers ON songsAnimes.songId = songsComposers.songId
+INNER JOIN songsArrangers ON songsAnimes.songId = songsArrangers.songId;
 """
 
 
@@ -412,8 +489,8 @@ for anime in song_database:
         cursor,
         anime["annId"],
         anime["animeExpandName"],
-        anime["animeJPName"] if "animeJPName" in anime else None,
         anime["animeENName"] if "animeENName" in anime else None,
+        anime["animeJPName"] if "animeJPName" in anime else None,
         anime["animeVintage"] if "animeVintage" in anime else None,
         anime["animeType"] if "animeType" in anime else None,
     )

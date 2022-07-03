@@ -4,16 +4,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import List, Optional
 import get_search_result
-from filters import artist_filter
-import sql_calls
+import sql_calls, utils
+from random import randrange
 
 
 class Search_Filter(BaseModel):
 
     search: str
-    ignore_special_character: Optional[bool] = True
     partial_match: Optional[bool] = True
-    case_sensitive: Optional[bool] = False
 
     # How much I decompose the group to search for other songs
     # ie. 1: Artists one by one 2: At least two member from the group, etc...
@@ -29,9 +27,7 @@ class Search_Filter(BaseModel):
         schema_extra = {
             "example": {
                 "search": "fripSide",
-                "ignore_special_character": True,
                 "partial_match": True,
-                "case_sensitive": False,
                 "group_granularity": 1,
                 "max_other_artist": 2,
             }
@@ -59,14 +55,12 @@ class Search_Request(BaseModel):
                     "search": "White Album",
                     "ignore_special_character": True,
                     "partial_match": True,
-                    "case_sensitive": False,
                     "max_artist_per_songs": 99,
                 },
                 "artist_search_filter": {
                     "search": "Madoka Yonezawa",
                     "ignore_special_character": True,
                     "partial_match": True,
-                    "case_sensitive": False,
                     "max_artist_per_songs": 99,
                 },
             }
@@ -195,9 +189,6 @@ def format_arranger_ids(artist_database, arranger_id):
 @app.post("/api/search_request", response_model=List[Song_Entry])
 async def search_request(query: Search_Request):
 
-    song_database = sql_calls.extract_song_database()
-    artist_database = sql_calls.extract_artist_database()
-
     authorized_type = []
     if query.opening_filter:
         authorized_type.append(1)
@@ -210,8 +201,6 @@ async def search_request(query: Search_Request):
         return []
 
     song_list = get_search_result.get_search_results(
-        song_database,
-        artist_database,
         query.anime_search_filter,
         query.song_name_search_filter,
         query.artist_search_filter,
@@ -222,61 +211,31 @@ async def search_request(query: Search_Request):
         authorized_type,
     )
 
-    for song in song_list:
-        artist_list = []
-        for artist_id, artist_line_up in song["artists"]:
-            artist_list.append(
-                format_artist_ids(artist_database, artist_id, artist_line_up)
-            )
-        song["artists"] = artist_list
-
-        composer_list = []
-        for composer_id in song["composers"]:
-            composer_list.append(format_composer_ids(artist_database, composer_id))
-        song["composers"] = composer_list
-
-        arranger_list = []
-        for arranger_id in song["arrangers"]:
-            arranger_list.append(format_arranger_ids(artist_database, arranger_id))
-        song["arrangers"] = arranger_list
-
     return song_list
 
 
 @app.post("/api/get_50_random_songs", response_model=List[Song_Entry])
 async def get_50_random_songs():
 
-    song_database = sql_calls.extract_song_database()
+    cursor = sql_calls.connect_to_database(sql_calls.database_path)
+
+    songIds = [randrange(28000) for i in range(50)]
+
     artist_database = sql_calls.extract_artist_database()
 
-    data = get_search_result.get_50_random_songs(song_database)
+    # Extract every song from song IDs
+    get_songs_from_songs_ids = (
+        f"SELECT * from songsFull WHERE songId IN ({','.join('?'*len(songIds))})"
+    )
+    songs = sql_calls.run_sql_command(cursor, get_songs_from_songs_ids, songIds)
 
-    for song in data:
-        artist_list = []
-        for artist_id, artist_line_up in song["artists"]:
-            artist_list.append(
-                format_artist_ids(artist_database, artist_id, artist_line_up)
-            )
-        song["artists"] = artist_list
+    song_list = [utils.format_song(artist_database, song) for song in songs]
 
-        composer_list = []
-        for composer_id in song["composers"]:
-            composer_list.append(format_composer_ids(artist_database, composer_id))
-        song["composers"] = composer_list
-
-        arranger_list = []
-        for arranger_id in song["arrangers"]:
-            arranger_list.append(format_arranger_ids(artist_database, arranger_id))
-        song["arrangers"] = arranger_list
-
-    return data
+    return song_list
 
 
 @app.post("/api/artist_ids_request", response_model=List[Song_Entry])
 async def search_request(query: Artist_ID_Search_Request):
-
-    song_database = sql_calls.extract_song_database()
-    artist_database = sql_calls.extract_artist_database()
 
     authorized_type = []
     if query.opening_filter:
@@ -290,42 +249,18 @@ async def search_request(query: Artist_ID_Search_Request):
         return []
 
     song_list = get_search_result.get_artists_ids_song_list(
-        song_database,
-        artist_database,
         query.artist_ids,
         query.max_other_artist,
         query.group_granularity,
         query.ignore_duplicate,
-        300,
         authorized_type,
     )
-
-    for song in song_list:
-        artist_list = []
-        for artist_id, artist_line_up in song["artists"]:
-            artist_list.append(
-                format_artist_ids(artist_database, artist_id, artist_line_up)
-            )
-        song["artists"] = artist_list
-
-        composer_list = []
-        for composer_id in song["composers"]:
-            composer_list.append(format_composer_ids(artist_database, composer_id))
-        song["composers"] = composer_list
-
-        arranger_list = []
-        for arranger_id in song["arrangers"]:
-            arranger_list.append(format_arranger_ids(artist_database, arranger_id))
-        song["arrangers"] = arranger_list
 
     return song_list
 
 
 @app.post("/api/annId_request", response_model=List[Song_Entry])
 async def search_request(query: annId_Search_Request):
-
-    song_database = sql_calls.extract_song_database()
-    artist_database = sql_calls.extract_artist_database()
 
     authorized_type = []
     if query.opening_filter:
@@ -339,29 +274,9 @@ async def search_request(query: annId_Search_Request):
         return []
 
     song_list = get_search_result.get_annId_song_list(
-        song_database,
         query.annId,
         query.ignore_duplicate,
-        300,
         authorized_type,
     )
-
-    for song in song_list:
-        artist_list = []
-        for artist_id, artist_line_up in song["artists"]:
-            artist_list.append(
-                format_artist_ids(artist_database, artist_id, artist_line_up)
-            )
-        song["artists"] = artist_list
-
-        composer_list = []
-        for composer_id in song["composers"]:
-            composer_list.append(format_composer_ids(artist_database, composer_id))
-        song["composers"] = composer_list
-
-        arranger_list = []
-        for arranger_id in song["arrangers"]:
-            arranger_list.append(format_arranger_ids(artist_database, arranger_id))
-        song["arrangers"] = arranger_list
 
     return song_list

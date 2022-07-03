@@ -1,225 +1,14 @@
-import sqlite3
+from ast import Return
+import sqlite3, re
 from pathlib import Path
-import functools
+from functools import lru_cache
+
 
 local_path = Path("data")
 database_path = local_path / Path("Enhanced-AMQ-Database.db")
 
 
-def run_sql_command(cursor, sql_command, data=None):
-
-    """
-    Run the SQL command with nice looking print when failed (no)
-    """
-
-    try:
-        if data is not None:
-            cursor.execute(sql_command, data)
-        else:
-            cursor.execute(sql_command)
-
-        record = cursor.fetchall()
-
-        return record
-
-    except sqlite3.Error as error:
-
-        if data is not None:
-            for param in data:
-                if type(param) == str:
-                    sql_command = sql_command.replace("?", '"' + str(param) + '"', 1)
-                else:
-                    sql_command = sql_command.replace("?", str(param), 1)
-
-        print(
-            "\nError while running this command: \n",
-            sql_command,
-            "\n",
-            error,
-            "\nData: ",
-            data,
-            "\n",
-        )
-        return None
-
-
-def connect_to_database(database_path):
-
-    """
-    Connect to the database and return the connection's cursor
-    """
-
-    try:
-        sqliteConnection = sqlite3.connect(database_path)
-        cursor = sqliteConnection.cursor()
-        return cursor
-    except sqlite3.Error as error:
-        print("\n", error, "\n")
-        exit(0)
-
-
-def get_anime_info_from_anime_id(cursor, anime_id):
-
-    """
-    Return the content of animes table for that anime ID
-    {
-        annId
-        animeExpandName
-        animeJPName
-    }
-    """
-
-    command = "SELECT * FROM animes WHERE annId == ?;"
-    anime = run_sql_command(cursor, command, [anime_id])[0]
-    return {"annId": anime[0], "animeExpandName": anime[1], "animeJPName": anime[2]}
-
-
-def get_songs_ID_from_anime_ID(cursor, anime_id):
-
-    """
-    Return the list of songs ID linked to the anime ID
-    """
-
-    command = "SELECT song_id FROM link_anime_song WHERE anime_id == ?;"
-    return {song[0] for song in run_sql_command(cursor, command, [anime_id])}
-
-
-def get_song_info_from_song_ID(cursor, song_id):
-
-    """
-    Return the content of songs table for that song id
-    {
-        songId
-        annSongId
-        songType
-        songNumber
-        songName
-        songArtist
-        HQ
-        MQ
-        audio
-    }
-    """
-
-    command = "SELECT * FROM songs WHERE id == ?;"
-    song = run_sql_command(cursor, command, [song_id])[0]
-    return {
-        "songId": song[0],
-        "annSongId": song[1],
-        "songType": song[2],
-        "songNumber": song[3],
-        "songName": song[4],
-        "songArtist": song[5],
-        "HQ": song[6],
-        "MQ": song[7],
-        "audio": song[8],
-    }
-
-
-def get_song_artists_from_song_ID(cursor, song_id):
-
-    """
-    Return the list of (artists ID, id_of_set_of_artists) for that song id
-    """
-
-    command = "SELECT artist_id, artist_alt_members_id FROM link_song_artist WHERE song_id == ?;"
-    return run_sql_command(cursor, command, [song_id])
-
-
-def get_songs_with_artist_ID(cursor, artist_id):
-
-    """
-    Return every song ID that has the artist in it
-    """
-
-    command = "SELECT song_id FROM link_song_artist WHERE artist_id == ?;"
-    return {song[0] for song in run_sql_command(cursor, command, [artist_id])}
-
-
-def is_artist_a_group(cursor, artist_id):
-
-    """
-    Return True if the artist is a group
-    Return False if not
-    """
-
-    command = "SELECT * FROM link_artist_group WHERE group_id == ?;"
-    return True if run_sql_command(cursor, command, [artist_id]) else False
-
-
-def get_members_list(cursor, artist_id, set_id=-1):
-
-    """
-    Return the list of artists presents in the couple (artist_id, artist_alt_members_id)
-    I.E:    if set_id == -1: return every member for every version of the group
-            else: list the members in that version of the group
-    """
-    if is_artist_a_group(cursor, artist_id):
-        if set_id == -1:
-            command = "SELECT artist_id FROM link_artist_group WHERE group_id == ?;"
-            return {
-                artist[0] for artist in run_sql_command(cursor, command, [artist_id])
-            }
-        else:
-            command = "SELECT artist_id FROM link_artist_group WHERE group_id == ? AND group_alt_members_id == ?;"
-            return {
-                artist[0]
-                for artist in run_sql_command(cursor, command, [artist_id, set_id])
-            }
-    else:
-        return []
-
-
-def get_groups_list(cursor, artist_id):
-
-    """
-    Return the list of groups the artist is in
-    """
-
-    command = "SELECT group_id, group_alt_members_id FROM link_artist_group WHERE artist_id == ?;"
-    return run_sql_command(cursor, command, [artist_id])
-
-
-def get_artist_names_from_artist_id(cursor, artist_id):
-
-    """
-    Return the list of names linked to the artist id
-    """
-
-    command = "SELECT name FROM artist_alt_names WHERE artist_id == ?;"
-    return {name[0] for name in run_sql_command(cursor, command, [artist_id])}
-
-
-def get_all_artistIds(cursor):
-
-    """
-    Return the ID of every artist in the DB
-    """
-
-    command = "SELECT DISTINCT id FROM artists;"
-    return run_sql_command(cursor, command)
-
-
-def get_all_annIDs(cursor):
-
-    """
-    Return every annID in the DB
-    """
-
-    command = "SELECT DISTINCT annId from animes;"
-    return run_sql_command(cursor, command)
-
-
-def get_all_songIds(cursor):
-    """
-    Return every songId in the DB
-    """
-
-    command = "SELECT DISTINCT id from songs;"
-    return run_sql_command(cursor, command)
-
-
-@functools.lru_cache(maxsize=1)
+@lru_cache(maxsize=None)
 def extract_song_database():
 
     """
@@ -227,68 +16,60 @@ def extract_song_database():
     """
 
     command = """
-    SELECT animes.annId, animes.animeExpandName, animes.animeJPName, animes.animeENName, animes.animeVintage, animes.animeType, songs.annSongId, songs.songType, songs.songNumber, 
-    songs.songName, songs.songArtist, songs.songDifficulty, songs.HQ, songs.MQ, songs.audio, group_concat(link_song_artist.artist_id) 
-    AS artists_ids, group_concat(link_song_artist.artist_line_up_id) AS artists_ids_set, group_concat(link_song_composer.composer_id) as composer_ids, group_concat(link_song_arranger.arranger_id) as arranger_ids
-    FROM animes
-    INNER JOIN songs ON animes.annId = songs.annId
-    LEFT JOIN link_song_artist ON songs.id = link_song_artist.song_id
-    LEFT JOIN link_song_composer ON songs.id = link_song_composer.song_id
-    LEFT JOIN link_song_arranger ON songs.id = link_song_arranger.song_id
-    GROUP BY songs.id;
+    SELECT * FROM songsFull;
     """
+
     cursor = connect_to_database(database_path)
-    song_database = []
+
+    song_database = {}
     for song in run_sql_command(cursor, command):
 
         artist_ids = []
-        if song[15]:
-            for id, sets in zip(song[15].split(","), song[16].split(",")):
+        if song[12]:
+            for id, sets in zip(song[12].split(","), song[13].split(",")):
                 if int(id) in [int(temp[0]) for temp in artist_ids]:
                     continue
                 artist_ids.append([int(id), int(sets)])
 
         composer_ids = []
-        if song[17]:
-            for id in song[17].split(","):
+        if song[14]:
+            for id in song[14].split(","):
                 if int(id) in composer_ids:
                     continue
                 composer_ids.append(int(id))
 
         arranger_ids = []
-        if song[18]:
-            for id in song[18].split(","):
+        if song[15]:
+            for id in song[15].split(","):
                 if int(id) in arranger_ids:
                     continue
                 arranger_ids.append(int(id))
 
-        song_database.append(
-            {
-                "annId": song[0],
-                "animeExpandName": song[1],
-                "animeJPName": song[2],
-                "animeENName": song[3],
-                "animeVintage": song[4],
-                "animeType": song[5],
-                "annSongId": song[6],
-                "songType": song[7],
-                "songNumber": song[8],
-                "songName": song[9],
-                "songArtist": song[10],
-                "songDifficulty": song[11],
-                "HQ": song[12],
-                "MQ": song[13],
-                "audio": song[14],
-                "artists_ids": artist_ids,
-                "composers_ids": composer_ids,
-                "arrangers_ids": arranger_ids,
-            }
-        )
+        song_database[song[6]] = {
+            "annId": song[0],
+            "animeExpandName": song[1],
+            "animeJPName": song[2],
+            "animeENName": song[3],
+            "animeVintage": song[4],
+            "animeType": song[5],
+            "annSongId": song[7],
+            "songType": song[8],
+            "songNumber": song[9],
+            "songName": song[10],
+            "songArtist": song[11],
+            "songDifficulty": song[16],
+            "HQ": song[17],
+            "MQ": song[18],
+            "audio": song[19],
+            "artists_ids": artist_ids,
+            "composers_ids": composer_ids,
+            "arrangers_ids": arranger_ids,
+        }
 
     return song_database
 
 
-@functools.lru_cache(maxsize=1)
+@lru_cache(maxsize=None)
 def extract_artist_database():
 
     """
@@ -296,7 +77,6 @@ def extract_artist_database():
     """
 
     cursor = connect_to_database(database_path)
-    artist_database = {}
 
     extract_basic_info = """
     SELECT artists.id, group_concat(artist_names.name, "\$") AS names, artists.vocalist, artists.composer
@@ -377,3 +157,193 @@ def extract_artist_database():
                         )
 
     return artist_database
+
+
+def run_sql_command(cursor, sql_command, data=None):
+
+    """
+    Run the SQL command with nice looking print when failed (no)
+    """
+
+    try:
+        if data is not None:
+            cursor.execute(sql_command, data)
+        else:
+            cursor.execute(sql_command)
+
+        record = cursor.fetchall()
+
+        return record
+
+    except sqlite3.Error as error:
+
+        if data is not None:
+            for param in data:
+                if type(param) == str:
+                    sql_command = sql_command.replace("?", '"' + str(param) + '"', 1)
+                else:
+                    sql_command = sql_command.replace("?", str(param), 1)
+
+        print(
+            "\nError while running this command: \n",
+            sql_command,
+            "\n",
+            error,
+            "\nData: ",
+            data,
+            "\n",
+        )
+        return None
+
+
+def regexp(expr, item):
+    try:
+        reg = re.compile(expr)
+        return reg.search(item) is not None
+    except Exception as e:
+        pass
+
+
+def connect_to_database(database_path):
+
+    """
+    Connect to the database and return the connection's cursor
+    """
+
+    try:
+        sqliteConnection = sqlite3.connect(database_path)
+        sqliteConnection.create_function("REGEXP", 2, regexp)
+        cursor = sqliteConnection.cursor()
+        return cursor
+    except sqlite3.Error as error:
+        print("\n", error, "\n")
+        exit(0)
+
+
+def get_songs_list_from_annIds(cursor, annIds, authorized_types):
+    get_songs_from_annId = f"SELECT * from songsFull WHERE songType IN ({','.join('?'*len(authorized_types))}) AND annId IN ({','.join('?'*len(annIds))}) LIMIT 300"
+    return run_sql_command(cursor, get_songs_from_annId, authorized_types + annIds)
+
+
+def get_annId_from_anime(cursor, regex, authorized_types=[1, 2, 3]):
+
+    # TODO Indexes on lower ?
+    get_animeID_from_animeName = f"SELECT annId from animes WHERE (lower(animeENName) REGEXP ? OR lower(animeJPName) REGEXP ?) LIMIT 300"
+    return [
+        id[0]
+        for id in run_sql_command(cursor, get_animeID_from_animeName, [regex, regex])
+    ]
+
+
+def get_song_list_from_song_name(cursor, regex, authorized_types=[1, 2, 3]):
+
+    # TODO Indexes on lower ?
+    get_animeID_from_animeName = f"SELECT * from songsFull WHERE songType IN ({','.join('?'*len(authorized_types))}) AND lower(songName) REGEXP ? LIMIT 300"
+    return run_sql_command(
+        cursor, get_animeID_from_animeName, authorized_types + [regex]
+    )
+
+
+def get_song_list_from_songArtist(cursor, regex, authorized_types=[1, 2, 3]):
+
+    # TODO Indexes on lower ?
+    get_song_list_from_songArtist = f"SELECT * from songsFull WHERE songType IN ({','.join('?'*len(authorized_types))}) AND lower(songArtist) REGEXP ? LIMIT 300"
+    return run_sql_command(
+        cursor, get_song_list_from_songArtist, authorized_types + [regex]
+    )
+
+
+def get_song_list_from_songIds(cursor, songIds, authorized_types):
+
+    get_songs_from_songs_ids = f"SELECT * from songsFull WHERE songType IN ({','.join('?'*len(authorized_types))}) AND songId IN ({','.join('?'*len(songIds))})"
+    return run_sql_command(cursor, get_songs_from_songs_ids, authorized_types + songIds)
+
+
+def get_songs_ids_from_artist_ids(cursor, artist_ids):
+
+    get_songs_ids_from_artist_ids = f"SELECT song_id from link_song_artist WHERE artist_id IN ({','.join('?'*len(artist_ids))})"
+    return [
+        id[0]
+        for id in run_sql_command(
+            cursor, get_songs_ids_from_artist_ids, [str(id) for id in artist_ids]
+        )
+    ]
+
+
+def get_songs_ids_from_composing_team_ids(cursor, composer_ids, arrangement):
+
+    # TODO FIND A BETTER WAY WITH VIEW
+    get_songs_ids_from_composer_ids = f"SELECT song_id from link_song_composer WHERE composer_id IN ({','.join('?'*len(composer_ids))}) LIMIT 300"
+    songIds = set()
+    for song_id in run_sql_command(
+        cursor, get_songs_ids_from_composer_ids, composer_ids
+    ):
+        songIds.add(song_id[0])
+
+    if arrangement:
+        get_songs_ids_from_arranger_ids = f"SELECT song_id from link_song_arranger WHERE arranger_id IN ({','.join('?'*len(composer_ids))}) LIMIT 300"
+        for song_id in run_sql_command(
+            cursor, get_songs_ids_from_arranger_ids, composer_ids
+        ):
+            songIds.add(song_id[0])
+
+    songIds = list(songIds)
+
+    return songIds
+
+
+def get_artist_ids_from_regex(cursor, regex):
+
+    # TODO Index on lower ?
+    get_artist_ids_from_regex = "SELECT artist_id from artist_names WHERE lower(name) REGEXP ? GROUP BY artist_id LIMIT 50"
+    artist_ids = [
+        id[0] for id in run_sql_command(cursor, get_artist_ids_from_regex, [regex])
+    ]
+    return artist_ids
+
+
+def get_song_list_from_links(cursor, link):
+
+    if "catbox.moe" not in link or (".webm" not in link and ".mp3" not in link):
+        return []
+
+    link = f".*{link}.*"
+
+    # TODO Indexes ?
+    get_songs_from_link = (
+        f"SELECT * from songsFull WHERE HQ REGEXP ? OR MQ REGEXP ? OR audio REGEXP ?"
+    )
+    songs = run_sql_command(cursor, get_songs_from_link, [link, link, link])
+    return songs
+
+
+def get_artist_names_from_artist_id(cursor, artist_id):
+
+    """
+    Return the list of names linked to the artist id as a dict
+    """
+
+    command = "SELECT names FROM artistsNames WHERE id == ?;"
+
+    result = run_sql_command(cursor, command, [int(artist_id)])[0][0].split("\\$")
+
+    return result
+
+
+def get_artist_line_ups(cursor, artist_id):
+
+    command = f"SELECT * FROM artistsLineUps WHERE id = {artist_id}"
+    return run_sql_command(cursor, command)
+
+
+def get_artist_groups(cursor, artist_id):
+
+    command = f"SELECT * FROM artistsGroups WHERE id = {artist_id}"
+    groups = run_sql_command(cursor, command)[0]
+    if not groups[1]:
+        return []
+    else:
+        return [
+            [group, line_up]
+            for group, line_up in zip(groups[1].split(","), groups[2].split(","))
+        ]

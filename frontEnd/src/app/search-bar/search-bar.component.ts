@@ -33,17 +33,9 @@ export class SearchBarComponent implements OnInit {
   minimalMembersFilter: string = "0";
   selectedCombination: string = "Union";
   animeFilterPartialMatch: boolean = true;
-  animeFilterIgnoreSpecialCaracters: boolean = true;
-  animeFilterCaseSensitive: boolean = false;
   songNameFilterPartialMatch: boolean = true;
-  songNameFilterIgnoreSpecialCaracters: boolean = true;
-  songNameFilterCaseSensitive: boolean = false;
   artistFilterPartialMatch: boolean = true;
-  artistFilterIgnoreSpecialCaracters: boolean = true;
-  artistFilterCaseSensitive: boolean = false;
   composerFilterPartialMatch: boolean = true;
-  composerFilterIgnoreSpecialCaracters: boolean = true;
-  composerFilterCaseSensitive: boolean = false;
   composerFilterArrangement: boolean = false;
   ignoreDuplicate: boolean = false;
   showOpenings: boolean = true;
@@ -185,9 +177,7 @@ export class SearchBarComponent implements OnInit {
       if (this.animeFilter.length > 0) {
         tmp_anime_filter = {
           "search": this.animeFilter,
-          "ignore_special_character": this.animeFilterIgnoreSpecialCaracters,
           "partial_match": this.animeFilterPartialMatch,
-          "case_sensitive": this.animeFilterCaseSensitive,
         }
       }
       else {
@@ -209,9 +199,7 @@ export class SearchBarComponent implements OnInit {
       if (this.animeFilter.length > 0) {
         tmp_anime_filter = {
           "search": this.animeFilter,
-          "ignore_special_character": this.animeFilterIgnoreSpecialCaracters,
           "partial_match": this.animeFilterPartialMatch,
-          "case_sensitive": this.animeFilterCaseSensitive,
         }
       }
       else {
@@ -221,9 +209,7 @@ export class SearchBarComponent implements OnInit {
       if (this.songNameFilter.length > 0) {
         tmp_songname_filter = {
           "search": this.songNameFilter,
-          "ignore_special_character": this.songNameFilterIgnoreSpecialCaracters,
           "partial_match": this.songNameFilterPartialMatch,
-          "case_sensitive": this.songNameFilterCaseSensitive,
         }
       }
       else {
@@ -239,9 +225,7 @@ export class SearchBarComponent implements OnInit {
         }
         tmp_artist_filter = {
           "search": this.artistFilter,
-          "ignore_special_character": this.artistFilterIgnoreSpecialCaracters,
           "partial_match": this.artistFilterPartialMatch,
-          "case_sensitive": this.artistFilterCaseSensitive,
           "group_granularity": parseInt(this.minimalMembersFilter),
           "max_other_artist": parseInt(this.maximumRandomsFilter),
         }
@@ -253,9 +237,7 @@ export class SearchBarComponent implements OnInit {
       if (this.composerFilter.length > 0) {
         tmp_composer_filter = {
           "search": this.composerFilter,
-          "ignore_special_character": this.composerFilterIgnoreSpecialCaracters,
           "partial_match": this.composerFilterPartialMatch,
-          "case_sensitive": this.composerFilterCaseSensitive,
           "arrangement": this.composerFilterArrangement,
         }
       }
@@ -296,29 +278,21 @@ export class SearchBarComponent implements OnInit {
         body = {
           "anime_search_filter": {
             "search": this.mainFilter,
-            "ignore_special_character": this.animeFilterIgnoreSpecialCaracters,
             "partial_match": this.animeFilterPartialMatch,
-            "case_sensitive": this.animeFilterCaseSensitive,
           },
           "song_name_search_filter": {
             "search": this.mainFilter,
-            "ignore_special_character": this.songNameFilterIgnoreSpecialCaracters,
             "partial_match": this.songNameFilterPartialMatch,
-            "case_sensitive": this.songNameFilterCaseSensitive,
           },
           "artist_search_filter": {
             "search": this.mainFilter,
-            "ignore_special_character": this.artistFilterIgnoreSpecialCaracters,
             "partial_match": this.artistFilterPartialMatch,
-            "case_sensitive": this.artistFilterCaseSensitive,
             "group_granularity": parseInt(this.minimalMembersFilter),
             "max_other_artist": parseInt(this.maximumRandomsFilter),
           },
           "composer_search_filter": {
             "search": this.mainFilter,
-            "ignore_special_character": this.composerFilterIgnoreSpecialCaracters,
             "partial_match": this.composerFilterPartialMatch,
-            "case_sensitive": this.composerFilterCaseSensitive,
             "arrangement": this.composerFilterArrangement,
           },
           "and_logic": tmp_select,

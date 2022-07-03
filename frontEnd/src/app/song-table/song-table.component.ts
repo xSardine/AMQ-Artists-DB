@@ -261,6 +261,9 @@ export class SongTableComponent {
   }
 
   displaySongIngoPopup(song: any) {
+
+    console.log(song)
+
     this.popUpannURL = "https://www.animenewsnetwork.com/encyclopedia/anime.php?id=" + song.annId;
     this.popUpannId = song.annId;
     this.popUpVintage = song.animeVintage;
