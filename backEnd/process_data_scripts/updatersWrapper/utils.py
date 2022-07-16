@@ -33,12 +33,31 @@ def escapeRegExp(str):
     return str
 
 
-def get_regex_search(search, ignore_special_character=True, partial_match=True):
+def apply_regex_rules(search):
+    for rule in ANIME_REGEX_REPLACE_RULES:
+        search = search.replace(rule["input"], rule["replace"])
+    return search
+
+
+def get_regex_search(og_search, partial_match=True, swap_words=True):
+
+    search = og_search.lower()
     search = escapeRegExp(search)
-    if ignore_special_character:
-        for rule in ANIME_REGEX_REPLACE_RULES:
-            search = search.replace(rule["input"], rule["replace"])
-    return "^" + search + "$" if not partial_match else ".*" + search + ".*"
+    search = apply_regex_rules(search)
+    search = "^" + search + "$" if not partial_match else ".*" + search + ".*"
+
+    if swap_words:
+        alt_search = og_search.split(" ")
+        if len(alt_search) == 2:
+            alt_search = " ".join([alt_search[1], alt_search[0]])
+            alt_search = apply_regex_rules(alt_search)
+            alt_search = (
+                "^" + alt_search + "$"
+                if not partial_match
+                else ".*" + alt_search + ".*"
+            )
+            search = f"({search})|({alt_search})"
+    return search
 
 
 def ask_validation(message):
@@ -61,7 +80,9 @@ def ask_integer_input(message, allowed_values):
     return user_input
 
 
-def ask_artist(message, song_database, artist_database, not_exist_ok=False):
+def ask_artist(
+    message, song_database, artist_database, not_exist_ok=False, partial_match=False
+):
 
     user_input = input(message)
     artist_id = get_artist_id(
@@ -69,6 +90,7 @@ def ask_artist(message, song_database, artist_database, not_exist_ok=False):
         artist_database,
         user_input,
         not_exist_ok=not_exist_ok,
+        partial_match=partial_match,
     )
 
     return user_input, artist_id
@@ -102,7 +124,9 @@ def ask_song_ids():
     return song_ids
 
 
-def ask_line_up(message, song_database, artist_database, not_exist_ok=False):
+def ask_line_up(
+    message, song_database, artist_database, not_exist_ok=False, partial_match=False
+):
 
     group_members = []
     while True:
@@ -113,7 +137,11 @@ def ask_line_up(message, song_database, artist_database, not_exist_ok=False):
             break
 
         member_id = get_artist_id(
-            song_database, artist_database, user_input, not_exist_ok=not_exist_ok
+            song_database,
+            artist_database,
+            user_input,
+            not_exist_ok=not_exist_ok,
+            partial_match=partial_match,
         )
 
         if not artist_database[member_id]["members"]:
@@ -156,7 +184,10 @@ def update_line_up(group, line_up_id, song_database, artist_database):
                 print(f"removing {artist_database[member[0]]['names'][0]}")
 
     line_up = ask_line_up(
-        "Select people to add to the line up\n", song_database, artist_database
+        "Select people to add to the line up\n",
+        song_database,
+        artist_database,
+        not_exist_ok=True,
     )
     group_members += line_up
     return group_members
@@ -217,7 +248,7 @@ def get_artist_id(
     not_exist_ok=False,
     vocalist=True,
     composing=False,
-    partial_match=True,
+    partial_match=False,
     exact_match=False,
 ):
 

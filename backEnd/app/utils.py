@@ -1,5 +1,4 @@
 import re
-import sql_calls
 
 ANIME_REGEX_REPLACE_RULES = [
     {"input": "ou", "replace": "(ou|ō|o)"},
@@ -96,7 +95,11 @@ def format_song(artist_database, song):
 
             if artist_database[str(artist_id)]["groups"]:
                 current_artist["groups"] = []
+                added_group = set()
                 for group in artist_database[str(artist_id)]["groups"]:
+                    if group[0] in added_group:
+                        continue
+                    added_group.add(group[0])
                     current_artist["groups"].append(
                         {
                             "id": group[0],
@@ -138,7 +141,6 @@ def format_song(artist_database, song):
         "artists": artists,
         "composers": composers,
         "arrangers": arrangers,
-        # TODO artists_ids/arranger_ids/composer_ids
     }
 
     return songinfo

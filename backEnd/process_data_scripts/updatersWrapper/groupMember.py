@@ -18,6 +18,7 @@ def add_member_group_links(group_id, group_members, line_up_id):
             f"adding link '{group_id},{line_up_id}' to {artist_database[member[0]]['names'][0]}"
         )
         artist_database[member[0]]["groups"].append([group_id, line_up_id])
+        artist_database[member[0]]["vocalist"] = True
 
 
 def remove_member_group_links(group_id, line_up_id):
@@ -294,6 +295,7 @@ def process():
                     "Please type in the members you want to add\n",
                     song_database,
                     artist_database,
+                    not_exist_ok=True,
                 )
 
                 if not group_members:

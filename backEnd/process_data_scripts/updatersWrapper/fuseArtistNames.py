@@ -59,21 +59,62 @@ def process():
         recap_artist += f"{artist}> {artist_database[artist]['names']} - {artist_database[artist]['groups']} - {artist_database[artist]['members']}\n"
 
     center_id = ids[0]
-
-    print()
-    for anime in song_database:
-        for song in anime["songs"]:
-            for artist in song["artist_ids"]:
-                if artist[0] in ids and artist[0] != center_id:
-                    print(f"{song['songName']} {artist} → {[center_id, artist[1]]}")
-                    artist[0] = center_id
-
-    artist_database[center_id] = get_fused_artist(ids)
-
     removed_ids = ids
     removed_ids.pop(ids.index(center_id))
 
+    print()
+
+    # Updating the center_id with the new fused artist
+    artist_database[center_id] = get_fused_artist(ids)
+
+    # Updating link in song_database for artist, composers and arrangers of deleted artists
+    line_up_id = -1
+    if artist_database[center_id]["members"]:
+        line_up_id = 0
+    for anime in song_database:
+        for song in anime["songs"]:
+            for artist in song["artist_ids"]:
+                if artist[0] in removed_ids:
+                    print(
+                        f"Artist {song['songName']} {artist} → {[center_id, line_up_id]}"
+                    )
+                    artist[0] = center_id
+                    artist[1] = line_up_id
+            for composer in song["composer_ids"]:
+                if composer[0] in removed_ids:
+                    print(
+                        f"Composer {song['songName']} {composer} → {[center_id, line_up_id]}"
+                    )
+                    composer[0] = center_id
+                    composer[1] = line_up_id
+            for arranger in song["arranger_ids"]:
+                if arranger[0] in removed_ids:
+                    print(
+                        f"Arranger {song['songName']} {arranger} → {[center_id, line_up_id]}"
+                    )
+                    arranger[0] = center_id
+                    arranger[1] = line_up_id
+
+    # Updating every artist that has a deleted artist as a member or a group to now link to center_id
     for id in removed_ids:
+        for artist_id in artist_database:
+            if artist_id == center_id:
+                continue
+            artist = artist_database[artist_id]
+            for line_up in artist["members"]:
+                for member in line_up:
+                    if member[0] in removed_ids:
+                        print(
+                            f"{artist['names'][0]} Member: {member[0]} {member[1]} → {[center_id, line_up_id]}"
+                        )
+                        member[0] = center_id
+                        member[1] = line_up_id
+            for group in artist["groups"]:
+                if group[0] in removed_ids:
+                    print(
+                        f"{artist['names'][0]} Group: {group[0]} {group[1]} → {[center_id, group[1]]}"
+                    )
+                    group[0] = center_id
         artist_database.pop(id)
 
     print()
@@ -90,3 +131,5 @@ def process():
 
 
 process()
+
+# TODO fusing groups not working
