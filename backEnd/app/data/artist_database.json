@@ -19,9 +19,7 @@
     },
     "3": {
         "names": [
-            "Hironobu Kageyama",
-            "Hironobu Kageyama (JAM Project)",
-            "JAM Project (Hironobu Kageyama)"
+            "Hironobu Kageyama"
         ],
         "groups": [
             [
@@ -297,9 +295,7 @@
     },
     "22": {
         "names": [
-            "Masaaki Endoh",
-            "Masaaki Endoh (JAM Project)",
-            "JAM Project (Masaaki Endoh)"
+            "Masaaki Endoh"
         ],
         "groups": [
             [
@@ -847,8 +843,7 @@
     "65": {
         "names": [
             "Masami Okui",
-            "MASAMI",
-            "Masami Okui (JAM Project)"
+            "MASAMI"
         ],
         "groups": [
             [
@@ -2476,8 +2471,7 @@
     },
     "179": {
         "names": [
-            "Hiroshi Kitadani",
-            "Hiroshi Kitadani (JAM Project)"
+            "Hiroshi Kitadani"
         ],
         "groups": [
             [
@@ -2951,7 +2945,6 @@
     },
     "210": {
         "names": [
-            "Tokiko Katou",
             "Tokiko Kato"
         ],
         "groups": [],
@@ -4034,7 +4027,22 @@
             "ALFEE"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "4530",
+                    -1
+                ],
+                [
+                    "13574",
+                    -1
+                ],
+                [
+                    "13575",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": true
     },
@@ -8169,7 +8177,7 @@
     "614": {
         "names": [
             "Seiko Matsuda",
-            "PawPaw"
+            "Paw Paw"
         ],
         "groups": [],
         "members": [],
@@ -9863,7 +9871,14 @@
             "Jack & Betty"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "13573",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": true
     },
@@ -19656,7 +19671,12 @@
         "names": [
             "Kazuyoshi Saito"
         ],
-        "groups": [],
+        "groups": [
+            [
+                "13580",
+                0
+            ]
+        ],
         "members": [],
         "vocalist": true,
         "composer": true
@@ -20441,9 +20461,7 @@
     },
     "1665": {
         "names": [
-            "Yoshiki Fukuyama",
-            "Yoshiki Fukuyama (JAM Project)",
-            "JAM Project (Yoshiki Fukuyama)"
+            "Yoshiki Fukuyama"
         ],
         "groups": [
             [
@@ -21451,12 +21469,13 @@
     },
     "1752": {
         "names": [
+            "PEGMO",
             "Pegmo"
         ],
         "groups": [],
         "members": [],
         "vocalist": true,
-        "composer": false
+        "composer": true
     },
     "1753": {
         "names": [
@@ -23278,10 +23297,14 @@
     },
     "1900": {
         "names": [
-            "LAZY",
-            "ULTIMATE LAZY for MAZINGER"
+            "LAZY"
         ],
-        "groups": [],
+        "groups": [
+            [
+                "13580",
+                0
+            ]
+        ],
         "members": [
             [
                 [
@@ -29987,7 +30010,18 @@
             "Skirt"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "13576",
+                    -1
+                ],
+                [
+                    "13577",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -33812,160 +33846,6 @@
                     "6568",
                     -1
                 ]
-            ],
-            [
-                [
-                    "2833",
-                    -1
-                ],
-                [
-                    "1837",
-                    -1
-                ],
-                [
-                    "10245",
-                    -1
-                ],
-                [
-                    "1022",
-                    -1
-                ],
-                [
-                    "1383",
-                    -1
-                ],
-                [
-                    "10246",
-                    -1
-                ],
-                [
-                    "4849",
-                    -1
-                ],
-                [
-                    "2841",
-                    -1
-                ],
-                [
-                    "2435",
-                    -1
-                ],
-                [
-                    "2834",
-                    -1
-                ],
-                [
-                    "1328",
-                    -1
-                ],
-                [
-                    "995",
-                    -1
-                ],
-                [
-                    "2836",
-                    -1
-                ],
-                [
-                    "10247",
-                    -1
-                ],
-                [
-                    "2840",
-                    -1
-                ],
-                [
-                    "17",
-                    -1
-                ],
-                [
-                    "814",
-                    -1
-                ],
-                [
-                    "10248",
-                    -1
-                ],
-                [
-                    "2839",
-                    -1
-                ],
-                [
-                    "3466",
-                    -1
-                ],
-                [
-                    "10249",
-                    -1
-                ],
-                [
-                    "105",
-                    -1
-                ],
-                [
-                    "6755",
-                    -1
-                ],
-                [
-                    "2837",
-                    -1
-                ],
-                [
-                    "10250",
-                    -1
-                ],
-                [
-                    "3535",
-                    -1
-                ],
-                [
-                    "8982",
-                    -1
-                ],
-                [
-                    "10251",
-                    -1
-                ],
-                [
-                    "10252",
-                    -1
-                ],
-                [
-                    "10253",
-                    -1
-                ],
-                [
-                    "1491",
-                    -1
-                ],
-                [
-                    "10254",
-                    -1
-                ],
-                [
-                    "2838",
-                    -1
-                ],
-                [
-                    "10255",
-                    -1
-                ],
-                [
-                    "10256",
-                    -1
-                ],
-                [
-                    "10257",
-                    -1
-                ],
-                [
-                    "4003",
-                    -1
-                ],
-                [
-                    "584",
-                    -1
-                ]
             ]
         ],
         "vocalist": true,
@@ -34374,7 +34254,18 @@
             "a\u30fbchi-a\u30fbchi"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "13578",
+                    -1
+                ],
+                [
+                    "13579",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -35424,7 +35315,7 @@
         "members": [
             [
                 [
-                    "9255",
+                    "10220",
                     -1
                 ],
                 [
@@ -39236,6 +39127,10 @@
             ],
             [
                 "8658",
+                0
+            ],
+            [
+                "13572",
                 0
             ]
         ],
@@ -54769,7 +54664,12 @@
         "names": [
             "Toshihiko Takamizawa"
         ],
-        "groups": [],
+        "groups": [
+            [
+                "301",
+                0
+            ]
+        ],
         "members": [],
         "vocalist": true,
         "composer": true
@@ -69690,6 +69590,10 @@
             [
                 "13213",
                 0
+            ],
+            [
+                "13572",
+                0
             ]
         ],
         "members": [],
@@ -78361,7 +78265,22 @@
             "Unknown Number!!!"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "8948",
+                    -1
+                ],
+                [
+                    "13569",
+                    -1
+                ],
+                [
+                    "13568",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -87340,6 +87259,10 @@
             ],
             [
                 "5435",
+                0
+            ],
+            [
+                "13580",
                 0
             ]
         ],
@@ -102107,7 +102030,7 @@
     },
     "7274": {
         "names": [
-            "Kouta Okamoto"
+            "Kota Okamoto"
         ],
         "groups": [
             [
@@ -106151,6 +106074,10 @@
             ],
             [
                 "13203",
+                0
+            ],
+            [
+                "13572",
                 0
             ]
         ],
@@ -111631,6 +111558,10 @@
             [
                 "13202",
                 0
+            ],
+            [
+                "13587",
+                0
             ]
         ],
         "members": [],
@@ -112581,6 +112512,10 @@
             [
                 "8400",
                 0
+            ],
+            [
+                "8400",
+                1
             ]
         ],
         "members": [],
@@ -114384,6 +114319,10 @@
             ],
             [
                 "13202",
+                0
+            ],
+            [
+                "13587",
                 0
             ]
         ],
@@ -120562,6 +120501,44 @@
                 [
                     "8402",
                     -1
+                ],
+                [
+                    "13583",
+                    -1
+                ],
+                [
+                    "13584",
+                    -1
+                ],
+                [
+                    "13585",
+                    -1
+                ],
+                [
+                    "13586",
+                    -1
+                ]
+            ],
+            [
+                [
+                    "8401",
+                    -1
+                ],
+                [
+                    "8403",
+                    -1
+                ],
+                [
+                    "7894",
+                    -1
+                ],
+                [
+                    "8404",
+                    -1
+                ],
+                [
+                    "8402",
+                    -1
                 ]
             ]
         ],
@@ -120576,6 +120553,10 @@
             [
                 "8400",
                 0
+            ],
+            [
+                "8400",
+                1
             ]
         ],
         "members": [],
@@ -120590,6 +120571,10 @@
             [
                 "8400",
                 0
+            ],
+            [
+                "8400",
+                1
             ]
         ],
         "members": [],
@@ -120604,6 +120589,10 @@
             [
                 "8400",
                 0
+            ],
+            [
+                "8400",
+                1
             ]
         ],
         "members": [],
@@ -120618,6 +120607,10 @@
             [
                 "8400",
                 0
+            ],
+            [
+                "8400",
+                1
             ]
         ],
         "members": [],
@@ -124099,7 +124092,7 @@
     },
     "8658": {
         "names": [
-            "765THEATER ALLSTARS"
+            "MILLIONSTARS"
         ],
         "groups": [],
         "members": [
@@ -128280,6 +128273,10 @@
         "groups": [
             [
                 "7821",
+                0
+            ],
+            [
+                "5946",
                 0
             ]
         ],
@@ -133011,20 +133008,6 @@
         "groups": [
             [
                 "73",
-                0
-            ]
-        ],
-        "members": [],
-        "vocalist": true,
-        "composer": false
-    },
-    "9255": {
-        "names": [
-            "Halca (SYN)"
-        ],
-        "groups": [
-            [
-                "2981",
                 0
             ]
         ],
@@ -147945,7 +147928,7 @@
         ],
         "groups": [
             [
-                "7329",
+                "2981",
                 0
             ]
         ],
@@ -161405,15 +161388,6 @@
     "11635": {
         "names": [
             "Hiroshi Terao"
-        ],
-        "groups": [],
-        "members": [],
-        "vocalist": false,
-        "composer": true
-    },
-    "11636": {
-        "names": [
-            "PEGMO"
         ],
         "groups": [],
         "members": [],
@@ -179066,7 +179040,7 @@
     },
     "13530": {
         "names": [
-            "Ryo Mamiya"
+            "Ryou Mamiya"
         ],
         "groups": [
             [
@@ -179601,6 +179575,514 @@
         "groups": [
             [
                 "3193",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "13567": {
+        "names": [
+            "RetBear"
+        ],
+        "groups": [],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "13568": {
+        "names": [
+            "Shuto Miyazaki"
+        ],
+        "groups": [
+            [
+                "5946",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "13569": {
+        "names": [
+            "Ryou Matsuda"
+        ],
+        "groups": [
+            [
+                "5946",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": true
+    },
+    "13570": {
+        "names": [
+            "MIO (MIOSIC)"
+        ],
+        "groups": [],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "13571": {
+        "names": [
+            "Little Black Dress"
+        ],
+        "groups": [],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "13572": {
+        "names": [
+            "Young Waiwai"
+        ],
+        "groups": [],
+        "members": [
+            [
+                [
+                    "3294",
+                    -1
+                ],
+                [
+                    "7519",
+                    -1
+                ],
+                [
+                    "5471",
+                    -1
+                ]
+            ]
+        ],
+        "vocalist": true,
+        "composer": false
+    },
+    "13573": {
+        "names": [
+            "Yumi Nakagawa"
+        ],
+        "groups": [
+            [
+                "765",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "13574": {
+        "names": [
+            "Konosuke Sakazaki"
+        ],
+        "groups": [
+            [
+                "301",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "13575": {
+        "names": [
+            "Masaru Sakurai"
+        ],
+        "groups": [
+            [
+                "301",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "13576": {
+        "names": [
+            "Yuri Horikawa"
+        ],
+        "groups": [
+            [
+                "2510",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "13577": {
+        "names": [
+            "Kimiko Sogawa"
+        ],
+        "groups": [
+            [
+                "2510",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "13578": {
+        "names": [
+            "Hisa Imai"
+        ],
+        "groups": [
+            [
+                "2884",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "13579": {
+        "names": [
+            "Nori Imai"
+        ],
+        "groups": [
+            [
+                "2884",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "13580": {
+        "names": [
+            "ULTIMATE LAZY for MAZINGER"
+        ],
+        "groups": [],
+        "members": [
+            [
+                [
+                    "1900",
+                    0
+                ],
+                [
+                    "575",
+                    0
+                ],
+                [
+                    "6415",
+                    -1
+                ],
+                [
+                    "1592",
+                    -1
+                ]
+            ]
+        ],
+        "vocalist": true,
+        "composer": false
+    },
+    "13581": {
+        "names": [
+            "Almost The Entire Fucking Cast"
+        ],
+        "groups": [],
+        "members": [
+            [
+                [
+                    "2833",
+                    -1
+                ],
+                [
+                    "1837",
+                    -1
+                ],
+                [
+                    "10245",
+                    -1
+                ],
+                [
+                    "1022",
+                    -1
+                ],
+                [
+                    "1383",
+                    -1
+                ],
+                [
+                    "10246",
+                    -1
+                ],
+                [
+                    "4849",
+                    -1
+                ],
+                [
+                    "2841",
+                    -1
+                ],
+                [
+                    "2435",
+                    -1
+                ],
+                [
+                    "2834",
+                    -1
+                ],
+                [
+                    "1328",
+                    -1
+                ],
+                [
+                    "995",
+                    -1
+                ],
+                [
+                    "2836",
+                    -1
+                ],
+                [
+                    "10247",
+                    -1
+                ],
+                [
+                    "2840",
+                    -1
+                ],
+                [
+                    "17",
+                    -1
+                ],
+                [
+                    "814",
+                    -1
+                ],
+                [
+                    "10248",
+                    -1
+                ],
+                [
+                    "2839",
+                    -1
+                ],
+                [
+                    "3466",
+                    -1
+                ],
+                [
+                    "10249",
+                    -1
+                ],
+                [
+                    "105",
+                    -1
+                ],
+                [
+                    "6755",
+                    -1
+                ],
+                [
+                    "2837",
+                    -1
+                ],
+                [
+                    "10250",
+                    -1
+                ],
+                [
+                    "3535",
+                    -1
+                ],
+                [
+                    "8982",
+                    -1
+                ],
+                [
+                    "10251",
+                    -1
+                ],
+                [
+                    "10252",
+                    -1
+                ],
+                [
+                    "10253",
+                    -1
+                ],
+                [
+                    "1491",
+                    -1
+                ],
+                [
+                    "10254",
+                    -1
+                ],
+                [
+                    "2838",
+                    -1
+                ],
+                [
+                    "10255",
+                    -1
+                ],
+                [
+                    "10256",
+                    -1
+                ],
+                [
+                    "10257",
+                    -1
+                ],
+                [
+                    "4003",
+                    -1
+                ],
+                [
+                    "584",
+                    -1
+                ]
+            ]
+        ],
+        "vocalist": true,
+        "composer": false
+    },
+    "13582": {
+        "names": [
+            "The Entire Fucking Cast"
+        ],
+        "groups": [],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "13583": {
+        "names": [
+            "Nozomi Suzuhara"
+        ],
+        "groups": [
+            [
+                "8400",
+                1
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "13584": {
+        "names": [
+            "Akane Yabushima"
+        ],
+        "groups": [
+            [
+                "8400",
+                1
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "13585": {
+        "names": [
+            "Wakana Okuma"
+        ],
+        "groups": [
+            [
+                "8400",
+                1
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "13586": {
+        "names": [
+            "Aya Emori"
+        ],
+        "groups": [
+            [
+                "8400",
+                1
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "13587": {
+        "names": [
+            "TINGS"
+        ],
+        "groups": [],
+        "members": [
+            [
+                [
+                    "7835",
+                    -1
+                ],
+                [
+                    "8003",
+                    -1
+                ],
+                [
+                    "13588",
+                    -1
+                ],
+                [
+                    "13589",
+                    -1
+                ],
+                [
+                    "13590",
+                    -1
+                ]
+            ]
+        ],
+        "vocalist": true,
+        "composer": false
+    },
+    "13588": {
+        "names": [
+            "Rika Nakagawa"
+        ],
+        "groups": [
+            [
+                "13587",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "13589": {
+        "names": [
+            "Moeko Kanisawa"
+        ],
+        "groups": [
+            [
+                "13587",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "13590": {
+        "names": [
+            "Rimo Hasegawa"
+        ],
+        "groups": [
+            [
+                "13587",
                 0
             ]
         ],
