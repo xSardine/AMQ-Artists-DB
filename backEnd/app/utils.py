@@ -125,7 +125,7 @@ def format_song(artist_database, song):
 
     songinfo = {
         "annId": song[0],
-        "annSongId": song[9],
+        "annSongId": song[8],
         "animeExpandName": song[1],
         "animeJPName": song[2],
         "animeENName": song[3],
