@@ -61,16 +61,16 @@ def get_regex_search(og_search, partial_match=True, swap_words=False):
 
 def format_song(artist_database, song):
 
-    if song[8] == 1:
-        type = "Opening " + str(song[9])
-    elif song[8] == 2:
-        type = "Ending " + str(song[9])
+    if song[9] == 1:
+        type = "Opening " + str(song[10])
+    elif song[9] == 2:
+        type = "Ending " + str(song[10])
     else:
         type = "Insert Song"
 
     artists = []
-    if song[12]:
-        for artist_id, line_up in zip(song[12].split(","), song[13].split(",")):
+    if song[13]:
+        for artist_id, line_up in zip(song[13].split(","), song[14].split(",")):
 
             line_up = int(line_up)
 
@@ -110,34 +110,34 @@ def format_song(artist_database, song):
             artists.append(current_artist)
 
     composers = []
-    if song[14]:
-        for composer_id in song[14].split(","):
+    if song[15]:
+        for composer_id in song[15].split(","):
             composers.append(
                 {"id": composer_id, "names": artist_database[str(composer_id)]["names"]}
             )
 
     arrangers = []
-    if song[15]:
-        for arranger_id in song[15].split(","):
+    if song[16]:
+        for arranger_id in song[16].split(","):
             arrangers.append(
                 {"id": arranger_id, "names": artist_database[str(arranger_id)]["names"]}
             )
 
     songinfo = {
         "annId": song[0],
-        "annSongId": song[7],
+        "annSongId": song[9],
         "animeExpandName": song[1],
         "animeJPName": song[2],
         "animeENName": song[3],
-        "animeVintage": song[4],
-        "animeType": song[5],
+        "animeVintage": song[5],
+        "animeType": song[6],
         "songType": type,
-        "songName": song[10],
-        "songArtist": song[11],
-        "songDifficulty": song[16],
-        "HQ": song[17],
-        "MQ": song[18],
-        "audio": song[19],
+        "songName": song[11],
+        "songArtist": song[12],
+        "songDifficulty": song[17],
+        "HQ": song[18],
+        "MQ": song[19],
+        "audio": song[20],
         "artists": artists,
         "composers": composers,
         "arrangers": arrangers,

@@ -28,12 +28,14 @@ DROP TABLE IF EXISTS link_song_artist;
 DROP TABLE IF EXISTS link_song_composer;
 DROP TABLE IF EXISTS link_anime_genre;
 DROP TABLE IF EXISTS link_anime_tag;
+DROP TABLE IF EXISTS link_anime_altNames;
 DROP TABLE IF EXISTS songs;
 DROP VIEW IF EXISTS artistsNames;
 DROP VIEW IF EXISTS artistsMembers;
 DROP VIEW IF EXISTS artistsLineUps;
 DROP VIEW IF EXISTS artistsGroups;
 DROP VIEW IF EXISTS artistsFull;
+DROP VIEW IF EXISTS animesFull;
 DROP VIEW IF EXISTS songsAnimes;
 DROP VIEW IF EXISTS songsArtists;
 DROP VIEW IF EXISTS songsComposers;
@@ -157,6 +159,13 @@ create TABLE link_anime_tag (
     PRIMARY KEY (annId, tag)
 );
 
+create TABLE link_anime_altNames (
+    "annId" INTEGER NOT NULL,
+    "name" VARCHAR(255),
+    FOREIGN KEY ("annId")
+        REFERENCES animes ("annId"),
+    PRIMARY KEY (annId, name)
+);
 
 CREATE VIEW artistsNames AS 
 SELECT orderedNames.inserted_order, artists.id, group_concat(orderedNames.name, "\$") AS names, artists.vocalist, artists.composer
@@ -190,11 +199,18 @@ FROM artistsNames
 INNER JOIN artistsMembers ON artistsNames.id = artistsMembers.id
 INNER JOIN artistsGroups ON artistsNames.id = artistsGroups.id;
 
-CREATE VIEW songsAnimes AS
-SELECT animes.annId, animes.animeExpandName, animes.animeJPName, animes.animeENName, animes.animeVintage, animes.animeType, 
-songs.id as songId, songs.annSongId, songs.songType, songs.songNumber, songs.songName, songs.songArtist, songs.songDifficulty, songs.HQ, songs.MQ, songs.audio
+CREATE VIEW animesFull AS
+SELECT animes.annId, animes.animeExpandName, animes.animeJPName, animes.animeENName, group_concat(link_anime_altNames.name, "\$") AS altNames, animes.animeType, animes.animeVintage
 FROM animes
-LEFT JOIN songs ON animes.annId = songs.annId;
+LEFT JOIN link_anime_altNames
+ON animes.annId = link_anime_altNames.annId
+GROUP BY animes.annId;
+
+CREATE VIEW songsAnimes AS
+SELECT animesFull.annId, animesFull.animeExpandName, animesFull.animeJPName, animesFull.animeENName, animesFull.altNames, animesFull.animeVintage, animesFull.animeType, 
+songs.id as songId, songs.annSongId, songs.songType, songs.songNumber, songs.songName, songs.songArtist, songs.songDifficulty, songs.HQ, songs.MQ, songs.audio
+FROM animesFull
+LEFT JOIN songs ON animesFull.annId = songs.annId;
 
 CREATE VIEW songsArtists AS
 SELECT songs.id as songId, group_concat(link_song_artist.artist_id) AS artists, group_concat(link_song_artist.artist_line_up_id) AS artists_line_up
@@ -215,7 +231,7 @@ LEFT JOIN link_song_arranger ON songs.id = link_song_arranger.song_id
 GROUP BY songs.id;
 
 CREATE VIEW songsFull AS
-SELECT songsAnimes.annId, songsAnimes.animeExpandName, songsAnimes.animeJPName, songsAnimes.animeENName, songsAnimes.animeVintage, songsAnimes.animeType, 
+SELECT songsAnimes.annId, songsAnimes.animeExpandName, songsAnimes.animeJPName, songsAnimes.animeENName, songsAnimes.altNames, songsAnimes.animeVintage, songsAnimes.animeType, 
 songsAnimes.songId, songsAnimes.annSongId, songsAnimes.songType, songsAnimes.songNumber, songsAnimes.songName, songsAnimes.songArtist, songsArtists.artists, songsArtists.artists_line_up, songsComposers.composers, songsArrangers.arrangers, songsAnimes.songDifficulty, songsAnimes.HQ, songsAnimes.MQ, songsAnimes.audio
 FROM songsAnimes
 INNER JOIN songsArtists ON songsAnimes.songId = songsArtists.songId
@@ -446,6 +462,19 @@ def link_anime_genre(cursor, annId, genre):
     run_sql_command(cursor, sql_link_anime_genre, (annId, genre))
 
 
+def link_anime_altNames(cursor, annId, altName):
+
+    """
+    Add a new link between an anime and an alternative name
+    """
+
+    sql_link_anime_altName = (
+        "INSERT INTO link_anime_altNames(annId, name) VALUES(?, ?);"
+    )
+
+    run_sql_command(cursor, sql_link_anime_altName, (annId, altName))
+
+
 try:
     sqliteConnection = sqlite3.connect(database)
     cursor = sqliteConnection.cursor()
@@ -502,6 +531,10 @@ for anime in song_database:
     if "genres" in anime and anime["genres"]:
         for genre in anime["genres"]:
             link_anime_genre(cursor, anime["annId"], genre)
+
+    if "altNames" in anime and anime["altNames"]:
+        for altName in anime["altNames"]:
+            link_anime_altNames(cursor, anime["annId"], altName)
 
     for song in anime["songs"]:
 

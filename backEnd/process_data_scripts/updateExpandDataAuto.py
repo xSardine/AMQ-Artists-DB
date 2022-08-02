@@ -238,8 +238,8 @@ def get_artist_id_list(song_database, artist_database, artist_list):
 
 def update_artist_names(song_database, artist_database, old_name, new_name):
 
-    old_names = sorted(split_artist(old_name))
-    new_names = sorted(split_artist(new_name))
+    old_names = split_artist(old_name)
+    new_names = split_artist(new_name)
 
     if len(old_names) != len(new_names):
         add_log(f"<TODO IMPORTANT> {old_name} → {new_name}  CANT PROCESS\n")
@@ -364,7 +364,7 @@ def update_data_with_expand(song_database, artist_database, expand_data):
                 new_song = format_new_song(song_database, artist_database, update_song)
                 source_anime["songs"].append(new_song)
                 if similar_song_exist(source_anime, new_song):
-                    add_log(f"\n\n<TODO> {new_song}\n\n")
+                    add_log(f"\n<TODO> {new_song}\n\n")
                 else:
                     add_log(f"{new_song}\n")
                 break
@@ -383,6 +383,7 @@ def update_data_with_expand(song_database, artist_database, expand_data):
                         "annId": update_anime["annId"],
                         "animeExpandName": update_anime["name"],
                         "songs": songs,
+                        "alt_names": [],
                     }
                 )
 

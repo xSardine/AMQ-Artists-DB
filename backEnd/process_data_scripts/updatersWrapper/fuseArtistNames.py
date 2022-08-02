@@ -65,7 +65,7 @@ def process():
     print()
 
     # Updating the center_id with the new fused artist
-    artist_database[center_id] = get_fused_artist(ids)
+    artist_database[center_id] = get_fused_artist([center_id] + ids)
 
     # Updating link in song_database for artist, composers and arrangers of deleted artists
     line_up_id = -1

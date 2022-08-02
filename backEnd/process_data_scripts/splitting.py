@@ -72,7 +72,6 @@ splitting_exception_list = [
         ("Eri Itou", "Mori no Ki Jidou Gasshou-dan"),
     ),
     ("Naomi Tamura to Himawari Gasshou-dan", ("Naomi Tamura", "Himawari Gasshou-dan")),
-    ("Ushio to Ichiro", ("Ushio", "Ichiro")),
     ("Osamu Yamada to Hello Nights", ("Osamu Yamada", "Hello Nights")),
     (
         "LaSalle Ishii to Kochikame Win Gashou-dan",
@@ -200,6 +199,7 @@ splitting_exception_list = [
     ("The S・h・e", ("The S・h・e",)),
     ("Teikoku Kageki-dan・Hana-gumi", ("Teikoku Kageki-dan・Hana-gumi",)),
     # &
+    ("Sachi & Juri", ("Sachi & Juri",)),
     ("Amane + Beat Mario (COOL&CREATE)", ("Amane", "Beat Mario (COOL&CREATE)")),
     ("Zinee&issei", ("Zinee&issei",)),
     ("Hironobu Kageyama & BROADWAY", ("Hironobu Kageyama & BROADWAY",)),
@@ -285,6 +285,7 @@ splitting_exception_list = [
     ("Tim Timebomb and the Interrupters", ("Tim Timebomb and the Interrupters",)),
     ("Yuusuke (ex. HIGH and MIGHTY COLOR)", ("Yuusuke (ex. HIGH and MIGHTY COLOR)",)),
     # x
+    ("Chun×4", ("Chun×4",)),
     ("OxT", ("OxT",)),
     ("Clover×Clover", ("Clover×Clover",)),
     ("LIP×LIP", ("LIP×LIP",)),

@@ -142,7 +142,12 @@ def ask_line_up(
             user_input,
             not_exist_ok=not_exist_ok,
             partial_match=partial_match,
+            excluded_ids=[mid[0] for mid in group_members],
         )
+
+        if member_id in [mid[0] for mid in group_members]:
+            print("You can't have the same artist twice in the line up !!")
+            exit()
 
         if not artist_database[member_id]["members"]:
             group_members.append([member_id, -1])
@@ -250,6 +255,7 @@ def get_artist_id(
     composing=False,
     partial_match=False,
     exact_match=False,
+    excluded_ids=[],
 ):
 
     ids = []
@@ -294,6 +300,11 @@ def get_artist_id(
         new_id = add_new_artist_to_DB(artist_database, artist, vocalist, composing)
         print(f"COULDN'T FIND {artist}, adding {new_id}")
         return new_id
+
+    if len(ids) > 1:
+        for i, id in enumerate(ids):
+            if id in excluded_ids:
+                ids.pop(i)
 
     # if more than one ID, ask user to desambiguate
     if len(ids) > 1:

@@ -12,6 +12,7 @@ Here are the dependencies for each scripts:
 - For `create_sheet_from_json.py`:
 
 Type these in your terminal:
+
 ```
 python -m pip install openpyxl
 python -m pip install youtube-search-python
@@ -25,7 +26,6 @@ You need to install ffmpeg: <https://www.ffmpeg.org/>, and set it up as an envir
 
 To download these scripts, you need to click on the script, then `raw` on the top right, and then you can right click and `save as...`.
 Place them in a folder and then place any `.json` file you downloaded in that same folder.
-
 
 ## 1.3 - Configuring the scripts
 

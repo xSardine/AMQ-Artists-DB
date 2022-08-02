@@ -23,7 +23,7 @@ def extract_song_database():
     song_database = {}
     for song in run_sql_command(cursor, command):
 
-        song_database[song[6]] = song
+        song_database[song[7]] = song
 
     return song_database
 
@@ -49,8 +49,9 @@ def extract_anime_database():
                 "animeExpandName": song[1],
                 "animeJPName": song[2],
                 "animeENName": song[3],
-                "animeVintage": song[4],
-                "animeType": song[5],
+                "animeAltNames": song[4],
+                "animeVintage": song[5],
+                "animeType": song[6],
                 "songs": [],
             }
         anime_database[song[0]]["songs"].append(song)
