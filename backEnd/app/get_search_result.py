@@ -340,7 +340,7 @@ def get_search_results(
     ):
 
         # Links filter not available during ranked
-        if not is_ranked:
+        if False:
             songs = sql_calls.get_song_list_from_links(
                 cursor, anime_search_filters.search
             )
