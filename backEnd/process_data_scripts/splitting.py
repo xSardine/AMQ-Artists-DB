@@ -15,7 +15,6 @@ splitting_exception_list = [
         ("You & Explosion Band", "Lyn Inaizumi"),
     ),
     ("You & Explosion Band featuring Lileth", ("You & Explosion Band", "Lileth")),
-    ("hitomi & Yukiji", ("hitomi", "Yukiji")),
     ("ZONE&Run Time All Stars", ("ZONE", "Run Time All Stars")),
     (
         "VOICE by Iyami feat. Kenichi Suzumura, Takahiro Sakurai, Yuichi Nakamura, Hiroshi Kamiya, Jun Fukuyama, Daisuke Ono, Miyu Irino",
@@ -45,6 +44,13 @@ splitting_exception_list = [
     ("VOICE by Iyami feat. Osomatsu-san All Stars", ("Osomatsu-san All Stars",)),
     ## Force splitting (splitters that are not automatically recognized)
     # to
+    (
+        "Dreaming to Kyouryuu no Kuni no Nakama-tachi",
+        (
+            "Dreaming",
+            "Kyouryuu no Kuni no Nakama-tachi",
+        ),
+    ),
     ("Me to Humbert Humbert", ("Me", "Humbert Humbert")),
     ("Unsho Ishizuka to Pokemon Kids", ("Unsho Ishizuka", "Pokemon Kids")),
     (
@@ -56,7 +62,7 @@ splitting_exception_list = [
         ("Sogeking", "Shounen Shoujo Gasshou-dan"),
     ),
     (
-        "Pupa Mucha to Muchachiita to Etsuko Kozakura to Mayuko Omimura to Akiko Suzuki to Rie Kugimiya",
+        "Pupa Mucho to Muchachiita to Etsuko Kozakura to Mayuko Omimura to Yukiji to Rie Kugimiya",
         (
             "Pupa Mucha",
             "Muchachiita",
@@ -154,6 +160,7 @@ splitting_exception_list = [
     ("(K)NoW_NAME:AIJ", ("(K)NoW_NAME", "AIJ")),
     ("(K)NoW_NAME:eNu", ("(K)NoW_NAME", "eNu")),
     # other
+    ("Big Gadgets ft. Aya Kamiki w TAKUYA", ("Big Gadgets", "Aya Kamiki", "TAKUYA")),
     ("angela Presents/Shoko Nakagawa", ("angela", "Shoko Nakagawa")),
     ("Dimitri From Paris Voice Chiwa Saito", ("Dimitri From Paris", "Chiwa Saito")),
     (
@@ -222,7 +229,7 @@ splitting_exception_list = [
         'SOIL&"PIMP"SESSIONS feat. Maaya Sakamoto',
         ('SOIL&"PIMP"SESSIONS', "Maaya Sakamoto"),
     ),
-    ('SOIL & "PIMP" SESSIONS', ('SOIL & "PIMP" SESSIONS',)),
+    ('SOIL&"PIMP"SESSIONS', ('SOIL&"PIMP"SESSIONS',)),
     ("Kaako & Papa", ("Kaako & Papa",)),
     ("Adiamond -Amy & Bibian-", ("Adiamond -Amy & Bibian-",)),
     ("MAYUKO & Luminous", ("MAYUKO & Luminous",)),

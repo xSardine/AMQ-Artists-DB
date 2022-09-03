@@ -9,7 +9,7 @@ ANIME_REGEX_REPLACE_RULES = [
     {"input": "uu", "replace": "(uu|u|ū)"},
     {"input": "u", "replace": "([uūûúùüǖ]|uu)"},
     {"input": "aa", "replace": "(aa|a)"},
-    {"input": "a", "replace": "([aä@âàáạåæā∀]|aa)"},
+    {"input": "a", "replace": "([aä@âàáạåæā∀Λ]|aa)"},
     {"input": "c", "replace": "[cč]"},
     {"input": "e", "replace": "[eéêёëèæē]"},
     {"input": "'", "replace": "['’]"},
