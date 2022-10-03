@@ -52,34 +52,6 @@ def check_validity(song_database, splitting_exception):
     return is_valid
 
 
-# Call Listener to get expand data and store it in a new element that selenium is waiting for
-getExpandScript = """
-function getPromiseExpand() {
-    return new Promise((resolve) => {
-        new Listener("expandLibrary questions", (payload) => {
-            hiddenInput = document.createElement("div");
-            hiddenInput.setAttribute("type", "hidden");
-            hiddenInput.setAttribute("id", "hiddenExpand")
-            hiddenInput.variable = payload
-            document.getElementById("mainPage").appendChild(hiddenInput)
-            resolve();
-        }).bindListener()
-        socket.sendCommand({
-            type: "library",
-            command: "expandLibrary questions"
-        })
-    })
-}
-
-async function waitForExpandLoaded() {
-    await getPromiseExpand()
-}
-waitForExpandLoaded().then((result) => {
-    console.log("Promise done adding new element")
-})
-"""
-
-
 def help():
     print(
         """Usage: python updateExpandDataAuto.py [-h|--update]
@@ -122,6 +94,34 @@ def add_log(log):
         file_object.write(log)
 
 
+# Call Listener to get expand data and store it in a new element that selenium is waiting for
+getExpandScript = """
+function getPromiseExpand() {
+    return new Promise((resolve) => {
+        new Listener("expandLibrary questions", (payload) => {
+            hiddenInput = document.createElement("div");
+            hiddenInput.setAttribute("type", "hidden");
+            hiddenInput.setAttribute("id", "hiddenExpand")
+            hiddenInput.variable = payload
+            document.getElementById("mainPage").appendChild(hiddenInput)
+            resolve();
+        }).bindListener()
+        socket.sendCommand({
+            type: "library",
+            command: "expandLibrary questions"
+        })
+    })
+}
+
+async function waitForExpandLoaded() {
+    await getPromiseExpand()
+}
+waitForExpandLoaded().then((result) => {
+    console.log("Promise done adding new element")
+})
+"""
+
+
 def selenium_retrieve_data(amq_url, amq_username, amq_password):
     # create driver and open amq
     option = webdriver.ChromeOptions()
@@ -138,7 +138,7 @@ def selenium_retrieve_data(amq_url, amq_username, amq_password):
         driver.find_element(By.ID, "loginButton").click()
 
         # Wait few seconds to make sure page is loaded (need to find a better way)
-        time.sleep(7)
+        time.sleep(2)
         add_log("Connected to AMQ")
 
     finally:
@@ -403,7 +403,7 @@ def process(update):
 
     is_valid = check_validity(song_database, splitting_exception)
     if not is_valid:
-        print("WARNING - ERRORS IN THE CONFIG")
+        print("WARNING - ERRORS IN THE DATABASE")
     print()
 
     if update:

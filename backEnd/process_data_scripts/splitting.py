@@ -1,6 +1,6 @@
 # Splitting Config
 
-splitters = " VS | vs | & | , |, | featuring\. | Featuring\. | featuring | Featuring | feat\. | feat\.|feat\. |feat\.| ft\. | ft\.|ft\. |ft\.| x | × | with |＆| / |/| meets | adding | and "
+splitters = " VS | vs | & | , |, | featuring\. | Featuring\. | featuring | Featuring | feat\. | feat\.|feat\. |feat\.| FEAT. | ft\. | ft\.|ft\. |ft\.| x | × | with |＆| / |/| meets | adding | and "
 secondary_splitters = "・|& | &|&| ,|,| ×|× |×| \+ |\+"
 
 splitting_exception_list = [
@@ -309,6 +309,7 @@ splitting_exception_list = [
     ("U×Mishi", ("U×Mishi",)),
     ("kanon x kanon", ("kanon x kanon",)),
     # with
+    ("yuyu with eriri", ("yuyu with eriri",)),
     ("Petit Rabbit's with beans", ("Petit Rabbit's with beans",)),
     ("SERENON with K", ("SERENON with K",)),
     ("Cotori with Stitchbird", ("Cotori with Stitchbird",)),
@@ -380,6 +381,7 @@ splitting_exception_list = [
     ("sophie+", ("sophie+",)),
     ("Megami-ryousei+α", ("Megami-ryousei+α",)),
     # other
+    ("Shou/Ouji", ("Shou/Ouji",)),
     ("NAMI with Shige×2＆S/N", ("NAMI", "Shige×2", "S/N")),
     ("r.o.r/s", ("r.o.r/s",)),
     ("can/goo", ("can/goo",)),
