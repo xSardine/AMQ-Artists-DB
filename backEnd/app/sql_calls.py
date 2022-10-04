@@ -220,9 +220,9 @@ def get_song_list_from_song_name(cursor, regex, authorized_types=[1, 2, 3]):
 
     start = timeit.default_timer()
     # TODO Indexes on lower ?
-    get_animeID_from_animeName = f"SELECT * from songsFull WHERE songType IN ({','.join('?'*len(authorized_types))}) AND lower(songName) REGEXP ? LIMIT 300"
+    get_animeID_from_songName = f"SELECT * from songsFull WHERE songType IN ({','.join('?'*len(authorized_types))}) AND lower(songName) REGEXP ? LIMIT 300"
     results = run_sql_command(
-        cursor, get_animeID_from_animeName, authorized_types + [regex]
+        cursor, get_animeID_from_songName, authorized_types + [regex]
     )
     print()
     print(len(results))

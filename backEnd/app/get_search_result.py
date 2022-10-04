@@ -443,12 +443,12 @@ def get_search_results(
             or composer_search_filters.search != artist_search_filters.search
         ):
 
-            artist_search = utils.get_regex_search(
+            composer_search = utils.get_regex_search(
                 composer_search_filters.search,
                 composer_search_filters.partial_match,
                 swap_words=True,
             )
-            artist_ids = sql_calls.get_artist_ids_from_regex(cursor, artist_search)
+            artist_ids = sql_calls.get_artist_ids_from_regex(cursor, composer_search)
 
         if artist_ids:
 

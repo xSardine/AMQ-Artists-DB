@@ -1,6 +1,10 @@
 import re
 
 ANIME_REGEX_REPLACE_RULES = [
+    {"input": "ź", "replace": "[źŹ]"},
+    {"input": "ļ", "replace": "[ļĻ]"},
+    {"input": "l", "replace": "[l˥ļĻ]"},
+    {"input": "z", "replace": "[zźŹ]"},
     {"input": "ou", "replace": "(ou|ō|o)"},
     {"input": "oo", "replace": "(oo|ō|o)"},
     {"input": "oh", "replace": "(oh|ō|o)"},
@@ -23,7 +27,6 @@ ANIME_REGEX_REPLACE_RULES = [
     {"input": "b", "replace": "[bßβ]"},
     {"input": "r", "replace": "[rЯ]"},
     {"input": "s", "replace": "[sς]"},
-    {"input": "l", "replace": "[l˥]"},
 ]
 
 
