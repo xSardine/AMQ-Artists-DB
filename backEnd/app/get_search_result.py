@@ -71,8 +71,8 @@ def is_ranked_time():
         )
         # CET
         or (
-            (date.hour == 18 and date.minute >= 30)
-            or (date.hour == 19 and date.minute <= 30)
+            (date.hour == 19 and date.minute >= 30)
+            or (date.hour == 20 and date.minute <= 30)
         )
     ):
         return True
