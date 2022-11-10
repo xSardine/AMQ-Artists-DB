@@ -1254,7 +1254,6 @@
     },
     "95": {
         "names": [
-            "Yuko Mizutani",
             "Yuuko Mizutani"
         ],
         "groups": [
@@ -2527,6 +2526,10 @@
             [
                 "7495",
                 0
+            ],
+            [
+                "7266",
+                0
             ]
         ],
         "members": [],
@@ -2934,7 +2937,14 @@
             "Virgin VS"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "751",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": true
     },
@@ -3134,7 +3144,14 @@
             "X JAPAN"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14144",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": true
     },
@@ -9811,7 +9828,12 @@
         "names": [
             "Morio Agata"
         ],
-        "groups": [],
+        "groups": [
+            [
+                "207",
+                0
+            ]
+        ],
         "members": [],
         "vocalist": true,
         "composer": true
@@ -15927,7 +15949,14 @@
             "Mr.Children"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "11357",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": true
     },
@@ -19653,6 +19682,10 @@
             ],
             [
                 "6409",
+                0
+            ],
+            [
+                "7266",
                 0
             ]
         ],
@@ -28241,7 +28274,6 @@
     },
     "2323": {
         "names": [
-            "Kabuki Rocks",
             "Kabukibu Rocks"
         ],
         "groups": [],
@@ -28276,7 +28308,12 @@
         "names": [
             "Ichiban Ujigami"
         ],
-        "groups": [],
+        "groups": [
+            [
+                "14192",
+                0
+            ]
+        ],
         "members": [],
         "vocalist": true,
         "composer": false
@@ -40988,7 +41025,14 @@
             "UVERworld"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14147",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": true
     },
@@ -41044,7 +41088,26 @@
             "SCANDAL"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14119",
+                    -1
+                ],
+                [
+                    "14120",
+                    -1
+                ],
+                [
+                    "14121",
+                    -1
+                ],
+                [
+                    "14122",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -44180,15 +44243,6 @@
     "3661": {
         "names": [
             "Harumi Sugiyama"
-        ],
-        "groups": [],
-        "members": [],
-        "vocalist": true,
-        "composer": false
-    },
-    "3662": {
-        "names": [
-            "F.E.L."
         ],
         "groups": [],
         "members": [],
@@ -47466,7 +47520,7 @@
     },
     "3905": {
         "names": [
-            "THE RODEO CARBURETTOR"
+            "Rodeo Carburettor"
         ],
         "groups": [],
         "members": [],
@@ -47478,9 +47532,20 @@
             "POSSIBILITY"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14102",
+                    -1
+                ],
+                [
+                    "14103",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
-        "composer": false
+        "composer": true
     },
     "3907": {
         "names": [
@@ -50520,12 +50585,13 @@
     },
     "4153": {
         "names": [
-            "rockwell"
+            "rockwell",
+            "Rockwell"
         ],
         "groups": [],
         "members": [],
         "vocalist": true,
-        "composer": false
+        "composer": true
     },
     "4154": {
         "names": [
@@ -55498,6 +55564,10 @@
             [
                 "6409",
                 1
+            ],
+            [
+                "7266",
+                0
             ]
         ],
         "members": [],
@@ -56599,7 +56669,8 @@
     },
     "4624": {
         "names": [
-            "KOCHO"
+            "KOCHO",
+            "Marie Kocho"
         ],
         "groups": [],
         "members": [],
@@ -56712,7 +56783,14 @@
             "vistlip"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14179",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": true
     },
@@ -61752,9 +61830,15 @@
     },
     "4990": {
         "names": [
+            "Yoshie Nakano",
             "Yoshie Nakano (EGO-WRAPPIN')"
         ],
-        "groups": [],
+        "groups": [
+            [
+                "7659",
+                0
+            ]
+        ],
         "members": [],
         "vocalist": true,
         "composer": false
@@ -68703,15 +68787,6 @@
         "vocalist": true,
         "composer": false
     },
-    "5375": {
-        "names": [
-            "Yoshie Nakano"
-        ],
-        "groups": [],
-        "members": [],
-        "vocalist": true,
-        "composer": false
-    },
     "5376": {
         "names": [
             "Ushiro kara Haiyori-tai"
@@ -71720,7 +71795,14 @@
             "Official HIGE DANdism"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14123",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -74704,7 +74786,14 @@
             "cinema staff"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14129",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -82227,6 +82316,10 @@
             [
                 "6409",
                 1
+            ],
+            [
+                "7266",
+                0
             ]
         ],
         "members": [],
@@ -82728,7 +82821,14 @@
             "wacci"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14157",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -88791,6 +88891,10 @@
             [
                 "8380",
                 0
+            ],
+            [
+                "7266",
+                0
             ]
         ],
         "members": [],
@@ -90140,7 +90244,14 @@
             "Goodbye holiday"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14105",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -92145,7 +92256,8 @@
     },
     "6585": {
         "names": [
-            "Yasuaki Takumi"
+            "Yasuaki Takumi",
+            "Se\u00f1or Anamii"
         ],
         "groups": [],
         "members": [],
@@ -96027,6 +96139,10 @@
             ],
             [
                 "13937",
+                0
+            ],
+            [
+                "7266",
                 0
             ]
         ],
@@ -99955,15 +100071,6 @@
         "vocalist": true,
         "composer": true
     },
-    "7040": {
-        "names": [
-            "Se\u00f1or Anamii"
-        ],
-        "groups": [],
-        "members": [],
-        "vocalist": true,
-        "composer": false
-    },
     "7041": {
         "names": [
             "SoundOrion"
@@ -100108,7 +100215,14 @@
             "Bentham"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14104",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -100301,7 +100415,22 @@
             "SECRET GUYZ"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14106",
+                    -1
+                ],
+                [
+                    "14107",
+                    -1
+                ],
+                [
+                    "14108",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -100504,7 +100633,7 @@
         "members": [
             [
                 [
-                    "8182",
+                    "8820",
                     -1
                 ]
             ]
@@ -100688,7 +100817,14 @@
             "MONO NO AWARE"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14109",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -100697,7 +100833,14 @@
             "Panorama Panama Town"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14110",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -101749,7 +101892,14 @@
             "ORANGE POST REASON"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14111",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -102150,7 +102300,14 @@
             "Qaijff"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14112",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -102222,7 +102379,14 @@
             "Kankaku Piero"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14113",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -102839,7 +103003,14 @@
             "Cidergirl"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14158",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -102948,7 +103119,18 @@
             "C&K"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14114",
+                    -1
+                ],
+                [
+                    "14115",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -104095,7 +104277,34 @@
             "Kaku-gun Soudaishou"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "6408",
+                    -1
+                ],
+                [
+                    "4541",
+                    -1
+                ],
+                [
+                    "180",
+                    -1
+                ],
+                [
+                    "1573",
+                    -1
+                ],
+                [
+                    "6814",
+                    -1
+                ],
+                [
+                    "6083",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -104682,7 +104891,14 @@
             "THE SIXTH LIE"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14116",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -105257,7 +105473,14 @@
             "sumika"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14117",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -106130,7 +106353,14 @@
             "go!go!vanillas"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14118",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -107134,7 +107364,14 @@
             "Spira Spica"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14150",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -107475,7 +107712,14 @@
             "Straightener"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14124",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -107714,7 +107958,14 @@
             "Polkadot Stingray"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14125",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -107723,7 +107974,18 @@
             "Haruka to Miyuki"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14126",
+                    -1
+                ],
+                [
+                    "14127",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -107738,6 +108000,7 @@
     },
     "7484": {
         "names": [
+            "J-JUN",
             "Jaejoong"
         ],
         "groups": [],
@@ -111073,7 +111336,14 @@
             "EGO-WRAPPIN'"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "4990",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -111750,7 +112020,14 @@
             "WANIMA"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14128",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -112165,7 +112442,14 @@
             "EDOGA-SULLIVAN"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14130",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -112210,7 +112494,14 @@
             "band harassment"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14131",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -112498,7 +112789,14 @@
             "Halo at Yojohan"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14132",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -112701,7 +112999,14 @@
             "Ivy to Fraudulent Game"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14133",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -113221,7 +113526,14 @@
             "ACIDMAN"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14148",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -113302,7 +113614,14 @@
             "Uso to Chameleon"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14149",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -114150,7 +114469,22 @@
             "SudannaYuzuYully"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14151",
+                    -1
+                ],
+                [
+                    "14152",
+                    -1
+                ],
+                [
+                    "14153",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -115837,15 +116171,6 @@
         "vocalist": true,
         "composer": false
     },
-    "7943": {
-        "names": [
-            "J-JUN"
-        ],
-        "groups": [],
-        "members": [],
-        "vocalist": true,
-        "composer": false
-    },
     "7944": {
         "names": [
             "MIWA (BRAVE BIRD)",
@@ -116190,7 +116515,18 @@
             "chelmico"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14154",
+                    -1
+                ],
+                [
+                    "14155",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -117997,7 +118333,14 @@
             "never young beach"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14156",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -118291,7 +118634,22 @@
             "Blind Guardian"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14159",
+                    -1
+                ],
+                [
+                    "14160",
+                    -1
+                ],
+                [
+                    "14161",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -118309,7 +118667,14 @@
             "yourness"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14162",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -118354,7 +118719,14 @@
             "Omoinotake"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14190",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -119002,7 +119374,42 @@
             "Stray Kids"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14163",
+                    -1
+                ],
+                [
+                    "14164",
+                    -1
+                ],
+                [
+                    "14165",
+                    -1
+                ],
+                [
+                    "14166",
+                    -1
+                ],
+                [
+                    "14167",
+                    -1
+                ],
+                [
+                    "14168",
+                    -1
+                ],
+                [
+                    "14169",
+                    -1
+                ],
+                [
+                    "14170",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -119127,7 +119534,14 @@
             "belly to belly"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14171",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -119717,20 +120131,6 @@
             "Mimiko"
         ],
         "groups": [],
-        "members": [],
-        "vocalist": true,
-        "composer": false
-    },
-    "8182": {
-        "names": [
-            "Sumire Yoshida"
-        ],
-        "groups": [
-            [
-                "7067",
-                0
-            ]
-        ],
         "members": [],
         "vocalist": true,
         "composer": false
@@ -120615,7 +121015,14 @@
             "Dizzy Sunfist"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14172",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -122078,7 +122485,38 @@
             "Uchikubi Gokumon Doukoukai"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14182",
+                    -1
+                ],
+                [
+                    "14183",
+                    -1
+                ],
+                [
+                    "14184",
+                    -1
+                ]
+            ],
+            [
+                [
+                    "14182",
+                    -1
+                ]
+            ],
+            [
+                [
+                    "14182",
+                    -1
+                ],
+                [
+                    "14183",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -122158,7 +122596,14 @@
             "Necry Talkie"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14173",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -122210,7 +122655,14 @@
             "Otaya"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14174",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -122229,7 +122681,22 @@
             "The 50 Kaitenz"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14175",
+                    -1
+                ],
+                [
+                    "14176",
+                    -1
+                ],
+                [
+                    "14177",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": true
     },
@@ -122488,7 +122955,14 @@
             "KAMI WA SAIKORO WO FURANAI"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14178",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -124073,7 +124547,14 @@
             "AliA"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14180",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -124290,7 +124771,14 @@
             "Ezoshika Gourmet Club"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14181",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -124538,7 +125026,14 @@
             "Little Bob"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14185",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -124567,7 +125062,14 @@
             "The Lethal Weapons"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14186",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -124940,6 +125442,10 @@
                 [
                     "10084",
                     -1
+                ],
+                [
+                    "14187",
+                    -1
                 ]
             ]
         ],
@@ -125048,7 +125554,14 @@
             "Ging Nang BOYZ"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14188",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -125057,7 +125570,14 @@
             "Sunset Rollercoaster"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14189",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -125934,7 +126454,14 @@
             "KALMA"
         ],
         "groups": [],
-        "members": [],
+        "members": [
+            [
+                [
+                    "14191",
+                    -1
+                ]
+            ]
+        ],
         "vocalist": true,
         "composer": false
     },
@@ -129081,7 +129608,12 @@
         "names": [
             "Suu"
         ],
-        "groups": [],
+        "groups": [
+            [
+                "7067",
+                0
+            ]
+        ],
         "members": [],
         "vocalist": true,
         "composer": false
@@ -137227,7 +137759,7 @@
     },
     "9363": {
         "names": [
-            "Kosuke Saito"
+            "Kousuke Saitou"
         ],
         "groups": [
             [
@@ -153221,15 +153753,6 @@
         "vocalist": false,
         "composer": true
     },
-    "10434": {
-        "names": [
-            "Rockwell"
-        ],
-        "groups": [],
-        "members": [],
-        "vocalist": false,
-        "composer": true
-    },
     "10435": {
         "names": [
             "Yuujin Kitagawa"
@@ -155263,15 +155786,6 @@
     "10663": {
         "names": [
             "Yoshiki"
-        ],
-        "groups": [],
-        "members": [],
-        "vocalist": false,
-        "composer": true
-    },
-    "10664": {
-        "names": [
-            "X Japan"
         ],
         "groups": [],
         "members": [],
@@ -159757,15 +160271,6 @@
         "vocalist": false,
         "composer": true
     },
-    "11167": {
-        "names": [
-            "Hikaru Nanase"
-        ],
-        "groups": [],
-        "members": [],
-        "vocalist": false,
-        "composer": true
-    },
     "11168": {
         "names": [
             "HIROSE SATOSHI"
@@ -161444,9 +161949,14 @@
         "names": [
             "Kazutoshi Sakurai"
         ],
-        "groups": [],
+        "groups": [
+            [
+                "1288",
+                0
+            ]
+        ],
         "members": [],
-        "vocalist": false,
+        "vocalist": true,
         "composer": true
     },
     "11358": {
@@ -175756,15 +176266,6 @@
         "vocalist": false,
         "composer": true
     },
-    "12950": {
-        "names": [
-            "Possibility"
-        ],
-        "groups": [],
-        "members": [],
-        "vocalist": false,
-        "composer": true
-    },
     "12951": {
         "names": [
             "Nobumasa Ohira"
@@ -189820,6 +190321,1310 @@
                 0
             ]
         ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14102": {
+        "names": [
+            "43K"
+        ],
+        "groups": [
+            [
+                "3906",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14103": {
+        "names": [
+            "EIG"
+        ],
+        "groups": [
+            [
+                "3906",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14104": {
+        "names": [
+            "Tatsuya Ozeki"
+        ],
+        "groups": [
+            [
+                "7047",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14105": {
+        "names": [
+            "Kazuma Kodama"
+        ],
+        "groups": [
+            [
+                "6461",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14106": {
+        "names": [
+            "Shuto Yoshihara"
+        ],
+        "groups": [
+            [
+                "7058",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14107": {
+        "names": [
+            "Taiki Ikeda"
+        ],
+        "groups": [
+            [
+                "7058",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14108": {
+        "names": [
+            "Yukichi"
+        ],
+        "groups": [
+            [
+                "7058",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14109": {
+        "names": [
+            "Shukei Tamaoki"
+        ],
+        "groups": [
+            [
+                "7075",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14110": {
+        "names": [
+            "Souta Iwabuchi"
+        ],
+        "groups": [
+            [
+                "7076",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14111": {
+        "names": [
+            "Yusuke Fujiwara"
+        ],
+        "groups": [
+            [
+                "7131",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14112": {
+        "names": [
+            "Ayano Mori"
+        ],
+        "groups": [
+            [
+                "7146",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14113": {
+        "names": [
+            "Naohiro Yokoyama"
+        ],
+        "groups": [
+            [
+                "7151",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14114": {
+        "names": [
+            "CLIEVY"
+        ],
+        "groups": [
+            [
+                "7202",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14115": {
+        "names": [
+            "KEEN"
+        ],
+        "groups": [
+            [
+                "7202",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14116": {
+        "names": [
+            "Arata"
+        ],
+        "groups": [
+            [
+                "7302",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14117": {
+        "names": [
+            "Kenta Kataoka"
+        ],
+        "groups": [
+            [
+                "7339",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14118": {
+        "names": [
+            "Tatsuya Maki"
+        ],
+        "groups": [
+            [
+                "7404",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14119": {
+        "names": [
+            "Haruna Ono"
+        ],
+        "groups": [
+            [
+                "3417",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14120": {
+        "names": [
+            "Tomomi Ogawa"
+        ],
+        "groups": [
+            [
+                "3417",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14121": {
+        "names": [
+            "Mami Sasazaki"
+        ],
+        "groups": [
+            [
+                "3417",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14122": {
+        "names": [
+            "Rina Suzuki"
+        ],
+        "groups": [
+            [
+                "3417",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14123": {
+        "names": [
+            "Satoshi Fujiwara"
+        ],
+        "groups": [
+            [
+                "5536",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14124": {
+        "names": [
+            "Atsushi Horie"
+        ],
+        "groups": [
+            [
+                "7462",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14125": {
+        "names": [
+            "Shizuku"
+        ],
+        "groups": [
+            [
+                "7481",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14126": {
+        "names": [
+            "HarukaTODO"
+        ],
+        "groups": [
+            [
+                "7482",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14127": {
+        "names": [
+            "MiyukiTODO"
+        ],
+        "groups": [
+            [
+                "7482",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14128": {
+        "names": [
+            "KENTA"
+        ],
+        "groups": [
+            [
+                "7706",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14129": {
+        "names": [
+            "Mizuki Iida"
+        ],
+        "groups": [
+            [
+                "5685",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14130": {
+        "names": [
+            "Moe Sasaki"
+        ],
+        "groups": [
+            [
+                "7723",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14131": {
+        "names": [
+            "Kouta Ibuka"
+        ],
+        "groups": [
+            [
+                "7728",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14132": {
+        "names": [
+            "Shouta Watai"
+        ],
+        "groups": [
+            [
+                "7742",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14133": {
+        "names": [
+            "Nobuaki Teraguchi"
+        ],
+        "groups": [
+            [
+                "7753",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14134": {
+        "names": [
+            "D.J FAST EDDIE"
+        ],
+        "groups": [],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14135": {
+        "names": [
+            "Helen Merrill"
+        ],
+        "groups": [],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14136": {
+        "names": [
+            "Dee Dee Bridgewater"
+        ],
+        "groups": [],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14137": {
+        "names": [
+            "Miwako Matsumoto"
+        ],
+        "groups": [],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14138": {
+        "names": [
+            "Akira Tomisawa",
+            "Akira Tomisaka"
+        ],
+        "groups": [],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14139": {
+        "names": [
+            "Hanayome (Kibou) Gundan"
+        ],
+        "groups": [],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14140": {
+        "names": [
+            "Yukio Hashi"
+        ],
+        "groups": [],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14142": {
+        "names": [
+            "Trapper Schoepp"
+        ],
+        "groups": [],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14143": {
+        "names": [
+            "The Shades"
+        ],
+        "groups": [],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14144": {
+        "names": [
+            "ToshI RYUGEN"
+        ],
+        "groups": [
+            [
+                "221",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14145": {
+        "names": [
+            "C2 Kikan\"1MYB\""
+        ],
+        "groups": [],
+        "members": [
+            [
+                [
+                    "14146",
+                    -1
+                ]
+            ]
+        ],
+        "vocalist": true,
+        "composer": false
+    },
+    "14146": {
+        "names": [
+            "Yumi Tanibe"
+        ],
+        "groups": [
+            [
+                "14145",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14147": {
+        "names": [
+            "TAKUYA\u221e"
+        ],
+        "groups": [
+            [
+                "3412",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14148": {
+        "names": [
+            "Nobuo Ooki"
+        ],
+        "groups": [
+            [
+                "7793",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14149": {
+        "names": [
+            "Cham"
+        ],
+        "groups": [
+            [
+                "7800",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14150": {
+        "names": [
+            "Mikiha"
+        ],
+        "groups": [
+            [
+                "7435",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14151": {
+        "names": [
+            "Yuzuna Takebe"
+        ],
+        "groups": [
+            [
+                "7841",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14152": {
+        "names": [
+            "Anna Suda"
+        ],
+        "groups": [
+            [
+                "7841",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14153": {
+        "names": [
+            "Yurino Suzuki"
+        ],
+        "groups": [
+            [
+                "7841",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14154": {
+        "names": [
+            "Rachel"
+        ],
+        "groups": [
+            [
+                "7967",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14155": {
+        "names": [
+            "Mamiko"
+        ],
+        "groups": [
+            [
+                "7967",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14156": {
+        "names": [
+            "Yuuma Abe"
+        ],
+        "groups": [
+            [
+                "8049",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14157": {
+        "names": [
+            "Yohei Hashiguchi"
+        ],
+        "groups": [
+            [
+                "6111",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14158": {
+        "names": [
+            "yurin"
+        ],
+        "groups": [
+            [
+                "7193",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14159": {
+        "names": [
+            "Hansi K\u00fcrsch"
+        ],
+        "groups": [
+            [
+                "8069",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14160": {
+        "names": [
+            "Andr\u00e9 Olbrich"
+        ],
+        "groups": [
+            [
+                "8069",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14161": {
+        "names": [
+            "Marcus Siepen"
+        ],
+        "groups": [
+            [
+                "8069",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14162": {
+        "names": [
+            "Yuji Kurokawa"
+        ],
+        "groups": [
+            [
+                "8071",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14163": {
+        "names": [
+            "Bang Chan"
+        ],
+        "groups": [
+            [
+                "8125",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14164": {
+        "names": [
+            "Lee Know"
+        ],
+        "groups": [
+            [
+                "8125",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14165": {
+        "names": [
+            "HAN"
+        ],
+        "groups": [
+            [
+                "8125",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14166": {
+        "names": [
+            "Felix"
+        ],
+        "groups": [
+            [
+                "8125",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14167": {
+        "names": [
+            "Seung Min"
+        ],
+        "groups": [
+            [
+                "8125",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14168": {
+        "names": [
+            "I.N"
+        ],
+        "groups": [
+            [
+                "8125",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14169": {
+        "names": [
+            "Hyun Jin"
+        ],
+        "groups": [
+            [
+                "8125",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14170": {
+        "names": [
+            "Chang Bin"
+        ],
+        "groups": [
+            [
+                "8125",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14171": {
+        "names": [
+            "Nana Mochizuki"
+        ],
+        "groups": [
+            [
+                "8135",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14172": {
+        "names": [
+            "Ayapeta"
+        ],
+        "groups": [
+            [
+                "8247",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14173": {
+        "names": [
+            "Mossa"
+        ],
+        "groups": [
+            [
+                "8345",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14174": {
+        "names": [
+            "Ayaka Oota"
+        ],
+        "groups": [
+            [
+                "8350",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14175": {
+        "names": [
+            "Danny"
+        ],
+        "groups": [
+            [
+                "8352",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14176": {
+        "names": [
+            "Dory"
+        ],
+        "groups": [
+            [
+                "8352",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14177": {
+        "names": [
+            "Bogi"
+        ],
+        "groups": [
+            [
+                "8352",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14178": {
+        "names": [
+            "Shusaku Yanagita"
+        ],
+        "groups": [
+            [
+                "8371",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14179": {
+        "names": [
+            "Tomo"
+        ],
+        "groups": [
+            [
+                "4636",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14180": {
+        "names": [
+            "AYAME"
+        ],
+        "groups": [
+            [
+                "8464",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14181": {
+        "names": [
+            "Ei Ikezawa"
+        ],
+        "groups": [
+            [
+                "8477",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14182": {
+        "names": [
+            "Atsushi Osawa"
+        ],
+        "groups": [
+            [
+                "8340",
+                0
+            ],
+            [
+                "8340",
+                1
+            ],
+            [
+                "8340",
+                2
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14183": {
+        "names": [
+            "Asuka Kawamoto"
+        ],
+        "groups": [
+            [
+                "8340",
+                0
+            ],
+            [
+                "8340",
+                2
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14184": {
+        "names": [
+            "Junko"
+        ],
+        "groups": [
+            [
+                "8340",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14185": {
+        "names": [
+            "Hitomi Fuku"
+        ],
+        "groups": [
+            [
+                "8497",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14186": {
+        "names": [
+            "CYBORG JOE"
+        ],
+        "groups": [
+            [
+                "8499",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14187": {
+        "names": [
+            "Takuya Koyama"
+        ],
+        "groups": [
+            [
+                "8527",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14188": {
+        "names": [
+            "Kazunobu Mineta"
+        ],
+        "groups": [
+            [
+                "8535",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14189": {
+        "names": [
+            "Tseng Kuo-Hung"
+        ],
+        "groups": [
+            [
+                "8536",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14190": {
+        "names": [
+            "Leo Fuji"
+        ],
+        "groups": [
+            [
+                "8076",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14191": {
+        "names": [
+            "Yuzuki Hatayama"
+        ],
+        "groups": [
+            [
+                "8599",
+                0
+            ]
+        ],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14192": {
+        "names": [
+            "Kabuki Rocks"
+        ],
+        "groups": [],
+        "members": [
+            [
+                [
+                    "2324",
+                    -1
+                ]
+            ]
+        ],
+        "vocalist": true,
+        "composer": false
+    },
+    "14193": {
+        "names": [
+            "Haruno Urara"
+        ],
+        "groups": [],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14194": {
+        "names": [
+            "Miki"
+        ],
+        "groups": [],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14195": {
+        "names": [
+            "Kingo"
+        ],
+        "groups": [],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14196": {
+        "names": [
+            "sisters M.K."
+        ],
+        "groups": [],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14197": {
+        "names": [
+            "K.U."
+        ],
+        "groups": [],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14198": {
+        "names": [
+            "Doul"
+        ],
+        "groups": [],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14200": {
+        "names": [
+            "Yusuke Shima"
+        ],
+        "groups": [],
+        "members": [],
+        "vocalist": true,
+        "composer": false
+    },
+    "14201": {
+        "names": [
+            "Mamoru Ishida"
+        ],
+        "groups": [],
         "members": [],
         "vocalist": true,
         "composer": false

@@ -55,13 +55,13 @@ export class SearchBarComponent implements OnInit {
 
     // 20:30 CST   -> 20:30 CET      -> 20:30 JST (all converted to UTC)
     // West Ranked -> Central Ranked -> East Ranked first half
-    if ((hour == 1 && minute >= 30) || (hour == 18 && minute >= 30) || (hour == 11 && minute >= 30)) {
+    if ((hour == 2 && minute >= 30) || (hour == 19 && minute >= 30) || (hour == 11 && minute >= 30)) {
       this.RankedDisabledTimeLeft = 91 - minute
       return true
     }
     // 21:30 CST   -> 21:30 CET      -> 21:30 JST (all converted to UTC)
     // West Ranked -> Central Ranked -> East Ranked second half
-    else if ((hour == 2 && minute <= 30) || (hour == 19 && minute <= 30) || (hour == 12 && minute <= 30)) {
+    else if ((hour == 3 && minute <= 30) || (hour == 20 && minute <= 30) || (hour == 12 && minute <= 30)) {
       this.RankedDisabledTimeLeft = 31 - minute
       return true
     }

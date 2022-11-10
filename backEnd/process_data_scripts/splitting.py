@@ -45,6 +45,13 @@ splitting_exception_list = [
     ## Force splitting (splitters that are not automatically recognized)
     # to
     (
+        "Aqours to Uranohoshi no Nakama-tachi",
+        (
+            "Aqours",
+            "Uranohoshi no Nakama-tachi",
+        ),
+    ),
+    (
         "Dreaming to Kyouryuu no Kuni no Nakama-tachi",
         (
             "Dreaming",
@@ -122,7 +129,7 @@ splitting_exception_list = [
     ("Kana Asumi to Sakebu Jigoku-tai", ("Kana Asumi", "Sakebu Jigoku-tai")),
     ("Asuka Nishi to Yukai na Nakama-tachi", ("Asuka Nishi", "Yukai na Nakama-tachi")),
     ("Velvet.kodhy to Velvet.kodhy to μ to μ", ("Velvet.kodhy", "μ")),
-    ("Melori to Cocotama Five", ("Melori", "Cocotama Five")),
+    ("Aki Toyosaki to Cocotama Five", ("Aki Toyosaki", "Cocotama Five")),
     ("Junji Majima to Youkai Taiji Sentai", ("Junji Majima", "Youkai Taiji Sentai")),
     ("Hajime Akira to Tsukumo-chan", ("Hajime Akira", "Tsukumo-chan")),
     ("Hyoutei Eternity to Rikkai Young Kan", ("Hyoutei Eternity", "Rikkai Young Kan")),
@@ -187,6 +194,7 @@ splitting_exception_list = [
     ## Force NOT splitting (exception on splitters)
     # ・
     ("G・GRIP", ("G・GRIP",)),
+    ("S・A", ("S・A",)),
     ("PSY・S", ("PSY・S",)),
     ("A・ZU・NA", ("A・ZU・NA",)),
     ("Ham-chans • Himawari-gumi", ("Ham-chans • Himawari-gumi",)),
@@ -311,7 +319,7 @@ splitting_exception_list = [
     # with
     ("yuyu with eriri", ("yuyu with eriri",)),
     ("Petit Rabbit's with beans", ("Petit Rabbit's with beans",)),
-    ("SERENON with K", ("SERENON with K",)),
+    ("Serenon with K", ("Serenon with K",)),
     ("Cotori with Stitchbird", ("Cotori with Stitchbird",)),
     ("Akebonoyama Chuugaku Band with T", ("Akebonoyama Chuugaku Band with T",)),
     ("MATCHY with QUESTION?", ("MATCHY with QUESTION?",)),
@@ -1020,6 +1028,10 @@ splitting_exception_list = [
     (
         "Mao・Ruli from STARRY PLANET☆",
         ("Mao from STARRY PLANET☆", "Ruli from STARRY PLANET☆"),
+    ),
+    (
+        "Ayumi・Ann from STARRY PLANET☆",
+        ("Ayumi from STARRY PLANET☆", "Ann from STARRY PLANET☆"),
     ),
     (
         "Mao・Ayumi from STARRY PLANET☆",
