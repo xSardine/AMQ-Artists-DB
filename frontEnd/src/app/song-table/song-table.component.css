@@ -86,11 +86,10 @@
     z-index: 1;
     /* Sit on top */
     left: 0;
-    top: 100;
+    top: 0;
+    padding-top: 10vh;
     width: 100%;
-    /* Full width */
-    height: 100%;
-    /* Full height */
+    height: 90vh;
     overflow: auto;
     /* Enable scroll if needed */
     /* Fallback color */

@@ -9,7 +9,7 @@ ANIME_REGEX_REPLACE_RULES = [
     {"input": "oo", "replace": "(oo|ō|o)"},
     {"input": "oh", "replace": "(oh|ō|o)"},
     {"input": "wo", "replace": "(wo|o)"},
-    {"input": "o", "replace": "([oōóòöôøΦο]|ou|oo|oh|wo)"},
+    {"input": "o", "replace": "([oōóòöôøӨΦο]|ou|oo|oh|wo)"},
     {"input": "uu", "replace": "(uu|u|ū)"},
     {"input": "u", "replace": "([uūûúùüǖμ]|uu)"},
     {"input": "aa", "replace": "(aa|a)"},
@@ -38,6 +38,7 @@ ANIME_REGEX_REPLACE_RULES = [
 def escapeRegExp(str):
     str = re.escape(str)
     str = str.replace("\ ", " ")
+    str = str.replace("\*", "*")
     return str
 
 
@@ -49,9 +50,8 @@ def apply_regex_rules(search):
 
 def get_regex_search(og_search, partial_match=True, swap_words=False):
 
-    search = og_search.lower()
-    search = escapeRegExp(search)
-    search = apply_regex_rules(search)
+    og_search = escapeRegExp(og_search)
+    search = apply_regex_rules(og_search)
     search = "^" + search + "$" if not partial_match else ".*" + search + ".*"
 
     if swap_words:
