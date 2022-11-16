@@ -50,7 +50,7 @@ def apply_regex_rules(search):
 
 def get_regex_search(og_search, partial_match=True, swap_words=False):
 
-    og_search = escapeRegExp(og_search)
+    og_search = escapeRegExp(og_search.lower())
     search = apply_regex_rules(og_search)
     search = "^" + search + "$" if not partial_match else ".*" + search + ".*"
 
