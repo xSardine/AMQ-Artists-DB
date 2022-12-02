@@ -11,12 +11,15 @@
         <div class="modal-body">
             <p id="modal-songinfo"></p>
             <span class="popUpText" title="Copy annId to clipboard" (click)="copyToClipboard(popUpannId)">
-                annId: {{popUpannId}}</span> <span class="popUpText" style="margin-left: 20px;"
+                <b>annId:</b> {{popUpannId}}</span> <span class="popUpText" style="margin-left: 20px;"
                 title="Copy annSongId to clipboard" (click)="copyToClipboard(popUpannSongId)">
-                annSongId: {{popUpannSongId}}</span>
+                <b>annSongId:</b> {{popUpannSongId}}</span>
+            <br>
+            <span class="popUpText" title="Copy Song Category to clipboard" (click)="copyToClipboard(popUpSongCat)">
+                <b>Song Category:</b> {{popUpSongCat}}</span>
             <br>
             <span class="popUpText" title="Copy Song Difficulty to clipboard" (click)="copyToClipboard(popUpSongDiff)">
-                Song Difficulty: {{popUpSongDiff}}% <small>**Data collected on 2022-08-02</small> </span>
+                <b>Song Difficulty:</b> {{popUpSongDiff}}% <small>**Data collected on 2022-08-02</small> </span>
             <br><br>
             <span class="popUpText" title="Copy song infos to clipboard"
                 (click)='copyToClipboard("\"" + popUpSongName + "\" by " + popUpArtist)'>
@@ -65,11 +68,17 @@
             </div>
             <h3 id="modal-artist-part">Composers</h3>
             <div *ngFor=" let composer of popUpComposersInfo">
-                <p>{{composer["names"][0]}}</p>
+                <i *ngIf="!rankedTime" style="cursor: pointer; margin-right: 6px;" title="Search songs by this composer"
+                    (click)="searchComposerIds(composer)" class="fa fa-search"></i>
+                <span class="popUpText" title="Copy composer to clipboard"
+                    (click)="copyToClipboard(composer['names'][0])">{{composer["names"][0]}}</span>
             </div>
             <h3 id="modal-artist-part">Arrangers</h3>
             <div *ngFor=" let arranger of popUpArrangersInfo">
-                <p>{{arranger["names"][0]}}</p>
+                <i *ngIf="!rankedTime" style="cursor: pointer; margin-right: 6px;" title="Search songs by this arranger"
+                    (click)="searchComposerIds(arranger)" class="fa fa-search"></i>
+                <span class="popUpText" title="Copy arranger to clipboard"
+                    (click)="copyToClipboard(arranger['names'][0])">{{arranger["names"][0]}}</span>
             </div>
         </div>
         <div class="modal-footer">
@@ -114,13 +123,18 @@
         <td> <span class="copyable" title="Copy to clipboard"
                 (click)="copyToClipboard(song.songName)">{{song.songName}}</span> </td>
 
-        <td> <i *ngIf="!rankedTime" style="cursor: pointer; margin-right: 6px; color:var(--textOnBackground)"
+        <td> <i *ngIf="!rankedTime" style="cursor: pointer; margin-right: 6px; color:var(--textOnBackground);"
                 title="Search songs by this artist(s)" (click)="searchArtistIds(song.artists)" class="fa fa-search"></i>
             <span class="copyable" title="Copy to clipboard"
                 (click)="copyToClipboard(song.songArtist)">{{song.songArtist}}</span>
         </td>
 
-        <td *ngIf="!rankedTime" title="Listen to mp3" (click)="playMP3music(song)"
+        <td *ngIf="isCurrentPlayingSong(song) && !rankedTime" title="Listen to mp3" (click)="playMP3music(song)"
+            style="text-align: center; color:rgb(226, 148, 4); cursor: pointer; -webkit-text-stroke: 0.5px #fff;">
+            <i *ngIf="song.audio" class="fa fa-music fa-lg"></i>
+        </td>
+
+        <td *ngIf="!isCurrentPlayingSong(song) && !rankedTime" title="Listen to mp3" (click)="playMP3music(song)"
             style="text-align: center; color:var(--textOnBackground); cursor: pointer;">
             <i *ngIf="song.audio" class="fa fa-music fa-lg"></i>
         </td>

@@ -22,6 +22,7 @@ export class SongTableComponent {
 
   @Output() mp3PlayerClicked = new EventEmitter();
   playMP3music(song: any) {
+    this.currentPlayingSong = song
     this.mp3PlayerClicked.emit(song)
   }
 
@@ -47,6 +48,22 @@ export class SongTableComponent {
     this.sortFunction("annId");
   }
 
+  isCurrentPlayingSong(song: any) {
+
+    if (!song || !this.currentPlayingSong) {
+      return false
+    }
+
+    if (song.annId == this.currentPlayingSong.annId
+      && song.songType == this.currentPlayingSong.songType
+      && song.songName == this.currentPlayingSong.songName
+      && song.songArtist == this.currentPlayingSong.songArtist) {
+      return true
+    }
+    else {
+      return false
+    }
+  }
 
   lastColName: string = ""
   ascendingOrder: boolean = false;
@@ -61,6 +78,7 @@ export class SongTableComponent {
   popUpSongName: string = "";
   popUpArtist: string = "";
   popUpSongDiff: string = "";
+  popUpSongCat: string = "";
   popUpannURL: string = "";
   popUpAnime: string = "";
   popUpHDLink: string = "";
@@ -75,6 +93,7 @@ export class SongTableComponent {
 
   rankedTime = false;
   RankedDisabledTimeLeft = 0
+  currentPlayingSong: any
 
   checkRankedTime() {
     let date = new Date()
@@ -273,6 +292,7 @@ export class SongTableComponent {
     this.popUpSongName = song.songName;
     this.popUpArtist = song.songArtist;
     this.popUpSongDiff = song.songDifficulty;
+    this.popUpSongCat = song.songCategory;
     this.popUpHDLink = song.HQ;
     this.popUpMDLink = song.MQ;
     this.popUpAudioLink = song.audio;
@@ -366,6 +386,38 @@ export class SongTableComponent {
     return true
   }
 
+
+  areBodyIdenticalComposerSearch(body: any, body2: any): boolean {
+
+    // if the previous search wasn't an artist_id search
+    if (!this.previousBody || !this.previousBody.composer_ids) {
+      return false
+    }
+
+    // if the amount of ids searched is different
+    if (body.composer_ids.length != body2.composer_ids.length) {
+      return false
+    }
+
+    // if the arrays are different
+    for (let composer in body.composer_ids) {
+      if (body.composer_ids[composer] != body2.composer_ids[composer]) {
+        return false
+      }
+    }
+
+    // if the artist ids search settings are different
+    if (body.ignore_duplicate != body2.ignore_duplicate
+      || body.arrangement != body2.arrangement
+      || body.opening_filter != body2.opening_filter
+      || body.ending_filter != body2.ending_filter
+      || body.insert_filter != body2.insert_filter) {
+      return false
+    }
+
+    return true
+  }
+
   searchArtistIds(artists: any) {
 
 
@@ -399,6 +451,42 @@ export class SongTableComponent {
 
     let currentSongList
     currentSongList = this.searchRequestService.artistIdsSearchRequest(body).subscribe(data => {
+      currentSongList = data
+      this.sendSongList(currentSongList)
+    });
+  }
+
+  searchComposerIds(composers: any) {
+
+    let id_arr
+    if (composers.id) {
+      id_arr = [composers.id]
+    }
+    else {
+      id_arr = []
+      for (let composer in composers) {
+        id_arr.push(composers[composer].id)
+      }
+    }
+
+    let body = {
+      "composer_ids": id_arr,
+      "arrangement": true,
+      "ignore_duplicate": false,
+      "opening_filter": true,
+      "ending_filter": true,
+      "insert_filter": true,
+    }
+
+    if (this.areBodyIdenticalComposerSearch(body, this.previousBody)) {
+      return
+    }
+
+    this.previousBody = body
+    this.sendPrevBody(body)
+
+    let currentSongList
+    currentSongList = this.searchRequestService.composerIdsSearchRequest(body).subscribe(data => {
       currentSongList = data
       this.sendSongList(currentSongList)
     });

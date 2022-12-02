@@ -62,6 +62,7 @@ CREATE TABLE songs (
     "songName" VARCHAR(255) NOT NULL,
     "songArtist" VARCHAR(255) NOT NULL,
     "songDifficulty" FLOAT,
+    "songCategory" VARCHAR(255),
     "HQ" VARCHAR(255),
     "MQ" VARCHAR(255),
     "audio" VARCHAR(255),
@@ -208,7 +209,7 @@ GROUP BY animes.annId;
 
 CREATE VIEW songsAnimes AS
 SELECT animesFull.annId, animesFull.animeExpandName, animesFull.animeJPName, animesFull.animeENName, animesFull.altNames, animesFull.animeVintage, animesFull.animeType, 
-songs.id as songId, songs.annSongId, songs.songType, songs.songNumber, songs.songName, songs.songArtist, songs.songDifficulty, songs.HQ, songs.MQ, songs.audio
+songs.id as songId, songs.annSongId, songs.songType, songs.songNumber, songs.songName, songs.songArtist, songs.songDifficulty, songs.songCategory, songs.HQ, songs.MQ, songs.audio
 FROM animesFull
 LEFT JOIN songs ON animesFull.annId = songs.annId;
 
@@ -232,7 +233,7 @@ GROUP BY songs.id;
 
 CREATE VIEW songsFull AS
 SELECT songsAnimes.annId, songsAnimes.animeExpandName, songsAnimes.animeJPName, songsAnimes.animeENName, songsAnimes.altNames, songsAnimes.animeVintage, songsAnimes.animeType, 
-songsAnimes.songId, songsAnimes.annSongId, songsAnimes.songType, songsAnimes.songNumber, songsAnimes.songName, songsAnimes.songArtist, songsArtists.artists, songsArtists.artists_line_up, songsComposers.composers, songsArrangers.arrangers, songsAnimes.songDifficulty, songsAnimes.HQ, songsAnimes.MQ, songsAnimes.audio
+songsAnimes.songId, songsAnimes.annSongId, songsAnimes.songType, songsAnimes.songNumber, songsAnimes.songName, songsAnimes.songArtist, songsArtists.artists, songsArtists.artists_line_up, songsComposers.composers, songsArrangers.arrangers, songsAnimes.songDifficulty, songsAnimes.songCategory, songsAnimes.HQ, songsAnimes.MQ, songsAnimes.audio
 FROM songsAnimes
 INNER JOIN songsArtists ON songsAnimes.songId = songsArtists.songId
 INNER JOIN songsComposers ON songsAnimes.songId = songsComposers.songId
@@ -370,6 +371,7 @@ def insert_song(
     songName,
     songArtist,
     songDifficulty,
+    songCategory,
     HQ,
     MQ,
     audio,
@@ -379,7 +381,7 @@ def insert_song(
     Insert a new song in the database and return the newly created song ID
     """
 
-    sql_insert_song = "INSERT INTO songs(annSongId, annId, songType, songNumber, songName, songArtist, songDifficulty, HQ, MQ, audio) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
+    sql_insert_song = "INSERT INTO songs(annSongId, annId, songType, songNumber, songName, songArtist, songDifficulty, songCategory, HQ, MQ, audio) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
 
     run_sql_command(
         cursor,
@@ -392,6 +394,7 @@ def insert_song(
             songName,
             songArtist,
             songDifficulty,
+            songCategory,
             HQ,
             MQ,
             audio,
@@ -549,6 +552,7 @@ for anime in song_database:
             song["songName"],
             song["songArtist"],
             song["songDifficulty"] if "songDifficulty" in song else None,
+            song["songCategory"] if "songCategory" in song else None,
             links["HQ"] if "HQ" in links.keys() else None,
             links["MQ"] if "MQ" in links.keys() else None,
             links["audio"] if "audio" in links.keys() else None,
@@ -564,6 +568,7 @@ for anime in song_database:
 
         if "arranger_ids" in song:
             for arranger in song["arranger_ids"]:
+                # print(song["annSongId"], arranger)
                 link_song_arranger(cursor, song_id, int(arranger[0]))
 
 

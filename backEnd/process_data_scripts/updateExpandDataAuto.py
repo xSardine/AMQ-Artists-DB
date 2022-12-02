@@ -246,10 +246,16 @@ def update_artist_names(song_database, artist_database, old_name, new_name):
         return
 
     for old, new in zip(old_names, new_names):
+
         if old == new:
             continue
 
-        artist_id = utils.get_artist_id(song_database, artist_database, old)
+        artist_id = utils.get_artist_id(
+            song_database, artist_database, old, not_exist_ok=False
+        )
+
+        if artist_id == -1:
+            continue
 
         if new not in artist_database[artist_id]["names"]:
             add_log(f"+{new} ← {artist_id}")
@@ -264,10 +270,13 @@ def update_artist_names(song_database, artist_database, old_name, new_name):
                     nb_songs += 1
 
         if nb_songs <= 1:
-            add_log(f"-{old} ← {artist_id}")
-            artist_database[artist_id]["names"].pop(
-                artist_database[artist_id]["names"].index(old)
-            )
+            if old in artist_database[artist_id]["names"]:
+                add_log(f"-{old} ← {artist_id}")
+                artist_database[artist_id]["names"].pop(
+                    artist_database[artist_id]["names"].index(old)
+                )
+            else:
+                print(f"WARNING {old} NOT FOUND")
         else:
             add_log(f"<CHECK> Keeping {old} in {artist_id}")
 

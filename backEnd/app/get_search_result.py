@@ -555,6 +555,55 @@ def get_artists_ids_song_list(
     return final_songs
 
 
+def get_composer_ids_song_list(
+    composer_ids,
+    arrangement,
+    ignore_duplicate,
+    authorized_types,
+):
+
+    start = timeit.default_timer()
+
+    cursor = sql_calls.connect_to_database(sql_calls.database_path)
+
+    artist_database = sql_calls.extract_artist_database()
+
+    logs = {
+        "date": str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")),
+        "composer_ids_filter": composer_ids,
+        "ignore_dups": ignore_duplicate,
+        "types": authorized_types,
+    }
+    for key in logs:
+        print(f"{key}: {logs[key]}")
+
+    if not composer_ids:
+        return []
+
+    songIds = sql_calls.get_songs_ids_from_composing_team_ids(
+        cursor, list(set(composer_ids)), arrangement
+    )
+
+    song_database = sql_calls.extract_song_database()
+
+    songs = get_song_list_from_songIds_JSON(song_database, songIds, authorized_types)
+
+    final_songs = combine_results(
+        artist_database, songs, [], [], [], [], False, ignore_duplicate
+    )
+
+    stop = timeit.default_timer()
+
+    print()
+    logs["computing_time"] = round(stop - start, 4)
+    logs["nb_results"] = len(songs)
+    print(f"computing_time: {logs['computing_time']}")
+    print(f"nb_results: {logs['nb_results']}")
+    print()
+
+    return final_songs
+
+
 def get_annId_song_list(
     annId,
     ignore_duplicate,

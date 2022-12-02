@@ -2,29 +2,36 @@ from functools import partial
 import re
 
 ANIME_REGEX_REPLACE_RULES = [
+    {"input": "ź", "replace": "[źŹ]"},
+    {"input": "ļ", "replace": "[ļĻ]"},
+    {"input": "l", "replace": "[l˥ļĻ]"},
+    {"input": "z", "replace": "[zźŹ]"},
     {"input": "ou", "replace": "(ou|ō|o)"},
     {"input": "oo", "replace": "(oo|ō|o)"},
     {"input": "oh", "replace": "(oh|ō|o)"},
     {"input": "wo", "replace": "(wo|o)"},
     {"input": "o", "replace": "([oōóòöôøΦο]|ou|oo|oh|wo)"},
     {"input": "uu", "replace": "(uu|u|ū)"},
-    {"input": "u", "replace": "([uūûúùüǖ]|uu)"},
+    {"input": "u", "replace": "([uūûúùüǖμ]|uu)"},
     {"input": "aa", "replace": "(aa|a)"},
-    {"input": "a", "replace": "([aä@âàáạåæā∀]|aa)"},
+    {"input": "ae", "replace": "(ae|æ)"},
+    {"input": "a", "replace": "([aäά@âàáạåæā∀Λ]|aa)"},
     {"input": "c", "replace": "[cč]"},
-    {"input": "e", "replace": "[eéêёëèæē]"},
-    {"input": "'", "replace": "['’]"},
+    {"input": "e", "replace": "[eəéêёëèæē]"},
+    {"input": "'", "replace": "['’ˈ]"},
     {"input": "n", "replace": "[nñ]"},
     {"input": "2", "replace": "[2²]"},
-    {"input": "*", "replace": "[*＊]"},
-    {"input": " ", "replace": "( ?[²★☆\\/\\*＊=\\+·♥'♡∽・±⇔≒〜†×♪→␣:∞;~\\-?,.!@_] ?| )"},
-    {"input": "i", "replace": "([iíί]|ii)"},
+    {"input": "*", "replace": "[*✻＊]"},
+    {
+        "input": " ",
+        "replace": "( ?[²★☆\\/\\*✻＊♣=\\+·♥'ˈ♡∽・±⇔≒〜†×♪→␣:∞;~\\-?,.!@_] ?| )",
+    },
+    {"input": "i", "replace": "([iíίɪ]|ii)"},
     {"input": "3", "replace": "[3³]"},
     {"input": "x", "replace": "[x×]"},
     {"input": "b", "replace": "[bßβ]"},
     {"input": "r", "replace": "[rЯ]"},
     {"input": "s", "replace": "[sς]"},
-    {"input": "l", "replace": "[l˥]"},
 ]
 
 
@@ -297,7 +304,7 @@ def get_artist_id(
     if not ids:
         if not not_exist_ok:
             print(f"{artist} NOT FOUND, CANCELLED")
-            exit(0)
+            # return -1
         new_id = add_new_artist_to_DB(artist_database, artist, vocalist, composing)
         print(f"COULDN'T FIND {artist}, adding {new_id}")
         return new_id

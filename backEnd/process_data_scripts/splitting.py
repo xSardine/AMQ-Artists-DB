@@ -277,8 +277,8 @@ splitting_exception_list = [
     ("2&", ("2&",)),
     ("Yumachi & Aina", ("Yumachi & Aina",)),
     (
-        "Japanese Geronimo & Love Guerilla Experience",
-        ("Japanese Geronimo & Love Guerilla Experience",),
+        "Wasei Geronimo & Love Guerrilla Experience",
+        ("Wasei Geronimo & Love Guerrilla Experience",),
     ),
     # and
     ("Shou and the Moon Dogs", ("Shou and the Moon Dogs",)),

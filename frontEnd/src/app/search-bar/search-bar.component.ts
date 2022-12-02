@@ -36,7 +36,7 @@ export class SearchBarComponent implements OnInit {
   songNameFilterPartialMatch: boolean = true;
   artistFilterPartialMatch: boolean = true;
   composerFilterPartialMatch: boolean = true;
-  composerFilterArrangement: boolean = false;
+  composerFilterArrangement: boolean = true;
   ignoreDuplicate: boolean = false;
   showOpenings: boolean = true;
   showEndings: boolean = true;

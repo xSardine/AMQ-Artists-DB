@@ -21,7 +21,7 @@ class Search_Filter(BaseModel):
     max_other_artist: Optional[int] = Field(2, ge=0)
 
     # for composer search
-    arrangement: Optional[bool] = False
+    arrangement: Optional[bool] = True
 
     class Config:
         schema_extra = {
@@ -78,6 +78,16 @@ class Artist_ID_Search_Request(BaseModel):
     insert_filter: Optional[bool] = True
 
 
+class Composer_ID_Search_Request(BaseModel):
+
+    composer_ids: List[int] = []
+    arrangement: Optional[bool] = True
+    ignore_duplicate: Optional[bool] = False
+    opening_filter: Optional[bool] = True
+    ending_filter: Optional[bool] = True
+    insert_filter: Optional[bool] = True
+
+
 class annId_Search_Request(BaseModel):
 
     annId: int
@@ -112,6 +122,7 @@ class Song_Entry(BaseModel):
     songName: str
     songArtist: str
     songDifficulty: Optional[float]
+    songCategory: Optional[str]
     HQ: Optional[str]
     MQ: Optional[str]
     audio: Optional[str]
@@ -252,6 +263,30 @@ async def search_request(query: Artist_ID_Search_Request):
         query.artist_ids,
         query.max_other_artist,
         query.group_granularity,
+        query.ignore_duplicate,
+        authorized_type,
+    )
+
+    return song_list
+
+
+@app.post("/api/composer_ids_request", response_model=List[Song_Entry])
+async def search_request(query: Composer_ID_Search_Request):
+
+    authorized_type = []
+    if query.opening_filter:
+        authorized_type.append(1)
+    if query.ending_filter:
+        authorized_type.append(2)
+    if query.insert_filter:
+        authorized_type.append(3)
+
+    if not authorized_type:
+        return []
+
+    song_list = get_search_result.get_composer_ids_song_list(
+        query.composer_ids,
+        query.arrangement,
         query.ignore_duplicate,
         authorized_type,
     )

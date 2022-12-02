@@ -40,6 +40,14 @@ export class SearchRequestService {
 
   }
 
+  composerIdsSearchRequest(body: object): Observable<any> {
+
+    return this.http.post(this.api_url + "/api/composer_ids_request", body).pipe(
+      catchError(this.handleError)
+    );;
+
+  }
+
   annIdSearchRequest(body: object): Observable<any> {
 
     return this.http.post(this.api_url + "/api/annId_request", body).pipe(
