@@ -3,6 +3,14 @@
   <img width="40" alt="Artist Anisong Database Logo" src="/assets/img/sardineLogo.png" />
   <span style="padding-left: 5px; font-size: 26px;">Anisong Database</span>
   <div class="spacer"></div>
+  <label class="toggleSwitch nolabel" style="margin-right: 20px" title="Anime title displaying">
+    <input (click)="toggleAnimeLang()" type="checkbox" checked />
+    <a></a>
+    <span>
+      <span class="left-span">EN</span>
+      <span class="right-span">JP</span>
+    </span>
+  </label>
   <a class="toolbar-github-logo" aria-label="See project on Github" target="_blank" rel="noopener"
     href="https://github.com/xSardine/AMQ-Artists-DB" title="Github">
     <i class="fa fa-github"></i> Github
@@ -34,7 +42,8 @@
     (sendSongListtoTable)="receiveSongList($event)">
   </app-search-bar>
   <app-song-table (sendPreviousBody)="receivePreviousBody($event)" [previousBody]="previousBody"
-    (sendSongListtoTable)="receiveSongList($event)" (mp3PlayerClicked)="playMP3($event)" [songTable]="songList">
+    (sendSongListtoTable)="receiveSongList($event)" (mp3PlayerClicked)="playMP3($event)" [songTable]="songList"
+    [animeTitleLang]="animeTitleLang">
   </app-song-table>
 </div>
 

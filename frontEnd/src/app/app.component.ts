@@ -22,6 +22,8 @@ export class AppComponent {
   currentlyPlayingArtist: any = ""
   currentlyPlayingSongName: any = ""
 
+  animeTitleLang: string = "JP"
+
   receiveSongList($event: any) {
     this.songList = $event
   }
@@ -33,6 +35,10 @@ export class AppComponent {
   playMP3(song: any) {
     this.url = null
     setTimeout(() => { this.url = song.audio; this.currentlyPlayingArtist = song.songArtist; this.currentlyPlayingSongName = song.songName }, 0)
+  }
+
+  toggleAnimeLang() {
+    this.animeTitleLang = (this.animeTitleLang == "JP") ? "EN" : "JP"
   }
 
   toggleTheme() {

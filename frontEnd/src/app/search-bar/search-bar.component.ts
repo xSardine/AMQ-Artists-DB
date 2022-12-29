@@ -49,109 +49,48 @@ export class SearchBarComponent implements OnInit {
   currentSongList: object = []
 
   checkRankedTime() {
-    let date = new Date()
-    let hour = date.getUTCHours()
-    let minute = date.getUTCMinutes()
 
-    // 20:30 CST   -> 20:30 CET      -> 20:30 JST (all converted to UTC)
-    // West Ranked -> Central Ranked -> East Ranked first half
-    if ((hour == 2 && minute >= 30) || (hour == 19 && minute >= 30) || (hour == 11 && minute >= 30)) {
-      this.RankedDisabledTimeLeft = 91 - minute
-      return true
+    // Define the ranked time intervals as an array of objects
+    let rankedTimeIntervals = [
+      {
+        start: new Date().setUTCHours(2, 30, 0, 0),
+        end: new Date().setUTCHours(3, 30, 0, 0)
+      },
+      {
+        start: new Date().setUTCHours(11, 30, 0, 0),
+        end: new Date().setUTCHours(12, 30, 0, 0)
+      },
+      {
+        start: new Date().setUTCHours(19, 30, 0, 0),
+        end: new Date().setUTCHours(20, 30, 0, 0)
+      }
+    ];
+
+    // Get the current time in the user's local time zone
+    let date = Date.now();
+
+    // Find the ranked time interval that the current time is within
+    let rankedTimeInterval = rankedTimeIntervals.find(interval => {
+      return date >= interval.start && date < interval.end;
+    });
+
+    // If a ranked time interval was found, calculate the amount of time left until the end of the ranked period
+    if (rankedTimeInterval) {
+      this.RankedDisabledTimeLeft = Math.ceil((rankedTimeInterval.end - date) / 1000 / 60);
+      return true;
     }
-    // 21:30 CST   -> 21:30 CET      -> 21:30 JST (all converted to UTC)
-    // West Ranked -> Central Ranked -> East Ranked second half
-    else if ((hour == 3 && minute <= 30) || (hour == 20 && minute <= 30) || (hour == 12 && minute <= 30)) {
-      this.RankedDisabledTimeLeft = 31 - minute
-      return true
-    }
-    return false
+
+    return false;
+
 
   }
 
   ngOnInit(): void {
-
-    if (this.checkRankedTime()) {
-      this.rankedTime = true;
-    }
-    else {
-      this.rankedTime = false;
-    }
-
+    this.rankedTime = this.checkRankedTime()
     this.currentSongList = this.searchRequestService.getFirstNRequest().subscribe(data => {
       this.currentSongList = data
       this.sendSongList(this.currentSongList)
     });
-  }
-
-  areBodyIdenticalBaseSearch(body: any, body2: any): boolean {
-
-    // if there wasn't any search prior to that
-    if (!this.previousBody) {
-      return false
-    }
-
-    // If the search filters used are different
-    if ((body.anime_search_filter && !body2.anime_search_filter)
-      || (!body.anime_search_filter && body2.anime_search_filter)
-      || (body.artist_search_filter && !body2.artist_search_filter)
-      || (!body.artist_search_filter && body2.artist_search_filter)
-      || (body.song_name_search_filter && !body2.song_name_search_filter)
-      || (!body.song_name_search_filter && body2.song_name_search_filter)
-      || (body.composer_search_filter && !body2.composer_search_filter)
-      || (!body.composer_search_filter && body2.composer_search_filter)) {
-      return false
-    }
-
-    // if the general settings are different
-    if (body.and_logic != body2.and_logic
-      || body.ending_filter != body2.ending_filter
-      || body.insert_filter != body2.insert_filter
-      || body.opening_filter != body2.opening_filter
-      || body.ignore_duplicate != body2.ignore_duplicate) {
-      return false
-    }
-
-    // if the anime filters are different
-    if (body.anime_search_filter && body2.anime_search_filter
-      && (body.anime_search_filter.search != body2.anime_search_filter.search
-        || body.anime_search_filter.ignore_special_character != body2.anime_search_filter.ignore_special_character
-        || body.anime_search_filter.partial_match != body2.anime_search_filter.partial_match
-        || body.anime_search_filter.case_sensitive != body2.anime_search_filter.case_sensitive)) {
-      return false
-    }
-
-    // if the artist filters are different
-    if (body.artist_search_filter && body2.artist_search_filter
-      && (body.artist_search_filter.search != body2.artist_search_filter.search
-        || body.artist_search_filter.ignore_special_character != body2.artist_search_filter.ignore_special_character
-        || body.artist_search_filter.partial_match != body2.artist_search_filter.partial_match
-        || body.artist_search_filter.case_sensitive != body2.artist_search_filter.case_sensitive
-        || body.artist_search_filter.group_granularity != body2.artist_search_filter.group_granularity
-        || body.artist_search_filter.max_other_artist != body2.artist_search_filter.max_other_artist)) {
-      return false
-    }
-
-    // if the song name filters are different
-    if (body.song_name_search_filter && body2.song_name_search_filter
-      && (body.song_name_search_filter.search != body2.song_name_search_filter.search
-        || body.song_name_search_filter.ignore_special_character != body2.song_name_search_filter.ignore_special_character
-        || body.song_name_search_filter.partial_match != body2.song_name_search_filter.partial_match
-        || body.song_name_search_filter.case_sensitive != body2.song_name_search_filter.case_sensitive)) {
-      return false
-    }
-
-    // if the composer filters are different
-    if (body.composer_search_filter && body2.composer_search_filter
-      && (body.composer_search_filter.search != body2.composer_search_filter.search
-        || body.composer_search_filter.ignore_special_character != body2.composer_search_filter.ignore_special_character
-        || body.composer_search_filter.partial_match != body2.composer_search_filter.partial_match
-        || body.composer_search_filter.case_sensitive != body2.composer_search_filter.case_sensitive
-        || body.composer_search_filter.arrangement != body2.composer_search_filter.arrangement)) {
-      return false
-    }
-
-    return true
   }
 
   onSearchCallKey(): void {
@@ -304,7 +243,7 @@ export class SearchBarComponent implements OnInit {
       }
     }
 
-    if (this.areBodyIdenticalBaseSearch(body, this.previousBody)) {
+    if (JSON.stringify(body) === JSON.stringify(this.previousBody)) {
       return
     }
 
@@ -326,19 +265,23 @@ export class SearchBarComponent implements OnInit {
 
   generateDownloadJsonUri() {
 
-    if (!this.showAdvancedFilters) {
-      this.downloadFileName = this.mainFilter.replace(" ", "") + "_SongList.json"
-    }
-    else {
-      this.downloadFileName = this.animeFilter.replace(" ", "") + "_" + this.songNameFilter.replace(" ", "") + "_" + this.artistFilter.replace(" ", "") + "_" + this.composerFilter.replace(" ", "") + "_SongList.json"
-      this.downloadFileName = this.downloadFileName.replace("__", "")
-    }
+    // Use template literals and the `join` method to generate the file name
+    this.downloadFileName = [
+      this.showAdvancedFilters ? [this.animeFilter, this.songNameFilter, this.artistFilter, this.composerFilter] : this.mainFilter,
+      "SongList.json"
+    ].join("_").replace(/ /g, "").replace(/,/g, "_").replace(/__/g, "");
+
+
+    // Stringify the JSON data and create a blob
     let theJSON = JSON.stringify(this.currentSongList);
     let blob = new Blob([theJSON], { type: 'text/json' });
+
+    // Create a URL for the blob and sanitize it
     let url = window.URL.createObjectURL(blob);
-    let uri: SafeUrl = this.sanitizer.bypassSecurityTrustUrl(url);
+    let uri = this.sanitizer.bypassSecurityTrustUrl(url);
+
+    // Set the `downloadJsonHref` property to the sanitized URL
     this.downloadJsonHref = uri;
   }
-
 
 }

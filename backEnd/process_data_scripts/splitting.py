@@ -317,6 +317,7 @@ splitting_exception_list = [
     ("U×Mishi", ("U×Mishi",)),
     ("kanon x kanon", ("kanon x kanon",)),
     # with
+    ("Aoi Yuuki with Starfield", ("Aoi Yuuki with Starfield",)),
     ("yuyu with eriri", ("yuyu with eriri",)),
     ("Petit Rabbit's with beans", ("Petit Rabbit's with beans",)),
     ("Serenon with K", ("Serenon with K",)),
@@ -356,6 +357,7 @@ splitting_exception_list = [
         ("Yuji Ohno", "Lupintic Five with Friends", "DOUBLE"),
     ),
     # ,
+    ("Johnny, Louis & Char", ("Johnny, Louis & Char",)),
     ("Fear, and Loathing in Las Vegas", ("Fear, and Loathing in Las Vegas",)),
     ("Hello, Happy World!", ("Hello, Happy World!",)),
     ("Mix Speaker's,Inc.", ("Mix Speaker's,Inc.",)),
@@ -419,6 +421,7 @@ splitting_exception_list = [
         "SawanoHiroyuki[nZk]:Junki Kono & Sho Yonashiro (JO1)",
         ("SawanoHiroyuki[nZk]", "Junki Kono", "Sho Yonashiro"),
     ),
+    ("SawanoHiroyuki[nZk]:XAI", ("SawanoHiroyuki[nZk]", "XAI")),
     ("POLYSICS with Seiya Yamasaki (Kyuuso Nekokami)", ("POLYSICS", "Seiya Yamasaki")),
     ("JO☆STARS~TOMMY, Coda, JIN~", ("JO☆STARS",)),
     ("Saori Hayami (from Eclipse)", ("Saori Hayami",)),
