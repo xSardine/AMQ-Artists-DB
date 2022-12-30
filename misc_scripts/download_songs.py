@@ -122,7 +122,7 @@ def download_songs(song_list):
                 artists = [artist["names"][0] for artist in song["artists"]]
                 artist_metadata = "; ".join(artists)
 
-                metadata = f"-metadata {title_key}=\"{song['songName']}\" -metadata {artist_key}=\"{artist_metadata}\" -metadata {album_key}=\"{song['animeExpandName']}\""
+                metadata = f"-metadata {title_key}=\"{song['songName']}\" -metadata {artist_key}=\"{artist_metadata}\" -metadata {album_key}=\"{anime_name}\""
 
                 if song["composers"]:
                     composers = [composer["names"][0] for composer in song["composers"]]
