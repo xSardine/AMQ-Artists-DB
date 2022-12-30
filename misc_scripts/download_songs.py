@@ -12,6 +12,9 @@ download_type = "mp3"
 # Relative output path where your downloaded files will go
 output_path = "downloaded/"
 
+# Set anime language for filename: EN, or JP
+anime_language = "JP"
+
 # If True: it will overwrite automatically if the downloaded file name already exist
 # If not: it will throw an error and go to the next song
 overwrite_already_existing_name = False
@@ -97,8 +100,13 @@ def download_songs(song_list):
             ignore_parameter = "-y"
         else:
             ignore_parameter = "-n"
+            
+        if anime_language == "EN":
+            anime_name = song['animeENName']
+        else:
+            anime_name = song['animeJPName']
 
-        file_name = f"{song['annId']} {song['animeExpandName']} {song['songType']} - {song['songName']} by {song['songArtist']}"
+        file_name = f"{song['annId']} {anime_name} {song['songType']} - {song['songName']} by {song['songArtist']}"
 
         try:
 
@@ -114,7 +122,7 @@ def download_songs(song_list):
                 artists = [artist["names"][0] for artist in song["artists"]]
                 artist_metadata = "; ".join(artists)
 
-                metadata = f"-metadata {title_key}=\"{song['songName']}\" -metadata {artist_key}=\"{artist_metadata}\" -metadata {album_key}=\"{song['animeExpandName']}\""
+                metadata = f"-metadata {title_key}=\"{song['songName']}\" -metadata {artist_key}=\"{artist_metadata}\" -metadata {album_key}=\"{anime_name}\""
 
                 if song["composers"]:
                     composers = [composer["names"][0] for composer in song["composers"]]
