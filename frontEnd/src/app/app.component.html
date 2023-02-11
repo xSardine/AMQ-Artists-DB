@@ -1,7 +1,9 @@
 <!-- Toolbar -->
 <div class="toolbar" role="banner">
-  <img width="40" alt="Artist Anisong Database Logo" src="/assets/img/sardineLogo.png" />
-  <span style="padding-left: 5px; font-size: 26px;">Anisong Database</span>
+  <a href="https://anisongdb.com" style="display: flex; align-items: center; text-decoration: none; color: inherit;">
+    <img width="40" alt="Artist Anisong Database Logo" src="/assets/img/sardineLogo.png" />
+    <span style="padding-left: 5px; font-size: 26px;">Anisong Database</span>
+  </a>
   <div class="spacer"></div>
   <label class="toggleSwitch nolabel" style="margin-right: 20px" title="Anime title displaying">
     <input (click)="toggleAnimeLang()" type="checkbox" checked />
@@ -39,7 +41,7 @@
 
 <div class="content" role="main">
   <app-search-bar (sendPreviousBody)="receivePreviousBody($event)" [previousBody]="previousBody"
-    (sendSongListtoTable)="receiveSongList($event)">
+    (sendSongListtoTable)="receiveSongList($event)" [currentSongList]="songList">
   </app-search-bar>
   <app-song-table (sendPreviousBody)="receivePreviousBody($event)" [previousBody]="previousBody"
     (sendSongListtoTable)="receiveSongList($event)" (mp3PlayerClicked)="playMP3($event)" [songTable]="songList"

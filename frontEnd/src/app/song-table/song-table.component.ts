@@ -19,6 +19,7 @@ export class SongTableComponent {
 
   @Input() songTable: any
   @Input() previousBody: any
+  @Input() animeTitleLang: any
 
   @Output() mp3PlayerClicked = new EventEmitter();
   playMP3music(song: any) {
@@ -37,33 +38,17 @@ export class SongTableComponent {
   }
 
   ngOnChanges(changes: Event) {
-    if (this.checkRankedTime()) {
-      this.rankedTime = true
-    }
-    else {
-      this.rankedTime = false
-    }
+    this.rankedTime = this.checkRankedTime()
     this.ascendingOrder = false;
-    this.currentAverage = this.calculateAverage(this.songTable)
+    this.currentAverage = this.computeAverage(this.songTable)
     this.sortFunction("annId");
   }
 
   isCurrentPlayingSong(song: any) {
-
-    if (!song || !this.currentPlayingSong) {
-      return false
-    }
-
-    if (song.annId == this.currentPlayingSong.annId
-      && song.songType == this.currentPlayingSong.songType
-      && song.songName == this.currentPlayingSong.songName
-      && song.songArtist == this.currentPlayingSong.songArtist) {
-      return true
-    }
-    else {
-      return false
-    }
+    return song === this.currentPlayingSong
   }
+
+  maxGridNb: number = 3
 
   lastColName: string = ""
   ascendingOrder: boolean = false;
@@ -84,10 +69,14 @@ export class SongTableComponent {
   popUpHDLink: string = "";
   popUpMDLink: string = "";
   popUpAudioLink: string = "";
-  popUpArtistsInfo = [];
+  popUpArtistsInfo: any = [];
   popUpComposersInfo = [];
   popUpArrangersInfo = [];
   currentAverage: any
+  gridStyle: any
+  subGridStyle: any
+  clipboardPopUpStyle: any
+  show: boolean = false
 
   tableHeaders = ["annId", "Anime", "Type", "Song Name", "Artist"];
 
@@ -96,52 +85,130 @@ export class SongTableComponent {
   currentPlayingSong: any
 
   checkRankedTime() {
-    let date = new Date()
-    let hour = date.getUTCHours()
-    let minute = date.getUTCMinutes()
+    // Define the ranked time intervals as an array of objects
+    let rankedTimeIntervals = [
+      {
+        start: new Date().setUTCHours(2, 30, 0, 0),
+        end: new Date().setUTCHours(3, 30, 0, 0)
+      },
+      {
+        start: new Date().setUTCHours(11, 30, 0, 0),
+        end: new Date().setUTCHours(12, 30, 0, 0)
+      },
+      {
+        start: new Date().setUTCHours(19, 30, 0, 0),
+        end: new Date().setUTCHours(20, 30, 0, 0)
+      }
+    ];
 
-    // 20:30 CST   -> 20:30 CET      -> 20:30 JST (all converted to UTC)
-    // West Ranked -> Central Ranked -> East Ranked first half
-    if ((hour == 2 && minute >= 30) || (hour == 19 && minute >= 30) || (hour == 11 && minute >= 30)) {
-      this.RankedDisabledTimeLeft = 90 - minute
-      return true
-    }
-    // 21:30 CST   -> 21:30 CET      -> 21:30 JST (all converted to UTC)
-    // West Ranked -> Central Ranked -> East Ranked second half
-    else if ((hour == 3 && minute < 30) || (hour == 20 && minute < 30) || (hour == 12 && minute < 30)) {
-      this.RankedDisabledTimeLeft = 30 - minute
-      return true
-    }
-    return false
+    // Get the current time in the user's local time zone
+    let date = Date.now();
 
+    // Find the ranked time interval that the current time is within
+    let rankedTimeInterval = rankedTimeIntervals.find(interval => {
+      return date >= interval.start && date < interval.end;
+    });
+
+    // If a ranked time interval was found, calculate the amount of time left until the end of the ranked period
+    if (rankedTimeInterval) {
+      this.RankedDisabledTimeLeft = Math.ceil((rankedTimeInterval.end - date) / 1000 / 60);
+      return true;
+    }
+
+    return false;
   }
 
-  copyToClipboard(copytext: string) {
+
+
+  copyToClipboard(event: any, copytext: string) {
     navigator.clipboard.writeText(copytext);
+    this.clipboardPopUpStyle = { "left": event.pageX + 10 + "px", "top": event.pageY - 20 + "px" }
+    this.show = true;
+    setTimeout(() => { this.show = false }, 400);
     return;
   }
 
-  calculateAverage(array: any) {
 
-    var diffs = []
+  computeAverage(array: any[]): number {
 
-    for (let song in array) {
-      if (array[song].songDifficulty) {
-        diffs.push(array[song].songDifficulty)
-      }
+    if (array === undefined) {
+      return 0;
     }
 
-    var total = 0;
-    var count = 0;
+    const diffs = array.filter(song => song.songDifficulty).map(song => song.songDifficulty);
 
-    diffs.forEach(function (item: any, index: any) {
-      total += item;
-      count++;
-    });
+    const total = diffs.reduce((sum, item) => sum + item, 0);
 
-    return (total / count).toFixed(1);
+    return +(total / diffs.length).toFixed(1);
   }
 
+
+  sortArtists(artists: { groups: string[], members: string[] }[]) {
+    // Create a new, sorted array of artists
+    const sortedArtists = artists.map(artist => artist)
+      .sort((a, b) => {
+
+        // Use the optional chaining operator to safely access the group and member lengths
+        // If either property is missing, the length will be treated as 0
+        let aLength = (a.groups?.length ?? 0) + (a.members?.length ?? 0);
+        let bLength = (b.groups?.length ?? 0) + (b.members?.length ?? 0);
+
+        // Sort the artists based on their group and member lengths
+        return aLength - bLength;
+      });
+
+    // Return the sorted array
+    return sortedArtists;
+  }
+
+
+  getTypeAndNumber(songType: string) {
+
+    const words = songType.split(" ");
+    const type = words[0];
+    const number = parseInt(words[1]) ? parseInt(words[1]) : 0;
+
+    return { type, number };
+  }
+
+  compareSongsType(songType1: string, songType2: string) {
+
+    const type1 = this.getTypeAndNumber(songType1);
+    const type2 = this.getTypeAndNumber(songType2);
+
+    // Create an object to map the song type to a sortable value
+    const songTypes = ["Opening", "Ending", "Insert"];
+
+    // Compare the song types first, and if they are equal, compare the numbers
+    return -(songTypes.indexOf(type1.type) - songTypes.indexOf(type2.type) || type1.number - type2.number);
+  }
+
+
+  compareTwoSongs(colName: string, a: any, b: any) {
+
+    let comparison;
+
+    // Compare values of song type if colName is songType
+    if (colName === "Type") {
+      comparison = this.compareSongsType(a["songType"], b["songType"]);
+      // else compare value of given column
+    } else {
+      comparison = a[colName] < b[colName] ? 1 : (a[colName] > b[colName] ? -1 : 0);
+    }
+
+    // If we sort on annId the songs have the same annId, compare songType
+    if (comparison === 0 && colName === "annId") {
+      comparison = this.compareSongsType(a["songType"], b["songType"]);
+    }
+
+    // Else if we sort on anything else, and they have the same value, compare on annId
+    else if (comparison === 0) {
+      comparison = a["annId"] > b["annId"] ? -1 : (a["annId"] < b["annId"] ? 1 : 0);
+    }
+
+    return this.ascendingOrder ? comparison : -comparison;
+
+  }
 
   sortFunction(colName: string) {
 
@@ -149,126 +216,25 @@ export class SongTableComponent {
       return;
     }
 
-    if (colName == "Song Name") {
-      colName = "songName"
-    }
-    if (colName == "Artist") {
-      colName = "songArtist"
-    }
-    if (colName == "Anime") {
-      colName = "animeExpandName"
-    }
+    const colNamesMap: Record<string, string> = {
+      "Song Name": "songName",
+      "Artist": "songArtist",
+      "Anime": this.animeTitleLang == "JP" ? "animeJPName" : "animeENName"
+    };
 
+    const sortColName = colNamesMap[colName] || colName;
 
-    if (this.lastColName != colName) {
-      this.ascendingOrder = false;
+    this.songTable.sort((a: any, b: any) => this.compareTwoSongs(sortColName, a, b))
+
+    // update the lastColName and ascendingOrder properties
+    if (this.lastColName !== colName) {
       this.lastColName = colName;
+      this.ascendingOrder = true;
+    } else {
+      this.ascendingOrder = !this.ascendingOrder;
     }
-
-    this.songTable.sort((a: any, b: any) => this.compareTwoSong(colName, a, b))
-    this.lastColName = colName
-    this.ascendingOrder = !this.ascendingOrder
 
   }
-
-  compareTwoSong(colName: string, a: any, b: any) {
-
-    if (colName == "Type") {
-      let comparison = this.compareSongType(a["songType"], b["songType"])
-      if (comparison == 1) {
-        return this.ascendingOrder ? -1 : 1;
-      }
-      else if (comparison == -1) {
-        return this.ascendingOrder ? 1 : -1;
-      }
-      else {
-
-        if (a["annId"] < b["annId"]) {
-          return -1;
-        }
-        else if (a["annId"] > b["annId"]) {
-          return 1;
-        }
-        else {
-          return 0
-        }
-      }
-    }
-    else {
-      if (a[colName] < b[colName]) {
-        return this.ascendingOrder ? 1 : -1;
-      }
-      else if (a[colName] > b[colName]) {
-        return this.ascendingOrder ? -1 : 1;
-      }
-      else {
-        if (colName == "annId" || colName == "Anime") {
-          return this.compareSongType(a["songType"], b["songType"]);
-        }
-        else {
-          if (a["annId"] < b["annId"]) {
-            return -1;
-          }
-          else if (a["annId"] > b["annId"]) {
-            return 1;
-          }
-          else {
-            return 0
-          }
-        }
-      }
-    }
-  }
-
-
-  compareSongType(type1: any, type2: any) {
-
-    let number1 = parseInt(type1.match(/^\s*(\S+)\s*(.*?)\s*$/).slice(1)[1])
-    let string1 = type1.match(/^\s*(\S+)\s*(.*?)\s*$/).slice(1)[0]
-    let number2 = parseInt(type2.match(/^\s*(\S+)\s*(.*?)\s*$/).slice(1)[1])
-    let string2 = type2.match(/^\s*(\S+)\s*(.*?)\s*$/).slice(1)[0]
-
-    switch (string1) {
-      case "Ending":
-        string1 = 1;
-        break;
-      case "Insert":
-        string1 = 2;
-        break;
-      case "Opening":
-        string1 = 0;
-        break;
-    }
-
-    switch (string2) {
-      case "Ending":
-        string2 = 1;
-        break;
-      case "Insert":
-        string2 = 2;
-        break;
-      case "Opening":
-        string2 = 0;
-        break;
-    }
-
-    if (string1 < string2) {
-      return -1
-    }
-    else if (string1 > string2) {
-      return 1
-    }
-    else if (number1 < number2) {
-      return -1
-    }
-    else if (number1 > number2) {
-      return 1
-    }
-    else {
-      return 0
-    }
-  }
-
 
   onAnyClick() {
     if (this.showSongInfoPopup && !this.doubleClickPreventer) {
@@ -281,14 +247,12 @@ export class SongTableComponent {
 
   displaySongIngoPopup(song: any) {
 
-    console.log(song)
-
     this.popUpannURL = "https://www.animenewsnetwork.com/encyclopedia/anime.php?id=" + song.annId;
     this.popUpannId = song.annId;
     this.popUpVintage = song.animeVintage;
     this.popUpAnimeType = song.animeType;
-    this.popUpannSongId = song.annSongId;
-    this.popUpAnime = song.animeExpandName;
+    this.popUpannSongId = song.annSongId != -1 ? song.annSongId : null;
+    this.popUpAnime = this.animeTitleLang == "JP" ? song.animeJPName : song.animeENName;
     this.popUpSongName = song.songName;
     this.popUpArtist = song.songArtist;
     this.popUpSongDiff = song.songDifficulty;
@@ -296,126 +260,25 @@ export class SongTableComponent {
     this.popUpHDLink = song.HQ;
     this.popUpMDLink = song.MQ;
     this.popUpAudioLink = song.audio;
-    this.popUpArtistsInfo = song.artists;
+    this.popUpArtistsInfo = this.sortArtists(song.artists);
     this.popUpComposersInfo = song.composers;
     this.popUpArrangersInfo = song.arrangers;
     this.showSongInfoPopup = !this.showSongInfoPopup;
     this.doubleClickPreventer = true;
     this.animeJPName = song.animeJPName
-  }
-
-  removeItemsById(arr: any, id: any) {
-    var i = arr.length;
-    if (i) {   // (not 0)
-      while (--i + 1) {
-        if (i == id) {
-          arr.splice(i, 1);
-        }
-      }
+    this.gridStyle = {
+      "grid-template-columns": `repeat(${Math.min(this.maxGridNb, this.popUpArtistsInfo.length)}, 1fr)`
     }
-  }
-
-  getIndexbyElement(arr: any, element: any) {
-
-    let index = 0
-
-    for (let el in arr) {
-      if (element == arr[el]) {
-        return index
-      }
-      index += 1
+    this.subGridStyle = {
+      "grid-template-columns": `repeat(${this.maxGridNb - Math.min(this.maxGridNb, this.popUpArtistsInfo.length) + 1}, 1fr)`
     }
-    return -1
 
   }
 
   deleteRowEntry(song: any) {
-    let id = this.getIndexbyElement(this.songTable, song)
-    this.removeItemsById(this.songTable, id);
-    this.currentAverage = this.calculateAverage(this.songTable)
-  }
-
-  areBodyIdenticalannIdSearch(body: any, body2: any): boolean {
-
-    // if the previous search wasn't an annId search
-    if (!this.previousBody || !this.previousBody.annId) {
-      return false
-    }
-
-    // if the annId search settings were different
-    if (body.annId != body2.annId
-      || body.ignore_duplicate != body2.ignore_duplicate
-      || body.opening_filter != body2.opening_filter
-      || body.ending_filter != body2.ending_filter
-      || body.insert_filter != body2.insert_filter) {
-      return false
-    }
-
-    return true
-  }
-
-  areBodyIdenticalArtistSearch(body: any, body2: any): boolean {
-
-    // if the previous search wasn't an artist_id search
-    if (!this.previousBody || !this.previousBody.artist_ids) {
-      return false
-    }
-
-    // if the amount of ids searched is different
-    if (body.artist_ids.length != body2.artist_ids.length) {
-      return false
-    }
-
-    // if the arrays are different
-    for (let artist in body.artist_ids) {
-      if (body.artist_ids[artist] != body2.artist_ids[artist]) {
-        return false
-      }
-    }
-
-    // if the artist ids search settings are different
-    if (body.group_granularity != body2.group_granularity
-      || body.max_other_artist != body2.max_other_artist
-      || body.ignore_duplicate != body2.ignore_duplicate
-      || body.opening_filter != body2.opening_filter
-      || body.ending_filter != body2.ending_filter
-      || body.insert_filter != body2.insert_filter) {
-      return false
-    }
-
-    return true
-  }
-
-
-  areBodyIdenticalComposerSearch(body: any, body2: any): boolean {
-
-    // if the previous search wasn't an artist_id search
-    if (!this.previousBody || !this.previousBody.composer_ids) {
-      return false
-    }
-
-    // if the amount of ids searched is different
-    if (body.composer_ids.length != body2.composer_ids.length) {
-      return false
-    }
-
-    // if the arrays are different
-    for (let composer in body.composer_ids) {
-      if (body.composer_ids[composer] != body2.composer_ids[composer]) {
-        return false
-      }
-    }
-
-    // if the artist ids search settings are different
-    if (body.ignore_duplicate != body2.ignore_duplicate
-      || body.arrangement != body2.arrangement
-      || body.opening_filter != body2.opening_filter
-      || body.ending_filter != body2.ending_filter
-      || body.insert_filter != body2.insert_filter) {
-      return false
-    }
-
-    return true
+    const id = this.songTable.findIndex((obj: any) => obj === song)
+    this.songTable.splice(id, 1);
+    this.currentAverage = this.computeAverage(this.songTable)
   }
 
   searchArtistIds(artists: any) {
@@ -442,7 +305,7 @@ export class SongTableComponent {
       "insert_filter": true,
     }
 
-    if (this.areBodyIdenticalArtistSearch(body, this.previousBody)) {
+    if (JSON.stringify(body) === JSON.stringify(this.previousBody)) {
       return
     }
 
@@ -478,7 +341,7 @@ export class SongTableComponent {
       "insert_filter": true,
     }
 
-    if (this.areBodyIdenticalComposerSearch(body, this.previousBody)) {
+    if (JSON.stringify(body) === JSON.stringify(this.previousBody)) {
       return
     }
 
@@ -502,7 +365,7 @@ export class SongTableComponent {
       "insert_filter": true,
     }
 
-    if (this.areBodyIdenticalannIdSearch(body, this.previousBody)) {
+    if (JSON.stringify(body) === JSON.stringify(this.previousBody)) {
       return
     }
 
@@ -514,6 +377,7 @@ export class SongTableComponent {
       currentSongList = data
       this.sendSongList(currentSongList)
     });
+
   }
 
 }

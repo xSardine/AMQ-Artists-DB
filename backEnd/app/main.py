@@ -115,6 +115,7 @@ class Song_Entry(BaseModel):
     annSongId: int
     animeENName: str
     animeJPName: str
+    animeAltName: Optional[List[str]]
     animeVintage: Optional[str]
     animeType: Optional[str]
     songType: str

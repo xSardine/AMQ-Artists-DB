@@ -80,10 +80,4 @@ def process():
         json.dump(artist_database, outfile)
 
 
-up = {
-    "songs": [1, 2],
-    "composers": ["Hiroyuki Sawano", "Composing Genius"],
-    "arrangers": ["SausageTime"],
-}
-
 process()

@@ -13,6 +13,7 @@ export class SearchBarComponent implements OnInit {
   }
 
   @Input() previousBody: any
+  @Input() currentSongList: any
 
   @Output() sendSongListtoTable = new EventEmitter();
   sendSongList(currentSongList: any) {
@@ -45,8 +46,6 @@ export class SearchBarComponent implements OnInit {
 
   rankedTime = false;
   RankedDisabledTimeLeft = 0
-
-  currentSongList: object = []
 
   checkRankedTime() {
 
