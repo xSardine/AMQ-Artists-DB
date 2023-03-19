@@ -125,7 +125,7 @@ waitForExpandLoaded().then((result) => {
 def selenium_retrieve_data(amq_url, amq_username, amq_password):
     # create driver and open amq
     option = webdriver.ChromeOptions()
-    option.add_argument("headless")
+    # option.add_argument("headless")
     driver = webdriver.Chrome(ChromeDriverManager().install(), options=option)
     driver.get(amq_url)
     expand = None
@@ -138,7 +138,9 @@ def selenium_retrieve_data(amq_url, amq_username, amq_password):
         driver.find_element(By.ID, "loginButton").click()
 
         # Wait few seconds to make sure page is loaded (need to find a better way)
-        time.sleep(2)
+        element = WebDriverWait(driver, 120).until(
+            EC.presence_of_element_located((By.ID, "mainMenu"))
+        )
         add_log("Connected to AMQ")
 
     finally:

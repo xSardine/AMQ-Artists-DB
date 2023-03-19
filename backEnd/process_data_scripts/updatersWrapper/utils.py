@@ -1,4 +1,3 @@
-from functools import partial
 import re
 
 ANIME_REGEX_REPLACE_RULES = [
@@ -23,10 +22,11 @@ ANIME_REGEX_REPLACE_RULES = [
     {"input": "0", "replace": "[0Ө]"},
     {"input": "2", "replace": "[2²]"},
     {"input": "3", "replace": "[3³]"},
-    {"input": "*", "replace": "[*✻＊]"},
+    {"input": "5", "replace": "[5⁵]"},
+    {"input": "*", "replace": "[*✻＊✳︎]"},
     {
         "input": " ",
-        "replace": "( ?[²³★☆♥♡\\/\\*✻＊'ˈ∽~〜・·\\.,;:!?@_-⇔→≒=\\+†×±◎Ө♪♣␣∞] ?| )",
+        "replace": "( ?[²³⁵★☆♥♡\\/\\*✻✳︎＊'ˈ-∽~〜・·\\.,;:!?@_-⇔→≒=\\+†×±◎Ө♪♣␣∞] ?| )",
     },
     {"input": "i", "replace": "([iíίɪ]|ii)"},
     {"input": "x", "replace": "[x×]"},
