@@ -62,17 +62,17 @@ def is_ranked_time():
         # CST
         (
             (date.hour == 1 and date.minute >= 30)
-            or (date.hour == 2 and date.minute < 30)
+            or (date.hour == 2 and date.minute < 28)
         )
         # JST
         or (
             (date.hour == 11 and date.minute >= 30)
-            or (date.hour == 12 and date.minute < 30)
+            or (date.hour == 12 and date.minute < 28)
         )
         # CET
         or (
             (date.hour == 19 and date.minute >= 30)
-            or (date.hour == 20 and date.minute < 30)
+            or (date.hour == 20 and date.minute < 28)
         )
     ):
         return True
