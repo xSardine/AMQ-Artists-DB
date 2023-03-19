@@ -1,9 +1,9 @@
 import re
 
 ANIME_REGEX_REPLACE_RULES = [
-    {"input": "ź", "replace": "[źŹ]"},
     {"input": "ļ", "replace": "[ļĻ]"},
     {"input": "l", "replace": "[l˥ļĻ]"},
+    {"input": "ź", "replace": "[źŹ]"},
     {"input": "z", "replace": "[zźŹ]"},
     {"input": "ou", "replace": "(ou|ō|o)"},
     {"input": "oo", "replace": "(oo|ō|o)"},
