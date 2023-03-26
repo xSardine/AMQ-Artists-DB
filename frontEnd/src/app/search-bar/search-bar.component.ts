@@ -58,13 +58,13 @@ export class SearchBarComponent implements OnInit {
       },
       //JST Asia
       {
-        start: new Date().setUTCHours(12, 30, 0, 0),
-        end: new Date().setUTCHours(13, 28, 0, 0)
+        start: new Date().setUTCHours(11, 30, 0, 0),
+        end: new Date().setUTCHours(12, 28, 0, 0)
       },
       // CET EU
       {
-        start: new Date().setUTCHours(19, 30, 0, 0),
-        end: new Date().setUTCHours(20, 28, 0, 0)
+        start: new Date().setUTCHours(20, 30, 0, 0),
+        end: new Date().setUTCHours(21, 28, 0, 0)
       }
     ];
 

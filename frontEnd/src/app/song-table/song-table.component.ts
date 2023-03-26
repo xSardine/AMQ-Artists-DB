@@ -91,13 +91,14 @@ export class SongTableComponent {
         start: new Date().setUTCHours(1, 30, 0, 0),
         end: new Date().setUTCHours(2, 30, 0, 0)
       },
+      // JST
       {
         start: new Date().setUTCHours(12, 30, 0, 0),
         end: new Date().setUTCHours(13, 30, 0, 0)
       },
       {
-        start: new Date().setUTCHours(19, 30, 0, 0),
-        end: new Date().setUTCHours(20, 30, 0, 0)
+        start: new Date().setUTCHours(20, 30, 0, 0),
+        end: new Date().setUTCHours(21, 30, 0, 0)
       }
     ];
 
