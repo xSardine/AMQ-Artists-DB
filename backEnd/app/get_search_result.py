@@ -66,8 +66,8 @@ def is_ranked_time():
         )
         # JST
         or (
-            (date.hour == 11 and date.minute >= 30)
-            or (date.hour == 12 and date.minute < 28)
+            (date.hour == 12 and date.minute >= 30)
+            or (date.hour == 13 and date.minute < 28)
         )
         # CET
         or (
@@ -80,6 +80,10 @@ def is_ranked_time():
 
 
 def get_duplicate_in_list(list, song):
+    """
+    Returns the index of the duplicate song in the list
+    """
+
     for i, song2 in enumerate(list):
         if song[11] == song2["songName"] and song[12] == song2["songArtist"]:
             return i
@@ -97,6 +101,10 @@ def combine_results(
     ignore_duplicate=False,
     max_nb_songs=300,
 ):
+
+    """
+    Combine the results of the different search filters
+    """
 
     songId_done = []
     final_song_list = []
@@ -339,7 +347,7 @@ def get_search_results(
         and song_name_search_filters.search == artist_search_filters.search
     ):
 
-        # Links filter not available during ranked
+        # Links filter
         if False:
             songs = sql_calls.get_song_list_from_links(
                 cursor, anime_search_filters.search

@@ -88,12 +88,12 @@ export class SongTableComponent {
     // Define the ranked time intervals as an array of objects
     let rankedTimeIntervals = [
       {
-        start: new Date().setUTCHours(2, 30, 0, 0),
-        end: new Date().setUTCHours(3, 30, 0, 0)
+        start: new Date().setUTCHours(1, 30, 0, 0),
+        end: new Date().setUTCHours(2, 30, 0, 0)
       },
       {
-        start: new Date().setUTCHours(11, 30, 0, 0),
-        end: new Date().setUTCHours(12, 30, 0, 0)
+        start: new Date().setUTCHours(12, 30, 0, 0),
+        end: new Date().setUTCHours(13, 30, 0, 0)
       },
       {
         start: new Date().setUTCHours(19, 30, 0, 0),

@@ -24,6 +24,7 @@ class Search_Filter(BaseModel):
     arrangement: Optional[bool] = True
 
     class Config:
+        # This will search for every fripSide song, as well as every Yoshino Nanjo song with not more than 2 other artists
         schema_extra = {
             "example": {
                 "search": "fripSide",
@@ -32,8 +33,6 @@ class Search_Filter(BaseModel):
                 "max_other_artist": 2,
             }
         }
-
-    # This will search for every fripSide song, as well as every Yoshino Nanjo song with not more than 2 other artists
 
 
 class Search_Request(BaseModel):

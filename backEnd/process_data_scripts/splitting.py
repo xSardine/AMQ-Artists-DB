@@ -206,6 +206,7 @@ splitting_exception_list = [
     ("The S・h・e", ("The S・h・e",)),
     ("Teikoku Kageki-dan・Hana-gumi", ("Teikoku Kageki-dan・Hana-gumi",)),
     # &
+    ("Shoukichi Kina & Champloose", ("Shoukichi Kina & Champloose",)),
     ("Flappy & Choppy's", ("Flappy & Choppy's",)),
     ("Sachi & Juri", ("Sachi & Juri",)),
     ("Amane + Beat Mario (COOL&CREATE)", ("Amane", "Beat Mario (COOL&CREATE)")),

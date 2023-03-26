@@ -114,7 +114,12 @@ function getPromiseExpand() {
 }
 
 async function waitForExpandLoaded() {
-    await getPromiseExpand()
+    if (typeof socket !== "undefined") {
+        console.log("socket", socket)
+        await getPromiseExpand()
+    } else {
+        console.log("socket is not defined")
+    }
 }
 waitForExpandLoaded().then((result) => {
     console.log("Promise done adding new element")
@@ -144,20 +149,25 @@ def selenium_retrieve_data(amq_url, amq_username, amq_password):
         add_log("Connected to AMQ")
 
     finally:
-        try:
+        while not expand:
 
             # Execute script
             driver.execute_script(getExpandScript)
             add_log("script executed, waiting for promise")
 
-            # Wait for new element to be created and get data
-            element = WebDriverWait(driver, 120).until(
-                EC.presence_of_element_located((By.ID, "hiddenExpand"))
-            )
+            try:
+                # Wait for new element to be created and get data
+                element = WebDriverWait(driver, 10).until(
+                    EC.presence_of_element_located((By.ID, "hiddenExpand"))
+                )
+            except:
+                add_log("Timeout, trying again")
+                continue
+
             expand = element.get_property("variable")
-        finally:
-            driver.quit()
-            return expand
+
+        driver.quit()
+        return expand
 
 
 def similar_song_exist(source_anime, new_song):

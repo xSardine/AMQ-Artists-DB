@@ -14,7 +14,7 @@ ANIME_REGEX_REPLACE_RULES = [
     {"input": "u", "replace": "([uūûúùüǖμ]|uu)"},
     {"input": "aa", "replace": "(aa|a)"},
     {"input": "ae", "replace": "(ae|æ)"},
-    {"input": "a", "replace": "([aäά@âàáạåæā∀Λ]|aa)"},
+    {"input": "a", "replace": "([aäãά@âàáạåæā∀Λ]|aa)"},
     {"input": "c", "replace": "[cςč℃]"},
     {"input": "e", "replace": "[eəéêёëèæē]"},
     {"input": "'", "replace": "['’ˈ]"},
