@@ -89,16 +89,16 @@ export class SongTableComponent {
     let rankedTimeIntervals = [
       {
         start: new Date().setUTCHours(1, 30, 0, 0),
-        end: new Date().setUTCHours(2, 30, 0, 0)
+        end: new Date().setUTCHours(2, 28, 0, 0)
       },
       // JST
       {
-        start: new Date().setUTCHours(12, 30, 0, 0),
-        end: new Date().setUTCHours(13, 30, 0, 0)
+        start: new Date().setUTCHours(11, 30, 0, 0),
+        end: new Date().setUTCHours(12, 28, 0, 0)
       },
       {
-        start: new Date().setUTCHours(20, 30, 0, 0),
-        end: new Date().setUTCHours(21, 30, 0, 0)
+        start: new Date().setUTCHours(17, 30, 0, 0),
+        end: new Date().setUTCHours(18, 28, 0, 0)
       }
     ];
 
