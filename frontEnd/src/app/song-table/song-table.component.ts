@@ -97,8 +97,8 @@ export class SongTableComponent {
         end: new Date().setUTCHours(12, 28, 0, 0)
       },
       {
-        start: new Date().setUTCHours(17, 30, 0, 0),
-        end: new Date().setUTCHours(18, 28, 0, 0)
+        start: new Date().setUTCHours(18, 30, 0, 0),
+        end: new Date().setUTCHours(19, 28, 0, 0)
       }
     ];
 
