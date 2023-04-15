@@ -18,6 +18,7 @@ splitting_exception_list = [
     ("ZONE&Run Time All Stars", ("ZONE", "Run Time All Stars")),
     ## Force splitting (splitters that are not automatically recognized)
     # to
+    ("Taku Izumi to Sono Family", ("Taku Izumi", "Sono Family")),
     (
         "Hiroka Nishizawa to Mori no Juunin-tachi",
         ("Hiroka Nishizawa", "Mori no Juunin-tachi"),
@@ -496,7 +497,7 @@ splitting_exception_list = [
     ("Ami Onuki (PUFFY)", ("Ami Onuki",)),
     ("ichigo from Kishida Kyoudan &THE Akeboshi Rockets", ("ichigo",)),
     ## Reformatting of the string (reformate the string by adding or removing some part to have better artists name)
-    ("HENTAI SHINSHI CLUB (feat. kojikoji)", ("HENTAI SHINSHI CLUB", "kojikoji")),
+    ("Hentai Shinshi Club (feat. kojikoji)", ("Hentai Shinshi Club", "kojikoji")),
     ("yama (feat. Nakimushi)", ("yama", "Nakimushi")),
     (
         "Tenshou Gakuen Seito・Kyoushi Ichidou",
