@@ -1,7 +1,8 @@
 *.pyc
 *.db
 commands.txt
-song_database.json
+songs_database.json
 expand_database.json
 __pycache__/
 randomScripts/
+*Copie.json

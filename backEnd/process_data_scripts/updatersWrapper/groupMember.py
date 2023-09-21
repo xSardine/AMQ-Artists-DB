@@ -33,7 +33,6 @@ def remove_member_group_links(group_id, line_up_id):
 
 
 def update_new_line_up_in_song_database(group_id, line_up_id, update_songs, mode):
-
     if mode not in ["edit", "addAll", "addSub"]:
         print("CHOOSE A CORRECT MODE")
         exit(1)
@@ -71,7 +70,6 @@ def update_new_line_up_in_song_database(group_id, line_up_id, update_songs, mode
 
 
 def remove_line_up(group_id, line_up_id, fall_back_line_up):
-
     # song - artist links
     print()
     for anime in song_database:
@@ -130,7 +128,6 @@ def remove_line_up(group_id, line_up_id, fall_back_line_up):
 
 
 def process():
-
     user_input, group_id = utils.ask_artist(
         "Please input the group to which you want to add a line up\n",
         song_database,
@@ -141,7 +138,6 @@ def process():
     print()
 
     if not group["members"]:
-
         print(
             f"No Line Up found for {group['names'][0]}, automatically adding to every songs\n"
         )
@@ -188,19 +184,15 @@ def process():
             return
 
     else:
-
         validation = utils.ask_validation(
             "There are already existing line up, do you want to remove one ?\n"
         )
         if validation:
-
             # skip user input as there's no question needed
             if len(group["members"]) == 1:
-
                 remove_line_up(group_id, 0, -1)
 
             else:
-
                 print(range(len(group["members"])))
 
                 line_ups = "\n"
@@ -232,7 +224,6 @@ def process():
                 return
 
         else:
-
             line_ups = "\n"
             for i, line_up in enumerate(group["members"]):
                 line_up = [artist_database[l[0]]["names"][0] for l in line_up]
@@ -243,7 +234,6 @@ def process():
             )
 
             if line_up_id != -1:
-
                 print("Updating a line up\n")
 
                 group_members = utils.update_line_up(
@@ -288,7 +278,6 @@ def process():
                     return
 
             else:
-
                 print("Creating a new line up\n")
 
                 group_members = utils.ask_line_up(
@@ -316,7 +305,6 @@ def process():
                 linked_songs = utils.ask_song_ids()
 
                 if not linked_songs:
-
                     validation_message = f"There are no songs to link to this line up, are you sure you want to continue ?\n"
                     validation = utils.ask_validation(validation_message)
                     if not validation:
@@ -338,9 +326,9 @@ def process():
                     return
 
     with open(song_database_path, "w", encoding="utf-8") as outfile:
-        json.dump(song_database, outfile)
+        json.dump(song_database, outfile, indent=4)
     with open(artist_database_path, "w", encoding="utf-8") as outfile:
-        json.dump(artist_database, outfile)
+        json.dump(artist_database, outfile, indent=4)
 
 
 """

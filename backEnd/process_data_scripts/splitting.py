@@ -18,6 +18,8 @@ splitting_exception_list = [
     ("ZONE&Run Time All Stars", ("ZONE", "Run Time All Stars")),
     ## Force splitting (splitters that are not automatically recognized)
     # to
+    ("Mari Yaguchi to Straw Hat", ("Mari Yaguchi", "Straw Hat")),
+    ("Osamu Yamada to Hello Nights", ("Osamu Yamada to Hello Nights",)),
     ("Taku Izumi to Sono Family", ("Taku Izumi", "Sono Family")),
     (
         "Hiroka Nishizawa to Mori no Juunin-tachi",
@@ -64,7 +66,7 @@ splitting_exception_list = [
             "Muchachiita",
             "Etsuko Kozakura",
             "Mayuko Omimura",
-            "Akiko Suzuki",
+            "Yukiji",
             "Rie Kugimiya",
         ),
     ),
@@ -74,7 +76,6 @@ splitting_exception_list = [
         ("Eri Itou", "Mori no Ki Jidou Gasshou-dan"),
     ),
     ("Naomi Tamura to Himawari Gasshou-dan", ("Naomi Tamura", "Himawari Gasshou-dan")),
-    ("Osamu Yamada to Hello Nights", ("Osamu Yamada", "Hello Nights")),
     (
         "LaSalle Ishii to Kochikame Win Gasshou-dan",
         ("LaSalle Ishii", "Kochikame Win Gasshou-dan"),
@@ -156,6 +157,46 @@ splitting_exception_list = [
     ("(K)NoW_NAME:AIJ", ("(K)NoW_NAME", "AIJ")),
     ("(K)NoW_NAME:eNu", ("(K)NoW_NAME", "eNu")),
     # other
+    (
+        "Mica Caldito & mpi & Mika Kobayashi produced by Hiroyuki Sawano",
+        ("Mica Caldito", "mpi", "Mika Kobayashi", "Hiroyuki Sawano"),
+    ),
+    ("mpi Produced by Hiroyuki Sawano", ("mpi", "Hiroyuki Sawano")),
+    ("Team.Nekokan [Neko] featuring.atsuko", ("Team.Nekokan [Neko]", "atsuko")),
+    ("Team.Nekokan [Neko] featuring.Lia", ("Team.Nekokan [Neko]", "Lia")),
+    (
+        "Team.Nekokan [Neko] featuring.Junca Amaoto",
+        ("Team.Nekokan [Neko]", "Junca Amaoto"),
+    ),
+    (
+        "Team.Nekokan [Neko] featuring.Rekka Katakiri",
+        ("Team.Nekokan [Neko]", "Rekka Katakiri"),
+    ),
+    ("Rinko Maki (with Dynamite You)", ("Rinko Maki", "Dynamite You")),
+    (
+        "Mitsuko Horie to Mamoru Ichiba to Tea Tea Ne & Children's Chorus",
+        ("Mitsuko Horie", "Mamoru Ichiba", "Tea Tea Ne", "Children's Chorus"),
+    ),
+    (
+        "Ichiro Mizuki (Columbia Yurikago-kai)",
+        ("Ichiro Mizuki", "Columbia Yurikago-kai"),
+    ),
+    ("Naoya Ogawa☆Mayuko Iwasa", ("Naoya Ogawa", "Mayuko Iwasa")),
+    (
+        "Precure 5 plus Eri Sendai feat. Cure Quartet",
+        ("Precure 5", "Eri Sendai", "Cure Quartet"),
+    ),
+    ("Yo Hitoto loves Mummy-D", ("Yo Hitoto", "Mummy-D")),
+    ("Hiroshi Kitadani With 100 friends", ("Hiroshi Kitadani", "100 friends")),
+    ("i-dep feat. Minami Fujioka (PANDA 1/2)", ("i-dep", "Minami Fujioka (PANDA 1/2)")),
+    ("Kano to Uzaki-chan", ("Kano", "Uzaki-chan")),
+    ("Aya Kamiki w TAKUYA", ("Aya Kamiki", "TAKUYA")),
+    ("Toshiki Masuda v.s. Shunsuke Takeuchi", ("Toshiki Masuda", "Shunsuke Takeuchi")),
+    (
+        "Shunsuke Takeuchi v.s. Tasuku Hatanaka",
+        ("Shunsuke Takeuchi", "Tasuku Hatanaka"),
+    ),
+    ("Konomi Suzuki n' Kiba of Akiba", ("Konomi Suzuki", "Kiba of Akiba")),
     ("FUZI × Neru (feat. Luschka & Panaman)", ("FUZI", "Neru", "Luschka", "Panaman")),
     ("FUZI × Neru (feat. Mas Kimura & MEG)", ("FUZI", "Neru", "Mas Kimura", "MEG")),
     ("Rinko Maki AND Ichiro Mizuki", ("Rinko Maki", "Ichiro Mizuki")),
@@ -164,6 +205,10 @@ splitting_exception_list = [
     (
         "Yui Makino Hikiiru Uchuu Shoujo Vanaren-tai",
         ("Yui Makino", "Uchuu Shoujo Vanaren-tai"),
+    ),
+    (
+        "Michiru Aizawa Hikiiru Uchuu Shoujo Vanaren-tai",
+        ("Michiru Aizawa", "Uchuu Shoujo Vanaren-tai"),
     ),
     (
         "Momoko Saitou Hikiiru Uchuu Shoujo Vanaren-tai",
@@ -184,10 +229,39 @@ splitting_exception_list = [
     ),
     ## Force NOT splitting (exception on splitters)
     # ・
+    (
+        "B-CLUB\u30fbBAND feat. Hiromi Tsuru, Aya Hisakawa, Yumi Touma, Hinako Kanamaru, Junko Shimakata",
+        (
+            "B-CLUB・BAND",
+            "Hiromi Tsuru",
+            "Aya Hisakawa",
+            "Yumi Touma",
+            "Hinako Kanamaru",
+            "Junko Shimakata",
+        ),
+    ),
+    (
+        "Mamiko Mizutani With Doku P.E.T.S",
+        (
+            "Mamiko Mizutani",
+            "Doku P.E.T.S",
+        ),
+    ),
+    (
+        "Sakura Nogawa & Mamiko Mizutani With Doku P.E.T.S",
+        (
+            "Sakura Nogawa",
+            "Mamiko Mizutani",
+            "Doku P.E.T.S",
+        ),
+    ),
     ("m.c.A・T", ("m.c.A・T",)),
     ("Blend・A", ("Blend・A",)),
     ("G・GRIP", ("G・GRIP",)),
-    ("S・A", ("S・A",)),
+    (
+        "Yuuko Gotou with S\u30fbA",
+        ("Yuuko Gotou", "S・A"),
+    ),
     ("KIX・S", ("KIX・S",)),
     ("PSY・S", ("PSY・S",)),
     ("A・ZU・NA", ("A・ZU・NA",)),
@@ -207,6 +281,19 @@ splitting_exception_list = [
     ("The S・h・e", ("The S・h・e",)),
     ("Teikoku Kageki-dan・Hana-gumi", ("Teikoku Kageki-dan・Hana-gumi",)),
     # &
+    ("UCARY & THE VALENTINE", ("UCARY & THE VALENTINE",)),
+    (
+        "Mina Kubota feat. MIYUU & MASUMI (Mistera Feo)",
+        ("Mina Kubota", "MIYUU (Mistera Feo)", "MASUMI (Mistera Feo)"),
+    ),
+    ("765PRO&876PRO ALLSTARS", ("765PRO ALLSTARS", "876PRO ALLSTARS")),
+    (
+        "Orie Kimoto & Atsuko Enomoto with Flappy & Choppy's",
+        ("Orie Kimoto", "Atsuko Enomoto", "Flappy & Choppy's"),
+    ),
+    ("Mayumi Gojou with Flappy & Choppy's", ("Mayumi Gojou", "Flappy & Choppy's")),
+    ("sisters M.K. & K.U.", ("sisters M.K. & K.U.",)),
+    ("Hamatora -Nice & Murasaki-", ("Hamatora -Nice & Murasaki-",)),
     ("Shoukichi Kina & Champloose", ("Shoukichi Kina & Champloose",)),
     ("Flappy & Choppy's", ("Flappy & Choppy's",)),
     ("Sachi & Juri", ("Sachi & Juri",)),
@@ -275,7 +362,6 @@ splitting_exception_list = [
         ("Wasei Geronimo & Love Guerrilla Experience",),
     ),
     # and
-    ("Shou and the Moon Dogs", ("Shou and the Moon Dogs",)),
     ("Junko Hori and New Royal", ("Junko Hori and New Royal",)),
     ("Tetsu and Tomo", ("Tetsu and Tomo",)),
     ("HIGH and MIGHTY COLOR", ("HIGH and MIGHTY COLOR",)),
@@ -283,7 +369,6 @@ splitting_exception_list = [
     ("devils and realist", ("devils and realist",)),
     ("Lillies and Remains", ("Lillies and Remains",)),
     ("Bird Bear Hare and Fish", ("Bird Bear Hare and Fish",)),
-    ("Konya, anomachikara", ("Konya, anomachikara",)),
     (
         "Takanori Nishikawa × Fear, and Loathing in Las Vegas",
         (
@@ -301,7 +386,6 @@ splitting_exception_list = [
     ("LIP×LIP", ("LIP×LIP",)),
     ("Gothic×Luck", ("Gothic×Luck",)),
     ("High×Joker", ("High×Joker",)),
-    ("RhymeTube×Odori Foot Works", ("RhymeTube×Odori Foot Works",)),
     ("salyu×salyu", ("salyu×salyu",)),
     ("Daisy×Daisy", ("Daisy×Daisy",)),
     ("SKET×Sketch", ("SKET×Sketch",)),
@@ -311,6 +395,9 @@ splitting_exception_list = [
     ("nana×nana", ("nana×nana",)),
     ("U×Mishi", ("U×Mishi",)),
     # with
+    ('Takumi Nakayama with "R"', ('Takumi Nakayama with "R"',)),
+    ("YOURI with the CASH", ("YOURI with the CASH",)),
+    ("KYAN MARIE with MEDUSA", ("KYAN MARIE with MEDUSA",)),
     ("Aoi Yuuki with Starfield", ("Aoi Yuuki with Starfield",)),
     ("yuyu with eriri", ("yuyu with eriri",)),
     ("Petit Rabbit's with beans", ("Petit Rabbit's with beans",)),
@@ -351,8 +438,15 @@ splitting_exception_list = [
         ("Yuji Ohno", "Lupintic Five with Friends", "DOUBLE"),
     ),
     # ,
-    ("Johnny, Louis & Char", ("Johnny, Louis & Char",)),
+    ("Pete Mac, Jr.", ("Pete Mac, Jr.",)),
+    ("Nora from Konya, anomachikara", ("Nora from Konya, anomachikara",)),
+    ("CHA, HO-SOK & MIKI", ("CHA, HO-SOK", "MIKI")),
+    (
+        "Kiyoshiro Imawano, Johnny, Louis & Char",
+        ("Kiyoshiro Imawano", "Johnny, Louis & Char"),
+    ),
     ("Fear, and Loathing in Las Vegas", ("Fear, and Loathing in Las Vegas",)),
+    ("RAISE A SUILEN×Hello, Happy World!", ("RAISE A SUILEN", "Hello, Happy World!")),
     ("Hello, Happy World!", ("Hello, Happy World!",)),
     ("Mix Speaker's,Inc.", ("Mix Speaker's,Inc.",)),
     ("Kamisama, Boku wa Kizuite Shimatta", ("Kamisama, Boku wa Kizuite Shimatta",)),
@@ -364,6 +458,12 @@ splitting_exception_list = [
     ("Wake Up, May'n!", ("Wake Up, May'n!",)),
     ("Kagrra,", ("Kagrra,",)),
     # +
+    (
+        "Gokujou Seitokai Yuugeki-bu+Sharyou-bu",
+        ("Gokujou Seitokai Yuugeki-bu+Sharyou-bu",),
+    ),
+    ("Fuji Misaki+", ("Fuji Misaki+",)),
+    ("EIKO+ERIKO", ("EIKO+ERIKO",)),
     ("Kaede+Cheek Fairy", ("Kaede+Cheek Fairy",)),
     ("Sister Princess +1", ("Sister Princess +1",)),
     ("nobodyknows+", ("nobodyknows+",)),
@@ -378,13 +478,18 @@ splitting_exception_list = [
     ("ASAHINA Bros.+JULI", ("ASAHINA Bros.+JULI",)),
     ("Q;indivi+", ("Q;indivi+",)),
     ("+α/Alfakyun.", ("+α/Alfakyun.",)),
-    ("+earth☆sky", ("+earth☆sky",)),
+    ("+earth☆sky feat. ayaka morikawa", ("+earth☆sky", "ayaka morikawa")),
     ("SUMMONERS 2+", ("SUMMONERS 2+",)),
     ("DIALOGUE+", ("DIALOGUE+",)),
-    ("MERI+Noriyuki", ("MERI+Noriyuki",)),
+    (
+        "MERI+Noriyuki, Kanami, Haato & Shima no Nyanko-tachi",
+        ("MERI+Noriyuki", "Kanami", "Haato", "Shima no Nyanko-tachi"),
+    ),
     ("sophie+", ("sophie+",)),
     ("Megami-ryousei+α", ("Megami-ryousei+α",)),
     # other
+    ("Konya, anomachikara starring VALSHE", ("Konya, anomachikara", "VALSHE")),
+    ("EE JUMP featuring Sonin", ("EE JUMP featuring Sonin",)),
     ("JAXX/JAXX", ("JAXX/JAXX",)),
     ("Shou/Ouji", ("Shou/Ouji",)),
     ("NAMI with Shige×2＆S/N", ("NAMI", "Shige×2", "S/N")),
@@ -398,8 +503,8 @@ splitting_exception_list = [
     ("Kisu Koide (PANDA 1/2)", ("Kisu Koide (PANDA 1/2)",)),
     ("H-el-ical//", ("H-el-ical//",)),
     ("22/7", ("22/7",)),
-    ("YURiCa/Hanatan", ("YURiCa/Hanatan",)),
-    ("Bach/Gounod", ("Johann Sebastian Bach/Charles Gounod",)),
+    ("HoneyWorks meets YURiCa/Hanatan", ("HoneyWorks", "YURiCa/Hanatan")),
+    ("Bach/Gounod", ("Johann Sebastian Bach", "Charles Gounod")),
     ("m-flo\u2665DOPING PANDA", ("m-flo", "DOPING PANDA")),
     ## removing longer strings (removing longer string to avoid having dumb artists names)
     ("Chihiro Yonekura (With Kaleido Stars)", ("Chihiro Yonekura", "Kaleido Stars")),
@@ -416,6 +521,8 @@ splitting_exception_list = [
         "SawanoHiroyuki[nZk]:Junki Kono & Sho Yonashiro (JO1)",
         ("SawanoHiroyuki[nZk]", "Junki Kono", "Sho Yonashiro"),
     ),
+    ("SawanoHiroyuki[nZk]:Motohiro Hata", ("SawanoHiroyuki[nZk]", "Motohiro Hata")),
+    ("SawanoHiroyuki[nZk]:Akihito Okano", ("SawanoHiroyuki[nZk]", "Akihito Okano")),
     ("SawanoHiroyuki[nZk]:XAI", ("SawanoHiroyuki[nZk]", "XAI")),
     ("POLYSICS with Seiya Yamasaki (Kyuuso Nekokami)", ("POLYSICS", "Seiya Yamasaki")),
     ("JO\u2606STARS~TOMMY,Coda,JIN~", ("JO\u2606STARS~TOMMY,Coda,JIN~",)),
@@ -427,7 +534,6 @@ splitting_exception_list = [
     ("AIKI from bless4", ("AIKI",)),
     ("AKINO arai×AKINO from bless4", ("AKINO arai", "AKINO")),
     ("AIKI & AKINO from bless4", ("AIKI", "AKINO")),
-    ("TK from Ling Tosite Sigure", ("TK",)),
     ("Yuuki Ozaki(from Galileo Galilei)", ("Yuuki Ozaki",)),
     (
         "Kotaro Oshio with Yuuki Ozaki (from Galileo Galilei)",
@@ -480,12 +586,9 @@ splitting_exception_list = [
         "GHOST ORACLE DRIVE feat. Cento Chihiro Chittiii (BiSH)",
         ("GHOST ORACLE DRIVE", "Cento Chihiro Chittiii (BiSH)"),
     ),
-    ("TeddyLoid feat. Aina The End (BiSH)", ("TeddyLoid", "AiNA THE END")),
-    ("SUGIZO feat. Aina The End (BiSH)", ("SUGIZO", "AiNA THE END")),
     ("Risa Aizawa (Dempagumi.inc)", ("Risa Aizawa",)),
     ("KinKi Kids (Koichi Domoto)", ("KinKi Kids",)),
     ("KinKi Kids (Tsuyoshi Domoto)", ("KinKi Kids",)),
-    ("Suu (SILENT SIREN)", ("Sumire Yoshida",)),
     ("Q-MHz feat. Mitsuhiro Hidaka a.k.a. SKY-HI", ("Q-MHz", "SKY-HI")),
     ("aki a.k.a Aki Deguchi", ("aki",)),
     ("ELISA connect EFP", ("ELISA",)),
@@ -497,7 +600,7 @@ splitting_exception_list = [
     ("Ami Onuki (PUFFY)", ("Ami Onuki",)),
     ("ichigo from Kishida Kyoudan &THE Akeboshi Rockets", ("ichigo",)),
     ## Reformatting of the string (reformate the string by adding or removing some part to have better artists name)
-    ("Hentai Shinshi Club (feat. kojikoji)", ("Hentai Shinshi Club", "kojikoji")),
+    ("HENTAI SHINSHI CLUB (feat. kojikoji)", ("HENTAI SHINSHI CLUB", "kojikoji")),
     ("yama (feat. Nakimushi)", ("yama", "Nakimushi")),
     (
         "Tenshou Gakuen Seito・Kyoushi Ichidou",
@@ -508,8 +611,8 @@ splitting_exception_list = [
     ("Basement Jaxx (feat. Lisa Kekaula)", ("Basement Jaxx", "Lisa Kekaula")),
     ("Moe Shop (feat.TORIENA)", ("Moe Shop", "TORIENA")),
     (
-        "Pokemon Kids & Unshou Ishizuka (+Ikue Ootani)",
-        ("Pokemon Kids", "Unshou Ishizuka", "Ikue Ootani"),
+        "Pokemon Kids & Unsho Ishizuka (+Ikue Ootani)",
+        ("Pokemon Kids", "Unsho Ishizuka", "Ikue Ootani"),
     ),
     ("Pokemon Kids (+Ikue Ootani)", ("Pokemon Kids", "Ikue Ootani")),
     (
@@ -526,13 +629,16 @@ splitting_exception_list = [
         "M. Charlton-C. Cecchetto / M. Bonsanto-R. Rossi",
         ("Malcolm Charlton", "Claudio Cecchetto", "Matteo Bonsanto", "Roberto Rossi"),
     ),
-    ("Akiko & Naoko Kobayashi", ("Akiko Kobayashi", "Naoko Kobayashi")),
     ("Kevin Penkin [feat. Emi Evans]", ("Kevin Penkin", "Emi Evans")),
     (
         "Shirahamazaka Koukou Gasshou-bu & Seigaku-bu",
         ("Shirahamazaka Koukou Gasshou-bu", "Shirahamazaka Koukou Seigaku-bu"),
     ),
     # Aikatsu
+    (
+        "Mirai\u30fbAine from BEST FRIENDS!",
+        ("Mirai from BEST FRIENDS!", "Aine from BEST FRIENDS!"),
+    ),
     (
         "Waka・Fuuri・Sunao・Risuko from STAR☆ANIS",
         (
@@ -917,10 +1023,6 @@ splitting_exception_list = [
     (
         "Sakuya・Kaguya from BEST FRIENDS!",
         ("Sakuya from BEST FRIENDS!", "Kaguya from BEST FRIENDS!"),
-    ),
-    (
-        "Aine・Mirai from BEST FRIENDS!",
-        ("Aine from BEST FRIENDS!", "Mirai from BEST FRIENDS!"),
     ),
     ("Kaguya from BEST FRIENDS!", ("Kaguya from BEST FRIENDS!",)),
     (

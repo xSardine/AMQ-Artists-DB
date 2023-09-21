@@ -14,7 +14,6 @@ def add_main_log(
     ignore_duplicate,
     authorized_types,
 ):
-
     logs = {
         "date": str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")),
     }
@@ -55,24 +54,23 @@ def add_main_log(
 
 
 def is_ranked_time():
-
     date = datetime.utcnow()
     # If ranked time UTC
     if (
         # CST
         (
             (date.hour == 1 and date.minute >= 30)
-            or (date.hour == 2 and date.minute < 28)
+            or (date.hour == 2 and date.minute < 23)
         )
         # JST
         or (
             (date.hour == 11 and date.minute >= 30)
-            or (date.hour == 12 and date.minute < 28)
+            or (date.hour == 12 and date.minute < 23)
         )
         # CET
         or (
             (date.hour == 18 and date.minute >= 30)
-            or (date.hour == 19 and date.minute < 28)
+            or (date.hour == 19 and date.minute < 23)
         )
     ):
         return True
@@ -101,7 +99,6 @@ def combine_results(
     ignore_duplicate=False,
     max_nb_songs=300,
 ):
-
     """
     Combine the results of the different search filters
     """
@@ -115,7 +112,6 @@ def combine_results(
         + artist_songs_list
         + composer_songs_list
     ):
-
         if len(final_song_list) >= max_nb_songs:
             break
 
@@ -154,18 +150,15 @@ def combine_results(
 
 
 def get_member_list_flat(art_database, artists, bottom=True):
-
     # If bottom: will skip subgroups and go directly to the lower tier possible
 
     member_list = []
 
     for artist, line_up in artists:
-
         if line_up == -1:
             member_list.append(int(artist))
 
         else:
-
             if not bottom:
                 member_list.append(int(artist))
 
@@ -180,7 +173,6 @@ def get_member_list_flat(art_database, artists, bottom=True):
 
 
 def compare_two_artist_list(list1, list2):
-
     same_count = 0  # amount of people present in both
     add_count = 0  # additional people in list1 compared to list2
 
@@ -196,7 +188,6 @@ def compare_two_artist_list(list1, list2):
 def check_meets_artists_requirements(
     artist_database, song, artist_ids, group_granularity, max_other_artist
 ):
-
     song_artists = [
         [artist, int(line_up)]
         for artist, line_up in zip(song[13].split(","), song[14].split(","))
@@ -204,13 +195,11 @@ def check_meets_artists_requirements(
     song_artists_flat = get_member_list_flat(artist_database, song_artists)
 
     for artist_id in artist_ids:
-
         line_ups = [[[str(artist_id), -1]]]
         if artist_database[str(artist_id)]["members"]:
             line_ups = artist_database[str(artist_id)]["members"]
 
         for line_up in line_ups:
-
             checked_list = get_member_list_flat(artist_database, line_up)
             present_artist, additional_artist = compare_two_artist_list(
                 song_artists_flat, checked_list
@@ -221,14 +210,12 @@ def check_meets_artists_requirements(
                 and additional_artist <= max_other_artist
                 and present_artist >= min(group_granularity, len(line_up))
             ):
-
                 return True
 
     return False
 
 
 def get_song_list_from_songIds_JSON(song_database, songIds, authorized_types):
-
     song_list = []
 
     for songId in songIds:
@@ -248,7 +235,6 @@ def process_artist(
     group_granularity,
     max_other_artist,
 ):
-
     artist_search = utils.get_regex_search(search, partial_match, swap_words=True)
 
     artist_ids = sql_calls.get_artist_ids_from_regex(cursor, artist_search)
@@ -313,7 +299,6 @@ def get_search_results(
     max_nb_songs,
     authorized_types,
 ):
-
     startstart = timeit.default_timer()
 
     cursor = sql_calls.connect_to_database(sql_calls.database_path)
@@ -346,7 +331,6 @@ def get_search_results(
         and anime_search_filters.search == song_name_search_filters.search
         and song_name_search_filters.search == artist_search_filters.search
     ):
-
         # Links filter
         if False:
             songs = sql_calls.get_song_list_from_links(
@@ -367,7 +351,6 @@ def get_search_results(
     # Anime Filter to process either way
     anime_songs_list = []
     if anime_search_filters:
-
         anime_search = utils.get_regex_search(
             anime_search_filters.search, anime_search_filters.partial_match
         )
@@ -381,14 +364,12 @@ def get_search_results(
                         if song[9] in authorized_types:
                             anime_songs_list.append(song)
             else:
-
                 found = False
                 for name in [anime["animeJPName"], anime["animeENName"]] + (
                     anime["animeAltNames"].split("\$")
                     if "animeAltNames" in anime and anime["animeAltNames"]
                     else []
                 ):
-
                     if not name or found:
                         continue
 
@@ -406,7 +387,6 @@ def get_search_results(
     # Song Name filter not available during ranked
     songName_songs_list = []
     if song_name_search_filters and not is_ranked:
-
         songName_search = utils.get_regex_search(
             song_name_search_filters.search, song_name_search_filters.partial_match
         )
@@ -427,7 +407,6 @@ def get_search_results(
     artist_ids = None
 
     if artist_search_filters and not is_ranked:
-
         artist_songs_list, artist_ids = process_artist(
             cursor,
             song_database,
@@ -445,12 +424,10 @@ def get_search_results(
     # Composer filter not available during ranked
     composer_songs_list = []
     if composer_search_filters and not is_ranked:
-
         if (
             not artist_search_filters
             or composer_search_filters.search != artist_search_filters.search
         ):
-
             composer_search = utils.get_regex_search(
                 composer_search_filters.search,
                 composer_search_filters.partial_match,
@@ -459,7 +436,6 @@ def get_search_results(
             artist_ids = sql_calls.get_artist_ids_from_regex(cursor, composer_search)
 
         if artist_ids:
-
             songIds = sql_calls.get_songs_ids_from_composing_team_ids(
                 cursor, artist_ids, composer_search_filters.arrangement
             )
@@ -503,7 +479,6 @@ def get_artists_ids_song_list(
     ignore_duplicate,
     authorized_types,
 ):
-
     start = timeit.default_timer()
 
     cursor = sql_calls.connect_to_database(sql_calls.database_path)
@@ -569,7 +544,6 @@ def get_composer_ids_song_list(
     ignore_duplicate,
     authorized_types,
 ):
-
     start = timeit.default_timer()
 
     cursor = sql_calls.connect_to_database(sql_calls.database_path)
@@ -617,7 +591,6 @@ def get_annId_song_list(
     ignore_duplicate,
     authorized_types,
 ):
-
     start = timeit.default_timer()
 
     cursor = sql_calls.connect_to_database(sql_calls.database_path)

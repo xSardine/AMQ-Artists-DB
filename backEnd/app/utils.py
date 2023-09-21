@@ -15,7 +15,7 @@ ANIME_REGEX_REPLACE_RULES = [
     {"input": "aa", "replace": "(aa|a)"},
     {"input": "ae", "replace": "(ae|æ)"},
     {"input": "a", "replace": "([aäãά@âàáạåæā∀Λ]|aa)"},
-    {"input": "c", "replace": "[cςč℃]"},
+    {"input": "c", "replace": "[cςč℃Ↄ]"},
     {"input": "e", "replace": "[eəéêёëèæē]"},
     {"input": "'", "replace": "['’ˈ]"},
     {"input": "n", "replace": "[nñ]"},
@@ -26,7 +26,7 @@ ANIME_REGEX_REPLACE_RULES = [
     {"input": "*", "replace": "[*✻＊✳︎]"},
     {
         "input": " ",
-        "replace": "( ?[²³⁵★☆♥♡\\/\\*✻✳︎＊'ˈ-∽~〜・·\\.,;:!?@_-⇔→≒=\\+†×±◎Ө♪♣␣∞] ?| )",
+        "replace": "( ?[²³⁵★☆♥♡\\/\\*✻✳︎＊'ˈ-∽~〜・·\\.,;:!?@_-⇔→≒=\\+†×±◎Ө♪♩♣␣∞] ?| )",
     },
     {"input": "i", "replace": "([iíίɪ]|ii)"},
     {"input": "x", "replace": "[x×]"},
@@ -50,7 +50,6 @@ def apply_regex_rules(search):
 
 
 def get_regex_search(og_search, partial_match=True, swap_words=False):
-
     og_search = escapeRegExp(og_search.lower())
     search = apply_regex_rules(og_search)
     search = "^" + search + "$" if not partial_match else ".*" + search + ".*"
@@ -70,7 +69,6 @@ def get_regex_search(og_search, partial_match=True, swap_words=False):
 
 
 def format_song(artist_database, song):
-
     if song[9] == 1:
         type = "Opening " + str(song[10])
     elif song[9] == 2:
@@ -81,7 +79,6 @@ def format_song(artist_database, song):
     artists = []
     if song[13]:
         for artist_id, line_up in zip(song[13].split(","), song[14].split(",")):
-
             line_up = int(line_up)
 
             current_artist = {

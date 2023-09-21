@@ -11,7 +11,6 @@ with open(artist_database_path, encoding="utf-8") as json_file:
 
 
 def get_fused_artist(ids):
-
     all_names = set()
     all_groups = []
     all_line_up = []
@@ -41,7 +40,6 @@ def get_fused_artist(ids):
 
 
 def process():
-
     ids = utils.ask_line_up(
         "Type in the artist line up you want to fuse (first one will be the center)\n",
         song_database,
@@ -125,9 +123,9 @@ def process():
         return
 
     with open(song_database_path, "w", encoding="utf-8") as outfile:
-        json.dump(song_database, outfile)
+        json.dump(song_database, outfile, indent=4)
     with open(artist_database_path, "w", encoding="utf-8") as outfile:
-        json.dump(artist_database, outfile)
+        json.dump(artist_database, outfile, indent=4)
 
 
 process()
