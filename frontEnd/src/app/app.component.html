@@ -21,9 +21,9 @@
 
 <div id="video-player" title="{{currentlyPlayingSongName}} by {{currentlyPlayingArtist}}">
 
-  <vm-player #player *ngIf=" url" playsinline>
+  <vm-player #player *ngIf="url">
 
-    <vm-audio autoplay cross-origin="true">
+    <vm-audio>
       <source data-src={{url}} type="audio/mp3" />
     </vm-audio>
 

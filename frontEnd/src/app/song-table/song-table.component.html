@@ -1,203 +1,660 @@
 <!-- The Modal -->
 <div *ngIf="showSongInfoPopup" id="myModal" class="modal">
-
-    <!-- Modal content -->
-    <div (click)="this.doubleClickPreventer = !this.doubleClickPreventer;" class="modal-content">
-        <div class="modal-header">
-            <h3 style="display: inline-block;" title="{{animeJPName}}"><a id="modal-header" class="animeLink"
-                    target="_blank" href="{{popUpannURL}}">{{popUpAnime}}
-                    ({{popUpAnimeType}})</a><span style="margin-left: 20px;">{{popUpVintage}}</span></h3>
-        </div>
-        <div class="modal-body">
-
-            <h3 style="text-align: center; text-decoration: underline;">Song Information</h3>
-
-            <div style="text-align: center;">
-                <span class="clickable" title="Copy song infos to clipboard"
-                    (click)='copyToClipboard($event, "\"" + popUpSongName + "\" by " + popUpArtist)'>
-                    "{{popUpSongName}}" by {{popUpArtist}}</span>
-            </div>
-
-            <br>
-
-            <div style="text-align: center; padding-top: 10px;">
-                <div class="popUpSongInfo" style="width:245px">
-                    <p style="text-decoration: underline; margin-bottom: 5px;">annId</p>
-                    <p class="clickable" title="Copy annId to clipboard" (click)="copyToClipboard($event, popUpannId);"
-                        style="margin-top: 0">{{popUpannId}}</p>
-                </div>
-                <div *ngIf="popUpannSongId" class="popUpSongInfo" style="width:245px">
-                    <p style="text-decoration: underline; margin-bottom: 5px;">songId</p>
-                    <p class="clickable" title="Copy annSongId to clipboard"
-                        (click)="copyToClipboard($event, popUpannSongId)" style="margin-top: 0">{{popUpannSongId}}</p>
-                </div>
-                <div *ngIf="popUpSongCat" class="popUpSongInfo" style="width:245px">
-                    <p title="*as of 2022-08-02" style="text-decoration: underline; margin-bottom: 5px;">Category</p>
-                    <p class="clickable" (click)="copyToClipboard($event, popUpSongCat)"
-                        title="Copy Song Difficulty to clipboard" style="margin-top: 0">{{popUpSongCat}}</p>
-                </div>
-                <div *ngIf="popUpSongDiff" class="popUpSongInfo" style="width:245px">
-                    <p title="*as of 2022-08-02" style="text-decoration: underline; margin-bottom: 5px;">Difficulty</p>
-                    <p class="clickable" (click)="copyToClipboard($event, popUpSongDiff)"
-                        title="Copy Song Difficulty to clipboard" style="margin-top: 0">{{popUpSongDiff}}%</p>
-                </div>
-            </div>
-
-
-            <div *ngIf="popUpHDLink||popUpMDLink||popUpAudioLink">
-                <br>
-                <h3 style="text-align: center; text-decoration: underline;">Links</h3>
-            </div>
-
-            <div style="text-align: center;">
-                <div *ngIf="popUpHDLink" style="width:330px" class="popUpSongInfo">
-                    <p class="clickable" title="Copy 720p link to clipboard"
-                        (click)="copyToClipboard($event, popUpHDLink)"
-                        style="text-decoration: underline; margin-bottom: 5px;">720p</p>
-                    <a id="modal-720-link" class="textLink" target="_blank" href="{{popUpHDLink}}">{{popUpHDLink}}</a>
-                </div>
-                <div *ngIf="popUpMDLink" class="popUpSongInfo" style="width:330px">
-                    <p class="clickable" title="Copy 480p link to clipboard"
-                        (click)="copyToClipboard($event, popUpMDLink)"
-                        style="text-decoration: underline; margin-bottom: 5px;">480p</p>
-                    <a id=" modal-480-link" class="textLink" target="_blank" href="{{popUpMDLink}}">{{popUpMDLink}}</a>
-                </div>
-                <div *ngIf="popUpAudioLink" class="popUpSongInfo" style="width:330px">
-                    <p class="clickable" title="Copy mp3 link to clipboard"
-                        (click)="copyToClipboard($event, popUpAudioLink)"
-                        style="text-decoration: underline; margin-bottom: 5px;">mp3</p>
-                    <a id="modal-mp3-link" class="textLink" target="_blank"
-                        href="{{popUpAudioLink}}">{{popUpAudioLink}}</a>
-                </div>
-            </div>
-
-
-            <br>
-
-            <h3 style="text-align: center; text-decoration: underline;">Artists Information</h3>
-            <div class="grid" [ngStyle]="gridStyle">
-                <div *ngFor=" let artist of popUpArtistsInfo">
-
-                    <p style="margin: 5px">
-                        <i *ngIf="!rankedTime" style="cursor: pointer; margin-right: 6px;"
-                            title="Search songs by this artist" (click)="searchArtistIds(artist)"
-                            class="fa fa-search"></i>
-                        <span class="popUpText" title="Copy artist to clipboard"
-                            (click)="copyToClipboard($event, artist['names'][0])">{{artist["names"][0]}}</span>
-                    </p>
-
-                    <p *ngIf="artist['members'] != undefined"
-                        style="margin: 3px; margin-top: 20px; text-decoration: underline; font-size: 17px;"><b>Comprised
-                            of:</b>
-                    </p>
-                    <div *ngIf="artist['members'] != undefined" class="subGrid" [ngStyle]="subGridStyle">
-                        <div *ngFor="let member of artist['members']">
-                            <i *ngIf="!rankedTime" style="cursor: pointer; margin-right: 6px;"
-                                title="Search songs by this member" (click)="searchArtistIds(member)"
-                                class="fa fa-search"></i>
-                            <span class="popUpText" title="Copy member to clipboard"
-                                (click)="copyToClipboard($event, member.names[0])">{{member.names[0]}}</span>
-                        </div>
-                    </div>
-
-                    <p *ngIf="artist['groups'] != undefined"
-                        style="margin: 3px; margin-top: 20px; text-decoration: underline; font-size: 17px;"><b>Part
-                            of:</b>
-                    </p>
-                    <div *ngIf="artist['groups'] != undefined" class="subGrid" [ngStyle]="subGridStyle">
-                        <div *ngFor="let group of artist['groups']">
-                            <i *ngIf="!rankedTime" style="cursor: pointer; margin-right: 6px;"
-                                title="Search songs by this group" (click)="searchArtistIds(group)"
-                                class="fa fa-search"></i>
-                            <span class="popUpText" title="Copy group to clipboard"
-                                (click)="copyToClipboard($event, group.names[0])">{{group.names[0]}}</span>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <h3 *ngIf="popUpComposersInfo.length > 0" id="modal-artist-part">Composers</h3>
-            <div *ngFor="let composer of popUpComposersInfo">
-                <i *ngIf="!rankedTime" style="cursor: pointer; margin-right: 6px;" title="Search songs by this composer"
-                    (click)="searchComposerIds(composer)" class="fa fa-search"></i>
-                <span class="popUpText" title="Copy composer to clipboard"
-                    (click)="copyToClipboard($event, composer['names'][0])">{{composer["names"][0]}}</span>
-            </div>
-            <h3 *ngIf="popUpArrangersInfo.length > 0" id="modal-artist-part">Arrangers</h3>
-            <div *ngFor="let arranger of popUpArrangersInfo">
-                <i *ngIf="!rankedTime" style="cursor: pointer; margin-right: 6px;" title="Search songs by this arranger"
-                    (click)="searchComposerIds(arranger)" class="fa fa-search"></i>
-                <span class="popUpText" title="Copy arranger to clipboard"
-                    (click)="copyToClipboard($event, arranger['names'][0])">{{arranger["names"][0]}}</span>
-            </div>
-            <br>
-        </div>
-
+  <!-- Modal content -->
+  <div
+    (click)="this.doubleClickPreventer = !this.doubleClickPreventer"
+    class="modal-content"
+  >
+    <div class="modal-header">
+      <h3 style="display: inline-block" title="{{ animeJPName }}">
+        <a
+          id="modal-header"
+          class="animeLink"
+          target="_blank"
+          href="{{ popUpannURL }}"
+          >{{ popUpAnime }} ({{ popUpAnimeType }})</a
+        ><span style="margin-left: 20px">{{ popUpVintage }}</span>
+      </h3>
     </div>
+    <div class="modal-body">
+      <h3 style="text-align: center; text-decoration: underline">
+        Song Information
+      </h3>
 
+      <div style="text-align: center">
+        <span
+          class="clickable"
+          title="Copy song infos to clipboard"
+          (click)="
+            copyToClipboard(
+              $event,
+              '&quot;' + popUpSongName + '&quot; by ' + popUpArtist
+            )
+          "
+        >
+          "{{ popUpSongName }}" by {{ popUpArtist }}</span
+        >
+      </div>
+
+      <br />
+
+      <div style="text-align: center; padding-top: 10px">
+        <div class="popUpSongInfo" style="width: 245px">
+          <p style="text-decoration: underline; margin-bottom: 5px">annId</p>
+          <p
+            class="clickable"
+            title="Copy annId to clipboard"
+            (click)="copyToClipboard($event, popUpannId)"
+            style="margin-top: 0"
+          >
+            {{ popUpannId }}
+          </p>
+        </div>
+        <div *ngIf="popUpannSongId" class="popUpSongInfo" style="width: 245px">
+          <p style="text-decoration: underline; margin-bottom: 5px">songId</p>
+          <p
+            class="clickable"
+            title="Copy annSongId to clipboard"
+            (click)="copyToClipboard($event, popUpannSongId)"
+            style="margin-top: 0"
+          >
+            {{ popUpannSongId }}
+          </p>
+        </div>
+        <div *ngIf="popUpSongCat" class="popUpSongInfo" style="width: 245px">
+          <p
+            title="*as of 2023-04-14"
+            style="text-decoration: underline; margin-bottom: 5px"
+          >
+            Category
+          </p>
+          <p
+            class="clickable"
+            (click)="copyToClipboard($event, popUpSongCat)"
+            title="Copy Song Difficulty to clipboard"
+            style="margin-top: 0"
+          >
+            {{ popUpSongCat }}
+          </p>
+        </div>
+        <div *ngIf="popUpSongDiff" class="popUpSongInfo" style="width: 245px">
+          <p
+            title="*as of 2023-04-14"
+            style="text-decoration: underline; margin-bottom: 5px"
+          >
+            Difficulty
+          </p>
+          <p
+            class="clickable"
+            (click)="copyToClipboard($event, popUpSongDiff)"
+            title="Copy Song Difficulty to clipboard"
+            style="margin-top: 0"
+          >
+            {{ popUpSongDiff }}%
+          </p>
+        </div>
+      </div>
+
+      <div *ngIf="popUpHDLink || popUpMDLink || popUpAudioLink">
+        <br />
+        <h3 style="text-align: center; text-decoration: underline">Links</h3>
+      </div>
+
+      <div style="text-align: center">
+        <div *ngIf="popUpHDLink" style="width: 330px" class="popUpSongInfo">
+          <p
+            class="clickable"
+            title="Copy 720p link to clipboard"
+            (click)="copyToClipboard($event, popUpHDLink)"
+            style="text-decoration: underline; margin-bottom: 5px"
+          >
+            720p
+          </p>
+          <a
+            id="modal-720-link"
+            class="textLink"
+            target="_blank"
+            href="{{ popUpHDLink }}"
+            >{{ popUpHDLink }}</a
+          >
+        </div>
+        <div *ngIf="popUpMDLink" class="popUpSongInfo" style="width: 330px">
+          <p
+            class="clickable"
+            title="Copy 480p link to clipboard"
+            (click)="copyToClipboard($event, popUpMDLink)"
+            style="text-decoration: underline; margin-bottom: 5px"
+          >
+            480p
+          </p>
+          <a
+            id=" modal-480-link"
+            class="textLink"
+            target="_blank"
+            href="{{ popUpMDLink }}"
+            >{{ popUpMDLink }}</a
+          >
+        </div>
+        <div *ngIf="popUpAudioLink" class="popUpSongInfo" style="width: 330px">
+          <p
+            class="clickable"
+            title="Copy mp3 link to clipboard"
+            (click)="copyToClipboard($event, popUpAudioLink)"
+            style="text-decoration: underline; margin-bottom: 5px"
+          >
+            mp3
+          </p>
+          <a
+            id="modal-mp3-link"
+            class="textLink"
+            target="_blank"
+            href="{{ popUpAudioLink }}"
+            >{{ popUpAudioLink }}</a
+          >
+        </div>
+      </div>
+
+      <br />
+
+      <h3 style="text-align: center; text-decoration: underline">
+        Artists Information
+      </h3>
+      <div class="grid" [ngStyle]="gridStyle">
+        <div *ngFor="let artist of popUpArtistsInfo">
+          <p style="margin: 5px">
+            <i
+              *ngIf="!rankedTime"
+              style="cursor: pointer; margin-right: 6px"
+              title="Search songs sung by this artist"
+              (click)="searchArtistIds(artist)"
+              class="fa fa-search"
+            ></i>
+            <span
+              class="popUpText"
+              title="Copy artist to clipboard"
+              (click)="copyToClipboard($event, artist['names'][0])"
+              >{{ artist["names"][0] }}</span
+            >
+          </p>
+
+          <p
+            *ngIf="artist['names'].length > 1"
+            style="
+              margin: 3px;
+              margin-top: 20px;
+              text-decoration: underline;
+              font-size: 17px;
+            "
+          >
+            <b>Known as:</b>
+          </p>
+          <div
+            *ngIf="artist['names'].length > 1"
+            class="subGrid"
+            [ngStyle]="subGridStyle"
+          >
+            <div *ngFor="let name of artist['names']">
+              <span
+                class="popUpText"
+                title="Copy name to clipboard"
+                (click)="copyToClipboard($event, name)"
+                >{{ name }}</span
+              >
+            </div>
+          </div>
+
+          <p
+            *ngIf="artist['members'] != undefined"
+            style="
+              margin: 3px;
+              margin-top: 20px;
+              text-decoration: underline;
+              font-size: 17px;
+            "
+          >
+            <b>Comprised of:</b>
+          </p>
+          <div
+            *ngIf="artist['members'] != undefined"
+            class="subGrid"
+            [ngStyle]="subGridStyle"
+          >
+            <div *ngFor="let member of artist['members']">
+              <i
+                *ngIf="!rankedTime"
+                style="cursor: pointer; margin-right: 6px"
+                title="Search songs sung by this member"
+                (click)="searchArtistIds(member)"
+                class="fa fa-search"
+              ></i>
+              <span
+                class="popUpText"
+                title="Copy member to clipboard"
+                (click)="copyToClipboard($event, member.names[0])"
+                >{{ member.names[0] }}</span
+              >
+            </div>
+          </div>
+
+          <p
+            *ngIf="artist['groups'] != undefined"
+            style="
+              margin: 3px;
+              margin-top: 20px;
+              text-decoration: underline;
+              font-size: 17px;
+            "
+          >
+            <b>Part of:</b>
+          </p>
+          <div
+            *ngIf="artist['groups'] != undefined"
+            class="subGrid"
+            [ngStyle]="subGridStyle"
+          >
+            <div *ngFor="let group of artist['groups']">
+              <i
+                *ngIf="!rankedTime"
+                style="cursor: pointer; margin-right: 6px"
+                title="Search songs sung by this group"
+                (click)="searchArtistIds(group)"
+                class="fa fa-search"
+              ></i>
+              <span
+                class="popUpText"
+                title="Copy group to clipboard"
+                (click)="copyToClipboard($event, group.names[0])"
+                >{{ group.names[0] }}</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h3
+        *ngIf="popUpComposersInfo.length > 0"
+        style="text-align: center; text-decoration: underline"
+      >
+        Composers Information
+      </h3>
+      <div class="grid" [ngStyle]="gridStyle">
+        <div *ngFor="let composer of popUpComposersInfo">
+          <p style="margin: 5px">
+            <i
+              *ngIf="!rankedTime"
+              style="cursor: pointer; margin-right: 6px"
+              title="Search songs composed by this composer"
+              (click)="searchComposerIds(composer)"
+              class="fa fa-search"
+            ></i>
+            <span
+              class="popUpText"
+              title="Copy composer to clipboard"
+              (click)="copyToClipboard($event, composer['names'][0])"
+              >{{ composer["names"][0] }}</span
+            >
+          </p>
+
+          <p
+            *ngIf="composer['names'].length > 1"
+            style="
+              margin: 3px;
+              margin-top: 20px;
+              text-decoration: underline;
+              font-size: 17px;
+            "
+          >
+            <b>Known as:</b>
+          </p>
+          <div
+            *ngIf="composer['names'].length > 1"
+            class="subGrid"
+            [ngStyle]="subGridStyle"
+          >
+            <div *ngFor="let name of composer['names']">
+              <span
+                class="popUpText"
+                title="Copy name to clipboard"
+                (click)="copyToClipboard($event, name)"
+                >{{ name }}</span
+              >
+            </div>
+          </div>
+
+          <p
+            *ngIf="composer['members'] != undefined"
+            style="
+              margin: 3px;
+              margin-top: 20px;
+              text-decoration: underline;
+              font-size: 17px;
+            "
+          >
+            <b>Comprised of:</b>
+          </p>
+          <div
+            *ngIf="composer['members'] != undefined"
+            class="subGrid"
+            [ngStyle]="subGridStyle"
+          >
+            <div *ngFor="let member of composer['members']">
+              <i
+                *ngIf="!rankedTime"
+                style="cursor: pointer; margin-right: 6px"
+                title="Search songs composed by this member"
+                (click)="searchComposerIds(member)"
+                class="fa fa-search"
+              ></i>
+              <span
+                class="popUpText"
+                title="Copy member to clipboard"
+                (click)="copyToClipboard($event, member.names[0])"
+                >{{ member.names[0] }}</span
+              >
+            </div>
+          </div>
+
+          <p
+            *ngIf="composer['groups'] != undefined"
+            style="
+              margin: 3px;
+              margin-top: 20px;
+              text-decoration: underline;
+              font-size: 17px;
+            "
+          >
+            <b>Part of:</b>
+          </p>
+          <div
+            *ngIf="composer['groups'] != undefined"
+            class="subGrid"
+            [ngStyle]="subGridStyle"
+          >
+            <div *ngFor="let group of composer['groups']">
+              <i
+                *ngIf="!rankedTime"
+                style="cursor: pointer; margin-right: 6px"
+                title="Search songs composed by this group"
+                (click)="searchComposerIds(group)"
+                class="fa fa-search"
+              ></i>
+              <span
+                class="popUpText"
+                title="Copy group to clipboard"
+                (click)="copyToClipboard($event, group.names[0])"
+                >{{ group.names[0] }}</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h3
+        *ngIf="popUpArrangersInfo.length > 0"
+        style="text-align: center; text-decoration: underline"
+      >
+        Arrangers Information
+      </h3>
+      <div class="grid" [ngStyle]="gridStyle">
+        <div *ngFor="let arranger of popUpArrangersInfo">
+          <p style="margin: 5px">
+            <i
+              *ngIf="!rankedTime"
+              style="cursor: pointer; margin-right: 6px"
+              title="Search songs composed by this arranger"
+              (click)="searchComposerIds(arranger)"
+              class="fa fa-search"
+            ></i>
+            <span
+              class="popUpText"
+              title="Copy arranger to clipboard"
+              (click)="copyToClipboard($event, arranger['names'][0])"
+              >{{ arranger["names"][0] }}</span
+            >
+          </p>
+
+          <p
+            *ngIf="arranger['names'].length > 1"
+            style="
+              margin: 3px;
+              margin-top: 20px;
+              text-decoration: underline;
+              font-size: 17px;
+            "
+          >
+            <b>Known as:</b>
+          </p>
+          <div
+            *ngIf="arranger['names'].length > 1"
+            class="subGrid"
+            [ngStyle]="subGridStyle"
+          >
+            <div *ngFor="let name of arranger['names']">
+              <span
+                class="popUpText"
+                title="Copy name to clipboard"
+                (click)="copyToClipboard($event, name)"
+                >{{ name }}</span
+              >
+            </div>
+          </div>
+
+          <p
+            *ngIf="arranger['members'] != undefined"
+            style="
+              margin: 3px;
+              margin-top: 20px;
+              text-decoration: underline;
+              font-size: 17px;
+            "
+          >
+            <b>Comprised of:</b>
+          </p>
+          <div
+            *ngIf="arranger['members'] != undefined"
+            class="subGrid"
+            [ngStyle]="subGridStyle"
+          >
+            <div *ngFor="let member of arranger['members']">
+              <i
+                *ngIf="!rankedTime"
+                style="cursor: pointer; margin-right: 6px"
+                title="Search songs composed by this member"
+                (click)="searchComposerIds(member)"
+                class="fa fa-search"
+              ></i>
+              <span
+                class="popUpText"
+                title="Copy member to clipboard"
+                (click)="copyToClipboard($event, member.names[0])"
+                >{{ member.names[0] }}</span
+              >
+            </div>
+          </div>
+
+          <p
+            *ngIf="arranger['groups'] != undefined"
+            style="
+              margin: 3px;
+              margin-top: 20px;
+              text-decoration: underline;
+              font-size: 17px;
+            "
+          >
+            <b>Part of:</b>
+          </p>
+          <div
+            *ngIf="arranger['groups'] != undefined"
+            class="subGrid"
+            [ngStyle]="subGridStyle"
+          >
+            <div *ngFor="let group of arranger['groups']">
+              <i
+                *ngIf="!rankedTime"
+                style="cursor: pointer; margin-right: 6px"
+                title="Search songs composed by this group"
+                (click)="searchComposerIds(group)"
+                class="fa fa-search"
+              ></i>
+              <span
+                class="popUpText"
+                title="Copy group to clipboard"
+                (click)="copyToClipboard($event, group.names[0])"
+                >{{ group.names[0] }}</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+      <br />
+    </div>
+  </div>
 </div>
 
 <table id="table" *ngIf="songTable">
-    <!-- ADD HEADERS -->
-    <tr>
-        <th *ngFor="let col of tableHeaders" style="cursor:pointer;" title="Sort by {{col}}"
-            (click)="sortFunction(col)">
-            {{ col }}
-        </th>
-        <th style="text-align: center;">mp3</th>
-        <th title="#Number of Songs (%Average Difficulty)" style="text-align: center;">{{songTable.length}}
-            ({{currentAverage}}%)</th>
-    </tr>
+  <!-- ADD HEADERS -->
+  <tr>
+    <th
+      *ngFor="let col of tableHeaders"
+      style="cursor: pointer"
+      title="Sort by {{ col }}"
+      (click)="sortFunction(col)"
+    >
+      {{ col }}
+    </th>
+    <th style="text-align: center">mp3</th>
+    <th
+      title="#Number of Songs (%Average Difficulty)"
+      style="text-align: center"
+    >
+      {{ songTable.length }} ({{ currentAverage }}%)
+    </th>
+  </tr>
 
-    <!-- BIND ARRAY TO TABLE -->
-    <tr *ngFor=" let song of songTable">
-        <td style="white-space: nowrap;">
-            <i style="cursor: pointer; margin-right: 8px; color:var(--textOnBackground)"
-                (click)="displaySongIngoPopup(song)" title="More information" class="fa fa-plus"></i>
-            <i style="cursor: pointer; margin-right: 4px; color:var(--textOnBackground)"
-                title="Search songs in this entry" (click)="searchAnnId(song.annId)" class="fa fa-search"></i>
-            <span class="copyable" title="Copy to clipboard"
-                (click)="copyToClipboard($event, song.annId);">{{song.annId}}</span>
-        </td>
+  <!-- BIND ARRAY TO TABLE -->
+  <tr *ngFor="let song of songTable">
+    <td style="white-space: nowrap">
+      <i
+        style="
+          cursor: pointer;
+          margin-right: 8px;
+          color: var(--textOnBackground);
+        "
+        (click)="displaySongIngoPopup(song)"
+        title="More information"
+        class="fa fa-plus"
+      ></i>
+      <i
+        style="
+          cursor: pointer;
+          margin-right: 4px;
+          color: var(--textOnBackground);
+        "
+        title="Search songs in this entry"
+        (click)="searchAnnId(song.annId)"
+        class="fa fa-search"
+      ></i>
+      <span
+        class="copyable"
+        title="Copy to clipboard"
+        (click)="copyToClipboard($event, song.annId)"
+        >{{ song.annId }}</span
+      >
+    </td>
 
-        <td>
-            <span class="copyable" title="Copy to clipboard"
-                (click)="copyToClipboard($event, (animeTitleLang == 'JP') ? song.animeJPName : song.animeENName)">{{animeTitleLang
-                ==
-                "JP" ? song.animeJPName : song.animeENName}}</span>
-        </td>
+    <td>
+      <span
+        class="copyable"
+        title="Copy to clipboard"
+        (click)="
+          copyToClipboard(
+            $event,
+            animeTitleLang == 'JP' ? song.animeJPName : song.animeENName
+          )
+        "
+        >{{
+          animeTitleLang == "JP" ? song.animeJPName : song.animeENName
+        }}</span
+      >
+    </td>
 
-        <td style="white-space: nowrap;">
-            <span class="copyable" title="Copy to clipboard"
-                (click)="copyToClipboard($event, song.songType)">{{song.songType}}</span>
-        </td>
+    <td style="white-space: nowrap">
+      <span
+        class="copyable"
+        title="Copy to clipboard"
+        (click)="copyToClipboard($event, song.songType)"
+        >{{ song.songType }}</span
+      >
+    </td>
 
-        <td> <span class="copyable" title="Copy to clipboard"
-                (click)="copyToClipboard($event, song.songName)">{{song.songName}}</span> </td>
+    <td>
+      <span
+        class="copyable"
+        title="Copy to clipboard"
+        (click)="copyToClipboard($event, song.songName)"
+        >{{ song.songName }}</span
+      >
+    </td>
 
-        <td> <i *ngIf="!rankedTime" style="cursor: pointer; margin-right: 6px; color:var(--textOnBackground);"
-                title="Search songs by this artist(s)" (click)="searchArtistIds(song.artists)" class="fa fa-search"></i>
-            <span class="copyable" title="Copy to clipboard"
-                (click)="copyToClipboard($event, song.songArtist)">{{song.songArtist}}</span>
-        </td>
+    <td>
+      <i
+        *ngIf="!rankedTime"
+        style="
+          cursor: pointer;
+          margin-right: 6px;
+          color: var(--textOnBackground);
+        "
+        title="Search songs by this artist(s)"
+        (click)="searchArtistIds(song.artists)"
+        class="fa fa-search"
+      ></i>
+      <span
+        class="copyable"
+        title="Copy to clipboard"
+        (click)="copyToClipboard($event, song.songArtist)"
+        >{{ song.songArtist }}</span
+      >
+    </td>
 
-        <td *ngIf="isCurrentPlayingSong(song) && !rankedTime" title="Listen to mp3" (click)="playMP3music(song)"
-            style="text-align: center; color:rgb(226, 148, 4); cursor: pointer; -webkit-text-stroke: 0.5px #fff;">
-            <i *ngIf="song.audio" class="fa fa-music fa-lg"></i>
-        </td>
+    <td
+      *ngIf="isCurrentPlayingSong(song) && !rankedTime"
+      title="Listen to mp3"
+      (click)="playMP3music(song)"
+      style="
+        text-align: center;
+        color: rgb(226, 148, 4);
+        cursor: pointer;
+        -webkit-text-stroke: 0.5px #fff;
+      "
+    >
+      <i *ngIf="song.audio" class="fa fa-music fa-lg"></i>
+    </td>
 
-        <td *ngIf="!isCurrentPlayingSong(song) && !rankedTime" title="Listen to mp3" (click)="playMP3music(song)"
-            style="text-align: center; color:var(--textOnBackground); cursor: pointer;">
-            <i *ngIf="song.audio" class="fa fa-music fa-lg"></i>
-        </td>
+    <td
+      *ngIf="!isCurrentPlayingSong(song) && !rankedTime"
+      title="Listen to mp3"
+      (click)="playMP3music(song)"
+      style="
+        text-align: center;
+        color: var(--textOnBackground);
+        cursor: pointer;
+      "
+    >
+      <i *ngIf="song.audio" class="fa fa-music fa-lg"></i>
+    </td>
 
-        <td style="text-align: center; color:var(--textOnBackground)"><span title="Delete song from list"
-                (click)="deleteRowEntry(song)" style=" cursor: pointer;"><i class="fa fa-trash fa-lg"
-                    aria-hidden="true"></i></span>
-        </td>
-    </tr>
+    <td style="text-align: center; color: var(--textOnBackground)">
+      <span
+        title="Delete song from list"
+        (click)="deleteRowEntry(song)"
+        style="cursor: pointer"
+        ><i class="fa fa-trash fa-lg" aria-hidden="true"></i
+      ></span>
+    </td>
+  </tr>
 </table>
 
-
 <!-- Create the pop-up with the text "copied" -->
-<div class="clipboardPopUp" *ngIf="show" [ngStyle]="clipboardPopUpStyle">copied</div>
+<div class="clipboardPopUp" *ngIf="show" [ngStyle]="clipboardPopUpStyle">
+  copied
+</div>

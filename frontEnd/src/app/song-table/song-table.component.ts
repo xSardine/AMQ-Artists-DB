@@ -70,8 +70,8 @@ export class SongTableComponent {
   popUpMDLink: string = "";
   popUpAudioLink: string = "";
   popUpArtistsInfo: any = [];
-  popUpComposersInfo = [];
-  popUpArrangersInfo = [];
+  popUpComposersInfo: any = [];
+  popUpArrangersInfo: any = [];
   currentAverage: any
   gridStyle: any
   subGridStyle: any
@@ -89,16 +89,16 @@ export class SongTableComponent {
     let rankedTimeIntervals = [
       {
         start: new Date().setUTCHours(1, 30, 0, 0),
-        end: new Date().setUTCHours(2, 28, 0, 0)
+        end: new Date().setUTCHours(2, 23, 0, 0)
       },
       // JST
       {
         start: new Date().setUTCHours(11, 30, 0, 0),
-        end: new Date().setUTCHours(12, 28, 0, 0)
+        end: new Date().setUTCHours(12, 23, 0, 0)
       },
       {
         start: new Date().setUTCHours(18, 30, 0, 0),
-        end: new Date().setUTCHours(19, 28, 0, 0)
+        end: new Date().setUTCHours(19, 23, 0, 0)
       }
     ];
 
@@ -144,15 +144,15 @@ export class SongTableComponent {
   }
 
 
-  sortArtists(artists: { groups: string[], members: string[] }[]) {
+  sortArtists(artists: { names: string[], groups: string[], members: string[] }[]) {
     // Create a new, sorted array of artists
     const sortedArtists = artists.map(artist => artist)
       .sort((a, b) => {
-
         // Use the optional chaining operator to safely access the group and member lengths
-        // If either property is missing, the length will be treated as 0
-        let aLength = (a.groups?.length ?? 0) + (a.members?.length ?? 0);
-        let bLength = (b.groups?.length ?? 0) + (b.members?.length ?? 0);
+        // If either property is missing, the length will be treated as -1 (to compensate with title header)
+        // for names specifically, 0 and 1 will be treated as -1 as well
+        let aLength = ((a.names?.length ?? -1) <= 1 ? -1 : (a.names?.length ?? -1)) + (a.groups?.length ?? -1) + (a.members?.length ?? -1);
+        let bLength = ((b.names?.length ?? -1) <= 1 ? -1 : (b.names?.length ?? -1)) + (b.groups?.length ?? -1) + (b.members?.length ?? -1);
 
         // Sort the artists based on their group and member lengths
         return aLength - bLength;

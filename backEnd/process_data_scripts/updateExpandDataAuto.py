@@ -16,7 +16,6 @@ splitting_exception = splitting.splitting_exception
 
 
 def check_validity(song_database, splitting_exception):
-
     is_valid = True
 
     splitexcep = [exception[0] for exception in splitting.splitting_exception_list]
@@ -61,7 +60,6 @@ def help():
 
 
 def main(argv):
-
     update = False
 
     try:
@@ -136,7 +134,6 @@ def selenium_retrieve_data(amq_url, amq_username, amq_password):
     expand = None
 
     try:
-
         # Login
         driver.find_element(By.ID, "loginUsername").send_keys(amq_username)
         driver.find_element(By.ID, "loginPassword").send_keys(amq_password)
@@ -150,7 +147,6 @@ def selenium_retrieve_data(amq_url, amq_username, amq_password):
 
     finally:
         while not expand:
-
             # Execute script
             driver.execute_script(getExpandScript)
             add_log("script executed, waiting for promise")
@@ -171,7 +167,6 @@ def selenium_retrieve_data(amq_url, amq_username, amq_password):
 
 
 def similar_song_exist(source_anime, new_song):
-
     for song in source_anime["songs"]:
         if song["annSongId"] == -1 and (
             song["songName"] == new_song["songName"]
@@ -212,7 +207,6 @@ def format_new_song(song_database, artist_database, song):
 
 
 def split_artist(artist):
-
     # if forced exception splitting do it:
     if artist in splitting_exception.keys():
         return splitting_exception[artist]
@@ -231,7 +225,6 @@ def split_artist(artist):
 
 
 def get_artist_id_list(song_database, artist_database, artist_list):
-
     artist_id_list = []
 
     for artist in artist_list:
@@ -249,7 +242,6 @@ def get_artist_id_list(song_database, artist_database, artist_list):
 
 
 def update_artist_names(song_database, artist_database, old_name, new_name):
-
     old_names = split_artist(old_name)
     new_names = split_artist(new_name)
 
@@ -258,7 +250,6 @@ def update_artist_names(song_database, artist_database, old_name, new_name):
         return
 
     for old, new in zip(old_names, new_names):
-
         if old == new:
             continue
 
@@ -297,13 +288,11 @@ def update_artist_names(song_database, artist_database, old_name, new_name):
 
 
 def update_data_with_expand(song_database, artist_database, expand_data):
-
     for update_anime in expand_data:
         for update_song in update_anime["songs"]:
             flag_anime_found = False
             flag_song_found = False
             for source_anime in song_database:
-
                 if source_anime["annId"] != update_anime["annId"]:
                     continue
 
@@ -331,6 +320,9 @@ def update_data_with_expand(song_database, artist_database, expand_data):
                         source_song["songNumber"] = update_song["number"]
 
                     if source_song["songName"] != update_song["name"]:
+                        add_log(
+                            f"UPDATE songName | {source_song['annSongId']} {source_song['songName']} -> {update_song['name']}"
+                        )
                         source_song["songName"] = update_song["name"]
 
                     if source_song["songArtist"] != update_song["artist"]:
@@ -428,7 +420,6 @@ def process(update):
     print()
 
     if update:
-
         expand_data = selenium_retrieve_data(
             "https://animemusicquiz.com/", AMQ_USERNAME, AMQ_PWD
         )
@@ -451,9 +442,9 @@ def process(update):
         return
 
     with open(song_database_path, "w", encoding="utf-8") as outfile:
-        json.dump(song_database, outfile)
+        json.dump(song_database, outfile, indent=4)
     with open(artist_database_path, "w", encoding="utf-8") as outfile:
-        json.dump(artist_database, outfile)
+        json.dump(artist_database, outfile, indent=4)
 
     os.system("convert_to_SQL.py")
 
@@ -466,8 +457,7 @@ def process(update):
     print("Update sent")
 
 
-if __name__ == "__main__":
-    # schedule(process, interval=(1 / 10) * 60 * 60)
-    # run_loop()
-    update = main(sys.argv[1:])
-    process(update)
+# schedule(process, interval=(1 / 10) * 60 * 60)
+# run_loop()
+update = main(sys.argv[1:])
+process(update)

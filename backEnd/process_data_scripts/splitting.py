@@ -18,6 +18,7 @@ splitting_exception_list = [
     ("ZONE&Run Time All Stars", ("ZONE", "Run Time All Stars")),
     ## Force splitting (splitters that are not automatically recognized)
     # to
+    ("Soraru to Rib", ("Soraru", "Rib")),
     ("Mari Yaguchi to Straw Hat", ("Mari Yaguchi", "Straw Hat")),
     ("Osamu Yamada to Hello Nights", ("Osamu Yamada to Hello Nights",)),
     ("Taku Izumi to Sono Family", ("Taku Izumi", "Sono Family")),

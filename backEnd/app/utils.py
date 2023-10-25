@@ -1,8 +1,10 @@
 import re
 
 ANIME_REGEX_REPLACE_RULES = [
+    # Ļ can't lower correctly with sql lower function
     {"input": "ļ", "replace": "[ļĻ]"},
-    {"input": "l", "replace": "[l˥ļĻ]"},
+    {"input": "l", "replace": "[l˥ļĻΛ]"},
+    # Ź can't lower correctly with sql lower function
     {"input": "ź", "replace": "[źŹ]"},
     {"input": "z", "replace": "[zźŹ]"},
     {"input": "ou", "replace": "(ou|ō|o)"},
@@ -16,7 +18,9 @@ ANIME_REGEX_REPLACE_RULES = [
     {"input": "ae", "replace": "(ae|æ)"},
     {"input": "a", "replace": "([aäãά@âàáạåæā∀Λ]|aa)"},
     {"input": "c", "replace": "[cςč℃Ↄ]"},
-    {"input": "e", "replace": "[eəéêёëèæē]"},
+    # É can't lower correctly with sql lower function
+    {"input": "é", "replace": "[éÉ]"},
+    {"input": "e", "replace": "[eəéÉêёëèæē]"},
     {"input": "'", "replace": "['’ˈ]"},
     {"input": "n", "replace": "[nñ]"},
     {"input": "0", "replace": "[0Ө]"},
@@ -26,7 +30,7 @@ ANIME_REGEX_REPLACE_RULES = [
     {"input": "*", "replace": "[*✻＊✳︎]"},
     {
         "input": " ",
-        "replace": "( ?[²³⁵★☆♥♡\\/\\*✻✳︎＊'ˈ-∽~〜・·\\.,;:!?@_-⇔→≒=\\+†×±◎Ө♪♩♣␣∞] ?| )",
+        "replace": "( ?[²³⁵★☆♥♡\\/\\*✻✳︎＊'ˈ\\-∽~〜・·\\.,;:!?@_-⇔→≒=\\+†×±◎Ө♪♩♣␣∞] ?| )",
     },
     {"input": "i", "replace": "([iíίɪ]|ii)"},
     {"input": "x", "replace": "[x×]"},
@@ -46,6 +50,7 @@ def escapeRegExp(str):
 def apply_regex_rules(search):
     for rule in ANIME_REGEX_REPLACE_RULES:
         search = search.replace(rule["input"], rule["replace"])
+    print(search)
     return search
 
 

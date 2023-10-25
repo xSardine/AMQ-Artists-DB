@@ -1,8 +1,10 @@
 import re
 
 ANIME_REGEX_REPLACE_RULES = [
+    # Ļ can't lower correctly with sql lower function
     {"input": "ļ", "replace": "[ļĻ]"},
-    {"input": "l", "replace": "[l˥ļĻ]"},
+    {"input": "l", "replace": "[l˥ļĻΛ]"},
+    # Ź can't lower correctly with sql lower function
     {"input": "ź", "replace": "[źŹ]"},
     {"input": "z", "replace": "[zźŹ]"},
     {"input": "ou", "replace": "(ou|ō|o)"},
@@ -14,9 +16,11 @@ ANIME_REGEX_REPLACE_RULES = [
     {"input": "u", "replace": "([uūûúùüǖμ]|uu)"},
     {"input": "aa", "replace": "(aa|a)"},
     {"input": "ae", "replace": "(ae|æ)"},
-    {"input": "a", "replace": "([aäά@âàáạåæā∀Λ]|aa)"},
-    {"input": "c", "replace": "[cςč℃]"},
-    {"input": "e", "replace": "[eəéêёëèæē]"},
+    {"input": "a", "replace": "([aäãά@âàáạåæā∀Λ]|aa)"},
+    {"input": "c", "replace": "[cςč℃Ↄ]"},
+    # É can't lower correctly with sql lower function
+    {"input": "é", "replace": "[éÉ]"},
+    {"input": "e", "replace": "[eəéÉêёëèæē]"},
     {"input": "'", "replace": "['’ˈ]"},
     {"input": "n", "replace": "[nñ]"},
     {"input": "0", "replace": "[0Ө]"},
@@ -26,7 +30,7 @@ ANIME_REGEX_REPLACE_RULES = [
     {"input": "*", "replace": "[*✻＊✳︎]"},
     {
         "input": " ",
-        "replace": "( ?[²³⁵★☆♥♡\\/\\*✻✳︎＊'ˈ-∽~〜・·\\.,;:!?@_-⇔→≒=\\+†×±◎Ө♪♣␣∞] ?| )",
+        "replace": "( ?[²³⁵★☆♥♡\\/\\*✻✳︎＊'ˈ\\-∽~〜・·\\.,;:!?@_-⇔→≒=\\+†×±◎Ө♪♩♣␣∞] ?| )",
     },
     {"input": "i", "replace": "([iíίɪ]|ii)"},
     {"input": "x", "replace": "[x×]"},
@@ -50,7 +54,6 @@ def apply_regex_rules(search):
 
 
 def get_regex_search(og_search, partial_match=True, swap_words=True):
-
     og_search = escapeRegExp(og_search.lower())
     search = apply_regex_rules(og_search)
     search = "^" + search + "$" if not partial_match else ".*" + search + ".*"
@@ -70,7 +73,6 @@ def get_regex_search(og_search, partial_match=True, swap_words=True):
 
 
 def ask_validation(message):
-
     validation = None
     while validation != "n" and validation != "y":
         validation = input(message)
@@ -80,7 +82,6 @@ def ask_validation(message):
 
 
 def ask_integer_input(message, allowed_values):
-
     user_input = None
     while user_input not in allowed_values:
         user_input = input(message)
@@ -92,7 +93,6 @@ def ask_integer_input(message, allowed_values):
 def ask_artist(
     message, song_database, artist_database, not_exist_ok=False, partial_match=False
 ):
-
     user_input = input(message)
     artist_id = get_artist_id(
         song_database,
@@ -106,11 +106,9 @@ def ask_artist(
 
 
 def ask_song_ids():
-
     song_ids = []
 
     while True:
-
         song_id = ask_integer_input(
             "\nPlease, input the song ID you want to update: (-2 to stop)\n",
             range(-2, 50000),
@@ -120,14 +118,12 @@ def ask_song_ids():
             break
 
         if song_id == -1:
-
             songName = input("Please input the song name exactly as it is:\n")
             songArtist = input("Please input the song artist exactly as it is:\n")
 
             song_ids.append([songName, songArtist])
 
         else:
-
             song_ids.append(int(song_id))
 
     return song_ids
@@ -136,10 +132,8 @@ def ask_song_ids():
 def ask_line_up(
     message, song_database, artist_database, not_exist_ok=False, partial_match=False
 ):
-
     group_members = []
     while True:
-
         user_input = input(message)
 
         if user_input == "!":
@@ -185,7 +179,6 @@ def ask_line_up(
 
 
 def update_line_up(group, line_up_id, song_database, artist_database):
-
     group_members = []
 
     for member in group["members"][line_up_id]:
@@ -234,7 +227,6 @@ def add_new_composer_to_DB(artist_database, artist):
 
 
 def get_example_song_for_artist(song_database, artist_id):
-
     example_animes = set()
     for anime in song_database:
         for song in anime["songs"]:
@@ -247,7 +239,6 @@ def get_example_song_for_artist(song_database, artist_id):
 
 
 def get_recap_artists(song_database, artist_database, ids):
-
     recap_str = ""
     for id in ids:
         ex_animes = get_example_song_for_artist(song_database, id)
@@ -266,12 +257,9 @@ def get_artist_id(
     exact_match=False,
     excluded_ids=[],
 ):
-
     ids = []
     if not exact_match:
-
         if partial_match:
-
             artist_regex = get_regex_search(artist)
 
             for id in artist_database.keys():
@@ -296,7 +284,6 @@ def get_artist_id(
                     ids.append(id)
 
     else:
-
         for id in artist_database.keys():
             if artist in artist_database[id]["names"] and id not in ids:
                 ids.append(id)
@@ -317,7 +304,6 @@ def get_artist_id(
 
     # if more than one ID, ask user to desambiguate
     if len(ids) > 1:
-
         recap_str = get_recap_artists(song_database, artist_database, ids)
 
         if not_exist_ok:

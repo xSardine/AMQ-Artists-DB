@@ -6,9 +6,10 @@ I'm taking in any feedbacks, tho this is just a side project for fun, so I won't
 
 The main reason I decided to make this was because I felt like there wasn't any database that was fulfilling my wishes. So I decided to make one myself.
 
-/!\ This is a work in progress, some stuff might not work, some stuff might change.
+>**Warning**  
+>This is a work in progress, some stuff might not work, some stuff might change.
 
-# Advanced Filters Documentation
+## Advanced Filters Documentation
 
 Advanced Filters will let you search specifically for an artist, a composer, a song name or an anime name (along with other settings defined below)
 
@@ -29,7 +30,7 @@ Finally:
   - `Intersection`: The song informations will have to match every filter that you entered.
 - `Ignore Duplicate`: This will ignore duplicates and only take into account the first instance of [Song Name by Artist] that it has encountered. (Different sets of artists are not considered duplicates)
 
-# Known Database Issues
+## Known Database Issues
 
 I know there are some problems:
 
@@ -40,7 +41,7 @@ I plan to work on this in the future.
 
 The database is based of AMQ database, which means it also import its problems. Some song might be missing because they either are not in AMQ or because it doesn't fit AMQ requirements of what can be added. Some artists might have inconsistent name, some song names might be improperly romanized and stuff like this. All of this will not be fixed unless it is fixed in AMQ as I want to keep a 1:1 relation with their database (+ anything that I added myself), so I invite you to ask for such change directly on the AMQ discord after carefully reading the pins on how to request such changes.
 
-# If you want to help me
+## If you want to help me
 
 Feedbacks on the User Interface, new functionalities, etc...
 

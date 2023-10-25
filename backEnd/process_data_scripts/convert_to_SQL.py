@@ -464,7 +464,6 @@ INNER JOIN songsArrangers ON songsAnimes.songId = songsArrangers.songId;
 
 
 def run_sql_command(cursor, sql_command, data=None):
-
     """
     Run the SQL command with nice looking print when failed (no)
     """
@@ -480,7 +479,6 @@ def run_sql_command(cursor, sql_command, data=None):
         return record
 
     except sqlite3.Error as error:
-
         if data is not None:
             for param in data:
                 if type(param) == str:
@@ -501,7 +499,6 @@ def run_sql_command(cursor, sql_command, data=None):
 
 
 def insert_new_artist(cursor, id, is_vocalist, is_composer):
-
     """
     Insert a new artist in the database
     """
@@ -514,7 +511,6 @@ def insert_new_artist(cursor, id, is_vocalist, is_composer):
 
 
 def insert_new_group(cursor, artist_id, set_id):
-
     """
     Add a new group configuration
     """
@@ -524,13 +520,11 @@ def insert_new_group(cursor, artist_id, set_id):
 
 
 def insert_artist_alt_names(cursor, id, names):
-
     """
     Insert all alternative names corresponding to a single artist
     """
 
     for name in names:
-
         sql_insert_artist_name = (
             "INSERT INTO artist_names(artist_id, name) VALUES(?, ?);"
         )
@@ -539,7 +533,6 @@ def insert_artist_alt_names(cursor, id, names):
 
 
 def add_artist_to_group(cursor, group_id, group_line_up_id, artist_id, artist_line_up):
-
     """
     Add an artist to a group
     """
@@ -554,7 +547,6 @@ def add_artist_to_group(cursor, group_id, group_line_up_id, artist_id, artist_li
 
 
 def get_anime_ID(cursor, animeExpandName, animeJPName):
-
     """
     Get the first anime it finds that matches the provided parameters
     """
@@ -570,7 +562,6 @@ def get_anime_ID(cursor, animeExpandName, animeJPName):
 def insert_anime(
     cursor, annId, animeExpandName, animeENName, animeJPName, animeVintage, animeType
 ):
-
     """
     Insert a new anime in the database
     """
@@ -598,7 +589,6 @@ def insert_song(
     MQ=-1,
     audio=-1,
 ):
-
     """
     Insert a new song in the database and return the newly created song ID
     """
@@ -631,7 +621,6 @@ def insert_song(
 
 
 def link_song_artist(cursor, song_id, artist_id, artist_line_up_id):
-
     """
     Add a new link between an song and an artist in the table
     """
@@ -644,7 +633,6 @@ def link_song_artist(cursor, song_id, artist_id, artist_line_up_id):
 
 
 def link_song_composer(cursor, song_id, composer_id):
-
     """
     Add a new link between an song and a composer in the table
     """
@@ -657,7 +645,6 @@ def link_song_composer(cursor, song_id, composer_id):
 
 
 def link_song_arranger(cursor, song_id, arranger_id):
-
     """
     Add a new link between an song and an arranger in the table
     """
@@ -670,7 +657,6 @@ def link_song_arranger(cursor, song_id, arranger_id):
 
 
 def link_anime_tag(cursor, annId, tag):
-
     """
     Add a new link between an anime and a tag
     """
@@ -681,7 +667,6 @@ def link_anime_tag(cursor, annId, tag):
 
 
 def link_anime_genre(cursor, annId, genre):
-
     """
     Add a new link between an anime and a genre
     """
@@ -692,7 +677,6 @@ def link_anime_genre(cursor, annId, genre):
 
 
 def link_anime_altNames(cursor, annId, altName):
-
     """
     Add a new link between an anime and an alternative name
     """
@@ -725,7 +709,6 @@ except sqlite3.Error as error:
 
 
 for artist_id in artist_database:
-
     new_artist_id = insert_new_artist(
         cursor,
         artist_id,
@@ -742,7 +725,6 @@ for artist_id in artist_database:
                 add_artist_to_group(cursor, new_artist_id, i, int(member[0]), member[1])
 
 for anime in song_database:
-
     insert_anime(
         cursor,
         anime["annId"],
@@ -766,7 +748,6 @@ for anime in song_database:
             link_anime_altNames(cursor, anime["annId"], altName)
 
     for song in anime["songs"]:
-
         links = song["links"]
 
         song_id = insert_song(
@@ -785,7 +766,6 @@ for anime in song_database:
         )
 
         for artist in song["artist_ids"]:
-
             link_song_artist(cursor, song_id, int(artist[0]), artist[1])
 
         if "composer_ids" in song:
@@ -825,7 +805,6 @@ except sqlite3.Error as error:
 
 
 for artist_id in artist_database:
-
     new_artist_id = insert_new_artist(
         cursor,
         artist_id,
@@ -842,7 +821,6 @@ for artist_id in artist_database:
                 add_artist_to_group(cursor, new_artist_id, i, int(member[0]), member[1])
 
 for anime in song_database:
-
     insert_anime(
         cursor,
         anime["annId"],
@@ -866,7 +844,6 @@ for anime in song_database:
             link_anime_altNames(cursor, anime["annId"], altName)
 
     for song in anime["songs"]:
-
         links = song["links"]
 
         song_id = insert_song(
@@ -882,7 +859,6 @@ for anime in song_database:
         )
 
         for artist in song["artist_ids"]:
-
             link_song_artist(cursor, song_id, int(artist[0]), artist[1])
 
         if "composer_ids" in song:
