@@ -71,6 +71,7 @@ splitting_exception_list = [
             "Rie Kugimiya",
         ),
     ),
+    ("Chiita to Mitsubachi Gasshou-dan", ("Chiita", "Mitsubachi Gasshou-dan")),
     ("Kenji Ohtsuki to Emmanuel 5", ("Kenji Ohtsuki", "Emmanuel 5")),
     (
         "Eri Itou to Mori no Ki Jidou Gasshou-dan",
@@ -159,6 +160,12 @@ splitting_exception_list = [
     ("(K)NoW_NAME:eNu", ("(K)NoW_NAME", "eNu")),
     # other
     (
+        "THE RZA Feat: The Reverend William Burk",
+        ("THE RZA", "The Reverend William Burk"),
+    ),
+    ("Black Knights (feat. P. Dot)", ("Black Knights", "P. Dot")),
+    ("DJ TIËSTO FEATURING KIRSTY HAWKSHAW", ("DJ TIËSTO", "KIRSTY HAWKSHAW")),
+    (
         "Mica Caldito & mpi & Mika Kobayashi produced by Hiroyuki Sawano",
         ("Mica Caldito", "mpi", "Mika Kobayashi", "Hiroyuki Sawano"),
     ),
@@ -175,8 +182,14 @@ splitting_exception_list = [
     ),
     ("Rinko Maki (with Dynamite You)", ("Rinko Maki", "Dynamite You")),
     (
-        "Mitsuko Horie to Mamoru Ichiba to Tea Tea Ne & Children's Chorus",
-        ("Mitsuko Horie", "Mamoru Ichiba", "Tea Tea Ne", "Children's Chorus"),
+        "Mitsuko Horie, Mamoru Ichiba, Titine & Children Chorus, Mori no Ki Jidou Gasshou-dan",
+        (
+            "Mitsuko Horie",
+            "Mamoru Ichiba",
+            "Titine",
+            "Children's Chorus",
+            "Mori no Ki Jidou Gasshou-dan",
+        ),
     ),
     (
         "Ichiro Mizuki (Columbia Yurikago-kai)",
@@ -256,6 +269,7 @@ splitting_exception_list = [
             "Doku P.E.T.S",
         ),
     ),
+    ("Rieko・Slick", ("Rieko・Slick",)),
     ("m.c.A・T", ("m.c.A・T",)),
     ("Blend・A", ("Blend・A",)),
     ("G・GRIP", ("G・GRIP",)),
@@ -282,6 +296,10 @@ splitting_exception_list = [
     ("The S・h・e", ("The S・h・e",)),
     ("Teikoku Kageki-dan・Hana-gumi", ("Teikoku Kageki-dan・Hana-gumi",)),
     # &
+    (
+        "Warsaw Philharmonic Orchestra & Choir",
+        ("Warsaw Philharmonic Orchestra & Choir",),
+    ),
     ("UCARY & THE VALENTINE", ("UCARY & THE VALENTINE",)),
     (
         "Mina Kubota feat. MIYUU & MASUMI (Mistera Feo)",
@@ -489,6 +507,7 @@ splitting_exception_list = [
     ("sophie+", ("sophie+",)),
     ("Megami-ryousei+α", ("Megami-ryousei+α",)),
     # other
+    ("Rock, Pebble & Stones", ("Rock, Pebble & Stones",)),
     ("Konya, anomachikara starring VALSHE", ("Konya, anomachikara", "VALSHE")),
     ("EE JUMP featuring Sonin", ("EE JUMP featuring Sonin",)),
     ("JAXX/JAXX", ("JAXX/JAXX",)),
@@ -521,6 +540,10 @@ splitting_exception_list = [
     (
         "SawanoHiroyuki[nZk]:Junki Kono & Sho Yonashiro (JO1)",
         ("SawanoHiroyuki[nZk]", "Junki Kono", "Sho Yonashiro"),
+    ),
+    (
+        "SawanoHiroyuki[nZk]:TOMORROW X TOGETHER",
+        ("SawanoHiroyuki[nZk]", "TOMORROW X TOGETHER"),
     ),
     ("SawanoHiroyuki[nZk]:Motohiro Hata", ("SawanoHiroyuki[nZk]", "Motohiro Hata")),
     ("SawanoHiroyuki[nZk]:Akihito Okano", ("SawanoHiroyuki[nZk]", "Akihito Okano")),

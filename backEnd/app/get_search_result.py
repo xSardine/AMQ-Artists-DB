@@ -59,8 +59,8 @@ def is_ranked_time():
     if (
         # CST
         (
-            (date.hour == 1 and date.minute >= 30)
-            or (date.hour == 2 and date.minute < 23)
+            (date.hour == 2 and date.minute >= 30)
+            or (date.hour == 3 and date.minute < 23)
         )
         # JST
         or (
@@ -69,8 +69,8 @@ def is_ranked_time():
         )
         # CET
         or (
-            (date.hour == 18 and date.minute >= 30)
-            or (date.hour == 19 and date.minute < 23)
+            (date.hour == 19 and date.minute >= 30)
+            or (date.hour == 20 and date.minute < 23)
         )
     ):
         return True

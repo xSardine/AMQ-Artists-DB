@@ -50,7 +50,6 @@ def escapeRegExp(str):
 def apply_regex_rules(search):
     for rule in ANIME_REGEX_REPLACE_RULES:
         search = search.replace(rule["input"], rule["replace"])
-    print(search)
     return search
 
 

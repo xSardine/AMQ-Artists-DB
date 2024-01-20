@@ -93,25 +93,21 @@ def execute_command(command):
 
 
 def download_songs(song_list):
-
     for song in song_list:
-
         if overwrite_already_existing_name:
             ignore_parameter = "-y"
         else:
             ignore_parameter = "-n"
-            
+
         if anime_language == "EN":
-            anime_name = song['animeENName']
+            anime_name = song["animeENName"]
         else:
-            anime_name = song['animeJPName']
+            anime_name = song["animeJPName"]
 
         file_name = f"{song['annId']} {anime_name} {song['songType']} - {song['songName']} by {song['songArtist']}"
 
         try:
-
             if download_type == "mp3":
-
                 link = song["audio"] if "audio" in song else None
 
                 title_key = "title"
@@ -130,11 +126,9 @@ def download_songs(song_list):
                     metadata += f' -metadata {composer_key}="{composer_value}"'
 
                 if link:
-
                     command = f'{ffmpeg} {ignore_parameter} -i {link} {metadata} {default_mp3_parameters} "{create_file_name_Windows(file_name, output_path, default_mp3_extension)}"'
 
                 else:
-
                     link = (
                         song["HQ"]
                         if "HQ" in song and song["HQ"]
@@ -149,7 +143,6 @@ def download_songs(song_list):
                     command = f'{ffmpeg} {ignore_parameter} -i {link} -codec:a libmp3lame -b:a 320k -compression_level 7 "{create_file_name_Windows(file_name, output_path, default_mp3_extension)}"'
 
             elif download_type == "webm":
-
                 link = (
                     song["HQ"]
                     if "HQ" in song and song["HQ"]
@@ -164,7 +157,6 @@ def download_songs(song_list):
                 command = f'{ffmpeg} {ignore_parameter} -i {link} {default_webm_parameters} "{create_file_name_Windows(file_name, output_path, default_webm_extension)}"'
 
             elif download_type == "mp4":
-
                 link = (
                     song["HQ"]
                     if "HQ" in song and song["HQ"]
@@ -179,9 +171,7 @@ def download_songs(song_list):
                 command = f'{ffmpeg} {ignore_parameter} -i {link} {default_mp4_parameters} "{create_file_name_Windows(file_name, output_path, default_mp4_extension)}"'
 
             elif download_type == "custom":
-
                 if custom_input == "video":
-
                     link = (
                         song["HQ"]
                         if "HQ" in song and song["HQ"]
@@ -196,7 +186,6 @@ def download_songs(song_list):
                     command = f'{ffmpeg} {ignore_parameter} -i {link} {custom_parameters} "{create_file_name_Windows(file_name, output_path, custom_extension)}"'
 
                 elif custom_input == "audio":
-
                     link = song["audio"] if "audio" in song else None
 
                     if not link:
@@ -225,7 +214,6 @@ def download_songs(song_list):
 
 
 if __name__ == "__main__":
-
     Path(output_path).mkdir(exist_ok=True)
 
     json_path = Path(".")

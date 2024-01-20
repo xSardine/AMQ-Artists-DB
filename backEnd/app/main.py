@@ -9,7 +9,6 @@ from random import randrange
 
 
 class Search_Filter(BaseModel):
-
     search: str
     partial_match: Optional[bool] = True
 
@@ -36,7 +35,6 @@ class Search_Filter(BaseModel):
 
 
 class Search_Request(BaseModel):
-
     anime_search_filter: Optional[Search_Filter] = []
     song_name_search_filter: Optional[Search_Filter] = []
     artist_search_filter: Optional[Search_Filter] = []
@@ -67,7 +65,6 @@ class Search_Request(BaseModel):
 
 
 class Artist_ID_Search_Request(BaseModel):
-
     artist_ids: List[int] = []
     group_granularity: Optional[int] = Field(2, ge=0)
     max_other_artist: Optional[int] = Field(2, ge=0)
@@ -78,7 +75,6 @@ class Artist_ID_Search_Request(BaseModel):
 
 
 class Composer_ID_Search_Request(BaseModel):
-
     composer_ids: List[int] = []
     arrangement: Optional[bool] = True
     ignore_duplicate: Optional[bool] = False
@@ -88,7 +84,6 @@ class Composer_ID_Search_Request(BaseModel):
 
 
 class annId_Search_Request(BaseModel):
-
     annId: int
     ignore_duplicate: Optional[bool] = False
     opening_filter: Optional[bool] = True
@@ -97,7 +92,6 @@ class annId_Search_Request(BaseModel):
 
 
 class artist(BaseModel):
-
     id: int
     names: List[str]
     line_up_id: Optional[int]
@@ -109,7 +103,6 @@ artist.update_forward_refs()
 
 
 class Song_Entry(BaseModel):
-
     annId: int
     annSongId: int
     animeENName: str
@@ -143,7 +136,6 @@ app.add_middleware(
 
 
 def format_artist_ids(artist_database, artist_id, artist_line_up=-1):
-
     artist = artist_database[str(artist_id)]
 
     formatted_artist = {
@@ -198,7 +190,6 @@ def format_arranger_ids(artist_database, arranger_id):
 
 @app.post("/api/search_request", response_model=List[Song_Entry])
 async def search_request(query: Search_Request):
-
     authorized_type = []
     if query.opening_filter:
         authorized_type.append(1)
@@ -226,7 +217,6 @@ async def search_request(query: Search_Request):
 
 @app.post("/api/get_50_random_songs", response_model=List[Song_Entry])
 async def get_50_random_songs():
-
     cursor = sql_calls.connect_to_database(sql_calls.database_path)
 
     songIds = [randrange(28000) for i in range(50)]
@@ -246,7 +236,6 @@ async def get_50_random_songs():
 
 @app.post("/api/artist_ids_request", response_model=List[Song_Entry])
 async def search_request(query: Artist_ID_Search_Request):
-
     authorized_type = []
     if query.opening_filter:
         authorized_type.append(1)
@@ -271,7 +260,6 @@ async def search_request(query: Artist_ID_Search_Request):
 
 @app.post("/api/composer_ids_request", response_model=List[Song_Entry])
 async def search_request(query: Composer_ID_Search_Request):
-
     authorized_type = []
     if query.opening_filter:
         authorized_type.append(1)
@@ -295,7 +283,6 @@ async def search_request(query: Composer_ID_Search_Request):
 
 @app.post("/api/annId_request", response_model=List[Song_Entry])
 async def search_request(query: annId_Search_Request):
-
     authorized_type = []
     if query.opening_filter:
         authorized_type.append(1)
@@ -314,3 +301,102 @@ async def search_request(query: annId_Search_Request):
     )
 
     return song_list
+
+
+# api point that returns every possible songartist string for autocompletion
+@app.get("/api/artist_autocomplete")
+async def artist_autocomplete(
+    search: Optional[str] = None,
+    count: Optional[int] = 99999,
+):
+    cursor = sql_calls.connect_to_database(sql_calls.database_path)
+
+    # search is not case sensitive and can be partial
+    if search:
+        get_all_artists = (
+            "SELECT DISTINCT songArtist from songs WHERE songArtist LIKE ?"
+        )
+        artists = sql_calls.run_sql_command(cursor, get_all_artists, [f"%{search}%"])
+    else:
+        get_all_artists = "SELECT DISTINCT songArtist from songs"
+        artists = sql_calls.run_sql_command(cursor, get_all_artists, None)
+
+    artist_list = []
+    for artist in artists:
+        artist = artist[0]
+        artist_list.append(artist)
+
+    # sort by value
+    artist_list = sorted(artist_list, key=lambda x: x.lower())[0:count]
+
+    return artist_list
+
+
+# api point that returns every possible anime song name string for autocompletion
+@app.get("/api/song_name_autocomplete")
+async def song_name_autocomplete(
+    search: Optional[str] = None,
+    count: Optional[int] = 99999,
+):
+    cursor = sql_calls.connect_to_database(sql_calls.database_path)
+
+    # search is not case sensitive and can be partial
+
+    if search:
+        get_all_song_names = "SELECT DISTINCT songName from songs WHERE songName LIKE ?"
+        song_names = sql_calls.run_sql_command(
+            cursor, get_all_song_names, [f"%{search}%"]
+        )
+    else:
+        get_all_song_names = "SELECT DISTINCT songName from songs"
+        song_names = sql_calls.run_sql_command(cursor, get_all_song_names, None)
+
+    song_name_list = []
+    for song_name in song_names:
+        song_name = song_name[0]
+        song_name_list.append(song_name)
+
+    # sort by legnth
+    song_name_list = sorted(song_name_list, key=lambda x: len(x))[0:count]
+
+    return song_name_list
+
+
+# api point that returns every possible anime name string for autocompletion
+# with possible filters on song_name and artist
+@app.get("/api/anime_name_autocomplete")
+async def anime_name_autocomplete(
+    songName: Optional[str] = None, songArtist: Optional[str] = None
+):
+    cursor = sql_calls.connect_to_database(sql_calls.database_path)
+
+    if songName and songArtist:
+        get_all_anime_names = "SELECT DISTINCT animeExpandName from songsAnimes WHERE songName = ? AND songArtist = ?"
+        anime_names = sql_calls.run_sql_command(
+            cursor, get_all_anime_names, [songName, songArtist]
+        )
+    elif songName:
+        get_all_anime_names = (
+            "SELECT DISTINCT animeExpandName from songsAnimes WHERE songName = ?"
+        )
+        anime_names = sql_calls.run_sql_command(cursor, get_all_anime_names, [songName])
+    elif songArtist:
+        get_all_anime_names = (
+            "SELECT DISTINCT animeExpandName from songsAnimes WHERE songArtist = ?"
+        )
+        anime_names = sql_calls.run_sql_command(
+            cursor, get_all_anime_names, [songArtist]
+        )
+    else:
+        get_all_anime_names = "SELECT DISTINCT animeExpandName from songsAnimes"
+        anime_names = sql_calls.run_sql_command(cursor, get_all_anime_names)
+
+    anime_name_list = []
+    for anime_name in anime_names:
+        anime_name = anime_name[0]
+        anime_name_list.append(anime_name)
+
+    # sort by value
+    anime_name_list = sorted(anime_name_list, key=lambda x: x.lower())
+
+    return anime_name_list
