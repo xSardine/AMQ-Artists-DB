@@ -33,6 +33,7 @@ export class SearchBarComponent implements OnInit {
   maximumRandomsFilter: string = "99";
   minimalMembersFilter: string = "0";
   selectedCombination: string = "Union";
+  mainFilterPartialMatch: boolean = true;
   animeFilterPartialMatch: boolean = true;
   songNameFilterPartialMatch: boolean = true;
   artistFilterPartialMatch: boolean = true;
@@ -51,12 +52,12 @@ export class SearchBarComponent implements OnInit {
 
     // Define the ranked time intervals as an array of objects
     let rankedTimeIntervals = [
-      //CST NA
+      // CST NA
       {
         start: new Date().setUTCHours(1, 30, 0, 0),
         end: new Date().setUTCHours(2, 23, 0, 0)
       },
-      //JST Asia
+      // JST Asia
       {
         start: new Date().setUTCHours(11, 30, 0, 0),
         end: new Date().setUTCHours(12, 23, 0, 0)
@@ -219,21 +220,21 @@ export class SearchBarComponent implements OnInit {
         body = {
           "anime_search_filter": {
             "search": this.mainFilter,
-            "partial_match": this.animeFilterPartialMatch,
+            "partial_match": this.mainFilterPartialMatch,
           },
           "song_name_search_filter": {
             "search": this.mainFilter,
-            "partial_match": this.songNameFilterPartialMatch,
+            "partial_match": this.mainFilterPartialMatch,
           },
           "artist_search_filter": {
             "search": this.mainFilter,
-            "partial_match": this.artistFilterPartialMatch,
+            "partial_match": this.mainFilterPartialMatch,
             "group_granularity": parseInt(this.minimalMembersFilter),
             "max_other_artist": parseInt(this.maximumRandomsFilter),
           },
           "composer_search_filter": {
             "search": this.mainFilter,
-            "partial_match": this.composerFilterPartialMatch,
+            "partial_match": this.mainFilterPartialMatch,
             "arrangement": this.composerFilterArrangement,
           },
           "and_logic": tmp_select,
