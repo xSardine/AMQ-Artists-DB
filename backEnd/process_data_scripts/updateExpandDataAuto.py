@@ -1,6 +1,5 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from pathlib import Path
@@ -129,7 +128,7 @@ def selenium_retrieve_data(amq_url, amq_username, amq_password):
     # create driver and open amq
     option = webdriver.ChromeOptions()
     # option.add_argument("headless")
-    driver = webdriver.Chrome(ChromeDriverManager().install(), options=option)
+    driver = webdriver.Chrome(options=option)
     driver.get(amq_url)
     expand = None
 

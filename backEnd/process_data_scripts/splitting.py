@@ -159,6 +159,7 @@ splitting_exception_list = [
     ("(K)NoW_NAME:AIJ", ("(K)NoW_NAME", "AIJ")),
     ("(K)NoW_NAME:eNu", ("(K)NoW_NAME", "eNu")),
     # other
+    ("m-flo loves Alex (CLAZZIQUAI PROJECT)", ("m-flo", "Alex (CLAZZIQUAI PROJECT)")),
     (
         "THE RZA Feat: The Reverend William Burk",
         ("THE RZA", "The Reverend William Burk"),
@@ -280,7 +281,7 @@ splitting_exception_list = [
     ("KIX・S", ("KIX・S",)),
     ("PSY・S", ("PSY・S",)),
     ("A・ZU・NA", ("A・ZU・NA",)),
-    ("Ham-chans • Himawari-gumi", ("Ham-chans • Himawari-gumi",)),
+    ("Ham-chans・Himawari-gumi", ("Ham-chans・Himawari-gumi",)),
     ("Swing・Cats", ("Swing・Cats",)),
     ("F・MAP", ("F・MAP",)),
     ("a・chi-a・chi", ("a・chi-a・chi",)),
@@ -296,6 +297,13 @@ splitting_exception_list = [
     ("The S・h・e", ("The S・h・e",)),
     ("Teikoku Kageki-dan・Hana-gumi", ("Teikoku Kageki-dan・Hana-gumi",)),
     # &
+    (
+        "Yumemi Kujira feat. Mimizuku & Fukurou",
+        (
+            "Yumemi Kujira",
+            "Mimizuku & Fukurou",
+        ),
+    ),
     (
         "Warsaw Philharmonic Orchestra & Choir",
         ("Warsaw Philharmonic Orchestra & Choir",),
@@ -341,7 +349,6 @@ splitting_exception_list = [
     ('SOIL&"PIMP"SESSIONS', ('SOIL&"PIMP"SESSIONS',)),
     ("Kaako & Papa", ("Kaako & Papa",)),
     ("Adiamond -Amy & Bibian-", ("Adiamond -Amy & Bibian-",)),
-    ("MAYUKO & Luminous", ("MAYUKO & Luminous",)),
     ("Bars & Melody", ("Bars & Melody",)),
     ("Mon & Ster", ("Mon & Ster",)),
     ("MYTH & ROID", ("MYTH & ROID",)),
@@ -349,6 +356,7 @@ splitting_exception_list = [
     ("Kakki & Ash Potato", ("Kakki & Ash Potato",)),
     ("Anamu & Maki", ("Anamu & Maki",)),
     ("SUEMITSU & THE SUEMITH", ("SUEMITSU & THE SUEMITH",)),
+    ("SUEMITSU & THE NODAME ORCHESTRA", ("SUEMITSU & THE NODAME ORCHESTRA",)),
     ("TAKAKO&THE CRAZY BOYS", ("TAKAKO&THE CRAZY BOYS",)),
     ("Takako Shirai&CRAZY BOYS", ("Takako Shirai&CRAZY BOYS",)),
     ("Oosugi & Hiiko", ("Oosugi & Hiiko",)),
@@ -359,7 +367,6 @@ splitting_exception_list = [
     ("Bread & Butter", ("Bread & Butter",)),
     ("Betsy & Chris", ("Betsy & Chris",)),
     ("RUN&GUN", ("RUN&GUN",)),
-    ("Macolin & Pythagoras", ("Macolin & Pythagoras",)),
     ("Rats & Star", ("Rats & Star",)),
     ("Aki & Isao", ("Aki & Isao",)),
     ("Let's Go BOYS & GIRLS", ("Let's Go BOYS & GIRLS",)),
@@ -368,7 +375,6 @@ splitting_exception_list = [
     ("Earth, Wind & Fire", ("Earth, Wind & Fire",)),
     ("Oranges & Lemons", ("Oranges & Lemons",)),
     ("Rough & Ready", ("Rough & Ready",)),
-    ("LOREN&MASH", ("LOREN&MASH",)),
     ("Jack & Betty", ("Jack & Betty",)),
     ("Tackey & Tsubasa", ("Tackey & Tsubasa",)),
     ("AKIMA & NEOS", ("AKIMA & NEOS",)),
@@ -398,6 +404,7 @@ splitting_exception_list = [
     ("Tim Timebomb and the Interrupters", ("Tim Timebomb and the Interrupters",)),
     ("Yuusuke (ex. HIGH and MIGHTY COLOR)", ("Yuusuke (ex. HIGH and MIGHTY COLOR)",)),
     # x
+    ("Shin Kawasaki (Kari)×beni-shouga", ("Shin Kawasaki (Kari)×beni-shouga",)),
     ("YABI\u00d7YABI", ("YABI\u00d7YABI",)),
     ("Chun×4", ("Chun×4",)),
     ("OxT", ("OxT",)),
@@ -423,7 +430,6 @@ splitting_exception_list = [
     ("Serenon with K", ("Serenon with K",)),
     ("Cotori with Stitchbird", ("Cotori with Stitchbird",)),
     ("Akebonoyama Chuugaku Band with T", ("Akebonoyama Chuugaku Band with T",)),
-    ("MATCHY with QUESTION?", ("MATCHY with QUESTION?",)),
     (
         "Yuji Ohno & Lupintic Six with Friends feat. Miyuki Sawashiro",
         ("Yuji Ohno", "Lupintic Six with Friends", "Miyuki Sawashiro"),
@@ -507,6 +513,12 @@ splitting_exception_list = [
     ("sophie+", ("sophie+",)),
     ("Megami-ryousei+α", ("Megami-ryousei+α",)),
     # other
+    ("DWB feat. NIRGILIS", ("DWB", "NIRGILIS")),
+    ("DWB feat. fade", ("DWB feat. fade",)),
+    ("THE CUPIDS by CHAR & ANN LEWIS", ("THE CUPIDS by CHAR & ANN LEWIS",)),
+    ("KEY with Mohican Brothers", ("KEY with Mohican Brothers",)),
+    ("Dale & Julie Ember with The Flames", ("Dale & Julie Ember with The Flames",)),
+    ("Saima Nakano of e/g", ("Saima Nakano of e/g",)),
     ("Rock, Pebble & Stones", ("Rock, Pebble & Stones",)),
     ("Konya, anomachikara starring VALSHE", ("Konya, anomachikara", "VALSHE")),
     ("EE JUMP featuring Sonin", ("EE JUMP featuring Sonin",)),
@@ -532,10 +544,13 @@ splitting_exception_list = [
     ("livetune adding Fukase(from SEKAI NO OWARI)", ("livetune", "Fukase")),
     ("livetune adding Rin Oikawa (from Q;indivi)", ("livetune", "Rin Oikawa")),
     ("Tamiya Terashima (Rentrak Japan)", ("Tamiya Terashima",)),
-    ("GENERATIONS from EXILE TRIBE", ("GENERATIONS",)),
+    ("GENERATIONS from EXILE TRIBE", ("GENERATIONS from EXILE TRIBE",)),
     ("THE RAMPAGE from EXILE TRIBE", ("THE RAMPAGE",)),
     ("FANTASTICS from EXILE TRIBE", ("FANTASTICS",)),
-    ("Sandaime J SOUL BROTHERS from EXILE TRIBE", ("Sandaime J SOUL BROTHERS",)),
+    (
+        "Sandaime J SOUL BROTHERS from EXILE TRIBE",
+        ("Sandaime J SOUL BROTHERS from EXILE TRIBE",),
+    ),
     ("Aya & chika from D&D", ("Aya Uehara", "Chikano Higa")),
     (
         "SawanoHiroyuki[nZk]:Junki Kono & Sho Yonashiro (JO1)",
@@ -641,7 +656,7 @@ splitting_exception_list = [
     ("Pokemon Kids (+Ikue Ootani)", ("Pokemon Kids", "Ikue Ootani")),
     (
         "HoneyWorks meets Sayuringo Gundan + Manatsu-san Respect Gundan from Nogizaka46",
-        ("HoneyWorks", "Sayuringo Gundan", "Manatsu-san Respect Gundan", "Nogizaka46"),
+        ("HoneyWorks", "Sayuringo Gundan", "Manatsu-san Respect Gundan"),
     ),
     ("G-Eazy (featuring Bente Violet McPherson)", ("G-Eazy", "Bente Violet McPherson")),
     ("Masayoshi Ooishi (feat. Yukari Tamura)", ("Masayoshi Ooishi", "Yukari Tamura")),

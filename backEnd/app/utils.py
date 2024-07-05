@@ -1,10 +1,10 @@
 import re
 
 ANIME_REGEX_REPLACE_RULES = [
-    # Ļ can't lower correctly with sql lower function
+    # Ļ can't lower correctly with sqlite lower function hence why next line is needed
     {"input": "ļ", "replace": "[ļĻ]"},
     {"input": "l", "replace": "[l˥ļĻΛ]"},
-    # Ź can't lower correctly with sql lower function
+    # Ź can't lower correctly with sqlite lower function hence why next line is needed
     {"input": "ź", "replace": "[źŹ]"},
     {"input": "z", "replace": "[zźŹ]"},
     {"input": "ou", "replace": "(ou|ō|o)"},
@@ -16,6 +16,8 @@ ANIME_REGEX_REPLACE_RULES = [
     {"input": "u", "replace": "([uūûúùüǖμ]|uu)"},
     {"input": "aa", "replace": "(aa|a)"},
     {"input": "ae", "replace": "(ae|æ)"},
+    # Λ can't lower correctly with sqlite lower function hence why next line is needed
+    {"input": "λ", "replace": "[λΛ]"},
     {"input": "a", "replace": "([aäãά@âàáạåæā∀Λ]|aa)"},
     {"input": "c", "replace": "[cςč℃Ↄ]"},
     # É can't lower correctly with sql lower function
@@ -30,7 +32,7 @@ ANIME_REGEX_REPLACE_RULES = [
     {"input": "*", "replace": "[*✻＊✳︎]"},
     {
         "input": " ",
-        "replace": "( ?[²³⁵★☆♥♡\\/\\*✻✳︎＊'ˈ\\-∽~〜・·\\.,;:!?@_-⇔→≒=\\+†×±◎Ө♪♩♣␣∞] ?| )",
+        "replace": "([^\\w]+|_+)",
     },
     {"input": "i", "replace": "([iíίɪ]|ii)"},
     {"input": "x", "replace": "[x×]"},

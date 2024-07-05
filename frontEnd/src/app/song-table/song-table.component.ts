@@ -87,15 +87,17 @@ export class SongTableComponent {
   checkRankedTime() {
     // Define the ranked time intervals as an array of objects
     let rankedTimeIntervals = [
+      // CST NA
       {
         start: new Date().setUTCHours(1, 30, 0, 0),
         end: new Date().setUTCHours(2, 23, 0, 0)
       },
-      // JST
+      // JST Asia
       {
         start: new Date().setUTCHours(11, 30, 0, 0),
         end: new Date().setUTCHours(12, 23, 0, 0)
       },
+      // CET EU
       {
         start: new Date().setUTCHours(18, 30, 0, 0),
         end: new Date().setUTCHours(19, 23, 0, 0)
