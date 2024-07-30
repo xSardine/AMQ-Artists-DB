@@ -47,6 +47,10 @@ PRAGMA foreign_keys = 1;
 
 CREATE TABLE animes (
     "annId" INTEGER NOT NULL PRIMARY KEY,
+    "malId" INTEGER,
+    "anidbId" INTEGER,
+    "anilistId" INTEGER,
+    "kitsuId" INTEGER,
     "animeExpandName" VARCHAR(255) NOT NULL, 
     "animeENName" VARCHAR(255),
     "animeJPName" VARCHAR(255),
@@ -64,6 +68,7 @@ CREATE TABLE songs (
     "songArtist" VARCHAR(255) NOT NULL,
     "songDifficulty" FLOAT,
     "songCategory" VARCHAR(255),
+    "songLength" FLOAT,
     "HQ" VARCHAR(255),
     "MQ" VARCHAR(255),
     "audio" VARCHAR(255),
@@ -202,15 +207,15 @@ INNER JOIN artistsMembers ON artistsNames.id = artistsMembers.id
 INNER JOIN artistsGroups ON artistsNames.id = artistsGroups.id;
 
 CREATE VIEW animesFull AS
-SELECT animes.annId, animes.animeExpandName, animes.animeJPName, animes.animeENName, group_concat(link_anime_altNames.name, "\$") AS altNames, animes.animeType, animes.animeVintage
+SELECT animes.annId, animes.malId, animes.anidbId, animes.anilistId, animes.kitsuId, animes.animeExpandName, animes.animeJPName, animes.animeENName, group_concat(link_anime_altNames.name, "\$") AS altNames, animes.animeType, animes.animeVintage
 FROM animes
 LEFT JOIN link_anime_altNames
 ON animes.annId = link_anime_altNames.annId
 GROUP BY animes.annId;
 
 CREATE VIEW songsAnimes AS
-SELECT animesFull.annId, animesFull.animeExpandName, animesFull.animeJPName, animesFull.animeENName, animesFull.altNames, animesFull.animeVintage, animesFull.animeType, 
-songs.id as songId, songs.annSongId, songs.songType, songs.songNumber, songs.songName, songs.songArtist, songs.songDifficulty, songs.songCategory, songs.HQ, songs.MQ, songs.audio
+SELECT animesFull.annId, animesFull.malId, animesFull.anidbId, animesFull.anilistId, animesFull.kitsuId, animesFull.animeExpandName, animesFull.animeJPName, animesFull.animeENName, animesFull.altNames, animesFull.animeVintage, animesFull.animeType, 
+songs.id as songId, songs.annSongId, songs.songType, songs.songNumber, songs.songName, songs.songArtist, songs.songDifficulty, songs.songCategory, songs.songLength, songs.HQ, songs.MQ, songs.audio
 FROM animesFull
 LEFT JOIN songs ON animesFull.annId = songs.annId;
 
@@ -233,8 +238,8 @@ LEFT JOIN link_song_arranger ON songs.id = link_song_arranger.song_id
 GROUP BY songs.id;
 
 CREATE VIEW songsFull AS
-SELECT songsAnimes.annId, songsAnimes.animeExpandName, songsAnimes.animeJPName, songsAnimes.animeENName, songsAnimes.altNames, songsAnimes.animeVintage, songsAnimes.animeType, 
-songsAnimes.songId, songsAnimes.annSongId, songsAnimes.songType, songsAnimes.songNumber, songsAnimes.songName, songsAnimes.songArtist, songsArtists.artists, songsArtists.artists_line_up, songsComposers.composers, songsArrangers.arrangers, songsAnimes.songDifficulty, songsAnimes.songCategory, songsAnimes.HQ, songsAnimes.MQ, songsAnimes.audio
+SELECT songsAnimes.annId, songsAnimes.malId, songsAnimes.anidbId, songsAnimes.anilistId, songsAnimes.kitsuId, songsAnimes.animeExpandName, songsAnimes.animeJPName, songsAnimes.animeENName, songsAnimes.altNames, songsAnimes.animeVintage, songsAnimes.animeType, 
+songsAnimes.songId, songsAnimes.annSongId, songsAnimes.songType, songsAnimes.songNumber, songsAnimes.songName, songsAnimes.songArtist, songsArtists.artists, songsArtists.artists_line_up, songsComposers.composers, songsArrangers.arrangers, songsAnimes.songDifficulty, songsAnimes.songCategory, songsAnimes.songLength, songsAnimes.HQ, songsAnimes.MQ, songsAnimes.audio
 FROM songsAnimes
 INNER JOIN songsArtists ON songsAnimes.songId = songsArtists.songId
 INNER JOIN songsComposers ON songsAnimes.songId = songsComposers.songId
@@ -271,6 +276,10 @@ PRAGMA foreign_keys = 1;
 
 CREATE TABLE animes (
     "annId" INTEGER NOT NULL PRIMARY KEY,
+    "malId" INTEGER,
+    "anidbId" INTEGER,
+    "anilistId" INTEGER,
+    "kitsuId" INTEGER,
     "animeExpandName" VARCHAR(255) NOT NULL, 
     "animeENName" VARCHAR(255),
     "animeJPName" VARCHAR(255),
@@ -288,6 +297,7 @@ CREATE TABLE songs (
     "songArtist" VARCHAR(255) NOT NULL,
     "songDifficulty" FLOAT,
     "songCategory" VARCHAR(255),
+    "songLength" FLOAT,
     FOREIGN KEY ("annId")
         REFERENCES animes ("annId")
 );
@@ -423,15 +433,15 @@ INNER JOIN artistsMembers ON artistsNames.id = artistsMembers.id
 INNER JOIN artistsGroups ON artistsNames.id = artistsGroups.id;
 
 CREATE VIEW animesFull AS
-SELECT animes.annId, animes.animeExpandName, animes.animeJPName, animes.animeENName, group_concat(link_anime_altNames.name, "\$") AS altNames, animes.animeType, animes.animeVintage
+SELECT animes.annId, animes.malId, animes.anidbId, animes.anilistId, animes.kitsuId, animes.animeExpandName, animes.animeJPName, animes.animeENName, group_concat(link_anime_altNames.name, "\$") AS altNames, animes.animeType, animes.animeVintage
 FROM animes
 LEFT JOIN link_anime_altNames
 ON animes.annId = link_anime_altNames.annId
 GROUP BY animes.annId;
 
 CREATE VIEW songsAnimes AS
-SELECT animesFull.annId, animesFull.animeExpandName, animesFull.animeJPName, animesFull.animeENName, animesFull.altNames, animesFull.animeVintage, animesFull.animeType, 
-songs.id as songId, songs.annSongId, songs.songType, songs.songNumber, songs.songName, songs.songArtist, songs.songDifficulty, songs.songCategory
+SELECT animesFull.annId, animesFull.malId, animesFull.anidbId, animesFull.anilistId, animesFull.kitsuId, animesFull.animeExpandName, animesFull.animeJPName, animesFull.animeENName, animesFull.altNames, animesFull.animeVintage, animesFull.animeType, 
+songs.id as songId, songs.annSongId, songs.songType, songs.songNumber, songs.songName, songs.songArtist, songs.songDifficulty, songs.songCategory, songs.songLength
 FROM animesFull
 LEFT JOIN songs ON animesFull.annId = songs.annId;
 
@@ -454,8 +464,8 @@ LEFT JOIN link_song_arranger ON songs.id = link_song_arranger.song_id
 GROUP BY songs.id;
 
 CREATE VIEW songsFull AS
-SELECT songsAnimes.annId, songsAnimes.animeExpandName, songsAnimes.animeJPName, songsAnimes.animeENName, songsAnimes.altNames, songsAnimes.animeVintage, songsAnimes.animeType, 
-songsAnimes.songId, songsAnimes.annSongId, songsAnimes.songType, songsAnimes.songNumber, songsAnimes.songName, songsAnimes.songArtist, songsArtists.artists, songsArtists.artists_line_up, songsComposers.composers, songsArrangers.arrangers, songsAnimes.songDifficulty, songsAnimes.songCategory
+SELECT songsAnimes.annId, songsAnimes.malId, songsAnimes.anidbId, songsAnimes.anilistId, songsAnimes.kitsuId, songsAnimes.animeExpandName, songsAnimes.animeJPName, songsAnimes.animeENName, songsAnimes.altNames, songsAnimes.animeVintage, songsAnimes.animeType, 
+songsAnimes.songId, songsAnimes.annSongId, songsAnimes.songType, songsAnimes.songNumber, songsAnimes.songName, songsAnimes.songArtist, songsArtists.artists, songsArtists.artists_line_up, songsComposers.composers, songsArrangers.arrangers, songsAnimes.songDifficulty, songsAnimes.songCategory, songsAnimes.songLength
 FROM songsAnimes
 INNER JOIN songsArtists ON songsAnimes.songId = songsArtists.songId
 INNER JOIN songsComposers ON songsAnimes.songId = songsComposers.songId
@@ -560,18 +570,39 @@ def get_anime_ID(cursor, animeExpandName, animeJPName):
 
 
 def insert_anime(
-    cursor, annId, animeExpandName, animeENName, animeJPName, animeVintage, animeType
+    cursor,
+    annId,
+    malId,
+    anidbId,
+    anilistId,
+    kitsuId,
+    animeExpandName,
+    animeENName,
+    animeJPName,
+    animeVintage,
+    animeType,
 ):
     """
     Insert a new anime in the database
     """
 
-    sql_insert_anime = "INSERT INTO animes(annId, animeExpandName, animeENName, animeJPName, animeVintage, animeType) VALUES(?, ?, ?, ?, ?, ?);"
+    sql_insert_anime = "INSERT INTO animes(annId, malId, anidbId, anilistId, kitsuId, animeExpandName, animeENName, animeJPName, animeVintage, animeType) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
 
     run_sql_command(
         cursor,
         sql_insert_anime,
-        (annId, animeExpandName, animeENName, animeJPName, animeVintage, animeType),
+        (
+            annId,
+            malId,
+            anidbId,
+            anilistId,
+            kitsuId,
+            animeExpandName,
+            animeENName,
+            animeJPName,
+            animeVintage,
+            animeType,
+        ),
     )
 
 
@@ -585,6 +616,7 @@ def insert_song(
     songArtist,
     songDifficulty,
     songCategory,
+    songLength,
     HQ=-1,
     MQ=-1,
     audio=-1,
@@ -602,10 +634,11 @@ def insert_song(
         songArtist,
         songDifficulty,
         songCategory,
+        songLength,
     )
 
     if HQ != -1:
-        sql_insert_song = "INSERT INTO songs(annSongId, annId, songType, songNumber, songName, songArtist, songDifficulty, songCategory, HQ, MQ, audio) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
+        sql_insert_song = "INSERT INTO songs(annSongId, annId, songType, songNumber, songName, songArtist, songDifficulty, songCategory, songLength, HQ, MQ, audio) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
         data = (
             *data,
             HQ,
@@ -613,7 +646,7 @@ def insert_song(
             audio,
         )
     else:
-        sql_insert_song = "INSERT INTO songs(annSongId, annId, songType, songNumber, songName, songArtist, songDifficulty, songCategory) VALUES(?, ?, ?, ?, ?, ?, ?, ?);"
+        sql_insert_song = "INSERT INTO songs(annSongId, annId, songType, songNumber, songName, songArtist, songDifficulty, songCategory, songLength) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);"
 
     run_sql_command(cursor, sql_insert_song, data)
 
@@ -728,6 +761,26 @@ for anime in song_database:
     insert_anime(
         cursor,
         anime["annId"],
+        (
+            anime["linked_id"]["myanimelist"]
+            if "linked_id" in anime and "myanimelist" in anime["linked_id"]
+            else None
+        ),
+        (
+            anime["linked_id"]["anidb"]
+            if "linked_id" in anime and "anilist" in anime["linked_id"]
+            else None
+        ),
+        (
+            anime["linked_id"]["anilist"]
+            if "linked_id" in anime and "anilist" in anime["linked_id"]
+            else None
+        ),
+        (
+            anime["linked_id"]["kitsu"]
+            if "linked_id" in anime and "kitsu" in anime["linked_id"]
+            else None
+        ),
         anime["animeExpandName"],
         anime["animeENName"] if "animeENName" in anime else None,
         anime["animeJPName"] if "animeJPName" in anime else None,
@@ -760,6 +813,7 @@ for anime in song_database:
             song["songArtist"],
             song["songDifficulty"] if "songDifficulty" in song else None,
             song["songCategory"] if "songCategory" in song else None,
+            song["songLength"] if "songLength" in song else None,
             links["HQ"] if "HQ" in links.keys() else None,
             links["MQ"] if "MQ" in links.keys() else None,
             links["audio"] if "audio" in links.keys() else None,
@@ -824,6 +878,26 @@ for anime in song_database:
     insert_anime(
         cursor,
         anime["annId"],
+        (
+            anime["linked_id"]["myanimelist"]
+            if "linked_id" in anime and "myanimelist" in anime["linked_id"]
+            else None
+        ),
+        (
+            anime["linked_id"]["anidb"]
+            if "linked_id" in anime and "anilist" in anime["linked_id"]
+            else None
+        ),
+        (
+            anime["linked_id"]["anilist"]
+            if "linked_id" in anime and "anilist" in anime["linked_id"]
+            else None
+        ),
+        (
+            anime["linked_id"]["kitsu"]
+            if "linked_id" in anime and "kitsu" in anime["linked_id"]
+            else None
+        ),
         anime["animeExpandName"],
         anime["animeENName"] if "animeENName" in anime else None,
         anime["animeJPName"] if "animeJPName" in anime else None,
@@ -856,6 +930,7 @@ for anime in song_database:
             song["songArtist"],
             song["songDifficulty"] if "songDifficulty" in song else None,
             song["songCategory"] if "songCategory" in song else None,
+            song["songLength"] if "songLength" in song else None,
         )
 
         for artist in song["artist_ids"]:

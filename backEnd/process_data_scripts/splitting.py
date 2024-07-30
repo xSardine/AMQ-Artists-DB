@@ -159,6 +159,10 @@ splitting_exception_list = [
     ("(K)NoW_NAME:AIJ", ("(K)NoW_NAME", "AIJ")),
     ("(K)NoW_NAME:eNu", ("(K)NoW_NAME", "eNu")),
     # other
+    (
+        "REAL AKIBA BOYZ loves Kasumi Taguchi & AiRyA from REAL AKIBA BAND",
+        ("REAL AKIBA BOYZ", "Kasumi Taguchi", "AiRyA from REAL AKIBA BAND"),
+    ),
     ("m-flo loves Alex (CLAZZIQUAI PROJECT)", ("m-flo", "Alex (CLAZZIQUAI PROJECT)")),
     (
         "THE RZA Feat: The Reverend William Burk",
@@ -340,7 +344,7 @@ splitting_exception_list = [
     ("P&P", ("P&P",)),
     ("P4 with T", ("P4 with T",)),
     ("MAYA & Z", ("MAYA & Z",)),
-    ("Icchi & Naru", ("Icchi & Naru",)),
+    ("Icchy & Naru", ("Icchy & Naru",)),
     ("Licca & Noa", ("Licca", "Noa")),
     (
         'SOIL&"PIMP"SESSIONS feat. Maaya Sakamoto',
@@ -598,6 +602,7 @@ splitting_exception_list = [
     ("HARU & SAYAKA from UNIVERS★L D", ("HARU", "SAYAKA")),
     ("UL-SAYS [from T.P.D]", ("UL-SAYS",)),
     ("BACK-ON & Lil' Fang (from FAKY)", ("BACK-ON", "Lil' Fang")),
+    ("Daiki Nakamura to The King Stars", ("Daiki Nakamura", "The King Stars")),
     (
         "Charisma.com to RYO-Z Onii-san (RIP SLYME)",
         ("Charisma.com", "RYO-Z Onii-san (RIP SLYME)"),

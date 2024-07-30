@@ -105,6 +105,21 @@ def ask_artist(
     return user_input, artist_id
 
 
+def ask_song_id(message, song_database):
+    user_input = input(message)
+
+    # if user_input not int
+    if not user_input.isdigit():
+        raise ValueError(f"Song {user_input} not found in the database")
+
+    for anime in song_database:
+        for song in anime["songs"]:
+            if int(user_input) == song["annSongId"]:
+                return user_input, anime, song
+
+    raise ValueError(f"Song {user_input} not found in the database")
+
+
 def ask_song_ids():
     song_ids = []
 

@@ -75,16 +75,17 @@ def get_regex_search(og_search, partial_match=True, swap_words=False):
 
 
 def format_song(artist_database, song):
-    if song[9] == 1:
-        type = "Opening " + str(song[10])
-    elif song[9] == 2:
-        type = "Ending " + str(song[10])
+
+    if song[13] == 1:
+        type = "Opening " + str(song[14])
+    elif song[13] == 2:
+        type = "Ending " + str(song[14])
     else:
         type = "Insert Song"
 
     artists = []
-    if song[13]:
-        for artist_id, line_up in zip(song[13].split(","), song[14].split(",")):
+    if song[17]:
+        for artist_id, line_up in zip(song[17].split(","), song[18].split(",")):
             line_up = int(line_up)
 
             current_artist = {
@@ -123,35 +124,42 @@ def format_song(artist_database, song):
             artists.append(current_artist)
 
     composers = []
-    if song[15]:
-        for composer_id in song[15].split(","):
+    if song[19]:
+        for composer_id in song[19].split(","):
             composers.append(
                 {"id": composer_id, "names": artist_database[str(composer_id)]["names"]}
             )
 
     arrangers = []
-    if song[16]:
-        for arranger_id in song[16].split(","):
+    if song[20]:
+        for arranger_id in song[20].split(","):
             arrangers.append(
                 {"id": arranger_id, "names": artist_database[str(arranger_id)]["names"]}
             )
 
     songinfo = {
         "annId": song[0],
-        "annSongId": song[8],
-        "animeJPName": song[2] if song[2] else song[1],
-        "animeENName": song[3] if song[3] else song[1],
-        "animeAltName": song[4].split("\$") if song[4] else song[4],
-        "animeVintage": song[5],
-        "animeType": song[6],
+        "linked_id": {
+            "myanimelist": song[1],
+            "anidb": song[2],
+            "anilist": song[3],
+            "kitsu": song[4],
+        },
+        "annSongId": song[12],
+        "animeJPName": song[6] if song[6] else song[5],
+        "animeENName": song[7] if song[7] else song[5],
+        "animeAltName": song[8].split("\$") if song[8] else song[8],
+        "animeVintage": song[9],
+        "animeType": song[10],
         "songType": type,
-        "songName": song[11],
-        "songArtist": song[12],
-        "songDifficulty": song[17],
-        "songCategory": song[18],
-        "HQ": song[19],
-        "MQ": song[20],
-        "audio": song[21],
+        "songName": song[15],
+        "songArtist": song[16],
+        "songDifficulty": song[21],
+        "songCategory": song[22],
+        "songLenght": song[23],
+        "HQ": song[24],
+        "MQ": song[25],
+        "audio": song[26],
         "artists": artists,
         "composers": composers,
         "arrangers": arrangers,
