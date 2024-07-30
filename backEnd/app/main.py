@@ -91,6 +91,14 @@ class annId_Search_Request(BaseModel):
     insert_filter: Optional[bool] = True
 
 
+class malIds_Search_Request(BaseModel):
+    malIds: List[int] = []
+    ignore_duplicate: Optional[bool] = False
+    opening_filter: Optional[bool] = True
+    ending_filter: Optional[bool] = True
+    insert_filter: Optional[bool] = True
+
+
 class artist(BaseModel):
     id: int
     names: List[str]
@@ -298,6 +306,28 @@ async def search_request(query: annId_Search_Request):
         query.annId,
         query.ignore_duplicate,
         authorized_type,
+    )
+
+    return song_list
+
+
+@app.post("/api/malIDs_request")
+async def malIDs_request(query: malIds_Search_Request):
+
+    authorized_type = []
+    if query.opening_filter:
+        authorized_type.append(1)
+    if query.ending_filter:
+        authorized_type.append(2)
+    if query.insert_filter:
+        authorized_type.append(3)
+
+    if len(query.malIds) > 500:
+        # return error message
+        return "Too many malIds"
+
+    song_list = get_search_result.get_malIds_song_list(
+        query.malIds, query.ignore_duplicate, authorized_type
     )
 
     return song_list

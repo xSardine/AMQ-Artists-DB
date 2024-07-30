@@ -21,7 +21,7 @@ def extract_song_database():
 
     song_database = {}
     for song in run_sql_command(cursor, command):
-        song_database[song[7]] = song
+        song_database[song[11]] = song
 
     return song_database
 
@@ -42,12 +42,12 @@ def extract_anime_database():
     for song in run_sql_command(cursor, command):
         if song[0] not in anime_database:
             anime_database[song[0]] = {
-                "animeExpandName": song[1],
-                "animeJPName": song[2],
-                "animeENName": song[3],
-                "animeAltNames": song[4],
-                "animeVintage": song[5],
-                "animeType": song[6],
+                "animeExpandName": song[5],
+                "animeJPName": song[6],
+                "animeENName": song[7],
+                "animeAltNames": song[8],
+                "animeVintage": song[9],
+                "animeType": song[10],
                 "songs": [],
             }
         anime_database[song[0]]["songs"].append(song)
@@ -93,12 +93,16 @@ def extract_artist_database():
 
         artist_database[str(info[0])] = {
             "names": info[1].split("\$"),
-            "groups": [
-                [group, int(line_up)]
-                for group, line_up in zip(groups[1].split(","), groups[2].split(","))
-            ]
-            if groups[1]
-            else [],
+            "groups": (
+                [
+                    [group, int(line_up)]
+                    for group, line_up in zip(
+                        groups[1].split(","), groups[2].split(",")
+                    )
+                ]
+                if groups[1]
+                else []
+            ),
             "members": [],
             "vocalist": True if info[2] else False,
             "composer": True if info[3] else False,
@@ -194,6 +198,11 @@ def connect_to_database(database_path):
 def get_songs_list_from_annIds(cursor, annIds, authorized_types):
     get_songs_from_annId = f"SELECT * from songsFull WHERE songType IN ({','.join('?'*len(authorized_types))}) AND annId IN ({','.join('?'*len(annIds))}) LIMIT 300"
     return run_sql_command(cursor, get_songs_from_annId, authorized_types + annIds)
+
+
+def get_songs_list_from_malIds(cursor, malIds, authorized_types):
+    get_songs_from_malIds = f"SELECT * from songsFull WHERE songType IN ({','.join('?'*len(authorized_types))}) AND malId IN ({','.join('?'*len(malIds))})"
+    return run_sql_command(cursor, get_songs_from_malIds, authorized_types + malIds)
 
 
 def get_annId_from_anime(cursor, regex, authorized_types=[1, 2, 3]):

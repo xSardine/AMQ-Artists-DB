@@ -83,7 +83,7 @@ def get_duplicate_in_list(list, song):
     """
 
     for i, song2 in enumerate(list):
-        if song[11] == song2["songName"] and song[12] == song2["songArtist"]:
+        if song[15] == song2["songName"] and song[16] == song2["songArtist"]:
             return i
     return -1
 
@@ -115,7 +115,7 @@ def combine_results(
         if len(final_song_list) >= max_nb_songs:
             break
 
-        if song[7] in songId_done:
+        if song[11] in songId_done:
             continue
 
         duplicate_ID = get_duplicate_in_list(final_song_list, song)
@@ -127,21 +127,21 @@ def combine_results(
                 and (not composer_songs_list or song in composer_songs_list)
             ):
                 if not ignore_duplicate or duplicate_ID == -1:
-                    songId_done.append(song[7])
+                    songId_done.append(song[11])
                     final_song_list.append(utils.format_song(artist_database, song))
                 else:
                     if final_song_list[duplicate_ID]["annId"] > song[0]:
-                        songId_done.append(song[7])
+                        songId_done.append(song[11])
                         final_song_list[duplicate_ID] = utils.format_song(
                             artist_database, song
                         )
         else:
             if not ignore_duplicate or duplicate_ID == -1:
-                songId_done.append(song[7])
+                songId_done.append(song[11])
                 final_song_list.append(utils.format_song(artist_database, song))
             else:
                 if final_song_list[duplicate_ID]["annId"] > song[0]:
-                    songId_done.append(song[7])
+                    songId_done.append(song[11])
                     final_song_list[duplicate_ID] = utils.format_song(
                         artist_database, song
                     )
@@ -190,7 +190,7 @@ def check_meets_artists_requirements(
 ):
     song_artists = [
         [artist, int(line_up)]
-        for artist, line_up in zip(song[13].split(","), song[14].split(","))
+        for artist, line_up in zip(song[17].split(","), song[18].split(","))
     ]
     song_artists_flat = get_member_list_flat(artist_database, song_artists)
 
@@ -219,7 +219,7 @@ def get_song_list_from_songIds_JSON(song_database, songIds, authorized_types):
     song_list = []
 
     for songId in songIds:
-        if song_database[songId][9] in authorized_types:
+        if song_database[songId][13] in authorized_types:
             song_list.append(song_database[songId])
 
     return song_list
@@ -286,6 +286,7 @@ def process_artist(
             max_other_artist,
         ):
             final_song_list.append(song)
+
     return final_song_list, artist_ids
 
 
@@ -361,7 +362,7 @@ def get_search_results(
             if not anime["animeJPName"]:
                 if re.match(anime_search, anime["animeExpandName"].lower()):
                     for song in anime["songs"]:
-                        if song[9] in authorized_types:
+                        if song[13] in authorized_types:
                             anime_songs_list.append(song)
             else:
                 found = False
@@ -378,7 +379,7 @@ def get_search_results(
 
                 if found:
                     for song in anime["songs"]:
-                        if song[9] in authorized_types:
+                        if song[13] in authorized_types:
                             anime_songs_list.append(song)
 
     print(f"Anime: {round(timeit.default_timer() - start, 4)}")
@@ -394,8 +395,8 @@ def get_search_results(
         songName_songs_list = []
         for songId in song_database:
             song = song_database[songId]
-            if song[9] in authorized_types and re.match(
-                songName_search, song[11].lower()
+            if song[13] in authorized_types and re.match(
+                songName_search, song[15].lower()
             ):
                 songName_songs_list.append(song)
 
@@ -513,7 +514,7 @@ def get_artists_ids_song_list(
     final_songs = []
     for song in songs:
         flag = False
-        for artist, line_up in zip(song[13].split(","), song[14].split(",")):
+        for artist, line_up in zip(song[17].split(","), song[18].split(",")):
             if int(artist) in artist_ids:
                 flag = True
             for group, group_line_up in groups:
@@ -614,6 +615,60 @@ def get_annId_song_list(
 
     songs = combine_results(
         artist_database, songs, [], [], [], [], False, ignore_duplicate
+    )
+
+    stop = timeit.default_timer()
+
+    logs["computing_time"] = round(stop - start, 4)
+    logs["nb_results"] = len(songs)
+    print(f"full time: {logs['computing_time']}")
+    print(f"nb_results: {logs['nb_results']}")
+    print()
+
+    return songs
+
+
+def get_malIds_song_list(
+    malIds,
+    ignore_duplicate,
+    authorized_types,
+):
+
+    start = timeit.default_timer()
+
+    cursor = sql_calls.connect_to_database(sql_calls.database_path)
+
+    artist_database = sql_calls.extract_artist_database()
+
+    logs = {
+        "date": str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")),
+        "malIds_filter": len(malIds),
+        "ignore_dups": ignore_duplicate,
+        "types": authorized_types,
+    }
+
+    for key in logs:
+        print(f"{key}: {logs[key]}")
+
+    for malId in malIds:
+        if not str(malId).isdigit():
+            return []
+
+    songs = sql_calls.get_songs_list_from_malIds(cursor, malIds, authorized_types)
+
+    if not songs:
+        return []
+
+    songs = combine_results(
+        artist_database,
+        songs,
+        [],
+        [],
+        [],
+        [],
+        False,
+        ignore_duplicate,
+        max_nb_songs=99999,
     )
 
     stop = timeit.default_timer()
