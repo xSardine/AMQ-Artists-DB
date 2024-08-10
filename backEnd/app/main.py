@@ -430,3 +430,36 @@ async def anime_name_autocomplete(
     anime_name_list = sorted(anime_name_list, key=lambda x: x.lower())
 
     return anime_name_list
+
+
+# api points that returns all songs from a specific season
+@app.get("/api/filter_season")
+async def filter_season(season: str):
+
+    # check it's correctly formatted
+    possible_seasons = ["Winter", "Spring", "Summer", "Fall"]
+
+    if len(season.split(" ")) != 2:
+        return f"{season} is an invalid season, please use the format 'Season Year'. Example : 'Winter 2021'"
+
+    sson, year = season.split(" ")
+    if sson not in possible_seasons:
+        return f"{sson} is an invalid season, please use the format 'Season Year'. Example : 'Winter 2021'"
+
+    if not year.isdigit():
+        return f"{year} is an invalid year, please use the format 'Season Year'. Example : 'Winter 2021'"
+
+    print(season)
+
+    cursor = sql_calls.connect_to_database(sql_calls.database_path)
+
+    get_all_songs = "SELECT * from songsFull WHERE animeVintage LIKE ?"
+    songs = sql_calls.run_sql_command(cursor, get_all_songs, [f"%{season}%"])
+
+    artist_database = sql_calls.extract_artist_database()
+
+    song_list = [utils.format_song(artist_database, song) for song in songs]
+
+    print("Number of songs: ", len(song_list))
+
+    return song_list
