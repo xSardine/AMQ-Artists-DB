@@ -456,7 +456,7 @@ async def filter_season(season: str):
 
     cursor = sql_calls.connect_to_database(sql_calls.database_path)
 
-    get_all_songs = "SELECT * from songsFull WHERE animeVintage = ?"
+    get_all_songs = "SELECT * from songsFull WHERE animeVintage LIKE ?"
     songs = sql_calls.run_sql_command(cursor, get_all_songs, [f"%{season}%"])
 
     artist_database = sql_calls.extract_artist_database()
