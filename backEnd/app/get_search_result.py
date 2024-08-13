@@ -225,6 +225,20 @@ def get_song_list_from_songIds_JSON(song_database, songIds, authorized_types):
     return song_list
 
 
+def get_all_groups(artist_id, artist_database):
+    groups = []
+
+    # Get the groups for the current artist
+    for group in artist_database[str(artist_id)]["groups"]:
+        groups.append(group)
+
+        # Recursively get the groups for the group itself
+        group_id, _ = group
+        groups += get_all_groups(group_id, artist_database)
+
+    return groups
+
+
 def process_artist(
     cursor,
     song_database,
@@ -261,15 +275,14 @@ def process_artist(
                 else:
                     members.append(artist)
 
-    groups = []
-    for artist in list(set(artist_ids + members)):
-        for group in artist_database[str(artist)]["groups"]:
-            groups.append(group)
+    all_groups = []
+    for artist in set(artist_ids + members):
+        all_groups += get_all_groups(artist, artist_database)
 
     # Extract every song IDs containing an artist we have
     songIds = sql_calls.get_songs_ids_from_artist_ids(
         cursor,
-        list(set(artist_ids + [group[0] for group in groups] + members)),
+        list(set(artist_ids + [group[0] for group in all_groups] + members)),
     )
 
     artist_songs_list = get_song_list_from_songIds_JSON(
