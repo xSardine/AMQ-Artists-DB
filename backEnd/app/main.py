@@ -110,6 +110,13 @@ class artist(BaseModel):
 artist.update_forward_refs()
 
 
+class Anime_List_Links(BaseModel):
+    myanimelist: Optional[int]
+    anidb: Optional[int]
+    anilist: Optional[int]
+    kitsu: Optional[int]
+
+
 class Song_Entry(BaseModel):
     annId: int
     annSongId: int
@@ -117,12 +124,14 @@ class Song_Entry(BaseModel):
     animeJPName: str
     animeAltName: Optional[List[str]]
     animeVintage: Optional[str]
+    linked_ids: Anime_List_Links
     animeType: Optional[str]
     songType: str
     songName: str
     songArtist: str
     songDifficulty: Optional[float]
     songCategory: Optional[str]
+    songLength: Optional[float]
     HQ: Optional[str]
     MQ: Optional[str]
     audio: Optional[str]

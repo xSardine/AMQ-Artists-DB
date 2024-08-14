@@ -17,9 +17,40 @@
       </h3>
     </div>
     <div class="modal-body">
-      <h3 style="text-align: center; text-decoration: underline">
+
+      <br />
+
+      <div style="display: flex; justify-content: right; position: relative;">
+
+
+        <a href="{{ popUpannURL }}" target="_blank" style="padding-right: 3px">
+          <img src="assets/img/ANN_Logo.png" style="height: 30px;" alt="Anime News Network Link">
+        </a>
+
+        <a *ngIf="popUpMalID" href="https://myanimelist.net/anime/{{ popUpMalID }}" target="_blank" style="padding-right: 3px">
+          <img src="assets/img/MyAnimeList_Logo.png" style="height: 30px;" alt="MyAnimeList Link">
+        </a>
+
+        <a *ngIf="popUpAnidbID" href="https://anidb.net/anime/{{ popUpAnidbID }}" target="_blank" style="padding-right: 3px">
+          <img src="assets/img/AniDB_Logo.png" style="height: 30px;" alt="Anidb Link">
+        </a>
+
+        <a *ngIf="popUpAnilistID" href="https://anilist.co/anime/2928/{{ popUpAnilistID }}" target="_blank" style="padding-right: 3px">
+          <img src="assets/img/AniList_logo.png" style="height: 30px;" alt="Anilist Link">
+        </a>
+
+        <a *ngIf="popUpKitsuID" href="https://kitsu.app/anime/{{ popUpKitsuID }}" target="_blank" style="padding-right: 3px">
+          <img src="assets/img/Kitsu_Logo.png" style="height: 30px;" alt="Kitsu Link">
+        </a>
+      </div>
+
+
+
+      <h3 style="text-align: center; text-decoration: underline; margin: 0; flex: 1;">
         Song Information
       </h3>
+
+      <br />
 
       <div style="text-align: center">
         <span
@@ -93,6 +124,22 @@
             {{ popUpSongDiff }}%
           </p>
         </div>
+        <div *ngIf="popUpSongLength" class="popUpSongInfo" style="width: 245px">
+          <p
+            title="*as of 2024-02-03"
+            style="text-decoration: underline; margin-bottom: 5px"
+          >
+            Length
+          </p>
+          <p
+            class="clickable"
+            (click)="copyToClipboard($event, popUpSongLength)"
+            title="Copy Song Length to clipboard"
+            style="margin-top: 0"
+          >
+            {{ popUpSongLength }}s
+          </p>
+        </div>
       </div>
 
       <div *ngIf="popUpHDLink || popUpMDLink || popUpAudioLink">
@@ -115,7 +162,7 @@
             class="textLink"
             target="_blank"
             href="{{ popUpHDLink }}"
-            >{{ popUpHDLink }}</a
+            >{{ popUpHDName }}</a
           >
         </div>
         <div *ngIf="popUpMDLink" class="popUpSongInfo" style="width: 330px">
@@ -132,7 +179,7 @@
             class="textLink"
             target="_blank"
             href="{{ popUpMDLink }}"
-            >{{ popUpMDLink }}</a
+            >{{ popUpMDName }}</a
           >
         </div>
         <div *ngIf="popUpAudioLink" class="popUpSongInfo" style="width: 330px">
@@ -149,7 +196,7 @@
             class="textLink"
             target="_blank"
             href="{{ popUpAudioLink }}"
-            >{{ popUpAudioLink }}</a
+            >{{ popUpAudioName }}</a
           >
         </div>
       </div>
