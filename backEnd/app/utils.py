@@ -139,7 +139,7 @@ def format_song(artist_database, song):
 
     songinfo = {
         "annId": song[0],
-        "linked_id": {
+        "linked_ids": {
             "myanimelist": song[1],
             "anidb": song[2],
             "anilist": song[3],
@@ -156,7 +156,7 @@ def format_song(artist_database, song):
         "songArtist": song[16],
         "songDifficulty": song[21],
         "songCategory": song[22],
-        "songLenght": song[23],
+        "songLength": song[23],
         "HQ": song[24],
         "MQ": song[25],
         "audio": song[26],

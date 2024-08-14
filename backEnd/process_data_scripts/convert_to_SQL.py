@@ -768,7 +768,7 @@ for anime in song_database:
         ),
         (
             anime["linked_id"]["anidb"]
-            if "linked_id" in anime and "anilist" in anime["linked_id"]
+            if "linked_id" in anime and "anidb" in anime["linked_id"]
             else None
         ),
         (
@@ -885,7 +885,7 @@ for anime in song_database:
         ),
         (
             anime["linked_id"]["anidb"]
-            if "linked_id" in anime and "anilist" in anime["linked_id"]
+            if "linked_id" in anime and "anidb" in anime["linked_id"]
             else None
         ),
         (
