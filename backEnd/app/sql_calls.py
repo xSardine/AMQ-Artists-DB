@@ -21,7 +21,7 @@ def extract_song_database():
 
     song_database = {}
     for song in run_sql_command(cursor, command):
-        song_database[song[11]] = song
+        song_database[song[12]] = song
 
     return song_database
 
@@ -42,12 +42,11 @@ def extract_anime_database():
     for song in run_sql_command(cursor, command):
         if song[0] not in anime_database:
             anime_database[song[0]] = {
-                "animeExpandName": song[5],
-                "animeJPName": song[6],
-                "animeENName": song[7],
-                "animeAltNames": song[8],
-                "animeVintage": song[9],
-                "animeType": song[10],
+                "animeJPName": song[5],
+                "animeENName": song[6],
+                "animeAltNames": song[7],
+                "animeVintage": song[8],
+                "animeType": song[9],
                 "songs": [],
             }
         anime_database[song[0]]["songs"].append(song)

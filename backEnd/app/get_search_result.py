@@ -429,6 +429,17 @@ def get_search_results(
         for annId in anime_database:
             anime = anime_database[annId]
             found = False
+
+            if annId == 6236:
+                print(
+                    [anime["animeJPName"], anime["animeENName"]]
+                    + (
+                        anime["animeAltNames"].split("\$")
+                        if "animeAltNames" in anime and anime["animeAltNames"]
+                        else []
+                    )
+                )
+
             for name in [anime["animeJPName"], anime["animeENName"]] + (
                 anime["animeAltNames"].split("\$")
                 if "animeAltNames" in anime and anime["animeAltNames"]
@@ -441,6 +452,7 @@ def get_search_results(
                     found = True
 
             if found:
+                print(annId)
                 for song in anime["songs"]:
 
                     if song[13] not in authorized_types:
