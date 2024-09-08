@@ -195,30 +195,72 @@ def connect_to_database(database_path):
         exit(0)
 
 
-def get_songs_list_from_annIds(cursor, annIds, authorized_types):
-    get_songs_from_annId = f"SELECT * from songsFull WHERE songType IN ({','.join('?'*len(authorized_types))}) AND annId IN ({','.join('?'*len(annIds))}) LIMIT 300"
-    return run_sql_command(cursor, get_songs_from_annId, authorized_types + annIds)
+def get_songs_list_from_annIds(
+    cursor,
+    annIds,
+    authorized_types,
+    authorized_broadcasts,
+    authorized_song_categories,
+):
 
+    broadcast_filter = ""
+    if "Dub" not in authorized_broadcasts:
+        broadcast_filter += " AND isDub == 0"
+    if "Rebroadcast" not in authorized_broadcasts:
+        broadcast_filter += " AND isRebroadcast == 0"
+    if "Normal" not in authorized_broadcasts:
+        broadcast_filter += " AND isDub == 1 AND isRebroadcast == 1"
 
-def get_songs_list_from_malIds(cursor, malIds, authorized_types):
-    get_songs_from_malIds = f"SELECT * from songsFull WHERE songType IN ({','.join('?'*len(authorized_types))}) AND malId IN ({','.join('?'*len(malIds))})"
-    return run_sql_command(cursor, get_songs_from_malIds, authorized_types + malIds)
-
-
-def get_annId_from_anime(cursor, regex, authorized_types=[1, 2, 3]):
-    # TODO Indexes on lower ?
-    get_animeID_from_animeName = f"SELECT annId from animes WHERE (lower(animeENName) REGEXP ? OR lower(animeJPName) REGEXP ?) LIMIT 300"
-    return [
-        id[0]
-        for id in run_sql_command(cursor, get_animeID_from_animeName, [regex, regex])
-    ]
-
-
-def get_song_list_from_songArtist(cursor, regex, authorized_types=[1, 2, 3]):
-    # TODO Indexes on lower ?
-    get_song_list_from_songArtist = f"SELECT * from songsFull WHERE songType IN ({','.join('?'*len(authorized_types))}) AND lower(songArtist) REGEXP ? LIMIT 300"
+    get_songs_from_annId = f"SELECT * from songsFull WHERE songType IN ({','.join('?'*len(authorized_types))}) AND annId IN ({','.join('?'*len(annIds))}) {broadcast_filter} AND songCategory IN ({','.join('?'*len(authorized_song_categories))}) LIMIT 300"
     return run_sql_command(
-        cursor, get_song_list_from_songArtist, authorized_types + [regex]
+        cursor,
+        get_songs_from_annId,
+        authorized_types + annIds + authorized_song_categories,
+    )
+
+
+def get_songs_list_from_malIds(
+    cursor,
+    malIds,
+    authorized_types,
+    authorized_broadcasts,
+    authorized_song_categories,
+):
+
+    broadcast_filter = ""
+    if "Dub" not in authorized_broadcasts:
+        broadcast_filter += " AND isDub == 0"
+    if "Rebroadcast" not in authorized_broadcasts:
+        broadcast_filter += " AND isRebroadcast == 0"
+    if "Normal" not in authorized_broadcasts:
+        broadcast_filter += " AND isDub == 1 AND isRebroadcast == 1"
+
+    get_songs_from_malIds = f"SELECT * from songsFull WHERE songType IN ({','.join('?'*len(authorized_types))}) AND malId IN ({','.join('?'*len(malIds))}) {broadcast_filter} AND songCategory IN ({','.join('?'*len(authorized_song_categories))})"
+    return run_sql_command(
+        cursor,
+        get_songs_from_malIds,
+        authorized_types + malIds + authorized_song_categories,
+    )
+
+
+def get_song_list_from_songArtist(
+    cursor, regex, authorized_types, authorized_broadcasts, authorized_song_categories
+):
+    # TODO Indexes on lower ?
+
+    broadcast_filter = ""
+    if "Dub" not in authorized_broadcasts:
+        broadcast_filter += " AND isDub == 0"
+    if "Rebroadcast" not in authorized_broadcasts:
+        broadcast_filter += " AND isRebroadcast == 0"
+    if "Normal" not in authorized_broadcasts:
+        broadcast_filter += " AND isDub == 1 AND isRebroadcast == 1"
+
+    get_song_list_from_songArtist = f"SELECT * from songsFull WHERE songType IN ({','.join('?'*len(authorized_types))}) {broadcast_filter} AND songCategory IN ({','.join('?'*len(authorized_song_categories))}) AND lower(songArtist) REGEXP ? LIMIT 300"
+    return run_sql_command(
+        cursor,
+        get_song_list_from_songArtist,
+        authorized_types + authorized_song_categories + [regex],
     )
 
 

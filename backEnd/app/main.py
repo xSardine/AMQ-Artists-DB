@@ -39,11 +39,23 @@ class Search_Request(BaseModel):
     song_name_search_filter: Optional[Search_Filter] = []
     artist_search_filter: Optional[Search_Filter] = []
     composer_search_filter: Optional[Search_Filter] = []
+
     and_logic: Optional[bool] = True
+
     ignore_duplicate: Optional[bool] = False
+
     opening_filter: Optional[bool] = True
     ending_filter: Optional[bool] = True
     insert_filter: Optional[bool] = True
+
+    normal_broadcast: Optional[bool] = True
+    dub: Optional[bool] = True
+    rebroadcast: Optional[bool] = True
+
+    standard: Optional[bool] = True
+    instrumental: Optional[bool] = True
+    chanting: Optional[bool] = True
+    character: Optional[bool] = True
 
     class Config:
         schema_extra = {
@@ -69,34 +81,74 @@ class Artist_ID_Search_Request(BaseModel):
     group_granularity: Optional[int] = Field(2, ge=0)
     max_other_artist: Optional[int] = Field(2, ge=0)
     ignore_duplicate: Optional[bool] = False
+
     opening_filter: Optional[bool] = True
     ending_filter: Optional[bool] = True
     insert_filter: Optional[bool] = True
+
+    normal_broadcast: Optional[bool] = True
+    dub: Optional[bool] = True
+    rebroadcast: Optional[bool] = True
+
+    standard: Optional[bool] = True
+    instrumental: Optional[bool] = True
+    chanting: Optional[bool] = True
+    character: Optional[bool] = True
 
 
 class Composer_ID_Search_Request(BaseModel):
     composer_ids: List[int] = []
     arrangement: Optional[bool] = True
     ignore_duplicate: Optional[bool] = False
+
     opening_filter: Optional[bool] = True
     ending_filter: Optional[bool] = True
     insert_filter: Optional[bool] = True
+
+    normal_broadcast: Optional[bool] = True
+    dub: Optional[bool] = True
+    rebroadcast: Optional[bool] = True
+
+    standard: Optional[bool] = True
+    instrumental: Optional[bool] = True
+    chanting: Optional[bool] = True
+    character: Optional[bool] = True
 
 
 class annId_Search_Request(BaseModel):
     annId: int
     ignore_duplicate: Optional[bool] = False
+
     opening_filter: Optional[bool] = True
     ending_filter: Optional[bool] = True
     insert_filter: Optional[bool] = True
+
+    normal_broadcast: Optional[bool] = True
+    dub: Optional[bool] = True
+    rebroadcast: Optional[bool] = True
+
+    standard: Optional[bool] = True
+    instrumental: Optional[bool] = True
+    chanting: Optional[bool] = True
+    character: Optional[bool] = True
 
 
 class malIds_Search_Request(BaseModel):
     malIds: List[int] = []
     ignore_duplicate: Optional[bool] = False
+
     opening_filter: Optional[bool] = True
     ending_filter: Optional[bool] = True
     insert_filter: Optional[bool] = True
+
+    normal_broadcast: Optional[bool] = True
+    dub: Optional[bool] = True
+    rebroadcast: Optional[bool] = True
+
+    standard: Optional[bool] = True
+    instrumental: Optional[bool] = True
+    chanting: Optional[bool] = True
+    character: Optional[bool] = True
 
 
 class artist(BaseModel):
@@ -126,12 +178,15 @@ class Song_Entry(BaseModel):
     animeVintage: Optional[str]
     linked_ids: Anime_List_Links
     animeType: Optional[str]
+    animeCategory: Optional[str]
     songType: str
     songName: str
     songArtist: str
     songDifficulty: Optional[float]
     songCategory: Optional[str]
     songLength: Optional[float]
+    isDub: Optional[bool]
+    isRebroadcast: Optional[bool]
     HQ: Optional[str]
     MQ: Optional[str]
     audio: Optional[str]
@@ -215,7 +270,31 @@ async def search_request(query: Search_Request):
     if query.insert_filter:
         authorized_type.append(3)
 
+    authorized_broadcasts = []
+    if query.normal_broadcast:
+        authorized_broadcasts.append("Normal")
+    if query.dub:
+        authorized_broadcasts.append("Dub")
+    if query.rebroadcast:
+        authorized_broadcasts.append("Rebroadcast")
+
+    authorized_song_categories = []
+    if query.standard:
+        authorized_song_categories.append("Standard")
+    if query.instrumental:
+        authorized_song_categories.append("Instrumental")
+    if query.chanting:
+        authorized_song_categories.append("Chanting")
+    if query.character:
+        authorized_song_categories.append("Character")
+
     if not authorized_type:
+        return []
+
+    if not authorized_broadcasts:
+        return []
+
+    if not authorized_song_categories:
         return []
 
     song_list = get_search_result.get_search_results(
@@ -227,6 +306,8 @@ async def search_request(query: Search_Request):
         query.ignore_duplicate,
         300,
         authorized_type,
+        authorized_broadcasts,
+        authorized_song_categories,
     )
 
     return song_list
@@ -253,6 +334,7 @@ async def get_50_random_songs():
 
 @app.post("/api/artist_ids_request", response_model=List[Song_Entry])
 async def search_request(query: Artist_ID_Search_Request):
+
     authorized_type = []
     if query.opening_filter:
         authorized_type.append(1)
@@ -261,7 +343,31 @@ async def search_request(query: Artist_ID_Search_Request):
     if query.insert_filter:
         authorized_type.append(3)
 
+    authorized_broadcasts = []
+    if query.normal_broadcast:
+        authorized_broadcasts.append("Normal")
+    if query.dub:
+        authorized_broadcasts.append("Dub")
+    if query.rebroadcast:
+        authorized_broadcasts.append("Rebroadcast")
+
+    authorized_song_categories = []
+    if query.standard:
+        authorized_song_categories.append("Standard")
+    if query.instrumental:
+        authorized_song_categories.append("Instrumental")
+    if query.chanting:
+        authorized_song_categories.append("Chanting")
+    if query.character:
+        authorized_song_categories.append("Character")
+
     if not authorized_type:
+        return []
+
+    if not authorized_broadcasts:
+        return []
+
+    if not authorized_song_categories:
         return []
 
     song_list = get_search_result.get_artists_ids_song_list(
@@ -270,6 +376,8 @@ async def search_request(query: Artist_ID_Search_Request):
         query.group_granularity,
         query.ignore_duplicate,
         authorized_type,
+        authorized_broadcasts,
+        authorized_song_categories,
     )
 
     return song_list
@@ -277,6 +385,7 @@ async def search_request(query: Artist_ID_Search_Request):
 
 @app.post("/api/composer_ids_request", response_model=List[Song_Entry])
 async def search_request(query: Composer_ID_Search_Request):
+
     authorized_type = []
     if query.opening_filter:
         authorized_type.append(1)
@@ -285,14 +394,31 @@ async def search_request(query: Composer_ID_Search_Request):
     if query.insert_filter:
         authorized_type.append(3)
 
-    if not authorized_type:
-        return []
+    authorized_broadcasts = []
+    if query.normal_broadcast:
+        authorized_broadcasts.append("Normal")
+    if query.dub:
+        authorized_broadcasts.append("Dub")
+    if query.rebroadcast:
+        authorized_broadcasts.append("Rebroadcast")
+
+    authorized_song_categories = []
+    if query.standard:
+        authorized_song_categories.append("Standard")
+    if query.instrumental:
+        authorized_song_categories.append("Instrumental")
+    if query.chanting:
+        authorized_song_categories.append("Chanting")
+    if query.character:
+        authorized_song_categories.append("Character")
 
     song_list = get_search_result.get_composer_ids_song_list(
         query.composer_ids,
         query.arrangement,
         query.ignore_duplicate,
         authorized_type,
+        authorized_broadcasts,
+        authorized_song_categories,
     )
 
     return song_list
@@ -300,6 +426,7 @@ async def search_request(query: Composer_ID_Search_Request):
 
 @app.post("/api/annId_request", response_model=List[Song_Entry])
 async def search_request(query: annId_Search_Request):
+
     authorized_type = []
     if query.opening_filter:
         authorized_type.append(1)
@@ -308,13 +435,39 @@ async def search_request(query: annId_Search_Request):
     if query.insert_filter:
         authorized_type.append(3)
 
+    authorized_broadcasts = []
+    if query.normal_broadcast:
+        authorized_broadcasts.append("Normal")
+    if query.dub:
+        authorized_broadcasts.append("Dub")
+    if query.rebroadcast:
+        authorized_broadcasts.append("Rebroadcast")
+
+    authorized_song_categories = []
+    if query.standard:
+        authorized_song_categories.append("Standard")
+    if query.instrumental:
+        authorized_song_categories.append("Instrumental")
+    if query.chanting:
+        authorized_song_categories.append("Chanting")
+    if query.character:
+        authorized_song_categories.append("Character")
+
     if not authorized_type:
+        return []
+
+    if not authorized_broadcasts:
+        return []
+
+    if not authorized_song_categories:
         return []
 
     song_list = get_search_result.get_annId_song_list(
         query.annId,
         query.ignore_duplicate,
         authorized_type,
+        authorized_broadcasts,
+        authorized_song_categories,
     )
 
     return song_list
@@ -331,12 +484,43 @@ async def malIDs_request(query: malIds_Search_Request):
     if query.insert_filter:
         authorized_type.append(3)
 
+    authorized_broadcasts = []
+    if query.normal_broadcast:
+        authorized_broadcasts.append("Normal")
+    if query.dub:
+        authorized_broadcasts.append("Dub")
+    if query.rebroadcast:
+        authorized_broadcasts.append("Rebroadcast")
+
+    authorized_song_categories = []
+    if query.standard:
+        authorized_song_categories.append("Standard")
+    if query.instrumental:
+        authorized_song_categories.append("Instrumental")
+    if query.chanting:
+        authorized_song_categories.append("Chanting")
+    if query.character:
+        authorized_song_categories.append("Character")
+
+    if not authorized_type:
+        return []
+
+    if not authorized_broadcasts:
+        return []
+
+    if not authorized_song_categories:
+        return []
+
     if len(query.malIds) > 500:
         # return error message
         return "Too many malIds"
 
     song_list = get_search_result.get_malIds_song_list(
-        query.malIds, query.ignore_duplicate, authorized_type
+        query.malIds,
+        query.ignore_duplicate,
+        authorized_type,
+        authorized_broadcasts,
+        authorized_song_categories,
     )
 
     return song_list

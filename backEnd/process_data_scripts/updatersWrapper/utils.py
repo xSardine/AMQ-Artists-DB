@@ -243,7 +243,8 @@ def add_new_composer_to_DB(artist_database, artist):
 
 def get_example_song_for_artist(song_database, artist_id):
     example_animes = set()
-    for anime in song_database:
+    for annId in song_database:
+        anime = song_database[annId]
         for song in anime["songs"]:
             if artist_id in [aid[0] for aid in song["artist_ids"]] + [
                 cid[0] for cid in song["composer_ids"]
@@ -271,6 +272,7 @@ def get_artist_id(
     partial_match=False,
     exact_match=False,
     excluded_ids=[],
+    verbose=True,
 ):
     ids = []
     if not exact_match:
@@ -307,9 +309,10 @@ def get_artist_id(
     if not ids:
         if not not_exist_ok:
             print(f"{artist} NOT FOUND, CANCELLED")
+            exit()
             # return -1
         new_id = add_new_artist_to_DB(artist_database, artist, vocalist, composing)
-        print(f"COULDN'T FIND {artist}, adding {new_id}")
+        print(f"/!\ COULDN'T FIND {artist}, adding {new_id}")
         return new_id
 
     if len(ids) > 1:
@@ -338,7 +341,8 @@ def get_artist_id(
         return str(disambiguated_id)
 
     # else return found ID
-    print(f"Found existing artist for {artist}")
+    if verbose:
+        print(f"Found existing artist for {artist} : {ids[0]}")
     return ids[0]
 
 

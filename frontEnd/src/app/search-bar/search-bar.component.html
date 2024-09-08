@@ -312,6 +312,69 @@
       </label>
     </div>
 
+    <div style="display: block; padding-bottom: 5px">
+      <label class="check"
+        ><input
+          type="checkbox"
+          (change)="showNormalBroadcasts = !showNormalBroadcasts"
+          [checked]="showNormalBroadcasts"
+        />
+        Normal Broadcasts
+      </label>
+      <label class="check"
+        ><input
+          type="checkbox"
+          (change)="showDubs = !showDubs"
+          [checked]="showDubs"
+        />
+        Dubs
+      </label>
+      <label class="check"
+        ><input
+          type="checkbox"
+          (change)="showRebroadcasts = !showRebroadcasts"
+          [checked]="showRebroadcasts"
+        />
+        Rebroadcasts
+      </label>
+    </div>
+
+    <div style="display: block; padding-bottom: 5px">
+      <label class="check"
+        ><input
+          type="checkbox"
+          (change)="showStandards = !showStandards"
+          [checked]="showStandards"
+        />
+        Standard
+      </label>
+      <label class="check"
+        ><input
+          type="checkbox"
+          (change)="showCharacters = !showCharacters"
+          [checked]="showCharacters"
+        />
+        Character
+      </label>
+      <label class="check"
+        ><input
+          type="checkbox"
+          (change)="showChantings = !showChantings"
+          [checked]="showChantings"
+        />
+        Chanting
+      </label>
+      <label class="check"
+        ><input
+          type="checkbox"
+          (change)="showInstrumentals = !showInstrumentals"
+          [checked]="showInstrumentals"
+        />
+        Instrumental
+      </label>
+
+    </div>
+
     <button type="button" (click)="onSearchCallKey()">Search</button>
   </div>
 </div>

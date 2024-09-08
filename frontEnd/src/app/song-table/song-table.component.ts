@@ -59,6 +59,7 @@ export class SongTableComponent {
   popUpannId: string = "";
   popUpVintage: string = "";
   popUpAnimeType: string = "";
+  popUpAnimeCategory: string = "";
   popUpannSongId: string = "";
   popUpSongName: string = "";
   popUpArtist: string = "";
@@ -262,6 +263,7 @@ export class SongTableComponent {
     this.popUpannId = song.annId;
     this.popUpVintage = song.animeVintage;
     this.popUpAnimeType = song.animeType;
+    this.popUpAnimeCategory = song.animeCategory;
     this.popUpannSongId = song.annSongId != -1 ? song.annSongId : null;
     this.popUpAnime = this.animeTitleLang == "JP" ? song.animeJPName : song.animeENName;
     this.popUpMalID = song.linked_ids.myanimelist;
@@ -273,12 +275,12 @@ export class SongTableComponent {
     this.popUpSongDiff = song.songDifficulty;
     this.popUpSongLength = song.songLength;
     this.popUpSongCat = song.songCategory;
-    this.popUpHDLink = song.HQ;
-    this.popUpHDName = this.popUpHDLink?.split("/")?.pop() ?? "";
-    this.popUpMDLink = song.MQ;
-    this.popUpMDName = this.popUpMDLink?.split("/")?.pop() ?? "";
-    this.popUpAudioLink = song.audio;
-    this.popUpAudioName = this.popUpAudioLink?.split("/")?.pop() ?? "";
+    this.popUpHDName = song.HQ;
+    this.popUpHDLink = song.HQ ? "https://ladist1.catbox.video/" + song.HQ : "";
+    this.popUpMDName = song.MQ;
+    this.popUpMDLink = song.MQ ? "https://ladist1.catbox.video/" + song.MQ : "";
+    this.popUpAudioName = song.audio;
+    this.popUpAudioLink = song.audio ? "https://ladist1.catbox.video/" + song.audio : "";
     this.popUpArtistsInfo = this.sortArtists(song.artists);
     this.popUpComposersInfo = song.composers;
     this.popUpArrangersInfo = song.arrangers;

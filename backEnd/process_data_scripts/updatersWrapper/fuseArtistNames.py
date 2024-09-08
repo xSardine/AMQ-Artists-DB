@@ -69,7 +69,8 @@ def process():
     line_up_id = -1
     if artist_database[center_id]["members"]:
         line_up_id = 0
-    for anime in song_database:
+    for annId in song_database:
+        anime = song_database[annId]
         for song in anime["songs"]:
             for artist in song["artist_ids"]:
                 if artist[0] in removed_ids:

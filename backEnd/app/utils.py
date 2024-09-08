@@ -84,8 +84,9 @@ def format_song(artist_database, song):
         type = "Insert Song"
 
     artists = []
-    if song[17]:
-        for artist_id, line_up in zip(song[17].split(","), song[18].split(",")):
+    if song[20]:
+
+        for artist_id, line_up in zip(song[20].split(","), song[21].split(",")):
             line_up = int(line_up)
 
             current_artist = {
@@ -124,15 +125,15 @@ def format_song(artist_database, song):
             artists.append(current_artist)
 
     composers = []
-    if song[19]:
-        for composer_id in song[19].split(","):
+    if song[22]:
+        for composer_id in song[22].split(","):
             composers.append(
                 {"id": composer_id, "names": artist_database[str(composer_id)]["names"]}
             )
 
     arrangers = []
-    if song[20]:
-        for arranger_id in song[20].split(","):
+    if song[23]:
+        for arranger_id in song[23].split(","):
             arrangers.append(
                 {"id": arranger_id, "names": artist_database[str(arranger_id)]["names"]}
             )
@@ -145,21 +146,27 @@ def format_song(artist_database, song):
             "anilist": song[3],
             "kitsu": song[4],
         },
-        "annSongId": song[12],
-        "animeJPName": song[6] if song[6] else song[5],
-        "animeENName": song[7] if song[7] else song[5],
-        "animeAltName": song[8].split("\$") if song[8] else song[8],
-        "animeVintage": song[9],
-        "animeType": song[10],
+        "animeJPName": song[5] if song[5] else song[6],
+        "animeENName": song[6] if song[6] else song[5],
+        "animeAltName": song[7].split("\$") if song[7] else song[7],
+        "animeVintage": song[8],
+        "animeType": song[9],
+        "animeCategory": song[10],
+        "annSongId": song[11],
+        "songId": song[12],
         "songType": type,
-        "songName": song[15],
-        "songArtist": song[16],
-        "songDifficulty": song[21],
-        "songCategory": song[22],
-        "songLength": song[23],
-        "HQ": song[24],
-        "MQ": song[25],
-        "audio": song[26],
+        "songCategory": song[15],
+        "songName": song[16],
+        "songArtist": song[17],
+        "songComposer": song[18],
+        "songArranger": song[19],
+        "songDifficulty": song[24],
+        "isDub": song[25],
+        "isRebroadcast": song[26],
+        "songLength": song[27],
+        "HQ": song[28],
+        "MQ": song[29],
+        "audio": song[30],
         "artists": artists,
         "composers": composers,
         "arrangers": arrangers,

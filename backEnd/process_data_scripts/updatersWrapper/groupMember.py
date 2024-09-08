@@ -39,7 +39,8 @@ def update_new_line_up_in_song_database(group_id, line_up_id, update_songs, mode
 
     print("\nUpdated Song:")
     if mode == "addAll":
-        for anime in song_database:
+        for annId in song_database:
+            anime = song_database[annId]
             for song in anime["songs"]:
                 for artist in song["artist_ids"]:
                     if artist[0] == group_id:
@@ -51,7 +52,8 @@ def update_new_line_up_in_song_database(group_id, line_up_id, update_songs, mode
     if mode == "addSub":
         for update_song in update_songs:
             flag_song = False
-            for anime in song_database:
+            for annId in song_database:
+                anime = song_database[annId]
                 for song in anime["songs"]:
                     if utils.check_same_song(song, update_song):
                         flag_artist = False
@@ -72,7 +74,8 @@ def update_new_line_up_in_song_database(group_id, line_up_id, update_songs, mode
 def remove_line_up(group_id, line_up_id, fall_back_line_up):
     # song - artist links
     print()
-    for anime in song_database:
+    for annId in song_database:
+        anime = song_database[annId]
         for song in anime["songs"]:
             for artist in song["artist_ids"]:
                 if artist[0] != group_id:

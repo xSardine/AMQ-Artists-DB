@@ -12,7 +12,7 @@
           class="animeLink"
           target="_blank"
           href="{{ popUpannURL }}"
-          >{{ popUpAnime }} ({{ popUpAnimeType }})</a
+          >{{ popUpAnime }} ({{ popUpAnimeCategory }})</a
         ><span style="margin-left: 20px">{{ popUpVintage }}</span>
       </h3>
     </div>
@@ -35,7 +35,7 @@
           <img src="assets/img/AniDB_Logo.png" style="height: 30px;" alt="Anidb Link">
         </a>
 
-        <a *ngIf="popUpAnilistID" href="https://anilist.co/anime/2928/{{ popUpAnilistID }}" target="_blank" style="padding-right: 3px">
+        <a *ngIf="popUpAnilistID" href="https://anilist.co/anime/{{ popUpAnilistID }}" target="_blank" style="padding-right: 3px">
           <img src="assets/img/AniList_logo.png" style="height: 30px;" alt="Anilist Link">
         </a>
 

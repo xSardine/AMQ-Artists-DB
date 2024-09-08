@@ -43,6 +43,13 @@ export class SearchBarComponent implements OnInit {
   showOpenings: boolean = true;
   showEndings: boolean = true;
   showInserts: boolean = true;
+  showNormalBroadcasts: boolean = true;
+  showDubs: boolean = true;
+  showRebroadcasts: boolean = true;
+  showStandards: boolean = true;
+  showInstrumentals: boolean = true;
+  showChantings: boolean = true;
+  showCharacters: boolean = true;
   showAdvancedFilters: boolean = false;
 
   rankedTime = false;
@@ -133,6 +140,13 @@ export class SearchBarComponent implements OnInit {
         "opening_filter": this.showOpenings,
         "ending_filter": this.showEndings,
         "insert_filter": this.showInserts,
+        "normal_broadcast": this.showNormalBroadcasts,
+        "dub": this.showDubs,
+        "rebroadcast": this.showRebroadcasts,
+        "standard": this.showStandards,
+        "instrumental": this.showInstrumentals,
+        "chanting": this.showChantings,
+        "character": this.showCharacters,
       }
 
     }
@@ -197,6 +211,13 @@ export class SearchBarComponent implements OnInit {
         "opening_filter": this.showOpenings,
         "ending_filter": this.showEndings,
         "insert_filter": this.showInserts,
+        "normal_broadcast": this.showNormalBroadcasts,
+        "dub": this.showDubs,
+        "rebroadcast": this.showRebroadcasts,
+        "standard": this.showStandards,
+        "instrumental": this.showInstrumentals,
+        "chanting": this.showChantings,
+        "character": this.showCharacters,
       }
 
     }
@@ -213,6 +234,13 @@ export class SearchBarComponent implements OnInit {
           "opening_filter": this.showOpenings,
           "ending_filter": this.showEndings,
           "insert_filter": this.showInserts,
+          "normal_broadcast": this.showNormalBroadcasts,
+          "dub": this.showDubs,
+          "rebroadcast": this.showRebroadcasts,
+          "standard": this.showStandards,
+          "instrumental": this.showInstrumentals,
+          "chanting": this.showChantings,
+          "character": this.showCharacters,
         }
       }
       else {
@@ -242,6 +270,13 @@ export class SearchBarComponent implements OnInit {
           "opening_filter": this.showOpenings,
           "ending_filter": this.showEndings,
           "insert_filter": this.showInserts,
+          "normal_broadcast": this.showNormalBroadcasts,
+          "dub": this.showDubs,
+          "rebroadcast": this.showRebroadcasts,
+          "standard": this.showStandards,
+          "instrumental": this.showInstrumentals,
+          "chanting": this.showChantings,
+          "character": this.showCharacters,
         }
       }
     }
