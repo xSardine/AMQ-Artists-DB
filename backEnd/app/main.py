@@ -355,6 +355,7 @@ async def search_request(query: Artist_ID_Search_Request):
     authorized_song_categories = []
     if query.standard:
         authorized_song_categories.append("Standard")
+        authorized_song_categories.append("No Category")
     if query.instrumental:
         authorized_song_categories.append("Instrumental")
     if query.chanting:
@@ -406,6 +407,7 @@ async def search_request(query: Composer_ID_Search_Request):
     authorized_song_categories = []
     if query.standard:
         authorized_song_categories.append("Standard")
+        authorized_song_categories.append("No Category")
     if query.instrumental:
         authorized_song_categories.append("Instrumental")
     if query.chanting:
@@ -447,6 +449,7 @@ async def search_request(query: annId_Search_Request):
     authorized_song_categories = []
     if query.standard:
         authorized_song_categories.append("Standard")
+        authorized_song_categories.append("No Category")
     if query.instrumental:
         authorized_song_categories.append("Instrumental")
     if query.chanting:
@@ -496,6 +499,7 @@ async def malIDs_request(query: malIds_Search_Request):
     authorized_song_categories = []
     if query.standard:
         authorized_song_categories.append("Standard")
+        authorized_song_categories.append("No Category")
     if query.instrumental:
         authorized_song_categories.append("Instrumental")
     if query.chanting:
