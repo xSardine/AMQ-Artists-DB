@@ -281,6 +281,7 @@ async def search_request(query: Search_Request):
     authorized_song_categories = []
     if query.standard:
         authorized_song_categories.append("Standard")
+        authorized_song_categories.append("No Category")
     if query.instrumental:
         authorized_song_categories.append("Instrumental")
     if query.chanting:

@@ -21,7 +21,7 @@ def extract_song_database():
 
     song_database = {}
     for song in run_sql_command(cursor, command):
-        song_database[song[12]] = song
+        song_database[song[11]] = song
 
     return song_database
 

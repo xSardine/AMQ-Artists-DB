@@ -61,7 +61,7 @@ CREATE TABLE animes (
 CREATE TABLE songs (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
     "annSongId" INTEGER,
-    "songId" INTEGER NOT NULL,
+    "amqSongId" INTEGER NOT NULL,
     "annId" INTEGER NOT NULL,
     "songType" INTEGER NOT NULL,
     "songNumber" INTEGER NOT NULL,
@@ -220,7 +220,7 @@ GROUP BY animes.annId;
 
 CREATE VIEW songsAnimes AS
 SELECT animesFull.annId, animesFull.malId, animesFull.anidbId, animesFull.anilistId, animesFull.kitsuId, animesFull.animeJPName, animesFull.animeENName, animesFull.altNames, animesFull.animeVintage, animesFull.animeType, animesFull.animeCategory,
-songs.id as songId, songs.annSongId, songs.songType, songs.songNumber, songs.songCategory, songs.songName, songs.songArtist, songs.songComposer, songs.songArranger, songs.songDifficulty, songs.isDub, songs.isRebroadcast, songs.songLength, songs.HQ, songs.MQ, songs.audio
+songs.id as songId, songs.annSongId, songs.songType, songs.songNumber, songs.songCategory, songs.songName, songs.songArtist, songs.songComposer, songs.songArranger, songs.songDifficulty, songs.isDub, songs.isRebroadcast, songs.songLength, songs.HQ, songs.MQ, songs.audio, songs.amqSongId
 FROM animesFull
 LEFT JOIN songs ON animesFull.annId = songs.annId;
 
@@ -244,7 +244,7 @@ GROUP BY songs.id;
 
 CREATE VIEW songsFull AS
 SELECT songsAnimes.annId, songsAnimes.malId, songsAnimes.anidbId, songsAnimes.anilistId, songsAnimes.kitsuId, songsAnimes.animeJPName, songsAnimes.animeENName, songsAnimes.altNames, songsAnimes.animeVintage, songsAnimes.animeType, songsAnimes.animeCategory,
-songsAnimes.songId, songsAnimes.annSongId, songsAnimes.songType, songsAnimes.songNumber, songsAnimes.songCategory, songsAnimes.songName, songsAnimes.songArtist, songsAnimes.songComposer, songsAnimes.songArranger, songsArtists.artists, songsArtists.artists_line_up, songsComposers.composers, songsArrangers.arrangers, songsAnimes.songDifficulty, songsAnimes.isDub, songsAnimes.isRebroadcast, songsAnimes.songLength, songsAnimes.HQ, songsAnimes.MQ, songsAnimes.audio
+songsAnimes.songId, songsAnimes.annSongId, songsAnimes.songType, songsAnimes.songNumber, songsAnimes.songCategory, songsAnimes.songName, songsAnimes.songArtist, songsAnimes.songComposer, songsAnimes.songArranger, songsArtists.artists, songsArtists.artists_line_up, songsComposers.composers, songsArrangers.arrangers, songsAnimes.songDifficulty, songsAnimes.isDub, songsAnimes.isRebroadcast, songsAnimes.songLength, songsAnimes.HQ, songsAnimes.MQ, songsAnimes.audio, songsAnimes.amqSongId
 FROM songsAnimes
 INNER JOIN songsArtists ON songsAnimes.songId = songsArtists.songId
 INNER JOIN songsComposers ON songsAnimes.songId = songsComposers.songId
@@ -375,7 +375,7 @@ def insert_anime(
 def insert_song(
     cursor,
     annSongId,
-    songId,
+    amqSongId,
     annId,
     songType,
     songNumber,
@@ -398,7 +398,7 @@ def insert_song(
 
     data = (
         annSongId,
-        songId,
+        amqSongId,
         annId,
         songType,
         songNumber,
@@ -414,7 +414,7 @@ def insert_song(
     )
 
     if HQ != -1:
-        sql_insert_song = "INSERT INTO songs(annSongId, songId, annId, songType, songNumber, songCategory, songName, songArtist, songComposer, songArranger, songDifficulty, isDub, isRebroadcast, songLength, HQ, MQ, audio) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
+        sql_insert_song = "INSERT INTO songs(annSongId, amqSongId, annId, songType, songNumber, songCategory, songName, songArtist, songComposer, songArranger, songDifficulty, isDub, isRebroadcast, songLength, HQ, MQ, audio) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
         data = (
             *data,
             HQ,
@@ -422,7 +422,7 @@ def insert_song(
             audio,
         )
     else:
-        sql_insert_song = "INSERT INTO songs(annSongId, songId, annId, songType, songNumber, songCategory, songName, songArtist, songComposer, songArranger, songDifficulty, isDub, isRebroadcast, songLength) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
+        sql_insert_song = "INSERT INTO songs(annSongId, amqSongId, annId, songType, songNumber, songCategory, songName, songArtist, songComposer, songArranger, songDifficulty, isDub, isRebroadcast, songLength) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
 
     run_sql_command(cursor, sql_insert_song, data)
 
