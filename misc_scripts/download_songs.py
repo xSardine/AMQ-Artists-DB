@@ -15,6 +15,9 @@ output_path = "downloaded/"
 # Set anime language for filename: EN, or JP
 anime_language = "JP"
 
+# Choose which catbox server the songs will be downloaded from: EU, NA1, or NA2
+catbox_server = "NA1"
+
 # If True: it will overwrite automatically if the downloaded file name already exist
 # If not: it will throw an error and go to the next song
 overwrite_already_existing_name = False
@@ -93,6 +96,13 @@ def execute_command(command):
 
 
 def download_songs(song_list):
+    if catbox_server == "EU":
+        server_address = "https://nl.catbox.video/"
+    elif catbox_server == "NA2":
+        server_address = "https://vhdist1.catbox.video/"
+    else:
+        server_address = "https://ladist1.catbox.video/"
+        
     for song in song_list:
         if overwrite_already_existing_name:
             ignore_parameter = "-y"
@@ -126,7 +136,7 @@ def download_songs(song_list):
                     metadata += f' -metadata {composer_key}="{composer_value}"'
 
                 if link:
-                    command = f'{ffmpeg} {ignore_parameter} -i {link} {metadata} {default_mp3_parameters} "{create_file_name_Windows(file_name, output_path, default_mp3_extension)}"'
+                    command = f'{ffmpeg} {ignore_parameter} -i {server_address}{link} {metadata} {default_mp3_parameters} "{create_file_name_Windows(file_name, output_path, default_mp3_extension)}"'
 
                 else:
                     link = (
@@ -140,7 +150,7 @@ def download_songs(song_list):
                     if not link:
                         raise ValueError("Warning: {file_name} is not uploaded")
 
-                    command = f'{ffmpeg} {ignore_parameter} -i {link} -codec:a libmp3lame -b:a 320k -compression_level 7 "{create_file_name_Windows(file_name, output_path, default_mp3_extension)}"'
+                    command = f'{ffmpeg} {ignore_parameter} -i {server_address}{link} -codec:a libmp3lame -b:a 320k -compression_level 7 "{create_file_name_Windows(file_name, output_path, default_mp3_extension)}"'
 
             elif download_type == "webm":
                 link = (
@@ -154,7 +164,7 @@ def download_songs(song_list):
                 if not link:
                     raise ValueError(f"Warning: {file_name} have no video uploaded")
 
-                command = f'{ffmpeg} {ignore_parameter} -i {link} {default_webm_parameters} "{create_file_name_Windows(file_name, output_path, default_webm_extension)}"'
+                command = f'{ffmpeg} {ignore_parameter} -i {server_address}{link} {default_webm_parameters} "{create_file_name_Windows(file_name, output_path, default_webm_extension)}"'
 
             elif download_type == "mp4":
                 link = (
@@ -168,7 +178,7 @@ def download_songs(song_list):
                 if not link:
                     raise ValueError(f"Warning: {file_name} have no video uploaded")
 
-                command = f'{ffmpeg} {ignore_parameter} -i {link} {default_mp4_parameters} "{create_file_name_Windows(file_name, output_path, default_mp4_extension)}"'
+                command = f'{ffmpeg} {ignore_parameter} -i {server_address}{link} {default_mp4_parameters} "{create_file_name_Windows(file_name, output_path, default_mp4_extension)}"'
 
             elif download_type == "custom":
                 if custom_input == "video":
@@ -183,7 +193,7 @@ def download_songs(song_list):
                     if not link:
                         raise ValueError(f"Warning: {file_name} have no video uploaded")
 
-                    command = f'{ffmpeg} {ignore_parameter} -i {link} {custom_parameters} "{create_file_name_Windows(file_name, output_path, custom_extension)}"'
+                    command = f'{ffmpeg} {ignore_parameter} -i {server_address}{link} {custom_parameters} "{create_file_name_Windows(file_name, output_path, custom_extension)}"'
 
                 elif custom_input == "audio":
                     link = song["audio"] if "audio" in song else None
@@ -191,7 +201,7 @@ def download_songs(song_list):
                     if not link:
                         raise ValueError(f"Warning: {file_name} have no mp3 uploaded")
 
-                    command = f'{ffmpeg} {ignore_parameter} -i {link} {custom_parameters} "{create_file_name_Windows(file_name, output_path, custom_extension)}"'
+                    command = f'{ffmpeg} {ignore_parameter} -i {server_address}{link} {custom_parameters} "{create_file_name_Windows(file_name, output_path, custom_extension)}"'
 
                 else:
                     raise ValueError(
@@ -209,7 +219,7 @@ def download_songs(song_list):
 
         except Exception as e:
             print(e)
-            print(f"Failed for {link} ({file_name})")
+            print(f"Failed for {server_address}{link} ({file_name})")
             print()
 
 
