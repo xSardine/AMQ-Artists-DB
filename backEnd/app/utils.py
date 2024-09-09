@@ -152,8 +152,8 @@ def format_song(artist_database, song):
         "animeVintage": song[8],
         "animeType": song[9],
         "animeCategory": song[10],
-        "annSongId": song[11],
-        "songId": song[12],
+        "annSongId": song[12],
+        "amqSongId": song[31],
         "songType": type,
         "songCategory": song[15],
         "songName": song[16],
@@ -171,5 +171,8 @@ def format_song(artist_database, song):
         "composers": composers,
         "arrangers": arrangers,
     }
+
+    print(songinfo["annSongId"])
+    print(songinfo["amqSongId"])
 
     return songinfo
