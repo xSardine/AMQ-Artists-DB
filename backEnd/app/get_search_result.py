@@ -198,6 +198,10 @@ def compare_two_artist_list(list1, list2):
 def check_meets_artists_requirements(
     artist_database, song, artist_ids, group_granularity, max_other_artist
 ):
+
+    # Exceptions for groups that have line ups, but also songs with no line ups : they should be considered both a group and artist
+    LINE_UP_EXCEPTIONS = [215, 4261, 7695, 6678]
+
     song_artists = [
         [artist, int(line_up)]
         for artist, line_up in zip(song[20].split(","), song[21].split(","))
@@ -208,6 +212,9 @@ def check_meets_artists_requirements(
         line_ups = [[[str(artist_id), -1]]]
         if artist_database[str(artist_id)]["members"]:
             line_ups = artist_database[str(artist_id)]["members"]
+
+            if artist_id in LINE_UP_EXCEPTIONS:
+                line_ups += [[[str(artist_id), -1]]]
 
         for line_up in line_ups:
             checked_list = get_member_list_flat(artist_database, line_up)
@@ -430,16 +437,6 @@ def get_search_results(
             anime = anime_database[annId]
             found = False
 
-            if annId == 6236:
-                print(
-                    [anime["animeJPName"], anime["animeENName"]]
-                    + (
-                        anime["animeAltNames"].split("\$")
-                        if "animeAltNames" in anime and anime["animeAltNames"]
-                        else []
-                    )
-                )
-
             for name in [anime["animeJPName"], anime["animeENName"]] + (
                 anime["animeAltNames"].split("\$")
                 if "animeAltNames" in anime and anime["animeAltNames"]
@@ -452,7 +449,6 @@ def get_search_results(
                     found = True
 
             if found:
-                print(annId)
                 for song in anime["songs"]:
 
                     if song[13] not in authorized_types:
@@ -518,8 +514,6 @@ def get_search_results(
     artist_ids = None
 
     if artist_search_filters and not is_ranked:
-
-        print("we here : ", artist_search_filters.search)
 
         artist_songs_list, artist_ids = process_artist(
             cursor,

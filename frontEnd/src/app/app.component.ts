@@ -34,7 +34,7 @@ export class AppComponent {
 
   playMP3(song: any) {
     this.url = null;
-    setTimeout(() => { this.url = song.audio; this.currentlyPlayingArtist = song.songArtist; this.currentlyPlayingSongName = song.songName; }, 0)
+    setTimeout(() => { this.url = "https://ladist1.catbox.video/" + song.audio; this.currentlyPlayingArtist = song.songArtist; this.currentlyPlayingSongName = song.songName; }, 0)
   }
 
   toggleAnimeLang() {

@@ -11,9 +11,13 @@ ANIME_REGEX_REPLACE_RULES = [
     {"input": "oo", "replace": "(oo|ō|o)"},
     {"input": "oh", "replace": "(oh|ō|o)"},
     {"input": "wo", "replace": "(wo|o)"},
-    {"input": "o", "replace": "([oōóòöôøӨΦο]|ou|oo|oh|wo)"},
+    # Ō can't lower correctly with sqlite lower function hence why next line is needed
+    {"input": "ō", "replace": "[Ōō]"},
+    {"input": "o", "replace": "([oōŌóòöôøӨΦο]|ou|oo|oh|wo)"},
     {"input": "uu", "replace": "(uu|u|ū)"},
-    {"input": "u", "replace": "([uūûúùüǖμ]|uu)"},
+    # Ū can't lower correctly with sqlite lower function hence why next line is needed
+    {"input": "ū", "replace": "[ūŪ]"},
+    {"input": "u", "replace": "([uūŪûúùüǖμ]|uu)"},
     {"input": "aa", "replace": "(aa|a)"},
     {"input": "ae", "replace": "(ae|æ)"},
     # Λ can't lower correctly with sqlite lower function hence why next line is needed
@@ -171,8 +175,5 @@ def format_song(artist_database, song):
         "composers": composers,
         "arrangers": arrangers,
     }
-
-    print(songinfo["annSongId"])
-    print(songinfo["amqSongId"])
 
     return songinfo
