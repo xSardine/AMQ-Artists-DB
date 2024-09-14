@@ -87,7 +87,7 @@ def get_duplicate_in_list(list, song):
     """
 
     for i, song2 in enumerate(list):
-        if song[16] == song2["songName"] and song[17] == song2["songArtist"]:
+        if song[20] == song2["songName"] and song[22] == song2["songArtist"]:
             return i
     return -1
 
@@ -125,7 +125,7 @@ def combine_results(
         if len(final_song_list) >= max_nb_songs:
             break
 
-        if song[11] in songId_done:
+        if song[13] in songId_done:
             continue
 
         duplicate_ID = get_duplicate_in_list(final_song_list, song)
@@ -137,21 +137,21 @@ def combine_results(
                 and (not composer_songs_list or song in composer_songs_list)
             ):
                 if not ignore_duplicate or duplicate_ID == -1:
-                    songId_done.append(song[11])
+                    songId_done.append(song[13])
                     final_song_list.append(utils.format_song(artist_database, song))
                 else:
                     if final_song_list[duplicate_ID]["annId"] > song[0]:
-                        songId_done.append(song[11])
+                        songId_done.append(song[13])
                         final_song_list[duplicate_ID] = utils.format_song(
                             artist_database, song
                         )
         else:
             if not ignore_duplicate or duplicate_ID == -1:
-                songId_done.append(song[11])
+                songId_done.append(song[13])
                 final_song_list.append(utils.format_song(artist_database, song))
             else:
                 if final_song_list[duplicate_ID]["annId"] > song[0]:
-                    songId_done.append(song[11])
+                    songId_done.append(song[13])
                     final_song_list[duplicate_ID] = utils.format_song(
                         artist_database, song
                     )
@@ -204,7 +204,7 @@ def check_meets_artists_requirements(
 
     song_artists = [
         [artist, int(line_up)]
-        for artist, line_up in zip(song[20].split(","), song[21].split(","))
+        for artist, line_up in zip(song[23].split(","), song[24].split(","))
     ]
     song_artists_flat = get_member_list_flat(artist_database, song_artists)
 
@@ -243,25 +243,25 @@ def get_song_list_from_songIds_JSON(
 
     for songId in songIds:
 
-        if song_database[songId][13] not in authorized_types:
+        if song_database[songId][16] not in authorized_types:
             continue
 
-        if song_database[songId][15] not in authorized_song_categories:
+        if song_database[songId][18] not in authorized_song_categories:
             continue
 
         if (
-            not song_database[songId][25] and not song_database[songId][26]
+            not song_database[songId][34] and not song_database[songId][35]
         ) and "Normal" not in authorized_broadcasts:
             continue
 
-        if song_database[songId][25] and "Dub" not in authorized_broadcasts:
+        if song_database[songId][34] and "Dub" not in authorized_broadcasts:
             if (
-                not song_database[songId][26]
+                not song_database[songId][35]
                 or "Rebroadcast" not in authorized_broadcasts
             ):
                 continue
 
-        if song_database[songId][26] and "Rebroadcast" not in authorized_broadcasts:
+        if song_database[songId][35] and "Rebroadcast" not in authorized_broadcasts:
             continue
 
         song_list.append(song_database[songId])
@@ -451,22 +451,22 @@ def get_search_results(
             if found:
                 for song in anime["songs"]:
 
-                    if song[13] not in authorized_types:
+                    if song[16] not in authorized_types:
                         continue
 
-                    if song[15] not in authorized_song_categories:
+                    if song[18] not in authorized_song_categories:
                         continue
 
                     if (
-                        not song[25] and not song[26]
+                        not song[34] and not song[35]
                     ) and "Normal" not in authorized_broadcasts:
                         continue
 
-                    if song[25] and "Dub" not in authorized_broadcasts:
-                        if not song[26] or "Rebroadcast" not in authorized_broadcasts:
+                    if song[34] and "Dub" not in authorized_broadcasts:
+                        if not song[35] or "Rebroadcast" not in authorized_broadcasts:
                             continue
 
-                    if song[26] and "Rebroadcast" not in authorized_broadcasts:
+                    if song[35] and "Rebroadcast" not in authorized_broadcasts:
                         continue
 
                     anime_songs_list.append(song)
@@ -484,24 +484,24 @@ def get_search_results(
         songName_songs_list = []
         for songId in song_database:
             song = song_database[songId]
-            if re.match(songName_search, song[16].lower()):
+            if re.match(songName_search, song[20].lower()):
 
-                if song[13] not in authorized_types:
+                if song[16] not in authorized_types:
                     continue
 
-                if song[15] not in authorized_song_categories:
+                if song[18] not in authorized_song_categories:
                     continue
 
                 if (
-                    not song[25] and not song[26]
+                    not song[34] and not song[35]
                 ) and "Normal" not in authorized_broadcasts:
                     continue
 
-                if song[25] and "Dub" not in authorized_broadcasts:
-                    if not song[26] or "Rebroadcast" not in authorized_broadcasts:
+                if song[34] and "Dub" not in authorized_broadcasts:
+                    if not song[35] or "Rebroadcast" not in authorized_broadcasts:
                         continue
 
-                if song[26] and "Rebroadcast" not in authorized_broadcasts:
+                if song[35] and "Rebroadcast" not in authorized_broadcasts:
                     continue
 
                 songName_songs_list.append(song)
@@ -637,7 +637,7 @@ def get_artists_ids_song_list(
     final_songs = []
     for song in songs:
         flag = False
-        for artist, line_up in zip(song[20].split(","), song[21].split(",")):
+        for artist, line_up in zip(song[23].split(","), song[24].split(",")):
             if int(artist) in artist_ids:
                 flag = True
             for group, group_line_up in groups:

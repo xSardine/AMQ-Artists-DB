@@ -215,28 +215,15 @@ def update_line_up(group, line_up_id, song_database, artist_database):
     return group_members
 
 
-def add_new_artist_to_DB(artist_database, artist, vocalist=True, composing=False):
+def add_new_artist_to_DB(artist_database, artist):
     new_id = str(int(list(artist_database.keys())[-1]) + 1)
     if new_id not in artist_database:
         artist_database[new_id] = {
-            "names": [artist],
+            "names": [{"original_name": None, "romaji_name": artist}],
             "groups": [],
             "members": [],
-            "vocalist": vocalist,
-            "composer": composing,
-        }
-    return new_id
-
-
-def add_new_composer_to_DB(artist_database, artist):
-    new_id = str(int(list(artist_database.keys())[-1]) + 1)
-    if new_id not in artist_database:
-        artist_database[new_id] = {
-            "names": [artist],
-            "groups": [],
-            "members": [],
-            "vocalist": False,
-            "composer": True,
+            "disambiguation": None,
+            "type": "person",
         }
     return new_id
 
@@ -267,8 +254,6 @@ def get_artist_id(
     artist_database,
     artist,
     not_exist_ok=False,
-    vocalist=True,
-    composing=False,
     partial_match=False,
     exact_match=False,
     excluded_ids=[],
@@ -281,8 +266,8 @@ def get_artist_id(
 
             for id in artist_database.keys():
                 flag = False
-                for name in artist_database[id]["names"]:
-                    if re.match(artist_regex, name, re.IGNORECASE):
+                for og_name, romaji_name in artist_database[id]["names"]:
+                    if re.match(artist_regex, romaji_name, re.IGNORECASE):
                         flag = True
                 if flag:
                     ids.append(id)
@@ -294,8 +279,8 @@ def get_artist_id(
             ids = []
             for id in artist_database.keys():
                 flag = False
-                for name in artist_database[id]["names"]:
-                    if re.match(artist_regex, name, re.IGNORECASE):
+                for og_name, romaji_name in artist_database[id]["names"]:
+                    if re.match(artist_regex, romaji_name, re.IGNORECASE):
                         flag = True
                 if flag:
                     ids.append(id)
@@ -311,7 +296,7 @@ def get_artist_id(
             print(f"{artist} NOT FOUND, CANCELLED")
             exit()
             # return -1
-        new_id = add_new_artist_to_DB(artist_database, artist, vocalist, composing)
+        new_id = add_new_artist_to_DB(artist_database, artist)
         print(f"/!\ COULDN'T FIND {artist}, adding {new_id}")
         return new_id
 
@@ -334,7 +319,7 @@ def get_artist_id(
             disambiguated_id = ask_integer_input(input_message, [int(id) for id in ids])
 
         if disambiguated_id == -1:
-            new_id = add_new_artist_to_DB(artist_database, artist, vocalist, composing)
+            new_id = add_new_artist_to_DB(artist_database, artist)
             print(f"ASKED TO CREATE NEW {artist}, adding {new_id}")
             return new_id
 

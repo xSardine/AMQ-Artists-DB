@@ -21,7 +21,7 @@ def extract_song_database():
 
     song_database = {}
     for song in run_sql_command(cursor, command):
-        song_database[song[11]] = song
+        song_database[song[13]] = song
 
     return song_database
 
@@ -42,11 +42,12 @@ def extract_anime_database():
     for song in run_sql_command(cursor, command):
         if song[0] not in anime_database:
             anime_database[song[0]] = {
-                "animeJPName": song[5],
-                "animeENName": song[6],
-                "animeAltNames": song[7],
-                "animeVintage": song[8],
-                "animeType": song[9],
+                "animeJPName": song[6],
+                "animeENName": song[7],
+                "animeAltNames": song[9],
+                "animeVintage": song[10],
+                "animeType": song[11],
+                "animeCategory": song[12],
                 "songs": [],
             }
         anime_database[song[0]]["songs"].append(song)
@@ -63,7 +64,7 @@ def extract_artist_database():
     cursor = connect_to_database(database_path)
 
     extract_basic_info = """
-    SELECT id, names, vocalist, composer FROM artistsNames
+    SELECT id, romaji_names, disambiguation, type FROM artistsNames
     """
 
     basic_info = run_sql_command(cursor, extract_basic_info)
@@ -103,8 +104,8 @@ def extract_artist_database():
                 else []
             ),
             "members": [],
-            "vocalist": True if info[2] else False,
-            "composer": True if info[3] else False,
+            "disambiguation": info[2],
+            "type": info[3],
         }
 
     for info, members in zip(basic_info, group_members):
@@ -255,7 +256,7 @@ def get_song_list_from_songArtist(
     if "Normal" not in authorized_broadcasts:
         broadcast_filter += " AND isDub == 1 AND isRebroadcast == 1"
 
-    get_song_list_from_songArtist = f"SELECT * from songsFull WHERE songType IN ({','.join('?'*len(authorized_types))}) {broadcast_filter} AND songCategory IN ({','.join('?'*len(authorized_song_categories))}) AND lower(songArtist) REGEXP ? LIMIT 300"
+    get_song_list_from_songArtist = f"SELECT * from songsFull WHERE songType IN ({','.join('?'*len(authorized_types))}) {broadcast_filter} AND songCategory IN ({','.join('?'*len(authorized_song_categories))}) AND lower(romajiSongArtist) REGEXP ? LIMIT 300"
     return run_sql_command(
         cursor,
         get_song_list_from_songArtist,
@@ -296,7 +297,7 @@ def get_songs_ids_from_composing_team_ids(cursor, composer_ids, arrangement):
 
 def get_artist_ids_from_regex(cursor, regex):
     # TODO Index on lower ?
-    get_artist_ids_from_regex = "SELECT artist_id from artist_names WHERE lower(name) REGEXP ? GROUP BY artist_id LIMIT 50"
+    get_artist_ids_from_regex = "SELECT artist_id from link_artist_name WHERE lower(romaji_name) REGEXP ? GROUP BY artist_id LIMIT 50"
     artist_ids = [
         id[0] for id in run_sql_command(cursor, get_artist_ids_from_regex, [regex])
     ]

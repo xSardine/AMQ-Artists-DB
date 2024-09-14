@@ -73,7 +73,6 @@ splitting_exception_list = [
         ),
     ),
     ("Chiita to Mitsubachi Gasshou-dan", ("Chiita", "Mitsubachi Gasshou-dan")),
-    ("Kenji Ohtsuki to Emmanuel 5", ("Kenji Ohtsuki", "Emmanuel 5")),
     (
         "Eri Itou to Mori no Ki Jidou Gasshou-dan",
         ("Eri Itou", "Mori no Ki Jidou Gasshou-dan"),
@@ -349,6 +348,11 @@ splitting_exception_list = [
     ("LOVE+HATE", ("LOVE+HATE",)),
     ("WILD&DELICATES", ("WILD&DELICATES",)),
     ("Cut&Past", ("Cut&Past",)),
+    ("Chie & Mar-kun", ("Chie & Mar-kun",)),
+    (
+        "Penalty Kick Oldies with Kenji♂Spark Kawai",
+        ("Penalty Kick Oldies with Kenji♂Spark Kawai",),
+    ),
     ("EYE&SHOKO", ("EYE&SHOKO",)),
     ("YVES&ADAMS", ("YVES&ADAMS",)),
     ("Schtein&Longer", ("Schtein&Longer",)),
