@@ -11,31 +11,33 @@ with open(artist_database_path, encoding="utf-8") as json_file:
 
 
 def get_fused_artist(ids):
-    all_names = set()
+    all_names = []
     all_groups = []
     all_line_up = []
-    vocalist = False
-    composer = False
+    disambiguation = None
+    type = None
     for id in ids:
         for name in artist_database[id]["names"]:
-            all_names.add(name)
+            all_names.append(name)
         for group in artist_database[id]["groups"]:
             all_groups.append(group)
         for line_up in artist_database[id]["members"]:
             all_line_up.append(line_up)
-        if artist_database[id]["vocalist"]:
-            vocalist = True
-        if artist_database[id]["composer"]:
-            composer = True
+        if artist_database[id]["disambiguation"]:
+            disambiguation = artist_database[id]["disambiguation"]
+        if not type:
+            type = artist_database[id]["type"]
+        elif type != artist_database[id]["type"]:
+            print("/!\\ Warning : Ambiguous types")
 
     all_names = list(all_names)
 
     return {
         "names": all_names,
-        "groups": all_groups,
+        "disambiguation": disambiguation,
+        "type": type,
         "members": all_line_up,
-        "vocalist": vocalist,
-        "composer": composer,
+        "groups": all_groups,
     }
 
 
@@ -75,21 +77,21 @@ def process():
             for artist in song["artist_ids"]:
                 if artist[0] in removed_ids:
                     print(
-                        f"Artist {song['songName']} {artist} → {[center_id, line_up_id]}"
+                        f"Artist {song['romajiSongName']} {artist} → {[center_id, line_up_id]}"
                     )
                     artist[0] = center_id
                     artist[1] = line_up_id
             for composer in song["composer_ids"]:
                 if composer[0] in removed_ids:
                     print(
-                        f"Composer {song['songName']} {composer} → {[center_id, line_up_id]}"
+                        f"Composer {song['romajiSongName']} {composer} → {[center_id, line_up_id]}"
                     )
                     composer[0] = center_id
                     composer[1] = line_up_id
             for arranger in song["arranger_ids"]:
                 if arranger[0] in removed_ids:
                     print(
-                        f"Arranger {song['songName']} {arranger} → {[center_id, line_up_id]}"
+                        f"Arranger {song['romajiSongName']} {arranger} → {[center_id, line_up_id]}"
                     )
                     arranger[0] = center_id
                     arranger[1] = line_up_id
@@ -117,15 +119,15 @@ def process():
         artist_database.pop(id)
 
     print()
-    validation_message = f"You will be removing these artists: {removed_ids}\nID {center_id} is chosen to be the one to stay\nNew artist:\n{artist_database[center_id]['names']}\n{artist_database[center_id]['groups']}\n{artist_database[center_id]['members']}\n{artist_database[center_id]['vocalist']}, {artist_database[center_id]['composer']}\nDo you want to proceed ?\n"
+    validation_message = f"You will be removing these artists: {removed_ids}\nID {center_id} is chosen to be the one to stay\nNew artist:\n{artist_database[center_id]['names']}\n{artist_database[center_id]['groups']}\n{artist_database[center_id]['members']}\n{artist_database[center_id]['disambiguation']}, {artist_database[center_id]['type']}\nDo you want to proceed ?\n"
     validation = utils.ask_validation(validation_message)
     if not validation:
         print("User cancelled")
         return
 
-    with open(song_database_path, "w", encoding="utf-8") as outfile:
+    with open("song_database.json", "w", encoding="utf-8") as outfile:
         json.dump(song_database, outfile, indent=4)
-    with open(artist_database_path, "w", encoding="utf-8") as outfile:
+    with open("artist_database.json", "w", encoding="utf-8") as outfile:
         json.dump(artist_database, outfile, indent=4)
 
 

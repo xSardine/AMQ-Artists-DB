@@ -180,7 +180,10 @@ def ask_line_up(
 
             line_ups = "\n"
             for i, line_up in enumerate(artist_database[member_id]["members"]):
-                line_up = [artist_database[l[0]]["names"][0] for l in line_up]
+                line_up = [
+                    artist_database[l[0]]["names"][0]["romaji_name"]
+                    for l in line_up["members"]
+                ]
                 line_ups += f"{i}: {', '.join(line_up)}\n"
             line_up_id = ask_integer_input(
                 f"Please select the line up you want to add as a member:{line_ups}",
@@ -196,14 +199,18 @@ def ask_line_up(
 def update_line_up(group, line_up_id, song_database, artist_database):
     group_members = []
 
-    for member in group["members"][line_up_id]:
+    for member in group["members"][line_up_id]["members"]:
         user_input = ""
         while user_input not in ["=", "-"]:
-            user_input = input(f"{artist_database[member[0]]['names'][0]} ? (=/-)\n")
+            user_input = input(
+                f"{artist_database[member[0]]['names'][0]['romaji_name']} ? (=/-)\n"
+            )
             if user_input == "=":
                 group_members.append(member)
             else:
-                print(f"removing {artist_database[member[0]]['names'][0]}")
+                print(
+                    f"removing {artist_database[member[0]]['names'][0]['romaji_name']}"
+                )
 
     line_up = ask_line_up(
         "Select people to add to the line up\n",
@@ -220,10 +227,10 @@ def add_new_artist_to_DB(artist_database, artist):
     if new_id not in artist_database:
         artist_database[new_id] = {
             "names": [{"original_name": None, "romaji_name": artist}],
-            "groups": [],
-            "members": [],
             "disambiguation": None,
             "type": "person",
+            "members": [],
+            "groups": [],
         }
     return new_id
 
@@ -245,7 +252,7 @@ def get_recap_artists(song_database, artist_database, ids):
     recap_str = ""
     for id in ids:
         ex_animes = get_example_song_for_artist(song_database, id)
-        recap_str += f"{id} {artist_database[id]['names'][0]}> {' | '.join(ex_animes[:min(3, len(ex_animes))])}\n"
+        recap_str += f"{id} {artist_database[id]['names'][0]['romaji_name']}> {' | '.join(ex_animes[:min(3, len(ex_animes))])}\n"
     return recap_str
 
 
@@ -261,12 +268,14 @@ def get_artist_id(
 ):
     ids = []
     if not exact_match:
+
         if partial_match:
             artist_regex = get_regex_search(artist)
 
             for id in artist_database.keys():
                 flag = False
-                for og_name, romaji_name in artist_database[id]["names"]:
+                for name in artist_database[id]["names"]:
+                    romaji_name = name["romaji_name"]
                     if re.match(artist_regex, romaji_name, re.IGNORECASE):
                         flag = True
                 if flag:
@@ -279,16 +288,23 @@ def get_artist_id(
             ids = []
             for id in artist_database.keys():
                 flag = False
-                for og_name, romaji_name in artist_database[id]["names"]:
+                for name in artist_database[id]["names"]:
+                    romaji_name = name["romaji_name"]
                     if re.match(artist_regex, romaji_name, re.IGNORECASE):
                         flag = True
                 if flag:
                     ids.append(id)
 
     else:
+
         for id in artist_database.keys():
-            if artist in artist_database[id]["names"] and id not in ids:
+            db_artist_names = [
+                name["romaji_name"] for name in artist_database[id]["names"]
+            ]
+            if artist in db_artist_names and id not in ids:
                 ids.append(id)
+
+    print(ids)
 
     # if no IDs found
     if not ids:

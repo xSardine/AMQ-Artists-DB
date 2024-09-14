@@ -131,16 +131,82 @@ def format_song(artist_database, song):
     composers = []
     if song[27]:
         for composer_id, line_up in zip(song[27].split(","), song[28].split(",")):
-            composers.append(
-                {"id": composer_id, "names": artist_database[str(composer_id)]["names"]}
-            )
+            line_up = int(line_up)
+
+            current_composer = {
+                "id": composer_id,
+                "names": artist_database[str(composer_id)]["names"],
+                "line_up_id": line_up,
+            }
+
+            if (
+                artist_database[str(composer_id)]["members"]
+                and len(artist_database[str(composer_id)]["members"]) >= line_up
+            ):
+                current_composer["members"] = []
+                for member in artist_database[str(composer_id)]["members"][line_up]:
+                    current_composer["members"].append(
+                        {
+                            "id": member[0],
+                            "names": artist_database[str(member[0])]["names"],
+                        }
+                    )
+
+            if artist_database[str(composer_id)]["groups"]:
+                current_composer["groups"] = []
+                added_group = set()
+                for group in artist_database[str(composer_id)]["groups"]:
+                    if group[0] in added_group:
+                        continue
+                    added_group.add(group[0])
+                    current_composer["groups"].append(
+                        {
+                            "id": group[0],
+                            "names": artist_database[str(group[0])]["names"],
+                        }
+                    )
+
+            composers.append(current_composer)
 
     arrangers = []
     if song[31]:
         for arranger_id, line_up in zip(song[31].split(","), song[32].split(",")):
-            arrangers.append(
-                {"id": arranger_id, "names": artist_database[str(arranger_id)]["names"]}
-            )
+            line_up = int(line_up)
+
+            current_arranger = {
+                "id": arranger_id,
+                "names": artist_database[str(arranger_id)]["names"],
+                "line_up_id": line_up,
+            }
+
+            if (
+                artist_database[str(arranger_id)]["members"]
+                and len(artist_database[str(arranger_id)]["members"]) >= line_up
+            ):
+                current_arranger["members"] = []
+                for member in artist_database[str(arranger_id)]["members"][line_up]:
+                    current_arranger["members"].append(
+                        {
+                            "id": member[0],
+                            "names": artist_database[str(member[0])]["names"],
+                        }
+                    )
+
+            if artist_database[str(arranger_id)]["groups"]:
+                current_arranger["groups"] = []
+                added_group = set()
+                for group in artist_database[str(arranger_id)]["groups"]:
+                    if group[0] in added_group:
+                        continue
+                    added_group.add(group[0])
+                    current_arranger["groups"].append(
+                        {
+                            "id": group[0],
+                            "names": artist_database[str(group[0])]["names"],
+                        }
+                    )
+
+            arrangers.append(current_arranger)
 
     songinfo = {
         "annId": song[0],
