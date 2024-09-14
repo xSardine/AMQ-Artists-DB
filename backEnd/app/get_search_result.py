@@ -269,16 +269,19 @@ def get_song_list_from_songIds_JSON(
     return song_list
 
 
-def get_all_groups(artist_id, artist_database):
+def get_all_groups(artist_id, artist_database, include_composers_groups=False):
     groups = []
+
+    # TODO include_composers_groups do nothing yet, might be a problem in the long run to take into account composers groups
 
     # Get the groups for the current artist
     for group in artist_database[str(artist_id)]["groups"]:
+
         groups.append(group)
 
         # Recursively get the groups for the group itself
         group_id, _ = group
-        groups += get_all_groups(group_id, artist_database)
+        groups += get_all_groups(group_id, artist_database, include_composers_groups)
 
     return groups
 
@@ -544,6 +547,15 @@ def get_search_results(
                 swap_words=True,
             )
             artist_ids = sql_calls.get_artist_ids_from_regex(cursor, composer_search)
+
+        # add groups if those artist_ids are in groups
+        all_groups = []
+        for artist in artist_ids:
+            all_groups += get_all_groups(
+                artist, artist_database, include_composers_groups=True
+            )
+
+        artist_ids = list(set(artist_ids + [group[0] for group in all_groups]))
 
         if artist_ids:
             songIds = sql_calls.get_songs_ids_from_composing_team_ids(
