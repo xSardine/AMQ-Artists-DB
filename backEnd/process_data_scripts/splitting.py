@@ -73,6 +73,7 @@ splitting_exception_list = [
         ),
     ),
     ("Chiita to Mitsubachi Gasshou-dan", ("Chiita", "Mitsubachi Gasshou-dan")),
+    ("Katsuko Morita to The Pretties", ("Katsuko Morita", "The Pretties")),
     (
         "Eri Itou to Mori no Ki Jidou Gasshou-dan",
         ("Eri Itou", "Mori no Ki Jidou Gasshou-dan"),
@@ -307,6 +308,13 @@ splitting_exception_list = [
     ("The S・h・e", ("The S・h・e",)),
     ("Teikoku Kageki-dan・Hana-gumi", ("Teikoku Kageki-dan・Hana-gumi",)),
     # &
+    (
+        "JUDY GARLAND with Victor Young & his Orchestra",
+        (
+            "JUDY GARLAND",
+            "Victor Young & his Orchestra",
+        ),
+    ),
     ("Noriyuki Asakura & GANG", ("Noriyuki Asakura & GANG",)),
     (
         "Toshiyuki Toyonaga, Yuka Kamebuchi & THE VOICE OF JAPAN",
@@ -418,7 +426,6 @@ splitting_exception_list = [
     ("Bars & Melody", ("Bars & Melody",)),
     ("Mon & Ster", ("Mon & Ster",)),
     ("MYTH & ROID", ("MYTH & ROID",)),
-    ("DEJO & BON", ("DEJO & BON",)),
     ("Kakki & Ash Potato", ("Kakki & Ash Potato",)),
     ("Anamu & Maki", ("Anamu & Maki",)),
     ("SUEMITSU & THE SUEMITH", ("SUEMITSU & THE SUEMITH",)),

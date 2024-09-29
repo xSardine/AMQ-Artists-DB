@@ -542,11 +542,11 @@ async def artist_autocomplete(
     # search is not case sensitive and can be partial
     if search:
         get_all_artists = (
-            "SELECT DISTINCT songArtist from songs WHERE songArtist LIKE ?"
+            "SELECT DISTINCT romajiSongArtist from songs WHERE romajiSongArtist LIKE ?"
         )
         artists = sql_calls.run_sql_command(cursor, get_all_artists, [f"%{search}%"])
     else:
-        get_all_artists = "SELECT DISTINCT songArtist from songs"
+        get_all_artists = "SELECT DISTINCT romajiSongArtist from songs"
         artists = sql_calls.run_sql_command(cursor, get_all_artists, None)
 
     artist_list = []
@@ -571,12 +571,14 @@ async def song_name_autocomplete(
     # search is not case sensitive and can be partial
 
     if search:
-        get_all_song_names = "SELECT DISTINCT songName from songs WHERE songName LIKE ?"
+        get_all_song_names = (
+            "SELECT DISTINCT romajiSongName from songs WHERE romajiSongName LIKE ?"
+        )
         song_names = sql_calls.run_sql_command(
             cursor, get_all_song_names, [f"%{search}%"]
         )
     else:
-        get_all_song_names = "SELECT DISTINCT songName from songs"
+        get_all_song_names = "SELECT DISTINCT romajiSongName from songs"
         song_names = sql_calls.run_sql_command(cursor, get_all_song_names, None)
 
     song_name_list = []
@@ -599,29 +601,27 @@ async def anime_name_autocomplete(
     cursor = sql_calls.connect_to_database(sql_calls.database_path)
 
     if songName and songArtist:
-        get_all_anime_names = "SELECT DISTINCT animeExpandName from songsAnimes WHERE songName = ? AND songArtist = ?"
+        get_all_anime_names = "SELECT DISTINCT animeJPName, animeENName from songsAnimes WHERE romajiSongName = ? AND romajiSongArtist = ?"
         anime_names = sql_calls.run_sql_command(
             cursor, get_all_anime_names, [songName, songArtist]
         )
     elif songName:
-        get_all_anime_names = (
-            "SELECT DISTINCT animeExpandName from songsAnimes WHERE songName = ?"
-        )
+        get_all_anime_names = "SELECT DISTINCT animeJPName, animeENName from songsAnimes WHERE romajiSongName = ?"
         anime_names = sql_calls.run_sql_command(cursor, get_all_anime_names, [songName])
     elif songArtist:
-        get_all_anime_names = (
-            "SELECT DISTINCT animeExpandName from songsAnimes WHERE songArtist = ?"
-        )
+        get_all_anime_names = "SELECT DISTINCT animeJPName, animeENName from songsAnimes WHERE romajiSongArtist = ?"
         anime_names = sql_calls.run_sql_command(
             cursor, get_all_anime_names, [songArtist]
         )
     else:
-        get_all_anime_names = "SELECT DISTINCT animeExpandName from songsAnimes"
+        get_all_anime_names = (
+            "SELECT DISTINCT animeJPName, animeENName from songsAnimes"
+        )
         anime_names = sql_calls.run_sql_command(cursor, get_all_anime_names)
 
     anime_name_list = []
     for anime_name in anime_names:
-        anime_name = anime_name[0]
+        anime_name = anime_name[0] or anime_name[1]
         anime_name_list.append(anime_name)
 
     # sort by value
