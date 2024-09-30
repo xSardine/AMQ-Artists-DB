@@ -16,6 +16,10 @@ add_youtube_link = False
 # If set to False: will create one sheet per json in the folder
 fuse_multiple_json = False
 
+# Choose which catbox server will be used for the song links: EU, NA1, or NA2
+catbox_server = "NA1"
+
+
 # Sheet styling Configuration
 sheet_name = "Sheet1"
 link_color = "1155cc"
@@ -32,7 +36,6 @@ YT_LINK = "https://www.youtube.com/watch?v="
 
 
 def song_in_list(song, song_list):
-
     for song2 in song_list:
         if (
             song["annId"] == song2["annId"]
@@ -45,7 +48,6 @@ def song_in_list(song, song_list):
 
 
 def concat(song_list1, song_list2):
-
     concat_song_list = song_list1
 
     for song in song_list2:
@@ -57,14 +59,28 @@ def concat(song_list1, song_list2):
 
 def format_song(song):
 
+    if catbox_server == "EU":
+        server_address = "https://nl.catbox.video/"
+    elif catbox_server == "NA2":
+        server_address = "https://vhdist1.catbox.video/"
+    else:
+        server_address = "https://ladist1.catbox.video/"
+
+    print(song)
     HQlink = song["HQ"] if ("HQ" in song and song["HQ"]) else song["MQ"]
+    if HQlink:
+        HQlink = server_address + HQlink
     mp3_link = song["audio"] if "audio" in song else None
+    if mp3_link:
+        mp3_link = server_address + mp3_link
     print(song["songName"], mp3_link, "\n")
 
     return {
-        "animeName": song["animeJPName"]
-        if ("animeJPName" in song and song["animeJPName"])
-        else song["animeExpandName"],
+        "animeName": (
+            song["animeJPName"]
+            if ("animeJPName" in song and song["animeJPName"])
+            else song["animeExpandName"]
+        ),
         "songType": song["songType"],
         "songInfo": f"{song['songName']} by {song['songArtist']}",
         "video_link": HQlink,
@@ -73,7 +89,6 @@ def format_song(song):
 
 
 def create_workbook(raw_song_list, output_file_name):
-
     wb = Workbook()
     ws = wb.active
     ws.title = sheet_name
@@ -90,14 +105,12 @@ def create_workbook(raw_song_list, output_file_name):
     # Insert values
     row_iter = 2
     for i, raw_song in enumerate(raw_song_list):
-
         print(f"Song #{i+1}/{len(raw_song_list)}")
         song = format_song(raw_song)
 
         yt_link = None
 
         if add_youtube_link:
-
             ytsearch = f"{song['songInfo']} full song"
             results = VideosSearch(ytsearch, limit=1).result()
 
@@ -157,7 +170,6 @@ def create_workbook(raw_song_list, output_file_name):
 
 
 if __name__ == "__main__":
-
     json_path = Path(".")
     json_list = list(json_path.glob("*.json"))
 
