@@ -15,7 +15,7 @@ output_path = "downloaded/"
 # Set anime language for filename: EN, or JP
 anime_language = "JP"
 
-# Choose which catbox server the songs will be downloaded from: EU, NA1, or NA2
+# Choose which catbox server the songs will be downloaded from: EU, NA1 (East), or NA2 (West)
 catbox_server = "NA1"
 
 # If True: it will overwrite automatically if the downloaded file name already exist
@@ -97,12 +97,12 @@ def execute_command(command):
 
 def download_songs(song_list):
     if catbox_server == "EU":
-        server_address = "https://nl.catbox.video/"
+        server_address = "https://eudist.animemusicquiz.com/"
     elif catbox_server == "NA2":
-        server_address = "https://vhdist1.catbox.video/"
+        server_address = "https://nawdist.animemusicquiz.com/"
     else:
-        server_address = "https://ladist1.catbox.video/"
-        
+        server_address = "https://naedist.animemusicquiz.com/"
+
     for song in song_list:
         if overwrite_already_existing_name:
             ignore_parameter = "-y"
@@ -142,9 +142,7 @@ def download_songs(song_list):
                     link = (
                         song["HQ"]
                         if "HQ" in song and song["HQ"]
-                        else song["MQ"]
-                        if "MQ" in song
-                        else None
+                        else song["MQ"] if "MQ" in song else None
                     )
 
                     if not link:
@@ -156,9 +154,7 @@ def download_songs(song_list):
                 link = (
                     song["HQ"]
                     if "HQ" in song and song["HQ"]
-                    else song["MQ"]
-                    if "MQ" in song
-                    else None
+                    else song["MQ"] if "MQ" in song else None
                 )
 
                 if not link:
@@ -170,9 +166,7 @@ def download_songs(song_list):
                 link = (
                     song["HQ"]
                     if "HQ" in song and song["HQ"]
-                    else song["MQ"]
-                    if "MQ" in song
-                    else None
+                    else song["MQ"] if "MQ" in song else None
                 )
 
                 if not link:
@@ -185,9 +179,7 @@ def download_songs(song_list):
                     link = (
                         song["HQ"]
                         if "HQ" in song and song["HQ"]
-                        else song["MQ"]
-                        if "MQ" in song
-                        else None
+                        else song["MQ"] if "MQ" in song else None
                     )
 
                     if not link:

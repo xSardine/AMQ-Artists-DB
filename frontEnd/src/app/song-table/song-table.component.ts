@@ -276,11 +276,11 @@ export class SongTableComponent {
     this.popUpSongLength = song.songLength;
     this.popUpSongCat = song.songCategory;
     this.popUpHDName = song.HQ;
-    this.popUpHDLink = song.HQ ? "https://ladist1.catbox.video/" + song.HQ : "";
+    this.popUpHDLink = song.HQ ? "https://naedist.animemusicquiz.com/" + song.HQ : "";
     this.popUpMDName = song.MQ;
-    this.popUpMDLink = song.MQ ? "https://ladist1.catbox.video/" + song.MQ : "";
+    this.popUpMDLink = song.MQ ? "https://naedist.animemusicquiz.com/" + song.MQ : "";
     this.popUpAudioName = song.audio;
-    this.popUpAudioLink = song.audio ? "https://ladist1.catbox.video/" + song.audio : "";
+    this.popUpAudioLink = song.audio ? "https://naedist.animemusicquiz.com/" + song.audio : "";
     this.popUpArtistsInfo = this.sortArtists(song.artists);
     this.popUpComposersInfo = song.composers;
     this.popUpArrangersInfo = song.arrangers;

@@ -304,8 +304,6 @@ def get_artist_id(
             if artist in db_artist_names and id not in ids:
                 ids.append(id)
 
-    print(ids)
-
     # if no IDs found
     if not ids:
         if not not_exist_ok:

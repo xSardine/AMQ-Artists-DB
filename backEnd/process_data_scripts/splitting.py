@@ -18,6 +18,7 @@ splitting_exception_list = [
     ("ZONE&Run Time All Stars", ("ZONE", "Run Time All Stars")),
     ## Force splitting (splitters that are not automatically recognized)
     # to
+    ("PUFFY to Tsuide ni TOOBOE", ("PUFFY", "TOOBOE")),
     ("chelmico to ryo takahashi", ("chelmico", "ryo takahashi")),
     ("Soraru to Rib", ("Soraru", "Rib")),
     ("Mari Yaguchi to Straw Hat", ("Mari Yaguchi", "Straw Hat")),
@@ -308,6 +309,8 @@ splitting_exception_list = [
     ("The S・h・e", ("The S・h・e",)),
     ("Teikoku Kageki-dan・Hana-gumi", ("Teikoku Kageki-dan・Hana-gumi",)),
     # &
+    ("IBERIs&", ("IBERIs&",)),
+    ("&TEAM", ("&TEAM",)),
     (
         "JUDY GARLAND with Victor Young & his Orchestra",
         (
@@ -618,6 +621,23 @@ splitting_exception_list = [
     ("Sol/Lull BOB", ("Sol/Lull BOB",)),
     ("Kisu Koide (PANDA 1/2)", ("Kisu Koide (PANDA 1/2)",)),
     ("H-el-ical//", ("H-el-ical//",)),
+    ("PIOTR MACIEJEWSKI / DRIVEALONE", ("PIOTR MACIEJEWSKI / DRIVEALONE")),
+    (
+        "David Wilson, Soma Genda, Kyle Reith, Elijah Noll, Tony Ferrari, Jamesy Minimal, BYDOR ARCHIVE, Jacob Critch, Ryan Shin(153/Joombas), Wyatt Sanders, Horace Dodd",
+        (
+            "David Wilson",
+            "Soma Genda",
+            "Kyle Reith",
+            "Elijah Noll",
+            "Tony Ferrari",
+            "Jamesy Minimal",
+            "BYDOR ARCHIVE",
+            "Jacob Critch",
+            "Ryan Shin(153/Joombas)",
+            "Wyatt Sanders",
+            "Horace Dodd",
+        ),
+    ),
     ("22/7", ("22/7",)),
     ("Yukichi Kasaku/men", ("Yukichi Kasaku/men",)),
     ("Prhythm/epx", ("Prhythm/epx",)),

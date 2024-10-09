@@ -392,7 +392,7 @@ def process():
                 add_member_group_links(group_id, group_members, line_up_id)
 
                 line_up_type = (
-                    "vovalists"
+                    "vocalists"
                     if utils.ask_validation("Is it a vocalists group ?\n")
                     else "composers"
                 )

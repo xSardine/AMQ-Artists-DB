@@ -125,9 +125,9 @@ def process():
         print("User cancelled")
         return
 
-    with open("song_database.json", "w", encoding="utf-8") as outfile:
+    with open(song_database_path, "w", encoding="utf-8") as outfile:
         json.dump(song_database, outfile, indent=4)
-    with open("artist_database.json", "w", encoding="utf-8") as outfile:
+    with open(artist_database_path, "w", encoding="utf-8") as outfile:
         json.dump(artist_database, outfile, indent=4)
 
 

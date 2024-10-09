@@ -16,7 +16,7 @@ add_youtube_link = False
 # If set to False: will create one sheet per json in the folder
 fuse_multiple_json = False
 
-# Choose which catbox server will be used for the song links: EU, NA1, or NA2
+# Choose which catbox server will be used for the song links: EU, NA1 (East), or NA2 (West)
 catbox_server = "NA1"
 
 
@@ -60,11 +60,11 @@ def concat(song_list1, song_list2):
 def format_song(song):
 
     if catbox_server == "EU":
-        server_address = "https://nl.catbox.video/"
+        server_address = "https://eudist.animemusicquiz.com/"
     elif catbox_server == "NA2":
-        server_address = "https://vhdist1.catbox.video/"
+        server_address = "https://nawdist.animemusicquiz.com/"
     else:
-        server_address = "https://ladist1.catbox.video/"
+        server_address = "https://naedist.animemusicquiz.com/"
 
     print(song)
     HQlink = song["HQ"] if ("HQ" in song and song["HQ"]) else song["MQ"]
