@@ -14,10 +14,10 @@ class Search_Filter(BaseModel):
 
     # How much I decompose the group to search for other songs
     # ie. 1: Artists one by one 2: At least two member from the group, etc...
-    group_granularity: Optional[int] = Field(2, ge=0)
+    group_granularity: Optional[int] = Field(0, ge=0)
     # Once I've confirmed group_granularity requirement is met
     # How much other artists that are not from the og group do I accept
-    max_other_artist: Optional[int] = Field(2, ge=0)
+    max_other_artist: Optional[int] = Field(99, ge=0)
 
     # for composer search
     arrangement: Optional[bool] = True
@@ -78,8 +78,8 @@ class Search_Request(BaseModel):
 
 class Artist_ID_Search_Request(BaseModel):
     artist_ids: List[int] = []
-    group_granularity: Optional[int] = Field(2, ge=0)
-    max_other_artist: Optional[int] = Field(2, ge=0)
+    group_granularity: Optional[int] = Field(99, ge=0)
+    max_other_artist: Optional[int] = Field(0, ge=0)
     ignore_duplicate: Optional[bool] = False
 
     opening_filter: Optional[bool] = True
@@ -182,6 +182,8 @@ class Song_Entry(BaseModel):
     songType: str
     songName: str
     songArtist: str
+    songComposer: str
+    songArranger: str
     songDifficulty: Optional[float]
     songCategory: Optional[str]
     songLength: Optional[float]

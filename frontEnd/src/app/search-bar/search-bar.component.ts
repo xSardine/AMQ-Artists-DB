@@ -191,10 +191,19 @@ export class SearchBarComponent implements OnInit {
       }
 
       if (this.composerFilter.length > 0) {
+        if (!this.minimalMembersFilter) {
+          console.log("not set :(")
+          this.minimalMembersFilter = "0"
+        }
+        if (!this.maximumRandomsFilter) {
+          this.maximumRandomsFilter = "99"
+        }
         tmp_composer_filter = {
           "search": this.composerFilter,
           "partial_match": this.composerFilterPartialMatch,
           "arrangement": this.composerFilterArrangement,
+          "group_granularity": parseInt(this.minimalMembersFilter),
+          "max_other_artist": parseInt(this.maximumRandomsFilter),
         }
       }
       else {

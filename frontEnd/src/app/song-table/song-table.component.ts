@@ -20,6 +20,9 @@ export class SongTableComponent {
   @Input() songTable: any
   @Input() previousBody: any
   @Input() animeTitleLang: any
+  @Input() composerDisplay: boolean = true;
+
+  tableHeaders = ["annId", "Anime", "Type", "Song Name", "Artist"];
 
   @Output() mp3PlayerClicked = new EventEmitter();
   playMP3music(song: any) {
@@ -37,7 +40,22 @@ export class SongTableComponent {
     this.sendPreviousBody.emit(body)
   }
 
+  ngOnInit() {
+    this.tableHeaders = ["annId", "Anime", "Type", "Song Name", "Artist"];
+    if (this.composerDisplay) {
+      this.tableHeaders.push("Composer");
+      this.tableHeaders.push("Arranger");
+    }
+  }
+
   ngOnChanges(changes: Event) {
+
+    this.tableHeaders = ["annId", "Anime", "Type", "Song Name", "Artist"];
+    if (this.composerDisplay) {
+      this.tableHeaders.push("Composer");
+      this.tableHeaders.push("Arranger");
+    }
+
     this.rankedTime = this.checkRankedTime()
     this.ascendingOrder = false;
     this.currentAverage = this.computeAverage(this.songTable)
@@ -86,8 +104,6 @@ export class SongTableComponent {
   subGridStyle: any
   clipboardPopUpStyle: any
   show: boolean = false
-
-  tableHeaders = ["annId", "Anime", "Type", "Song Name", "Artist"];
 
   rankedTime = false;
   RankedDisabledTimeLeft = 0

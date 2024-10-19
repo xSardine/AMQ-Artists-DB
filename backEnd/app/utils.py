@@ -30,7 +30,7 @@ ANIME_REGEX_REPLACE_RULES = [
     {"input": "'", "replace": "['’ˈ]"},
     {"input": "n", "replace": "[nñ]"},
     {"input": "0", "replace": "[0Ө]"},
-    {"input": "2", "replace": "[2²]"},
+    {"input": "2", "replace": "[2²₂]"},
     {"input": "3", "replace": "[3³]"},
     {"input": "5", "replace": "[5⁵]"},
     {"input": "*", "replace": "[*✻＊✳︎]"},
@@ -208,6 +208,10 @@ def format_song(artist_database, song):
 
             arrangers.append(current_arranger)
 
+    # TODO : remove this once we are synced with AMQ
+    songComposer = ", ".join([composer["names"][0] for composer in composers])
+    songArranger = ", ".join([arranger["names"][0] for arranger in arrangers])
+
     songinfo = {
         "annId": song[0],
         "linked_ids": {
@@ -228,8 +232,10 @@ def format_song(artist_database, song):
         "songCategory": song[18],
         "songName": song[20],
         "songArtist": song[22],
-        "songComposer": song[26],
-        "songArranger": song[30],
+        # "songComposer": song[26], # TODO : activate that method whenever we are synced with AMQ
+        "songComposer": songComposer,
+        # "songArranger": song[30], # TODO : activate that method whenever we are synced with AMQ
+        "songArranger": songArranger,
         "songDifficulty": song[33],
         "isDub": song[34],
         "isRebroadcast": song[35],

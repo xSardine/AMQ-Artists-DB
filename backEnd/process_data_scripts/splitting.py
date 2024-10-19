@@ -309,6 +309,12 @@ splitting_exception_list = [
     ("The S・h・e", ("The S・h・e",)),
     ("Teikoku Kageki-dan・Hana-gumi", ("Teikoku Kageki-dan・Hana-gumi",)),
     # &
+    ("KEEN (C&K)", ("KEEN (C&K)",)),
+    ("Giga & TeddyLoid", ("Giga & TeddyLoid",)),
+    (
+        "Giga & TeddyLoid meets Rina Matsuda & Hikaru Morita (Sakurazaka46)",
+        ("Giga & TeddyLoid", "Rina Matsuda", "Hikaru Morita (Sakurazaka46)"),
+    ),
     ("IBERIs&", ("IBERIs&",)),
     ("&TEAM", ("&TEAM",)),
     (

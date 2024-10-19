@@ -42,6 +42,8 @@ def add_main_log(
             "search": composer_search_filters.search,
             "partial_match": composer_search_filters.partial_match,
             "arrangement": composer_search_filters.arrangement,
+            "group_granularity": composer_search_filters.group_granularity,
+            "max_other_people": composer_search_filters.max_other_artist,
         }
     logs["is_intersection"] = and_logic
     logs["ignore_dups"] = ignore_duplicate
@@ -232,6 +234,70 @@ def check_meets_artists_requirements(
     return False
 
 
+def check_meets_composers_requirements(
+    artist_database, song, composer_ids, group_granularity, max_other_artist
+):
+
+    # Exceptions for groups that have line ups, but also songs with no line ups : they should be considered both a group and artist
+    LINE_UP_EXCEPTIONS = [215, 4261, 7695, 6678]
+
+    song_composers = [
+        [artist, int(line_up)]
+        for artist, line_up in zip(song[27].split(","), song[28].split(","))
+    ]
+    song_artists_flat = get_member_list_flat(artist_database, song_composers)
+
+    for composer_id in composer_ids:
+        line_ups = [[[str(composer_id), -1]]]
+        if artist_database[str(composer_id)]["members"]:
+            line_ups = artist_database[str(composer_id)]["members"]
+
+            if composer_id in LINE_UP_EXCEPTIONS:
+                line_ups += [[[str(composer_id), -1]]]
+
+        for line_up in line_ups:
+            checked_list = get_member_list_flat(artist_database, line_up)
+            present_artist, additional_artist = compare_two_artist_list(
+                song_artists_flat, checked_list
+            )
+
+            if (
+                present_artist >= 1
+                and additional_artist <= max_other_artist
+                and present_artist >= min(group_granularity, len(line_up))
+            ):
+                return True
+
+    song_arrangers = [
+        [artist, int(line_up)]
+        for artist, line_up in zip(song[31].split(","), song[32].split(","))
+    ]
+    song_artists_flat = get_member_list_flat(artist_database, song_arrangers)
+
+    for arranger_id in composer_ids:
+        line_ups = [[[str(arranger_id), -1]]]
+        if artist_database[str(arranger_id)]["members"]:
+            line_ups = artist_database[str(arranger_id)]["members"]
+
+            if arranger_id in LINE_UP_EXCEPTIONS:
+                line_ups += [[[str(arranger_id), -1]]]
+
+        for line_up in line_ups:
+            checked_list = get_member_list_flat(artist_database, line_up)
+            present_artist, additional_artist = compare_two_artist_list(
+                song_artists_flat, checked_list
+            )
+
+            if (
+                present_artist >= 1
+                and additional_artist <= max_other_artist
+                and present_artist >= min(group_granularity, len(line_up))
+            ):
+                return True
+
+    return False
+
+
 def get_song_list_from_songIds_JSON(
     song_database,
     songIds,
@@ -358,6 +424,78 @@ def process_artist(
             final_song_list.append(song)
 
     return final_song_list, artist_ids
+
+
+def process_composer(
+    cursor,
+    song_database,
+    artist_database,
+    search,
+    partial_match,
+    arrangement,
+    authorized_types,
+    authorized_broadcasts,
+    authorized_song_categories,
+    group_granularity,
+    max_other_artist,
+):
+
+    composer_search = utils.get_regex_search(search, partial_match, swap_words=True)
+
+    composer_ids = sql_calls.get_artist_ids_from_regex(cursor, composer_search)
+
+    # If no IDs found, do not fall back to raw string for computing time
+    if not composer_ids:
+        return [], []
+
+    # TODO Reuse those process for future processes such as check meet requirement and post process of songs
+    members = []
+    if group_granularity != 0:
+        if group_granularity > 0:
+            for artist in composer_ids:
+                if artist_database[str(artist)]["members"]:
+                    for line_up in artist_database[str(artist)]["members"]:
+                        for member in get_member_list_flat(
+                            artist_database, line_up, bottom=False
+                        ):
+                            if member not in members:
+                                members.append(member)
+                else:
+                    members.append(artist)
+
+    all_groups = []
+    for artist in set(composer_ids + members):
+        all_groups += get_all_groups(artist, artist_database)
+
+    # Extract every song IDs containing an artist we have
+    songIds = sql_calls.get_songs_ids_from_composing_team_ids(
+        cursor,
+        composer_ids=list(
+            set(composer_ids + [group[0] for group in all_groups] + members)
+        ),
+        arrangement=arrangement,
+    )
+
+    artist_songs_list = get_song_list_from_songIds_JSON(
+        song_database,
+        songIds,
+        authorized_types,
+        authorized_broadcasts,
+        authorized_song_categories,
+    )
+
+    final_song_list = []
+    for song in artist_songs_list:
+        if check_meets_composers_requirements(
+            artist_database,
+            song,
+            composer_ids,
+            group_granularity,
+            max_other_artist,
+        ):
+            final_song_list.append(song)
+
+    return final_song_list, composer_ids
 
 
 def get_search_results(
@@ -536,39 +674,23 @@ def get_search_results(
 
     # Composer filter not available during ranked
     composer_songs_list = []
+    composer_ids = None
+
     if composer_search_filters and not is_ranked:
-        if (
-            not artist_search_filters
-            or composer_search_filters.search != artist_search_filters.search
-        ):
-            composer_search = utils.get_regex_search(
-                composer_search_filters.search,
-                composer_search_filters.partial_match,
-                swap_words=True,
-            )
-            artist_ids = sql_calls.get_artist_ids_from_regex(cursor, composer_search)
 
-        # add groups if those artist_ids are in groups
-        all_groups = []
-        for artist in artist_ids:
-            all_groups += get_all_groups(
-                artist, artist_database, include_composers_groups=True
-            )
-
-        artist_ids = list(set(artist_ids + [group[0] for group in all_groups]))
-
-        if artist_ids:
-            songIds = sql_calls.get_songs_ids_from_composing_team_ids(
-                cursor, artist_ids, composer_search_filters.arrangement
-            )
-
-            composer_songs_list = get_song_list_from_songIds_JSON(
-                song_database,
-                songIds,
-                authorized_types,
-                authorized_broadcasts,
-                authorized_song_categories,
-            )
+        composer_songs_list, composer_ids = process_composer(
+            cursor,
+            song_database,
+            artist_database,
+            composer_search_filters.search,
+            composer_search_filters.partial_match,
+            composer_search_filters.arrangement,
+            authorized_types,
+            authorized_broadcasts,
+            authorized_song_categories,
+            composer_search_filters.group_granularity,
+            composer_search_filters.max_other_artist,
+        )
 
     print(f"Composers: {round(timeit.default_timer() - start, 4)}")
     start = timeit.default_timer()
@@ -702,8 +824,13 @@ def get_composer_ids_song_list(
     if not composer_ids:
         return []
 
+    groups = []
+    for artist in composer_ids:
+        for group in artist_database[str(artist)]["groups"]:
+            groups.append(group)
+
     songIds = sql_calls.get_songs_ids_from_composing_team_ids(
-        cursor, list(set(composer_ids)), arrangement
+        cursor, list(set(composer_ids + [group[0] for group in groups])), arrangement
     )
 
     song_database = sql_calls.extract_song_database()
@@ -716,8 +843,28 @@ def get_composer_ids_song_list(
         authorized_song_categories,
     )
 
+    final_songs = []
+    for song in songs:
+        flag = False
+        for composer, line_up in zip(song[27].split(","), song[28].split(",")):
+            if int(composer) in composer_ids:
+                flag = True
+            for group, group_line_up in groups:
+                if composer == group and int(line_up) == group_line_up:
+                    flag = True
+
+        for arranger, line_up in zip(song[31].split(","), song[32].split(",")):
+            if int(arranger) in composer_ids:
+                flag = True
+            for group, group_line_up in groups:
+                if arranger == group and int(line_up) == group_line_up:
+                    flag = True
+
+        if flag:
+            final_songs.append(song)
+
     final_songs = combine_results(
-        artist_database, songs, [], [], [], [], False, ignore_duplicate
+        artist_database, final_songs, [], [], [], [], False, ignore_duplicate
     )
 
     stop = timeit.default_timer()

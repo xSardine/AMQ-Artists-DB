@@ -23,6 +23,7 @@ export class AppComponent {
   currentlyPlayingSongName: any = ""
 
   animeTitleLang: string = "JP"
+  composerDisplay: boolean = true
 
   receiveSongList($event: any) {
     this.songList = $event
@@ -39,6 +40,10 @@ export class AppComponent {
 
   toggleAnimeLang() {
     this.animeTitleLang = (this.animeTitleLang == "JP") ? "EN" : "JP"
+  }
+
+  toggleComposerDisplay() {
+    this.composerDisplay = !this.composerDisplay
   }
 
   toggleTheme() {

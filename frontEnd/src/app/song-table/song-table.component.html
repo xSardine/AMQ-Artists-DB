@@ -664,6 +664,48 @@
     </td>
 
     <td
+    *ngIf="composerDisplay">
+      <i
+        *ngIf="!rankedTime"
+        style="
+          cursor: pointer;
+          margin-right: 6px;
+          color: var(--textOnBackground);
+        "
+        title="Search songs composed or arranged by this composer(s)"
+        (click)="searchComposerIds(song.composers)"
+        class="fa fa-search"
+      ></i>
+      <span
+        class="copyable"
+        title="Copy to clipboard"
+        (click)="copyToClipboard($event, song.songComposer)"
+        >{{ song.songComposer }}</span
+      >
+    </td>
+
+    <td
+    *ngIf="composerDisplay">
+      <i
+        *ngIf="!rankedTime"
+        style="
+          cursor: pointer;
+          margin-right: 6px;
+          color: var(--textOnBackground);
+        "
+        title="Search songs composed or arranged by this arranger(s)"
+        (click)="searchComposerIds(song.arrangers)"
+        class="fa fa-search"
+      ></i>
+      <span
+        class="copyable"
+        title="Copy to clipboard"
+        (click)="copyToClipboard($event, song.songArranger)"
+        >{{ song.songArranger }}</span
+      >
+    </td>
+
+    <td
       *ngIf="isCurrentPlayingSong(song) && !rankedTime"
       title="Listen to mp3"
       (click)="playMP3music(song)"

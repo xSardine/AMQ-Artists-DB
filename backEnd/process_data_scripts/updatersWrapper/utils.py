@@ -24,7 +24,7 @@ ANIME_REGEX_REPLACE_RULES = [
     {"input": "'", "replace": "['’ˈ]"},
     {"input": "n", "replace": "[nñ]"},
     {"input": "0", "replace": "[0Ө]"},
-    {"input": "2", "replace": "[2²]"},
+    {"input": "2", "replace": "[2²₂]"},
     {"input": "3", "replace": "[3³]"},
     {"input": "5", "replace": "[5⁵]"},
     {"input": "*", "replace": "[*✻＊✳︎]"},

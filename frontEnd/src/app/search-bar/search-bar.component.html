@@ -217,44 +217,13 @@
       </label>
     </div>
 
-    <div
-      title="This is the maximum amount of people that are not in your Artist Filter field who are allowed"
-      style="display: block; padding-bottom: 8px; padding-right: 6px"
-    >
-      <label
-        >Max Other People<input
-          #maximumRandomsFilterInput
-          placeholder="99..."
-          style="width: 40px; margin-left: 5px"
-          type="search"
-          class="textInputFilter"
-          (keyup.enter)="onSearchCallKey()"
-          (input)="maximumRandomsFilter = maximumRandomsFilterInput.value"
-          [value]="maximumRandomsFilter"
-      /></label>
-
-      <label
-        title="This is the minimum amount of singer from the group that needs to be present (only useful for groups)"
-        style="margin-left: 20px"
-        >Min group members<input
-          #minimalMembersFilterInput
-          placeholder="0..."
-          style="width: 40px; margin-left: 5px"
-          type="search"
-          class="textInputFilter"
-          (keyup.enter)="onSearchCallKey()"
-          (input)="minimalMembersFilter = minimalMembersFilterInput.value"
-          [value]="minimalMembersFilter"
-      /></label>
-    </div>
-
     <div style="display: block; padding-bottom: 8px">
       <input
         #composerFilterInput
         class="textInputFilter"
         placeholder="Search by composer..."
         type="search"
-        title="Search by composer (in construction, if you want to add a composer, DM me!"
+        title="Search by composer"
         style="width: 230px"
         (keyup.enter)="onSearchCallKey()"
         (input)="composerFilter = composerFilterInput.value"
@@ -281,6 +250,40 @@
         />
         Arrangement
       </label>
+    </div>
+
+    <div style="display: block; padding-bottom: 8px">
+      <label
+        ><div class="tooltip">
+          Max Other People
+          <span class="tooltiptext">This is the maximum amount of people that are not in your Artist or Composer Filter field who are allowed</span>
+        </div><input
+          #maximumRandomsFilterInput
+          placeholder="99..."
+          style="width: 40px; margin-left: 5px"
+          type="search"
+          class="textInputFilter"
+          (keyup.enter)="onSearchCallKey()"
+          (input)="maximumRandomsFilter = maximumRandomsFilterInput.value"
+          [value]="maximumRandomsFilter"
+      /></label>
+    </div>
+
+    <div style="display: block; padding-bottom: 8px">
+      <label
+        ><div class="tooltip">
+          Min Group Members
+          <span class="tooltiptext">This is the minimum amount of people from the group in Artist or Composer filter that needs to be present (only useful for groups)</span>
+        </div><input
+          #minimalMembersFilterInput
+          placeholder="0..."
+          style="width: 40px; margin-left: 5px"
+          type="search"
+          class="textInputFilter"
+          (keyup.enter)="onSearchCallKey()"
+          (input)="minimalMembersFilter = minimalMembersFilterInput.value"
+          [value]="minimalMembersFilter"
+      /></label>
     </div>
 
     <div style="display: block; padding-bottom: 5px">
