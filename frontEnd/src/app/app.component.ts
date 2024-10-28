@@ -25,6 +25,27 @@ export class AppComponent {
   animeTitleLang: string = "JP"
   composerDisplay: boolean = true
 
+  private readonly volumeKey = 'vimePlayerVolume'; 
+  private volumeChangeListener!: (event: Event) => void;
+  
+  ngAfterViewInit() {
+    const playerElement = this.player.getElement(); 
+    const savedVolume = localStorage.getItem(this.volumeKey);
+    
+    this.player.volume = savedVolume ? parseFloat(savedVolume) : 0.5;
+  
+    this.volumeChangeListener = () => {
+      localStorage.setItem(this.volumeKey, this.player.volume.toString());
+    };
+  
+    playerElement.addEventListener('volumechange', this.volumeChangeListener);
+  }
+  
+  ngOnDestroy() {
+    const playerElement = this.player.getElement();
+    playerElement.removeEventListener('volumechange', this.volumeChangeListener);
+  }
+
   receiveSongList($event: any) {
     this.songList = $event
   }
