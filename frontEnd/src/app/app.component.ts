@@ -25,26 +25,39 @@ export class AppComponent {
   animeTitleLang: string = "JP"
   composerDisplay: boolean = true
 
-  private readonly volumeKey = 'vimePlayerVolume'; 
-  private volumeChangeListener!: (event: Event) => void;
+// Keys for storing player preferences in localStorage
+private readonly volumeKey = 'vimePlayerVolume';
+private readonly langKey = 'animeTitleLang';
+private readonly composerKey = 'composerDisplay';
+
+private volumeChangeListener!: (event: Event) => void;
+
+ngAfterViewInit() {
+  const playerElement = this.player.getElement(); 
+
+  // Load and set the saved volume level, or default to 0.5 if not set
+  const savedVolume = localStorage.getItem(this.volumeKey);
+  this.player.volume = savedVolume ? parseFloat(savedVolume) : 0.5;
+
+  // Save volume to localStorage whenever it changes
+  this.volumeChangeListener = () => {
+    localStorage.setItem(this.volumeKey, this.player.volume.toString());
+  };
+  playerElement.addEventListener('volumechange', this.volumeChangeListener);
   
-  ngAfterViewInit() {
-    const playerElement = this.player.getElement(); 
-    const savedVolume = localStorage.getItem(this.volumeKey);
-    
-    this.player.volume = savedVolume ? parseFloat(savedVolume) : 0.5;
   
-    this.volumeChangeListener = () => {
-      localStorage.setItem(this.volumeKey, this.player.volume.toString());
-    };
-  
-    playerElement.addEventListener('volumechange', this.volumeChangeListener);
-  }
-  
-  ngOnDestroy() {
-    const playerElement = this.player.getElement();
-    playerElement.removeEventListener('volumechange', this.volumeChangeListener);
-  }
+  const savedLang = localStorage.getItem(this.langKey);
+  this.animeTitleLang = savedLang ? savedLang : "JP";
+
+  const savedComposerDisplay = localStorage.getItem(this.composerKey);
+  this.composerDisplay = savedComposerDisplay !== null ? savedComposerDisplay === 'true' : true;
+}
+
+// Cleanup
+ngOnDestroy() {
+  const playerElement = this.player.getElement();
+  playerElement.removeEventListener('volumechange', this.volumeChangeListener);
+}
 
   receiveSongList($event: any) {
     this.songList = $event
@@ -60,11 +73,13 @@ export class AppComponent {
   }
 
   toggleAnimeLang() {
-    this.animeTitleLang = (this.animeTitleLang == "JP") ? "EN" : "JP"
+    this.animeTitleLang = (this.animeTitleLang === "JP") ? "EN" : "JP";
+    localStorage.setItem(this.langKey, this.animeTitleLang); 
   }
 
   toggleComposerDisplay() {
-    this.composerDisplay = !this.composerDisplay
+    this.composerDisplay = !this.composerDisplay;
+    localStorage.setItem(this.composerKey, this.composerDisplay.toString());
   }
 
   toggleTheme() {
