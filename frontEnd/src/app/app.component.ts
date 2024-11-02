@@ -38,7 +38,10 @@ export class AppComponent {
     this.previousBody = $event
   }
 
-  // TODO: Implement this
+  ngOnInit() {
+    this.initializeTableSettings()
+  }
+
   private initializeTableSettings() {
     const savedLang = localStorage.getItem(this.langKey);
     this.animeTitleLang = savedLang ? savedLang : "JP";
