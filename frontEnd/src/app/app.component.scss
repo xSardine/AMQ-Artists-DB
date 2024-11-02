@@ -7,6 +7,11 @@
 
   /*  Toggle Switch  */
 
+  :root {
+    --vm-slider-track-height: 6px;
+    --vm-slider-track-focused-height: 8px;
+  }
+
   .toggleSwitch span span {
     display: none;
   }

@@ -8,7 +8,7 @@
 
   <p style="margin-right: 5px;">Composers</p>
   <label class="toggleSwitch nolabel" style="margin-right: 20px" title="Composer displaying">
-    <input (click)="toggleComposerDisplay()" type="checkbox" checked />
+    <input (click)="toggleComposerDisplay()" type="checkbox" [checked]="composerDisplay" />
     <a></a>
     <span>
       <span class="left-span">Hide</span>
@@ -18,7 +18,7 @@
 
   <p style="margin-right: 5px;">Anime Name</p>
   <label class="toggleSwitch nolabel" style="margin-right: 20px" title="Anime title displaying">
-    <input (click)="toggleAnimeLang()" type="checkbox" checked />
+    <input (click)="toggleAnimeLang()" type="checkbox" [checked]="animeTitleLang === 'JP'" />
     <a></a>
     <span>
       <span class="left-span">EN</span>
@@ -33,7 +33,7 @@
 
 <div id="video-player" title="{{currentlyPlayingSongName}} by {{currentlyPlayingArtist}}">
 
-  <vm-player #player *ngIf="url">
+  <vm-player #player *ngIf="url" (vmVolumeChange)="handleVmVolumeChange($event)">
 
     <vm-audio>
       <source data-src={{url}} type="audio/mp3" />
