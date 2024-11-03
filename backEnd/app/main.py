@@ -652,8 +652,6 @@ async def filter_season(season: str):
     if len(year) != 4:
         return f"{year} is an invalid year, please use the format 'Season Year'. Example : 'Winter 2021'"
 
-    print(season)
-
     cursor = sql_calls.connect_to_database(sql_calls.database_path)
 
     get_all_songs = "SELECT * from songsFull WHERE animeVintage LIKE ?"
@@ -662,7 +660,5 @@ async def filter_season(season: str):
     artist_database = sql_calls.extract_artist_database()
 
     song_list = [utils.format_song(artist_database, song) for song in songs]
-
-    print("Number of songs: ", len(song_list))
 
     return song_list

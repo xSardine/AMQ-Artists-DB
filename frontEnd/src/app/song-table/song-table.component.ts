@@ -124,8 +124,8 @@ export class SongTableComponent {
       },
       // CET EU
       {
-        start: new Date().setUTCHours(18, 30, 0, 0),
-        end: new Date().setUTCHours(19, 23, 0, 0)
+        start: new Date().setUTCHours(19, 30, 0, 0),
+        end: new Date().setUTCHours(20, 23, 0, 0)
       }
     ];
 

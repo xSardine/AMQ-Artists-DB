@@ -1,7 +1,7 @@
 # Splitting Config
 
-splitters = " VS | vs | & | , |, | featuring\. | Featuring\. | featuring | Featuring | feat\. | feat\.|feat\. |feat\.| FEAT. | ft\. | ft\.|ft\. |ft\.| x | × | with |＆| / |/| meets | adding | and "
-secondary_splitters = "・|& | &|&| ,|,| ×|× |×| \+ |\+"
+splitters = r" VS | vs | & | , |, | featuring\. | Featuring\. | featuring | Featuring | feat\. | feat\.|feat\. |feat\.| FEAT. | ft\. | ft\.|ft\. |ft\.| x | × | with |＆| / |/| meets | adding | and "
+secondary_splitters = r"・|& | &|&| ,|,| ×|× |×| \+ |\+"
 
 splitting_exception_list = [
     ## To check
@@ -618,12 +618,14 @@ splitting_exception_list = [
     ("Shou/Ouji", ("Shou/Ouji",)),
     ("NAMI with Shige×2＆S/N", ("NAMI", "Shige×2", "S/N")),
     ("r.o.r/s", ("r.o.r/s",)),
+    ("konoco from kyoukaimetro/Qlover", ("konoco from kyoukaimetro/Qlover",)),
+    ("kyoukaimetro/Qlover", ("kyoukaimetro/Qlover",)),
     ("can/goo", ("can/goo",)),
     ("Koichirou Tokinori & can/goo", ("Koichirou Tokinori", "can/goo")),
     ("DISH//", ("DISH//",)),
     ("ON/OFF", ("ON/OFF",)),
     ("S/mileage", ("S/mileage",)),
-    ("Konnichiwa\(^o^)/Kirarinbo☆Harry!!!", ("Konnichiwa\(^o^)/Kirarinbo☆Harry!!!",)),
+    (r"Konnichiwa\(^o^)/Kirarinbo☆Harry!!!", (r"Konnichiwa\(^o^)/Kirarinbo☆Harry!!!",)),
     ("Sol/Lull BOB", ("Sol/Lull BOB",)),
     ("Kisu Koide (PANDA 1/2)", ("Kisu Koide (PANDA 1/2)",)),
     ("H-el-ical//", ("H-el-ical//",)),

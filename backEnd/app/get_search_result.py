@@ -16,46 +16,54 @@ def add_main_log(
     authorized_broadcasts,
     authorized_song_categories,
 ):
-    logs = {
-        "date": str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")),
-    }
 
-    if anime_search_filters:
-        logs["anime_filter"] = {
-            "search": anime_search_filters.search,
-            "partial_match": anime_search_filters.partial_match,
-        }
-    if song_name_search_filters:
-        logs["song_filter"] = {
-            "search": song_name_search_filters.search,
-            "partial_match": song_name_search_filters.partial_match,
-        }
-    if artist_search_filters:
-        logs["artist_filter"] = {
-            "search": artist_search_filters.search,
-            "partial_match": artist_search_filters.partial_match,
-            "group_granularity": artist_search_filters.group_granularity,
-            "max_other_people": artist_search_filters.max_other_artist,
-        }
-    if composer_search_filters:
-        logs["composer_filter"] = {
-            "search": composer_search_filters.search,
-            "partial_match": composer_search_filters.partial_match,
-            "arrangement": composer_search_filters.arrangement,
-            "group_granularity": composer_search_filters.group_granularity,
-            "max_other_people": composer_search_filters.max_other_artist,
-        }
-    logs["is_intersection"] = and_logic
-    logs["ignore_dups"] = ignore_duplicate
-    logs["types"] = authorized_types
-    logs["broadcasts"] = authorized_broadcasts
-    logs["song_categories"] = authorized_song_categories
+    print("-------------------------")
 
-    for key in logs:
-        print(f"{key}: {logs[key]}")
+    print("Date: ", str(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))),
 
-    print()
-    # TODO
+    if isinstance(anime_search_filters, list):
+        anime_search_filters = None
+
+    if isinstance(song_name_search_filters, list):
+        song_name_search_filters = None
+
+    if isinstance(artist_search_filters, list):
+        artist_search_filters = None
+
+    if isinstance(composer_search_filters, list):
+        composer_search_filters = None
+
+    if (
+        anime_search_filters
+        and not isinstance(anime_search_filters, list)
+        and song_name_search_filters
+        and not isinstance(song_name_search_filters, list)
+        and artist_search_filters
+        and not isinstance(artist_search_filters, list)
+        and composer_search_filters
+        and not isinstance(composer_search_filters, list)
+        and anime_search_filters.search == song_name_search_filters.search
+        and song_name_search_filters.search == artist_search_filters.search
+        and artist_search_filters.search == composer_search_filters.search
+    ):
+        print(f"Main filter: '{anime_search_filters.search}'")
+    else:
+
+        if anime_search_filters:
+            print(f"Anime filter: '{anime_search_filters.search}'")
+        if song_name_search_filters:
+            print(f"Song Name filter: '{song_name_search_filters.search}'")
+        if artist_search_filters:
+            print(f"Artist filter: '{artist_search_filters.search}'")
+        if composer_search_filters:
+            print(f"Composer filter: '{composer_search_filters.search}'")
+
+    print("Intersection: ", and_logic, end=" | ")
+    print("Ignore Duplicates: ", ignore_duplicate, end=" | ")
+    print("Types: ", authorized_types, end=" | ")
+    print("Broadcasts: ", authorized_broadcasts, end=" | ")
+    print("Song Categories: ", authorized_song_categories)
+
     return
 
 
@@ -202,7 +210,13 @@ def check_meets_artists_requirements(
 ):
 
     # Exceptions for groups that have line ups, but also songs with no line ups : they should be considered both a group and artist
-    LINE_UP_EXCEPTIONS = [215, 4261, 7695, 6678]
+    LINE_UP_EXCEPTIONS = [
+        215,
+        4261,
+        7695,
+        6678,
+        1736,  # JDK
+    ]
 
     song_artists = [
         [artist, int(line_up)]
@@ -532,7 +546,7 @@ def get_search_results(
 
     is_ranked = is_ranked_time()
 
-    print(f"Preprocess: {round(timeit.default_timer() - startstart, 4)}")
+    print(f"Preprocess: {round(timeit.default_timer() - startstart, 4)}", end=" | ")
     start = timeit.default_timer()
 
     # Filters to process only on main filter
@@ -562,7 +576,7 @@ def get_search_results(
                 authorized_song_categories,
             )
 
-    print(f"annId on Main: {round(timeit.default_timer() - start, 4)}")
+    print(f"annId on Main: {round(timeit.default_timer() - start, 4)}", end=" | ")
     start = timeit.default_timer()
 
     # Anime Filter to process either way
@@ -612,7 +626,7 @@ def get_search_results(
 
                     anime_songs_list.append(song)
 
-    print(f"Anime: {round(timeit.default_timer() - start, 4)}")
+    print(f"Anime: {round(timeit.default_timer() - start, 4)}", end=" | ")
     start = timeit.default_timer()
 
     # Song Name filter not available during ranked
@@ -647,7 +661,7 @@ def get_search_results(
 
                 songName_songs_list.append(song)
 
-    print(f"Song Name: {round(timeit.default_timer() - start, 4)}")
+    print(f"Song Name: {round(timeit.default_timer() - start, 4)}", end=" | ")
     start = timeit.default_timer()
 
     # Artist filter not available during ranked
@@ -669,7 +683,7 @@ def get_search_results(
             artist_search_filters.max_other_artist,
         )
 
-    print(f"Artists: {round(timeit.default_timer() - start, 4)}")
+    print(f"Artists: {round(timeit.default_timer() - start, 4)}", end=" | ")
     start = timeit.default_timer()
 
     # Composer filter not available during ranked
@@ -692,7 +706,7 @@ def get_search_results(
             composer_search_filters.max_other_artist,
         )
 
-    print(f"Composers: {round(timeit.default_timer() - start, 4)}")
+    print(f"Composers: {round(timeit.default_timer() - start, 4)}", end=" | ")
     start = timeit.default_timer()
 
     song_list = combine_results(
@@ -707,13 +721,13 @@ def get_search_results(
         max_nb_songs,
     )
 
-    print(f"Post Process: {round(timeit.default_timer() - start, 4)}")
+    print(f"Post Process: {round(timeit.default_timer() - start, 4)}", end=" | ")
     start = timeit.default_timer()
 
     computing_time = round(timeit.default_timer() - startstart, 4)
     nb_results = len(song_list)
     # TODO logs
-    print(f"full_computing_time: {computing_time}")
+    print(f"full_computing_time: {computing_time}", end=" | ")
     print(f"nb_results: {nb_results}")
     print()
 
@@ -735,16 +749,13 @@ def get_artists_ids_song_list(
 
     artist_database = sql_calls.extract_artist_database()
 
-    logs = {
-        "date": str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")),
-        "artist_ids_filter": artist_ids,
-        "ignore_dups": ignore_duplicate,
-        "types": authorized_types,
-        "broadcasts": authorized_broadcasts,
-        "song_categories": authorized_song_categories,
-    }
-    for key in logs:
-        print(f"{key}: {logs[key]}")
+    print("-------------------------")
+    print("Date: ", str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")))
+    print(f"artist_id_filter: {artist_ids}")
+    print(f"ignore_dups: {ignore_duplicate}", end=" | ")
+    print(f"types: {authorized_types}", end=" | ")
+    print(f"broadcasts: {authorized_broadcasts}", end=" | ")
+    print(f"song_categories: {authorized_song_categories}")
 
     if not artist_ids:
         return []
@@ -786,12 +797,8 @@ def get_artists_ids_song_list(
 
     stop = timeit.default_timer()
 
-    print()
-    logs["computing_time"] = round(stop - start, 4)
-    logs["nb_results"] = len(songs)
-    print(f"computing_time: {logs['computing_time']}")
-    print(f"nb_results: {logs['nb_results']}")
-    print()
+    print(f"computing_time: {round(stop - start, 4)}", end=" | ")
+    print(f"nb_results: {len(songs)}")
 
     return final_songs
 
@@ -810,16 +817,13 @@ def get_composer_ids_song_list(
 
     artist_database = sql_calls.extract_artist_database()
 
-    logs = {
-        "date": str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")),
-        "composer_ids_filter": composer_ids,
-        "ignore_dups": ignore_duplicate,
-        "types": authorized_types,
-        "broadcasts": authorized_broadcasts,
-        "song_categories": authorized_song_categories,
-    }
-    for key in logs:
-        print(f"{key}: {logs[key]}")
+    print("-------------------------")
+    print("Date: ", str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")))
+    print(f"composer_id_filter: {composer_ids}")
+    print(f"ignore_dups: {ignore_duplicate}", end=" | ")
+    print(f"types: {authorized_types}", end=" | ")
+    print(f"broadcasts: {authorized_broadcasts}", end=" | ")
+    print(f"song_categories: {authorized_song_categories}")
 
     if not composer_ids:
         return []
@@ -869,12 +873,8 @@ def get_composer_ids_song_list(
 
     stop = timeit.default_timer()
 
-    print()
-    logs["computing_time"] = round(stop - start, 4)
-    logs["nb_results"] = len(songs)
-    print(f"computing_time: {logs['computing_time']}")
-    print(f"nb_results: {logs['nb_results']}")
-    print()
+    print(f"computing_time: {round(stop - start, 4)}", end=" | ")
+    print(f"nb_results: {len(songs)}")
 
     return final_songs
 
@@ -892,17 +892,13 @@ def get_annId_song_list(
 
     artist_database = sql_calls.extract_artist_database()
 
-    logs = {
-        "date": str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")),
-        "annId_filter": annId,
-        "ignore_dups": ignore_duplicate,
-        "types": authorized_types,
-        "broadcasts": authorized_broadcasts,
-        "song_categories": authorized_song_categories,
-    }
-
-    for key in logs:
-        print(f"{key}: {logs[key]}")
+    print("-------------------------")
+    print("Date: ", str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")))
+    print(f"annId_filter: {annId}")
+    print(f"ignore_dups: {ignore_duplicate}", end=" | ")
+    print(f"types: {authorized_types}", end=" | ")
+    print(f"broadcasts: {authorized_broadcasts}", end=" | ")
+    print(f"song_categories: {authorized_song_categories}")
 
     if not str(annId).isdigit():
         return []
@@ -921,11 +917,8 @@ def get_annId_song_list(
 
     stop = timeit.default_timer()
 
-    logs["computing_time"] = round(stop - start, 4)
-    logs["nb_results"] = len(songs)
-    print(f"full time: {logs['computing_time']}")
-    print(f"nb_results: {logs['nb_results']}")
-    print()
+    print(f"computing_time: {round(stop - start, 4)}", end=" | ")
+    print(f"nb_results: {len(songs)}")
 
     return songs
 
@@ -944,17 +937,13 @@ def get_malIds_song_list(
 
     artist_database = sql_calls.extract_artist_database()
 
-    logs = {
-        "date": str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")),
-        "malIds_filter": len(malIds),
-        "ignore_dups": ignore_duplicate,
-        "types": authorized_types,
-        "broadcasts": authorized_broadcasts,
-        "song_categories": authorized_song_categories,
-    }
-
-    for key in logs:
-        print(f"{key}: {logs[key]}")
+    print("-------------------------")
+    print("Date: ", str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")))
+    print(f"malIds_filter: {len(malIds)}")
+    print(f"ignore_dups: {ignore_duplicate}", end=" | ")
+    print(f"types: {authorized_types}", end=" | ")
+    print(f"broadcasts: {authorized_broadcasts}", end=" | ")
+    print(f"song_categories: {authorized_song_categories}")
 
     for malId in malIds:
         if not str(malId).isdigit():
@@ -985,10 +974,7 @@ def get_malIds_song_list(
 
     stop = timeit.default_timer()
 
-    logs["computing_time"] = round(stop - start, 4)
-    logs["nb_results"] = len(songs)
-    print(f"full time: {logs['computing_time']}")
-    print(f"nb_results: {logs['nb_results']}")
-    print()
+    print(f"computing_time: {round(stop - start, 4)}", end=" | ")
+    print(f"nb_results: {len(songs)}")
 
     return songs

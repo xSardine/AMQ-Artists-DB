@@ -1,6 +1,6 @@
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.2.5.
-
 # Front End
+
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.2.5.
 
 Most of the component are done from scratch because I wanted to train on front end coding, as it is something that I am not familiar with.
 
@@ -8,7 +8,20 @@ Exception is for the mp3 player: <https://github.com/vime-js/vime>
 
 ## Development server
 
+TODO : Remove dependency to Vime by using a maintained library (Vidstack ?), and migrate to Angular 18.
+
+There are dependencies problems, simply running `npm install` will not work. You need to install the dependencies like so :
+Remove the folder `node_modules` if it exists and run the following commands :
+
+```bash
+npm ci --legacy-peer-deps
+npm install @vime/core --force
+```
+
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+
+You need a working backend : Either run one locally following the instructions in the README.md of the backend folder, or use the one deployed on anisongdb.
+The value to change is located in `AMQ-Artists-DB\frontEnd\src\app\core\services\search-request.service.ts`.
 
 ## Code scaffolding
 

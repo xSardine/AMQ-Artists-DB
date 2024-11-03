@@ -6,3 +6,4 @@ expand_database.json
 __pycache__/
 randomScripts/
 *Copie.json
+venv/

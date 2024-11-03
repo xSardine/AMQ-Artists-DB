@@ -190,7 +190,7 @@ create TABLE link_anime_alt_name (
 );
 
 CREATE VIEW artistsNames AS 
-SELECT orderedNames.inserted_order, artists.id, group_concat(orderedNames.original_name, "\$") AS original_names, group_concat(orderedNames.romaji_name, "\$") AS romaji_names, artists.disambiguation, artists.type
+SELECT orderedNames.inserted_order, artists.id, group_concat(orderedNames.original_name, "\\$") AS original_names, group_concat(orderedNames.romaji_name, "\\$") AS romaji_names, artists.disambiguation, artists.type
 FROM artists
 LEFT JOIN (SELECT * FROM link_artist_name ORDER BY link_artist_name.inserted_order) AS orderedNames
 ON artists.id = orderedNames.artist_id
@@ -222,7 +222,7 @@ INNER JOIN artistsMembers ON artistsNames.id = artistsMembers.id
 INNER JOIN artistsGroups ON artistsNames.id = artistsGroups.id;
 
 CREATE VIEW animesFull AS
-SELECT animes.annId, animes.malId, animes.anidbId, animes.anilistId, animes.kitsuId, animes.originalJPName, animes.animeJPName, animes.animeENName, group_concat(link_anime_alt_name.original_name, "\$") AS original_alt_names, group_concat(link_anime_alt_name.romaji_name, "\$") AS romaji_alt_names, animes.animeType, animes.animeCategory, animes.animeVintage
+SELECT animes.annId, animes.malId, animes.anidbId, animes.anilistId, animes.kitsuId, animes.originalJPName, animes.animeJPName, animes.animeENName, group_concat(link_anime_alt_name.original_name, "\\$") AS original_alt_names, group_concat(link_anime_alt_name.romaji_name, "\\$") AS romaji_alt_names, animes.animeType, animes.animeCategory, animes.animeVintage
 FROM animes
 LEFT JOIN link_anime_alt_name
 ON animes.annId = link_anime_alt_name.annId
