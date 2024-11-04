@@ -1,17 +1,6 @@
   @import '~font-awesome/css/font-awesome.css';
-  /* Default theme. ~960B */
-  @import '~@vime/core/themes/default.css';
-
-  /* Optional light theme (extends default). ~400B */
-  @import '~@vime/core/themes/light.css';
 
   /*  Toggle Switch  */
-
-  :root {
-    --vm-slider-track-height: 6px;
-    --vm-slider-track-focused-height: 8px;
-  }
-
   .toggleSwitch span span {
     display: none;
   }

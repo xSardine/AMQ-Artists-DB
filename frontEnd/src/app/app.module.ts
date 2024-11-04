@@ -5,7 +5,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SearchBarComponent } from './search-bar/search-bar.component';
 import { SongTableComponent } from './song-table/song-table.component';
-import { VimeModule } from '@vime/angular';
 
 @NgModule({
   declarations: [
@@ -17,7 +16,6 @@ import { VimeModule } from '@vime/angular';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    VimeModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

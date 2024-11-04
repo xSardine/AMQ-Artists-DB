@@ -1,5 +1,4 @@
 import { Component, ViewChild } from '@angular/core';
-import { Player } from '@vime/angular';
 import { ThemeService } from "./core/services/theme.service";
 
 @Component({
@@ -13,7 +12,7 @@ export class AppComponent {
 
   title = 'anisongDB';
 
-  @ViewChild('player') player!: Player;
+  @ViewChild('player') player: any;
   url: any = "";
 
   songList: any;

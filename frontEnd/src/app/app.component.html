@@ -33,15 +33,7 @@
 
 <div id="video-player" title="{{currentlyPlayingSongName}} by {{currentlyPlayingArtist}}">
 
-  <vm-player #player *ngIf="url" (vmVolumeChange)="handleVmVolumeChange($event)">
-
-    <vm-audio>
-      <source data-src={{url}} type="audio/mp3" />
-    </vm-audio>
-
-    <vm-default-ui no-settings></vm-default-ui>
-
-  </vm-player>
+<!-- Vidstack player goes here -->
 
 </div>
 
