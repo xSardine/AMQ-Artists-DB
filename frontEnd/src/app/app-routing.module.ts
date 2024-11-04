@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { SearchBarComponent } from './search-bar/search-bar.component';
 
 const routes: Routes = [
@@ -8,7 +8,8 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes), HttpClientModule],
   exports: [RouterModule],
+  imports: [RouterModule.forRoot(routes)],
+  providers: [provideHttpClient(withInterceptorsFromDi())]
 })
 export class AppRoutingModule { }
