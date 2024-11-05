@@ -1,6 +1,17 @@
 import { Component, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
-import { ThemeService } from './core/services/theme.service';
-import { MediaPlayer } from 'vidstack';
+import { MediaPlayer, LocalMediaStorage } from 'vidstack';
+
+class CustomLocalMediaStorage extends LocalMediaStorage {
+  // Override to prevent automatic timestamp retrieval
+  async getTime(): Promise<number | null> {
+    return null; // Return null to opt-out of retrieving the current time
+  }
+
+  // Override to prevent automatic timestamp saving
+  async setTime(_time: number, _ended: boolean): Promise<void> {
+    // Do nothing
+  }
+}
 
 @Component({
   selector: 'app-root',
@@ -10,6 +21,7 @@ import { MediaPlayer } from 'vidstack';
 export class AppComponent implements AfterViewInit {
   @ViewChild('playerRef', { static: false }) playerRef!: ElementRef; // Reference to the media player
   player: MediaPlayer = this.playerRef?.nativeElement; // Media player instance
+  customLocalMediaStorage = new CustomLocalMediaStorage();
 
   title = 'anisongDB';
   url: any = '';
@@ -53,6 +65,16 @@ export class AppComponent implements AfterViewInit {
     }
   }
 
+  toggleAnimeLang() {
+    this.animeTitleLang = this.animeTitleLang === 'JP' ? 'EN' : 'JP';
+    localStorage.setItem(this.langKey, this.animeTitleLang);
+  }
+
+  toggleComposerDisplay() {
+    this.composerDisplay = !this.composerDisplay;
+    localStorage.setItem(this.composerKey, this.composerDisplay.toString());
+  }
+
   private initializePlayerSettings(): Promise<void> {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
@@ -70,16 +92,9 @@ export class AppComponent implements AfterViewInit {
     // Ensure player is defined before calling methods
     if (this.playerRef) {
       this.player = this.playerRef.nativeElement;
-      this.startLoading();
+      this.player.startLoading();
     } else {
       console.error('Player is not defined in ngAfterViewInit');
-    }
-  }
-
-  private startLoading() {
-    if (this.player) {
-      this.player.startLoading(); // Call to start loading media
-      console.log('Media loading started.');
     }
   }
 
@@ -133,23 +148,5 @@ export class AppComponent implements AfterViewInit {
         resolve();
       }, 0);
     });
-  }
-
-  toggleAnimeLang() {
-    this.animeTitleLang = this.animeTitleLang === 'JP' ? 'EN' : 'JP';
-    localStorage.setItem(this.langKey, this.animeTitleLang);
-  }
-
-  toggleComposerDisplay() {
-    this.composerDisplay = !this.composerDisplay;
-    localStorage.setItem(this.composerKey, this.composerDisplay.toString());
-  }
-
-  // TODO: Implement volume change detection to call this method
-  handleVolumeChange(volumeEvent: any) {
-    console.log(volumeEvent);
-    const newVolume: number = volumeEvent.detail;
-    (this.player as any).volume = newVolume; // Ensure correct type casting
-    localStorage.setItem(this.volumeKey, newVolume.toString());
   }
 }

@@ -33,9 +33,9 @@
 
 <div id="video-player" title="{{currentlyPlayingSongName}} by {{currentlyPlayingArtist}}">
 
-  <media-player #playerRef title="TODO : Your Title" src="">
-    <media-provider></media-provider>
-    <media-audio-layout></media-audio-layout>
+  <media-player #playerRef title="TODO : Your Title" [storage]="customLocalMediaStorage">
+      <media-provider></media-provider>
+      <media-audio-layout></media-audio-layout>
   </media-player>
 
 </div>
