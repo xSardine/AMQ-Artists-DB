@@ -75,13 +75,13 @@ def extract_artist_database():
 
     artist_groups = run_sql_command(cursor, extract_artist_groups)
 
-    extract_group_members = """
-    SELECT id, members, members_line_up FROM artistsMembers
+    extract_line_up_members = """
+    SELECT artist_id, line_up_id, line_up_type, members, members_line_up FROM lineUpsMembers
     """
 
-    group_members = run_sql_command(cursor, extract_group_members)
+    line_ups_members = run_sql_command(cursor, extract_line_up_members)
 
-    if len(basic_info) != len(artist_groups) or len(basic_info) != len(group_members):
+    if len(basic_info) != len(artist_groups):
         print("ERROR EXTRACTING ARTIST DATABASE")
         return {}
 
@@ -103,36 +103,40 @@ def extract_artist_database():
                 if groups[1]
                 else []
             ),
-            "members": [],
+            "line_ups": [],
             "disambiguation": info[2],
             "type": info[3],
         }
 
-    for info, members in zip(basic_info, group_members):
-        if info[0] != members[0]:
-            print("ERROR EXTRACTING ARTIST DATABASE")
+    for line_up_members in line_ups_members:
+
+        artist = artist_database[str(line_up_members[0])]
+
+        # retrieve info from the artist
+        for info in basic_info:
+            if info[0] == line_up_members[0]:
+                break
+
+        if info[0] != line_up_members[0]:
+            print(f"ERROR EXTRACTING ARTIST DATABASE on {line_up_members[0]}")
             return {}
 
-        if not members[1]:
-            continue
+        if line_up_members[1] != len(artist["line_ups"]):
+            print(f"ERROR EXTRACTING ARTIST DATABASE on {line_up_members[0]}")
+            return {}
 
-        for member_id, line_up in zip(members[1].split(","), members[2].split(",")):
-            member = artist_database[str(member_id)]
-            for group_id, group_line_up in member["groups"]:
-                if int(group_id) == int(info[0]):
-                    while (
-                        len(artist_database[str(info[0])]["members"]) <= group_line_up
-                    ):
-                        artist_database[str(info[0])]["members"].append([])
-                    if member_id not in [
-                        mid[0]
-                        for mid in artist_database[str(info[0])]["members"][
-                            group_line_up
-                        ]
-                    ]:
-                        artist_database[str(info[0])]["members"][group_line_up].append(
-                            [member_id, int(line_up)]
-                        )
+        current_lu = []
+        for member_id, member_line_up_id in zip(
+            line_up_members[3].split(","), line_up_members[4].split(",")
+        ):
+            current_lu.append([member_id, int(member_line_up_id)])
+
+        artist["line_ups"].append(
+            {
+                "line_up_type": line_up_members[2],
+                "members": current_lu,
+            }
+        )
 
     return artist_database
 
