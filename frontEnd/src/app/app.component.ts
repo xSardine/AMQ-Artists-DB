@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { ThemeService } from "./core/services/theme.service";
+import { ThemeService } from './core/services/theme.service';
 
 @Component({
   selector: 'app-root',
@@ -7,22 +7,21 @@ import { ThemeService } from "./core/services/theme.service";
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-
-  constructor(private themeService: ThemeService) { }
+  constructor(private themeService: ThemeService) {}
 
   title = 'anisongDB';
 
   @ViewChild('player') player: any;
-  url: any = "";
+  url: any = '';
 
   songList: any;
   previousBody: any;
 
-  currentlyPlayingArtist: any = ""
-  currentlyPlayingSongName: any = ""
+  currentlyPlayingArtist: any = '';
+  currentlyPlayingSongName: any = '';
 
-  animeTitleLang: string = "JP"
-  composerDisplay: boolean = true
+  animeTitleLang: string = 'JP';
+  composerDisplay: boolean = true;
 
   // Keys for storing player preferences in localStorage
   private readonly volumeKey = 'vimePlayerVolume';
@@ -30,23 +29,24 @@ export class AppComponent {
   private readonly composerKey = 'composerDisplay';
 
   receiveSongList($event: any) {
-    this.songList = $event
+    this.songList = $event;
   }
 
   receivePreviousBody($event: any) {
-    this.previousBody = $event
+    this.previousBody = $event;
   }
 
   ngOnInit() {
-    this.initializeTableSettings()
+    this.initializeTableSettings();
   }
 
   private initializeTableSettings() {
     const savedLang = localStorage.getItem(this.langKey);
-    this.animeTitleLang = savedLang ? savedLang : "JP";
+    this.animeTitleLang = savedLang ? savedLang : 'JP';
 
     const savedComposerDisplay = localStorage.getItem(this.composerKey);
-    this.composerDisplay = savedComposerDisplay !== null ? savedComposerDisplay === 'true' : true;
+    this.composerDisplay =
+      savedComposerDisplay !== null ? savedComposerDisplay === 'true' : true;
   }
 
   private playerSettingsToInitialize() {
@@ -70,7 +70,7 @@ export class AppComponent {
   private setUrl(song: any): Promise<void> {
     return new Promise((resolve) => {
       setTimeout(() => {
-        this.url = "https://naedist.animemusicquiz.com/" + song.audio;
+        this.url = 'https://naedist.animemusicquiz.com/' + song.audio;
         this.currentlyPlayingArtist = song.songArtist;
         this.currentlyPlayingSongName = song.songName;
         resolve();
@@ -84,12 +84,12 @@ export class AppComponent {
       await this.setUrl(song);
       await this.initializePlayerSettings(); // After player is populated, initialize settings/volume
     } catch (err) {
-      console.error('Error playing song:', err)
+      console.error('Error playing song:', err);
     }
   }
 
   toggleAnimeLang() {
-    this.animeTitleLang = (this.animeTitleLang === "JP") ? "EN" : "JP";
+    this.animeTitleLang = this.animeTitleLang === 'JP' ? 'EN' : 'JP';
     localStorage.setItem(this.langKey, this.animeTitleLang);
   }
 
@@ -99,13 +99,12 @@ export class AppComponent {
   }
 
   handleVmVolumeChange(volumeEvent: CustomEvent<number>) {
-    const newVolume: number = volumeEvent.detail
-    this.player.volume = newVolume
-    localStorage.setItem(this.volumeKey, newVolume.toString())
+    const newVolume: number = volumeEvent.detail;
+    this.player.volume = newVolume;
+    localStorage.setItem(this.volumeKey, newVolume.toString());
   }
 
   toggleTheme() {
     this.themeService.toggleTheme();
   }
-
 }

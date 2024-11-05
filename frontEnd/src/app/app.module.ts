@@ -7,17 +7,9 @@ import { SearchBarComponent } from './search-bar/search-bar.component';
 import { SongTableComponent } from './song-table/song-table.component';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    SearchBarComponent,
-    SongTableComponent,
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-  ],
+  declarations: [AppComponent, SearchBarComponent, SongTableComponent],
+  imports: [BrowserModule, AppRoutingModule, BrowserAnimationsModule],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

@@ -1,330 +1,326 @@
-  @import '~font-awesome/css/font-awesome.css';
+@import "~font-awesome/css/font-awesome.css";
 
-  /*  Toggle Switch  */
-  .toggleSwitch span span {
-    display: none;
-  }
+/*  Toggle Switch  */
+.toggleSwitch span span {
+  display: none;
+}
 
-  .toggleSwitch {
-    display: inline-block;
-    position: relative;
-    overflow: visible;
-    padding: 0;
-    cursor: pointer;
-    width: 110px;
-    background-color: #fafafa;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    height: 32px;
-  }
+.toggleSwitch {
+  display: inline-block;
+  position: relative;
+  overflow: visible;
+  padding: 0;
+  cursor: pointer;
+  width: 110px;
+  background-color: #fafafa;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  height: 32px;
+}
 
-  .toggleSwitch * {
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-  }
+.toggleSwitch * {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
 
-  .toggleSwitch label,
-  .toggleSwitch>span {
-    line-height: 20px;
-    height: 20px;
-    vertical-align: middle;
-  }
+.toggleSwitch label,
+.toggleSwitch > span {
+  line-height: 20px;
+  height: 20px;
+  vertical-align: middle;
+}
 
-  .toggleSwitch input:focus~a,
-  .toggleSwitch input:focus+label {
-    outline: none;
-  }
+.toggleSwitch input:focus ~ a,
+.toggleSwitch input:focus + label {
+  outline: none;
+}
 
-  .toggleSwitch label {
-    position: relative;
-    z-index: 3;
-    display: block;
-    width: 100%;
-  }
+.toggleSwitch label {
+  position: relative;
+  z-index: 3;
+  display: block;
+  width: 100%;
+}
 
-  .toggleSwitch input {
-    position: absolute;
-    opacity: 0;
-    z-index: 5;
-  }
+.toggleSwitch input {
+  position: absolute;
+  opacity: 0;
+  z-index: 5;
+}
 
-  .toggleSwitch>span {
-    position: absolute;
-    left: 0;
-    width: calc(100% - 6px);
-    margin: 0;
-    text-align: left;
-    white-space: nowrap;
-    margin: 0 1.5px;
-  }
+.toggleSwitch > span {
+  position: absolute;
+  left: 0;
+  width: calc(100% - 6px);
+  margin: 0;
+  text-align: left;
+  white-space: nowrap;
+  margin: 0 1.5px;
+}
 
-  .toggleSwitch>span span {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 5;
-    display: block;
-    width: 50%;
-    margin-left: 50px;
-    text-align: left;
-    font-size: 0.9em;
-    width: auto;
-    left: 0;
-    top: -1px;
-    opacity: 1;
-    width: 40%;
-    text-align: center;
-    line-height: 32px;
-  }
+.toggleSwitch > span span {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  display: block;
+  width: 50%;
+  margin-left: 50px;
+  text-align: left;
+  font-size: 0.9em;
+  width: auto;
+  left: 0;
+  top: -1px;
+  opacity: 1;
+  width: 40%;
+  text-align: center;
+  line-height: 32px;
+}
 
-  .toggleSwitch a {
-    position: absolute;
-    right: 50%;
-    z-index: 4;
-    display: block;
-    top: 1.5px;
-    bottom: 1.5px;
-    padding: 0;
-    left: 1.5px;
-    width: 50%;
-    background-color: var(--primaryColor);
-    border-radius: 4px;
-    -webkit-transition: all 0.2s ease-out;
-    -moz-transition: all 0.2s ease-out;
-    transition: all 0.2s ease-out;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  }
+.toggleSwitch a {
+  position: absolute;
+  right: 50%;
+  z-index: 4;
+  display: block;
+  top: 1.5px;
+  bottom: 1.5px;
+  padding: 0;
+  left: 1.5px;
+  width: 50%;
+  background-color: var(--primaryColor);
+  border-radius: 4px;
+  -webkit-transition: all 0.2s ease-out;
+  -moz-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
 
-  .toggleSwitch>span span:first-of-type {
-    color: #FFF;
-    opacity: 1;
-    left: 0;
-    margin: 0;
-    width: 50%;
-  }
+.toggleSwitch > span span:first-of-type {
+  color: #fff;
+  opacity: 1;
+  left: 0;
+  margin: 0;
+  width: 50%;
+}
 
-  .toggleSwitch>span span:last-of-type {
-    left: auto;
-    right: 0;
-    color: var(--primaryColor);
-    margin: 0;
-    width: 50%;
-  }
+.toggleSwitch > span span:last-of-type {
+  left: auto;
+  right: 0;
+  color: var(--primaryColor);
+  margin: 0;
+  width: 50%;
+}
 
-  .toggleSwitch>span:before {
-    content: '';
-    display: block;
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    left: 0;
-    top: -2px;
-    /* background-color: #fafafa;
+.toggleSwitch > span:before {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: -2px;
+  /* background-color: #fafafa;
 	border: 1px solid #ccc; */
-    border-radius: 30px;
-    -webkit-transition: all 0.2s ease-out;
-    -moz-transition: all 0.2s ease-out;
-    transition: all 0.2s ease-out;
-  }
+  border-radius: 30px;
+  -webkit-transition: all 0.2s ease-out;
+  -moz-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
+}
 
-  .toggleSwitch input:checked~a {
-    left: calc(50% - 1.5px);
-  }
+.toggleSwitch input:checked ~ a {
+  left: calc(50% - 1.5px);
+}
 
-  .toggleSwitch input:checked~span:before {
-    /* border-color: #0097D1;
-	box-shadow: inset 0 0 0 30px #0097D1; */
-  }
+.toggleSwitch input:checked ~ span span:first-of-type {
+  left: 0;
+  color: var(--primaryColor);
+}
 
-  .toggleSwitch input:checked~span span:first-of-type {
-    left: 0;
-    color: var(--primaryColor);
-  }
-
-  .toggleSwitch input:checked~span span:last-of-type {
-    /* opacity: 1;
+.toggleSwitch input:checked ~ span span:last-of-type {
+  /* opacity: 1;
 	color: #fff;	 */
-    color: #FFF;
-  }
+  color: #fff;
+}
 
-  /* Switch Sizes */
-  .toggleSwitch.large {
-    width: 60px;
-    height: 27px;
-  }
+/* Switch Sizes */
+.toggleSwitch.large {
+  width: 60px;
+  height: 27px;
+}
 
-  .toggleSwitch.large a {
-    width: 27px;
-  }
+.toggleSwitch.large a {
+  width: 27px;
+}
 
-  .toggleSwitch.large>span {
-    height: 29px;
-    line-height: 28px;
-  }
+.toggleSwitch.large > span {
+  height: 29px;
+  line-height: 28px;
+}
 
-  .toggleSwitch.large input:checked~a {
-    left: 41px;
-  }
+.toggleSwitch.large input:checked ~ a {
+  left: 41px;
+}
 
-  .toggleSwitch.large>span span {
-    font-size: 1.1em;
-  }
+.toggleSwitch.large > span span {
+  font-size: 1.1em;
+}
 
-  .toggleSwitch.large>span span:first-of-type {
-    left: 50%;
-  }
+.toggleSwitch.large > span span:first-of-type {
+  left: 50%;
+}
 
-  .toggleSwitch.xlarge {
-    width: 80px;
-    height: 36px;
-  }
+.toggleSwitch.xlarge {
+  width: 80px;
+  height: 36px;
+}
 
-  .toggleSwitch.xlarge a {
-    width: 36px;
-  }
+.toggleSwitch.xlarge a {
+  width: 36px;
+}
 
-  .toggleSwitch.xlarge>span {
-    height: 38px;
-    line-height: 37px;
-  }
+.toggleSwitch.xlarge > span {
+  height: 38px;
+  line-height: 37px;
+}
 
-  .toggleSwitch.xlarge input:checked~a {
-    left: 52px;
-  }
+.toggleSwitch.xlarge input:checked ~ a {
+  left: 52px;
+}
 
-  .toggleSwitch.xlarge>span span {
-    font-size: 1.4em;
-  }
+.toggleSwitch.xlarge > span span {
+  font-size: 1.4em;
+}
 
-  .toggleSwitch.xlarge>span span:first-of-type {
-    left: 50%;
-  }
+.toggleSwitch.xlarge > span span:first-of-type {
+  left: 50%;
+}
 
-  /*  End Toggle Switch  */
+/*  End Toggle Switch  */
 
-  :host {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    font-size: 14px;
-    color: #333;
-    box-sizing: border-box;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
+:host {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-size: 14px;
+  color: #333;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
-  #video-player {
-    position: fixed;
-    width: 99.2%;
-    bottom: 0;
-  }
+#video-player {
+  position: fixed;
+  width: 99.2%;
+  bottom: 0;
+}
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    margin: 8px 0;
-  }
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 8px 0;
+}
 
-  p {
-    margin: 0;
-  }
+p {
+  margin: 0;
+}
 
-  .spacer {
-    flex: 1;
-  }
+.spacer {
+  flex: 1;
+}
 
-  .toolbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    background: var(--primaryColor);
-    color: var(--textOnPrimary);
-    font-weight: 600;
-    z-index: 100;
-  }
+.toolbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  background: var(--primaryColor);
+  color: var(--textOnPrimary);
+  font-weight: 600;
+  z-index: 100;
+}
 
-  .toolbar-github-logo {
-    margin-right: 20px;
-    margin-bottom: 8px;
-    font-size: 28px;
-    color: var(--textOnBackground);
-  }
+.toolbar-github-logo {
+  margin-right: 20px;
+  margin-bottom: 8px;
+  font-size: 28px;
+  color: var(--textOnBackground);
+}
 
-  /* The switch - the box around the slider */
-  .switch {
-    position: relative;
-    display: inline-block;
-    width: 60px;
-    height: 34px;
-    padding-right: 1%;
-    padding-top: 1%;
-  }
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+  padding-right: 1%;
+  padding-top: 1%;
+}
 
-  /* Hide default HTML checkbox */
-  .switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-  }
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
 
-  /* The slider */
-  .slider {
-    position: static;
-    margin-right: 50px;
-    cursor: pointer;
-    width: 60px;
-    height: 20px;
-    background-color: var(--songTableHoverColor);
-    -webkit-transition: 0.4s;
-    transition: 0.4s;
-  }
+/* The slider */
+.slider {
+  position: static;
+  margin-right: 50px;
+  cursor: pointer;
+  width: 60px;
+  height: 20px;
+  background-color: var(--songTableHoverColor);
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
 
-  .slider:before {
-    position: absolute;
-    content: "";
-    height: 40px;
-    width: 40px;
-    left: 0px;
-    bottom: 4px;
-    top: 0;
-    bottom: 0;
-    margin: auto 0;
-    -webkit-transition: 0.4s;
-    transition: 0.4s;
-    box-shadow: 0 0px 15px #2020203d;
-    background: white url('https://i.ibb.co/FxzBYR9/night.png');
-    background-repeat: no-repeat;
-    background-position: center;
-  }
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 40px;
+  width: 40px;
+  left: 0px;
+  bottom: 4px;
+  top: 0;
+  bottom: 0;
+  margin: auto 0;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+  box-shadow: 0 0px 15px #2020203d;
+  background: white url("https://i.ibb.co/FxzBYR9/night.png");
+  background-repeat: no-repeat;
+  background-position: center;
+}
 
-  input:checked+.slider {
-    background-color: var(--songTableHoverColor);
-  }
+input:checked + .slider {
+  background-color: var(--songTableHoverColor);
+}
 
-  input:focus+.slider {
-    box-shadow: 0 0 1px var(--songTableHoverColor);
-  }
+input:focus + .slider {
+  box-shadow: 0 0 1px var(--songTableHoverColor);
+}
 
-  input:checked+.slider:before {
-    -webkit-transform: translateX(24px);
-    -ms-transform: translateX(24px);
-    transform: translateX(24px);
-    background: white url('https://i.ibb.co/7JfqXxB/sunny.png');
-    background-repeat: no-repeat;
-    background-position: center;
-  }
+input:checked + .slider:before {
+  -webkit-transform: translateX(24px);
+  -ms-transform: translateX(24px);
+  transform: translateX(24px);
+  background: white url("https://i.ibb.co/7JfqXxB/sunny.png");
+  background-repeat: no-repeat;
+  background-position: center;
+}
 
-  /* Rounded sliders */
-  .slider.round {
-    border-radius: 34px;
-  }
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
 
-  .slider.round:before {
-    border-radius: 50%;
-  }
+.slider.round:before {
+  border-radius: 50%;
+}
