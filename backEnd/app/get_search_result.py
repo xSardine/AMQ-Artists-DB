@@ -184,7 +184,7 @@ def get_member_list_flat(art_database, artists, bottom=True):
 
             for member in get_member_list_flat(
                 art_database,
-                art_database[str(artist)]["members"][line_up],
+                art_database[str(artist)]["line_ups"][line_up]["members"],
                 bottom=bottom,
             ):
                 member_list.append(int(member))
@@ -225,14 +225,24 @@ def check_meets_artists_requirements(
     song_artists_flat = get_member_list_flat(artist_database, song_artists)
 
     for artist_id in artist_ids:
+
         line_ups = [[[str(artist_id), -1]]]
-        if artist_database[str(artist_id)]["members"]:
-            line_ups = artist_database[str(artist_id)]["members"]
+
+        artist = artist_database[str(artist_id)]
+
+        if artist["line_ups"]:
+
+            line_ups = [
+                line_up["members"]
+                for line_up in artist["line_ups"]
+                if line_up["line_up_type"] == "vocalists"
+            ]
 
             if artist_id in LINE_UP_EXCEPTIONS:
                 line_ups += [[[str(artist_id), -1]]]
 
         for line_up in line_ups:
+
             checked_list = get_member_list_flat(artist_database, line_up)
             present_artist, additional_artist = compare_two_artist_list(
                 song_artists_flat, checked_list
@@ -253,7 +263,13 @@ def check_meets_composers_requirements(
 ):
 
     # Exceptions for groups that have line ups, but also songs with no line ups : they should be considered both a group and artist
-    LINE_UP_EXCEPTIONS = [215, 4261, 7695, 6678]
+    LINE_UP_EXCEPTIONS = [
+        215,
+        4261,
+        7695,
+        6678,
+        1736,  # JDK
+    ]
 
     song_composers = [
         [artist, int(line_up)]
@@ -262,12 +278,21 @@ def check_meets_composers_requirements(
     song_artists_flat = get_member_list_flat(artist_database, song_composers)
 
     for composer_id in composer_ids:
-        line_ups = [[[str(composer_id), -1]]]
-        if artist_database[str(composer_id)]["members"]:
-            line_ups = artist_database[str(composer_id)]["members"]
 
-            if composer_id in LINE_UP_EXCEPTIONS:
-                line_ups += [[[str(composer_id), -1]]]
+        line_ups = [[[str(composer_id), -1]]]
+
+        artist = artist_database[str(composer_id)]
+
+        if artist["line_ups"]:
+
+            line_ups = [
+                line_up["members"]
+                for line_up in artist["line_ups"]
+                # if line_up["line_up_type"] == "composers"  # TODO : add it once we start having more composer line up counterpart to normal groups
+            ]
+
+            # if composer_id in LINE_UP_EXCEPTIONS: TODO : add it once we start having more composer line up counterpart to normal groups
+            line_ups += [[[str(composer_id), -1]]]  # TODO
 
         for line_up in line_ups:
             checked_list = get_member_list_flat(artist_database, line_up)
@@ -289,12 +314,21 @@ def check_meets_composers_requirements(
     song_artists_flat = get_member_list_flat(artist_database, song_arrangers)
 
     for arranger_id in composer_ids:
-        line_ups = [[[str(arranger_id), -1]]]
-        if artist_database[str(arranger_id)]["members"]:
-            line_ups = artist_database[str(arranger_id)]["members"]
 
-            if arranger_id in LINE_UP_EXCEPTIONS:
-                line_ups += [[[str(arranger_id), -1]]]
+        line_ups = [[[str(arranger_id), -1]]]
+
+        artist = artist_database[str(composer_id)]
+
+        if artist["line_ups"]:
+
+            line_ups = [
+                line_up["members"]
+                for line_up in artist["line_ups"]
+                # if line_up["line_up_type"] == "composers"  # TODO : add it once we start having more composer line up counterpart to normal groups
+            ]
+
+            # if composer_id in LINE_UP_EXCEPTIONS: TODO : add it once we start having more composer line up counterpart to normal groups
+            line_ups += [[[str(composer_id), -1]]]  # TODO
 
         for line_up in line_ups:
             checked_list = get_member_list_flat(artist_database, line_up)
@@ -398,10 +432,10 @@ def process_artist(
     if group_granularity != 0:
         if group_granularity > 0:
             for artist in artist_ids:
-                if artist_database[str(artist)]["members"]:
-                    for line_up in artist_database[str(artist)]["members"]:
+                if artist_database[str(artist)]["line_ups"]:
+                    for line_up in artist_database[str(artist)]["line_ups"]:
                         for member in get_member_list_flat(
-                            artist_database, line_up, bottom=False
+                            artist_database, line_up["members"], bottom=False
                         ):
                             if member not in members:
                                 members.append(member)
@@ -467,10 +501,10 @@ def process_composer(
     if group_granularity != 0:
         if group_granularity > 0:
             for artist in composer_ids:
-                if artist_database[str(artist)]["members"]:
-                    for line_up in artist_database[str(artist)]["members"]:
+                if artist_database[str(artist)]["line_ups"]:
+                    for line_up in artist_database[str(artist)]["line_ups"]:
                         for member in get_member_list_flat(
-                            artist_database, line_up, bottom=False
+                            artist_database, line_up["members"], bottom=False
                         ):
                             if member not in members:
                                 members.append(member)

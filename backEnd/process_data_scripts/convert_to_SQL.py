@@ -31,9 +31,8 @@ DROP TABLE IF EXISTS link_song_arranger;
 DROP TABLE IF EXISTS link_song_artist;
 DROP TABLE IF EXISTS link_song_composer;
 DROP VIEW IF EXISTS artistsNames;
-DROP VIEW IF EXISTS artistsMembers;
-DROP VIEW IF EXISTS artistsLineUps;
 DROP VIEW IF EXISTS artistsGroups;
+DROP VIEW IF EXISTS lineUpsMembers;
 DROP VIEW IF EXISTS artistsFull;
 DROP VIEW IF EXISTS animesFull;
 DROP VIEW IF EXISTS songsAnimes;
@@ -196,30 +195,17 @@ LEFT JOIN (SELECT * FROM link_artist_name ORDER BY link_artist_name.inserted_ord
 ON artists.id = orderedNames.artist_id
 GROUP BY artists.id;
 
-CREATE VIEW artistsMembers AS 
-SELECT artists.id, group_concat(link_artist_line_up.member_id) AS members, group_concat(link_artist_line_up.member_line_up_id) as members_line_up 
-FROM artists
-LEFT JOIN link_artist_line_up ON artists.id = link_artist_line_up.group_id 
-GROUP BY artists.id;
-
 CREATE VIEW artistsGroups AS 
 SELECT artists.id, group_concat(link_artist_line_up.group_id) AS groups, group_concat(link_artist_line_up.group_line_up_id) as groups_line_up 
 FROM artists 
 LEFT JOIN link_artist_line_up ON artists.id = link_artist_line_up.member_id 
 GROUP BY artists.id;
 
-CREATE VIEW artistsLineUps AS 
-SELECT artists.id, artistsNames.names, link_artist_line_up.group_line_up_id, group_concat(link_artist_line_up.member_id) AS members, group_concat(link_artist_line_up.member_line_up_id) as members_line_up 
-FROM artists 
-LEFT JOIN link_artist_line_up ON artists.id = link_artist_line_up.group_id
-LEFT JOIN artistsNames ON artists.id = artistsNames.id
-GROUP BY artists.id, link_artist_line_up.group_line_up_id;
-
-CREATE VIEW artistsFull AS
-SELECT artistsNames.id, artistsNames.names, artistsMembers.members, artistsMembers.members_line_up, artistsGroups.groups, artistsGroups.groups_line_up
-FROM artistsNames
-INNER JOIN artistsMembers ON artistsNames.id = artistsMembers.id
-INNER JOIN artistsGroups ON artistsNames.id = artistsGroups.id;
+CREATE VIEW lineUpsMembers AS
+SELECT line_ups.artist_id, line_ups.line_up_id, line_ups.line_up_type, group_concat(link_artist_line_up.member_id) AS members, group_concat(link_artist_line_up.member_line_up_id) as members_line_up
+FROM line_ups
+LEFT JOIN link_artist_line_up ON line_ups.artist_id = link_artist_line_up.group_id AND line_ups.line_up_id = link_artist_line_up.group_line_up_id
+GROUP BY line_ups.artist_id, line_ups.line_up_id;
 
 CREATE VIEW animesFull AS
 SELECT animes.annId, animes.malId, animes.anidbId, animes.anilistId, animes.kitsuId, animes.originalJPName, animes.animeJPName, animes.animeENName, group_concat(link_anime_alt_name.original_name, "\\$") AS original_alt_names, group_concat(link_anime_alt_name.romaji_name, "\\$") AS romaji_alt_names, animes.animeType, animes.animeCategory, animes.animeVintage
