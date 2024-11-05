@@ -1,4 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
+
+@import "vidstack/player/styles/default/theme.css";
+@import "vidstack/player/styles/default/layouts/audio.css";
+
 :root {
   --primaryColor: #222;
   --secondaryColor: #1976d2;

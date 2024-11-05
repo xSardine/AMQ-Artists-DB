@@ -1,25 +1,22 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
 import { ThemeService } from './core/services/theme.service';
+import { MediaPlayer } from 'vidstack';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent {
-  constructor(private themeService: ThemeService) {}
+export class AppComponent implements AfterViewInit {
+  @ViewChild('playerRef', { static: false }) playerRef!: ElementRef; // Reference to the media player
+  player: MediaPlayer = this.playerRef?.nativeElement; // Media player instance
 
   title = 'anisongDB';
-
-  @ViewChild('player') player: any;
   url: any = '';
-
   songList: any;
   previousBody: any;
-
   currentlyPlayingArtist: any = '';
   currentlyPlayingSongName: any = '';
-
   animeTitleLang: string = 'JP';
   composerDisplay: boolean = true;
 
@@ -51,7 +48,9 @@ export class AppComponent {
 
   private playerSettingsToInitialize() {
     const savedVolume = localStorage.getItem(this.volumeKey);
-    this.player.volume = savedVolume ? parseFloat(savedVolume) : 0.5;
+    if (this.player) {
+      (this.player as any).volume = savedVolume ? parseFloat(savedVolume) : 0.5; // Ensure correct type casting
+    }
   }
 
   private initializePlayerSettings(): Promise<void> {
@@ -67,25 +66,73 @@ export class AppComponent {
     });
   }
 
-  private setUrl(song: any): Promise<void> {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        this.url = 'https://naedist.animemusicquiz.com/' + song.audio;
-        this.currentlyPlayingArtist = song.songArtist;
-        this.currentlyPlayingSongName = song.songName;
+  ngAfterViewInit() {
+    // Ensure player is defined before calling methods
+    if (this.playerRef) {
+      this.player = this.playerRef.nativeElement;
+      this.startLoading();
+    } else {
+      console.error('Player is not defined in ngAfterViewInit');
+    }
+  }
+
+  private startLoading() {
+    if (this.player) {
+      this.player.startLoading(); // Call to start loading media
+      console.log('Media loading started.');
+    }
+  }
+
+  private waitForCanPlay(player: MediaPlayer): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const handleCanPlay = () => {
         resolve();
-      }, 0);
+        player.removeEventListener('can-play', handleCanPlay); // Cleanup
+      };
+
+      const handleError = (event: Event) => {
+        reject(event);
+        player.removeEventListener('can-play', handleCanPlay); // Cleanup on error
+      };
+
+      player.addEventListener('can-play', handleCanPlay);
+      player.addEventListener('error', handleError);
     });
   }
 
   async playMP3(song: any) {
-    this.url = null;
+    const { player } = this;
+
     try {
       await this.setUrl(song);
-      await this.initializePlayerSettings(); // After player is populated, initialize settings/volume
-    } catch (err) {
-      console.error('Error playing song:', err);
+      await this.initializePlayerSettings();
+
+      // Wait for the player to be ready
+      await this.waitForCanPlay(player);
+
+      // Start playing the media
+      await player?.play();
+    } catch (error) {
+      console.error('Error playing song:', error);
     }
+  }
+
+  private setUrl(song: any): Promise<void> {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        // Construct the full URL for the MP3 file
+        const songUrl = 'https://naedist.animemusicquiz.com/' + song.audio;
+
+        // This set variables so that the song name and artist can be displayed on the player <div>
+        this.currentlyPlayingArtist = song.songArtist;
+        this.currentlyPlayingSongName = song.songName;
+
+        // Set the source URL for the media player
+        (this.player as any).src = songUrl; // Set the src attribute
+
+        resolve();
+      }, 0);
+    });
   }
 
   toggleAnimeLang() {
@@ -98,13 +145,11 @@ export class AppComponent {
     localStorage.setItem(this.composerKey, this.composerDisplay.toString());
   }
 
-  handleVmVolumeChange(volumeEvent: CustomEvent<number>) {
+  // TODO: Implement volume change detection to call this method
+  handleVolumeChange(volumeEvent: any) {
+    console.log(volumeEvent);
     const newVolume: number = volumeEvent.detail;
-    this.player.volume = newVolume;
+    (this.player as any).volume = newVolume; // Ensure correct type casting
     localStorage.setItem(this.volumeKey, newVolume.toString());
-  }
-
-  toggleTheme() {
-    this.themeService.toggleTheme();
   }
 }

@@ -19,9 +19,12 @@
     "@angular/platform-browser": "^18.2.10",
     "@angular/platform-browser-dynamic": "^18.2.10",
     "@angular/router": "^18.2.10",
+    "dashjs": "^4.7.4",
     "font-awesome": "^4.7.0",
+    "hls.js": "^1.5.17",
     "rxjs": "~6.6.0",
     "tslib": "^2.3.0",
+    "vidstack": "^1.12.12",
     "zone.js": "^0.14.10"
   },
   "devDependencies": {
@@ -29,7 +32,7 @@
     "@angular/cli": "^18.2.11",
     "@angular/compiler-cli": "^18.2.10",
     "@types/jasmine": "~3.8.0",
-    "@types/node": "^12.11.1",
+    "@types/node": "^12.20.55",
     "jasmine-core": "~3.8.0",
     "karma": "~6.3.0",
     "karma-chrome-launcher": "~3.1.0",
