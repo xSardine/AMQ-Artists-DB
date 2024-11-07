@@ -62,6 +62,7 @@ export class AppComponent implements AfterViewInit {
     const savedVolume = localStorage.getItem(this.volumeKey);
     if (this.player) {
       (this.player as any).volume = savedVolume ? parseFloat(savedVolume) : 0.5; // Ensure correct type casting
+      (this.player as any).crossOrigin = true
     }
   }
 
