@@ -144,6 +144,7 @@ export class AppComponent implements AfterViewInit {
 
         // Set the source URL for the media player
         (this.player as any).src = songUrl; // Set the src attribute
+        this.player.title = song.songName + ' by ' + song.songArtist;
 
         resolve();
       }, 0);
