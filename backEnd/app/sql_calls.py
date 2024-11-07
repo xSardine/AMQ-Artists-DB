@@ -215,7 +215,7 @@ def get_songs_list_from_annIds(
     if "Normal" not in authorized_broadcasts:
         broadcast_filter += " AND isDub == 1 AND isRebroadcast == 1"
 
-    get_songs_from_annId = f"SELECT * from songsFull WHERE songType IN ({','.join('?'*len(authorized_types))}) AND annId IN ({','.join('?'*len(annIds))}) {broadcast_filter} AND songCategory IN ({','.join('?'*len(authorized_song_categories))}) LIMIT 300"
+    get_songs_from_annId = f"SELECT * from songsFull WHERE songType IN ({','.join('?'*len(authorized_types))}) AND annId IN ({','.join('?'*len(annIds))}) {broadcast_filter} AND songCategory IN ({','.join('?'*len(authorized_song_categories))}) LIMIT 500"
     return run_sql_command(
         cursor,
         get_songs_from_annId,
@@ -260,7 +260,7 @@ def get_song_list_from_songArtist(
     if "Normal" not in authorized_broadcasts:
         broadcast_filter += " AND isDub == 1 AND isRebroadcast == 1"
 
-    get_song_list_from_songArtist = f"SELECT * from songsFull WHERE songType IN ({','.join('?'*len(authorized_types))}) {broadcast_filter} AND songCategory IN ({','.join('?'*len(authorized_song_categories))}) AND lower(romajiSongArtist) REGEXP ? LIMIT 300"
+    get_song_list_from_songArtist = f"SELECT * from songsFull WHERE songType IN ({','.join('?'*len(authorized_types))}) {broadcast_filter} AND songCategory IN ({','.join('?'*len(authorized_song_categories))}) AND lower(romajiSongArtist) REGEXP ? LIMIT 500"
     return run_sql_command(
         cursor,
         get_song_list_from_songArtist,
@@ -280,7 +280,7 @@ def get_songs_ids_from_artist_ids(cursor, artist_ids):
 
 def get_songs_ids_from_composing_team_ids(cursor, composer_ids, arrangement):
     # TODO FIND A BETTER WAY WITH VIEW
-    get_songs_ids_from_composer_ids = f"SELECT song_id from link_song_composer WHERE composer_id IN ({','.join('?'*len(composer_ids))}) LIMIT 300"
+    get_songs_ids_from_composer_ids = f"SELECT song_id from link_song_composer WHERE composer_id IN ({','.join('?'*len(composer_ids))}) LIMIT 500"
     songIds = set()
     for song_id in run_sql_command(
         cursor, get_songs_ids_from_composer_ids, composer_ids
@@ -288,7 +288,7 @@ def get_songs_ids_from_composing_team_ids(cursor, composer_ids, arrangement):
         songIds.add(song_id[0])
 
     if arrangement:
-        get_songs_ids_from_arranger_ids = f"SELECT song_id from link_song_arranger WHERE arranger_id IN ({','.join('?'*len(composer_ids))}) LIMIT 300"
+        get_songs_ids_from_arranger_ids = f"SELECT song_id from link_song_arranger WHERE arranger_id IN ({','.join('?'*len(composer_ids))}) LIMIT 500"
         for song_id in run_sql_command(
             cursor, get_songs_ids_from_arranger_ids, composer_ids
         ):

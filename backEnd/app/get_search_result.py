@@ -111,7 +111,7 @@ def combine_results(
     composer_songs_list,
     and_logic=False,
     ignore_duplicate=False,
-    max_nb_songs=300,
+    max_nb_songs=500,
 ):
     """
     Combine the results of the different search filters
