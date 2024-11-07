@@ -307,7 +307,7 @@ async def search_request(query: Search_Request):
         query.composer_search_filter,
         query.and_logic,
         query.ignore_duplicate,
-        300,
+        500,
         authorized_type,
         authorized_broadcasts,
         authorized_song_categories,
