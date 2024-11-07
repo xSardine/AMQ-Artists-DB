@@ -1,6 +1,10 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { SearchRequestService } from '../core/services/search-request.service';
-import { DomSanitizer, SafeResourceUrl, SafeUrl } from '@angular/platform-browser';
+import {
+  DomSanitizer,
+  SafeResourceUrl,
+  SafeUrl,
+} from '@angular/platform-browser';
 
 @Component({
   selector: 'app-search-bar',
@@ -8,31 +12,32 @@ import { DomSanitizer, SafeResourceUrl, SafeUrl } from '@angular/platform-browse
   styleUrls: ['./search-bar.component.css'],
 })
 export class SearchBarComponent implements OnInit {
+  constructor(
+    private sanitizer: DomSanitizer,
+    private searchRequestService: SearchRequestService
+  ) {}
 
-  constructor(private sanitizer: DomSanitizer, private searchRequestService: SearchRequestService) {
-  }
-
-  @Input() previousBody: any
-  @Input() currentSongList: any
+  @Input() previousBody: any;
+  @Input() currentSongList: any;
 
   @Output() sendSongListtoTable = new EventEmitter();
   sendSongList(currentSongList: any) {
-    this.sendSongListtoTable.emit(currentSongList)
+    this.sendSongListtoTable.emit(currentSongList);
   }
 
   @Output() sendPreviousBody = new EventEmitter();
   sendPrevBody(body: any) {
-    this.sendPreviousBody.emit(body)
+    this.sendPreviousBody.emit(body);
   }
 
-  mainFilter: string = "";
-  animeFilter: string = "";
-  songNameFilter: string = "";
-  artistFilter: string = "";
-  composerFilter: string = "";
-  maximumRandomsFilter: string = "99";
-  minimalMembersFilter: string = "0";
-  selectedCombination: string = "Union";
+  mainFilter: string = '';
+  animeFilter: string = '';
+  songNameFilter: string = '';
+  artistFilter: string = '';
+  composerFilter: string = '';
+  maximumRandomsFilter: string = '99';
+  minimalMembersFilter: string = '0';
+  selectedCombination: string = 'Union';
   mainFilterPartialMatch: boolean = true;
   animeFilterPartialMatch: boolean = true;
   songNameFilterPartialMatch: boolean = true;
@@ -53,271 +58,269 @@ export class SearchBarComponent implements OnInit {
   showAdvancedFilters: boolean = false;
 
   rankedTime = false;
-  RankedDisabledTimeLeft = 0
+  RankedDisabledTimeLeft = 0;
 
   checkRankedTime() {
-
     // Define the ranked time intervals as an array of objects
     let rankedTimeIntervals = [
       // CST NA
       {
         start: new Date().setUTCHours(1, 30, 0, 0),
-        end: new Date().setUTCHours(2, 23, 0, 0)
+        end: new Date().setUTCHours(2, 23, 0, 0),
       },
       // JST Asia
       {
         start: new Date().setUTCHours(11, 30, 0, 0),
-        end: new Date().setUTCHours(12, 23, 0, 0)
+        end: new Date().setUTCHours(12, 23, 0, 0),
       },
       // CET EU
       {
         start: new Date().setUTCHours(19, 30, 0, 0),
-        end: new Date().setUTCHours(20, 23, 0, 0)
-      }
+        end: new Date().setUTCHours(20, 23, 0, 0),
+      },
     ];
 
     // Get the current time in the user's local time zone
     let date = Date.now();
 
     // Find the ranked time interval that the current time is within
-    let rankedTimeInterval = rankedTimeIntervals.find(interval => {
+    let rankedTimeInterval = rankedTimeIntervals.find((interval) => {
       return date >= interval.start && date < interval.end;
     });
 
     // If a ranked time interval was found, calculate the amount of time left until the end of the ranked period
     if (rankedTimeInterval) {
-      this.RankedDisabledTimeLeft = Math.ceil((rankedTimeInterval.end - date) / 1000 / 60);
+      this.RankedDisabledTimeLeft = Math.ceil(
+        (rankedTimeInterval.end - date) / 1000 / 60
+      );
       return true;
     }
 
     return false;
-
-
   }
 
   ngOnInit(): void {
-    this.rankedTime = this.checkRankedTime()
-    this.currentSongList = this.searchRequestService.getFirstNRequest().subscribe(data => {
-      this.currentSongList = data
-      this.sendSongList(this.currentSongList)
-    });
+    this.rankedTime = this.checkRankedTime();
+    this.currentSongList = this.searchRequestService
+      .getFirstNRequest()
+      .subscribe((data) => {
+        this.currentSongList = data;
+        this.sendSongList(this.currentSongList);
+      });
   }
 
   onSearchCallKey(): void {
-
     let body: any;
-    let tmp_anime_filter, tmp_songname_filter, tmp_artist_filter, tmp_composer_filter;
+    let tmp_anime_filter,
+      tmp_songname_filter,
+      tmp_artist_filter,
+      tmp_composer_filter;
     let tmp_select = false;
 
     if (this.checkRankedTime()) {
       this.rankedTime = true;
-    }
-    else {
+    } else {
       this.rankedTime = false;
     }
 
-    if (this.selectedCombination == "Intersection") {
+    if (this.selectedCombination == 'Intersection') {
       tmp_select = true;
     }
 
-
     if (this.rankedTime) {
-
       if (this.animeFilter.length > 0) {
         tmp_anime_filter = {
-          "search": this.animeFilter,
-          "partial_match": this.animeFilterPartialMatch,
-        }
-      }
-      else {
+          search: this.animeFilter,
+          partial_match: this.animeFilterPartialMatch,
+        };
+      } else {
         tmp_anime_filter = undefined;
       }
 
       body = {
-        "anime_search_filter": tmp_anime_filter,
-        "and_logic": tmp_select,
-        "ignore_duplicate": this.ignoreDuplicate,
-        "opening_filter": this.showOpenings,
-        "ending_filter": this.showEndings,
-        "insert_filter": this.showInserts,
-        "normal_broadcast": this.showNormalBroadcasts,
-        "dub": this.showDubs,
-        "rebroadcast": this.showRebroadcasts,
-        "standard": this.showStandards,
-        "instrumental": this.showInstrumentals,
-        "chanting": this.showChantings,
-        "character": this.showCharacters,
-      }
-
-    }
-    else if (this.showAdvancedFilters) {
-
+        anime_search_filter: tmp_anime_filter,
+        and_logic: tmp_select,
+        ignore_duplicate: this.ignoreDuplicate,
+        opening_filter: this.showOpenings,
+        ending_filter: this.showEndings,
+        insert_filter: this.showInserts,
+        normal_broadcast: this.showNormalBroadcasts,
+        dub: this.showDubs,
+        rebroadcast: this.showRebroadcasts,
+        standard: this.showStandards,
+        instrumental: this.showInstrumentals,
+        chanting: this.showChantings,
+        character: this.showCharacters,
+      };
+    } else if (this.showAdvancedFilters) {
       if (this.animeFilter.length > 0) {
         tmp_anime_filter = {
-          "search": this.animeFilter,
-          "partial_match": this.animeFilterPartialMatch,
-        }
-      }
-      else {
+          search: this.animeFilter,
+          partial_match: this.animeFilterPartialMatch,
+        };
+      } else {
         tmp_anime_filter = undefined;
       }
 
       if (this.songNameFilter.length > 0) {
         tmp_songname_filter = {
-          "search": this.songNameFilter,
-          "partial_match": this.songNameFilterPartialMatch,
-        }
-      }
-      else {
+          search: this.songNameFilter,
+          partial_match: this.songNameFilterPartialMatch,
+        };
+      } else {
         tmp_songname_filter = undefined;
       }
 
       if (this.artistFilter.length > 0) {
         if (!this.minimalMembersFilter) {
-          this.minimalMembersFilter = "0"
+          this.minimalMembersFilter = '0';
         }
         if (!this.maximumRandomsFilter) {
-          this.maximumRandomsFilter = "99"
+          this.maximumRandomsFilter = '99';
         }
         tmp_artist_filter = {
-          "search": this.artistFilter,
-          "partial_match": this.artistFilterPartialMatch,
-          "group_granularity": parseInt(this.minimalMembersFilter),
-          "max_other_artist": parseInt(this.maximumRandomsFilter),
-        }
-      }
-      else {
+          search: this.artistFilter,
+          partial_match: this.artistFilterPartialMatch,
+          group_granularity: parseInt(this.minimalMembersFilter),
+          max_other_artist: parseInt(this.maximumRandomsFilter),
+        };
+      } else {
         tmp_artist_filter = undefined;
       }
 
       if (this.composerFilter.length > 0) {
         if (!this.minimalMembersFilter) {
-          console.log("not set :(")
-          this.minimalMembersFilter = "0"
+          console.log('not set :(');
+          this.minimalMembersFilter = '0';
         }
         if (!this.maximumRandomsFilter) {
-          this.maximumRandomsFilter = "99"
+          this.maximumRandomsFilter = '99';
         }
         tmp_composer_filter = {
-          "search": this.composerFilter,
-          "partial_match": this.composerFilterPartialMatch,
-          "arrangement": this.composerFilterArrangement,
-          "group_granularity": parseInt(this.minimalMembersFilter),
-          "max_other_artist": parseInt(this.maximumRandomsFilter),
-        }
-      }
-      else {
+          search: this.composerFilter,
+          partial_match: this.composerFilterPartialMatch,
+          arrangement: this.composerFilterArrangement,
+          group_granularity: parseInt(this.minimalMembersFilter),
+          max_other_artist: parseInt(this.maximumRandomsFilter),
+        };
+      } else {
         tmp_composer_filter = undefined;
       }
 
       body = {
-        "anime_search_filter": tmp_anime_filter,
-        "song_name_search_filter": tmp_songname_filter,
-        "artist_search_filter": tmp_artist_filter,
-        "composer_search_filter": tmp_composer_filter,
-        "and_logic": tmp_select,
-        "ignore_duplicate": this.ignoreDuplicate,
-        "opening_filter": this.showOpenings,
-        "ending_filter": this.showEndings,
-        "insert_filter": this.showInserts,
-        "normal_broadcast": this.showNormalBroadcasts,
-        "dub": this.showDubs,
-        "rebroadcast": this.showRebroadcasts,
-        "standard": this.showStandards,
-        "instrumental": this.showInstrumentals,
-        "chanting": this.showChantings,
-        "character": this.showCharacters,
-      }
-
-    }
-    else {
-
+        anime_search_filter: tmp_anime_filter,
+        song_name_search_filter: tmp_songname_filter,
+        artist_search_filter: tmp_artist_filter,
+        composer_search_filter: tmp_composer_filter,
+        and_logic: tmp_select,
+        ignore_duplicate: this.ignoreDuplicate,
+        opening_filter: this.showOpenings,
+        ending_filter: this.showEndings,
+        insert_filter: this.showInserts,
+        normal_broadcast: this.showNormalBroadcasts,
+        dub: this.showDubs,
+        rebroadcast: this.showRebroadcasts,
+        standard: this.showStandards,
+        instrumental: this.showInstrumentals,
+        chanting: this.showChantings,
+        character: this.showCharacters,
+      };
+    } else {
       if (this.mainFilter.length == 0) {
         body = {
-          "anime_search_filter": undefined,
-          "song_name_search_filter": undefined,
-          "artist_search_filter": undefined,
-          "composer_search_filter": undefined,
-          "and_logic": tmp_select,
-          "ignore_duplicate": this.ignoreDuplicate,
-          "opening_filter": this.showOpenings,
-          "ending_filter": this.showEndings,
-          "insert_filter": this.showInserts,
-          "normal_broadcast": this.showNormalBroadcasts,
-          "dub": this.showDubs,
-          "rebroadcast": this.showRebroadcasts,
-          "standard": this.showStandards,
-          "instrumental": this.showInstrumentals,
-          "chanting": this.showChantings,
-          "character": this.showCharacters,
-        }
-      }
-      else {
-
+          anime_search_filter: undefined,
+          song_name_search_filter: undefined,
+          artist_search_filter: undefined,
+          composer_search_filter: undefined,
+          and_logic: tmp_select,
+          ignore_duplicate: this.ignoreDuplicate,
+          opening_filter: this.showOpenings,
+          ending_filter: this.showEndings,
+          insert_filter: this.showInserts,
+          normal_broadcast: this.showNormalBroadcasts,
+          dub: this.showDubs,
+          rebroadcast: this.showRebroadcasts,
+          standard: this.showStandards,
+          instrumental: this.showInstrumentals,
+          chanting: this.showChantings,
+          character: this.showCharacters,
+        };
+      } else {
         body = {
-          "anime_search_filter": {
-            "search": this.mainFilter,
-            "partial_match": this.mainFilterPartialMatch,
+          anime_search_filter: {
+            search: this.mainFilter,
+            partial_match: this.mainFilterPartialMatch,
           },
-          "song_name_search_filter": {
-            "search": this.mainFilter,
-            "partial_match": this.mainFilterPartialMatch,
+          song_name_search_filter: {
+            search: this.mainFilter,
+            partial_match: this.mainFilterPartialMatch,
           },
-          "artist_search_filter": {
-            "search": this.mainFilter,
-            "partial_match": this.mainFilterPartialMatch,
-            "group_granularity": parseInt(this.minimalMembersFilter),
-            "max_other_artist": parseInt(this.maximumRandomsFilter),
+          artist_search_filter: {
+            search: this.mainFilter,
+            partial_match: this.mainFilterPartialMatch,
+            group_granularity: parseInt(this.minimalMembersFilter),
+            max_other_artist: parseInt(this.maximumRandomsFilter),
           },
-          "composer_search_filter": {
-            "search": this.mainFilter,
-            "partial_match": this.mainFilterPartialMatch,
-            "arrangement": this.composerFilterArrangement,
+          composer_search_filter: {
+            search: this.mainFilter,
+            partial_match: this.mainFilterPartialMatch,
+            arrangement: this.composerFilterArrangement,
           },
-          "and_logic": tmp_select,
-          "ignore_duplicate": this.ignoreDuplicate,
-          "opening_filter": this.showOpenings,
-          "ending_filter": this.showEndings,
-          "insert_filter": this.showInserts,
-          "normal_broadcast": this.showNormalBroadcasts,
-          "dub": this.showDubs,
-          "rebroadcast": this.showRebroadcasts,
-          "standard": this.showStandards,
-          "instrumental": this.showInstrumentals,
-          "chanting": this.showChantings,
-          "character": this.showCharacters,
-        }
+          and_logic: tmp_select,
+          ignore_duplicate: this.ignoreDuplicate,
+          opening_filter: this.showOpenings,
+          ending_filter: this.showEndings,
+          insert_filter: this.showInserts,
+          normal_broadcast: this.showNormalBroadcasts,
+          dub: this.showDubs,
+          rebroadcast: this.showRebroadcasts,
+          standard: this.showStandards,
+          instrumental: this.showInstrumentals,
+          chanting: this.showChantings,
+          character: this.showCharacters,
+        };
       }
     }
 
     if (JSON.stringify(body) === JSON.stringify(this.previousBody)) {
-      return
+      return;
     }
 
-    this.previousBody = body
-    this.sendPrevBody(body)
+    this.previousBody = body;
+    this.sendPrevBody(body);
 
-    this.currentSongList = this.searchRequestService.searchRequest(body).subscribe(data => {
-      this.currentSongList = data
-      this.sendSongList(this.currentSongList)
-    });
+    this.currentSongList = this.searchRequestService
+      .searchRequest(body)
+      .subscribe((data) => {
+        this.currentSongList = data;
+        this.sendSongList(this.currentSongList);
+      });
   }
 
   selectFilterCombinationChangeHandler(event: any) {
     this.selectedCombination = event.target.value;
   }
 
-  downloadJsonHref: SafeUrl = ''
-  downloadFileName: string = "Init_SongList.json"
+  downloadJsonHref: SafeUrl = '';
+  downloadFileName: string = 'Init_SongList.json';
 
   generateDownloadJsonUri() {
-
     // Use template literals and the `join` method to generate the file name
     this.downloadFileName = [
-      this.showAdvancedFilters ? [this.animeFilter, this.songNameFilter, this.artistFilter, this.composerFilter] : this.mainFilter,
-      "SongList.json"
-    ].join("_").replace(/ /g, "").replace(/,/g, "_").replace(/__/g, "");
-
+      this.showAdvancedFilters
+        ? [
+            this.animeFilter,
+            this.songNameFilter,
+            this.artistFilter,
+            this.composerFilter,
+          ]
+        : this.mainFilter,
+      'SongList.json',
+    ]
+      .join('_')
+      .replace(/ /g, '')
+      .replace(/,/g, '_')
+      .replace(/__/g, '');
 
     // Stringify the JSON data and create a blob
     let theJSON = JSON.stringify(this.currentSongList);
@@ -330,5 +333,4 @@ export class SearchBarComponent implements OnInit {
     // Set the `downloadJsonHref` property to the sanitized URL
     this.downloadJsonHref = uri;
   }
-
 }

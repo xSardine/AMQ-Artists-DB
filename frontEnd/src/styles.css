@@ -1,4 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
+
+@import "vidstack/player/styles/default/theme.css";
+@import "vidstack/player/styles/default/layouts/audio.css";
+
 :root {
   --primaryColor: #222;
   --secondaryColor: #1976d2;
@@ -11,6 +15,12 @@
   --background: #555;
   --textOnBackground: white;
   --linkOnBackground: white;
+
+  --primaryVidstackColor: #2c2c2c;
+    --audio-bg: var(--primaryVidstackColor);
+    --audio-volume-bg: var(--primaryVidstackColor);
+    --media-menu-bg: var(--primaryVidstackColor);
+    --media-slider-value-bg: var(--primaryVidstackColor)
 }
 
 body {
@@ -18,7 +28,6 @@ body {
   color: var(--textOnBackground);
   font-family: "Arial", sans-serif;
 }
-
 
 .tooltip {
   position: relative;
