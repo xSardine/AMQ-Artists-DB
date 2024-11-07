@@ -19,8 +19,8 @@ class CustomLocalMediaStorage extends LocalMediaStorage {
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements AfterViewInit {
-  @ViewChild('playerRef', { static: false }) playerRef!: ElementRef; // Reference to the media player
-  player: MediaPlayer = this.playerRef?.nativeElement; // Media player instance
+  @ViewChild('audioPlayerRef', { static: false }) audioPlayerRef!: ElementRef;
+  audioPlayer: MediaPlayer = this.audioPlayerRef?.nativeElement;
   customLocalMediaStorage = new CustomLocalMediaStorage();
 
   title = 'anisongDB';
@@ -33,7 +33,6 @@ export class AppComponent implements AfterViewInit {
   composerDisplay: boolean = true;
 
   // Keys for storing player preferences in localStorage
-  private readonly volumeKey = 'vimePlayerVolume';
   private readonly langKey = 'animeTitleLang';
   private readonly composerKey = 'composerDisplay';
 
@@ -58,13 +57,6 @@ export class AppComponent implements AfterViewInit {
       savedComposerDisplay !== null ? savedComposerDisplay === 'true' : true;
   }
 
-  private playerSettingsToInitialize() {
-    const savedVolume = localStorage.getItem(this.volumeKey);
-    if (this.player) {
-      (this.player as any).volume = savedVolume ? parseFloat(savedVolume) : 0.5; // Ensure correct type casting
-    }
-  }
-
   toggleAnimeLang() {
     this.animeTitleLang = this.animeTitleLang === 'JP' ? 'EN' : 'JP';
     localStorage.setItem(this.langKey, this.animeTitleLang);
@@ -75,24 +67,12 @@ export class AppComponent implements AfterViewInit {
     localStorage.setItem(this.composerKey, this.composerDisplay.toString());
   }
 
-  private initializePlayerSettings(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (this.player) {
-          this.playerSettingsToInitialize(); // Initialize player settings if player is populated
-          resolve();
-        } else {
-          reject('Player not ready');
-        }
-      }, 0);
-    });
-  }
-
   ngAfterViewInit() {
     // Ensure player is defined before calling methods
-    if (this.playerRef) {
-      this.player = this.playerRef.nativeElement;
-      this.player.startLoading();
+    if (this.audioPlayerRef) {
+      this.audioPlayer = this.audioPlayerRef.nativeElement;
+      (this.audioPlayer as any).crossOrigin = true;
+      this.audioPlayer.startLoading();
     } else {
       console.error('Player is not defined in ngAfterViewInit');
     }
@@ -102,12 +82,12 @@ export class AppComponent implements AfterViewInit {
     return new Promise((resolve, reject) => {
       const handleCanPlay = () => {
         resolve();
-        player.removeEventListener('can-play', handleCanPlay); // Cleanup
+        player.removeEventListener('can-play', handleCanPlay);
       };
 
       const handleError = (event: Event) => {
         reject(event);
-        player.removeEventListener('can-play', handleCanPlay); // Cleanup on error
+        player.removeEventListener('can-play', handleCanPlay);
       };
 
       player.addEventListener('can-play', handleCanPlay);
@@ -116,34 +96,35 @@ export class AppComponent implements AfterViewInit {
   }
 
   async playMP3(song: any) {
-    const { player } = this;
+    const { audioPlayer } = this;
 
     try {
-      await this.setUrl(song);
-      await this.initializePlayerSettings();
+      await this.setUrl(audioPlayer, song);
 
       // Wait for the player to be ready
-      await this.waitForCanPlay(player);
+      await this.waitForCanPlay(audioPlayer);
 
       // Start playing the media
-      await player?.play();
+      await audioPlayer?.play();
     } catch (error) {
       console.error('Error playing song:', error);
     }
   }
 
-  private setUrl(song: any): Promise<void> {
+  private setUrl(player: MediaPlayer, song: any): Promise<void> {
     return new Promise((resolve) => {
       setTimeout(() => {
         // Construct the full URL for the MP3 file
-        const songUrl = 'https://naedist.animemusicquiz.com/' + song.audio;
+
+        const songUrl = `https://naedist.animemusicquiz.com/${song.audio}`;
 
         // This set variables so that the song name and artist can be displayed on the player <div>
         this.currentlyPlayingArtist = song.songArtist;
         this.currentlyPlayingSongName = song.songName;
 
         // Set the source URL for the media player
-        (this.player as any).src = songUrl; // Set the src attribute
+        (player as any).src = songUrl; // Set the src attribute
+        player.title = song.songName + ' by ' + song.songArtist;
 
         resolve();
       }, 0);

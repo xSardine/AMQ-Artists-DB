@@ -31,9 +31,9 @@
   </a>
 </div>
 
-<div id="video-player" title="{{currentlyPlayingSongName}} by {{currentlyPlayingArtist}}">
+<div id="audio-player" title="{{currentlyPlayingSongName}} by {{currentlyPlayingArtist}}">
 
-  <media-player #playerRef title="TODO : Your Title" [storage]="customLocalMediaStorage">
+  <media-player #audioPlayerRef [storage]="customLocalMediaStorage">
       <media-provider></media-provider>
       <media-audio-layout></media-audio-layout>
   </media-player>

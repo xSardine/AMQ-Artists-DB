@@ -708,7 +708,6 @@
     <td
       *ngIf="isCurrentPlayingSong(song) && !rankedTime"
       title="Listen to mp3"
-      (click)="playMP3music(song)"
       style="
         text-align: center;
         color: rgb(226, 148, 4);
@@ -716,20 +715,18 @@
         -webkit-text-stroke: 0.5px #fff;
       "
     >
-      <i *ngIf="song.audio" class="fa fa-music fa-lg"></i>
-    </td>
+    <i (click)="playMP3music(song)" *ngIf="song.audio" class="fa fa-music fa-lg" style="padding-right: 6px"></i>
+  </td>
 
     <td
       *ngIf="!isCurrentPlayingSong(song) && !rankedTime"
-      title="Listen to mp3"
-      (click)="playMP3music(song)"
       style="
         text-align: center;
         color: var(--textOnBackground);
         cursor: pointer;
       "
     >
-      <i *ngIf="song.audio" class="fa fa-music fa-lg"></i>
+      <i title="Listen to mp3" (click)="playMP3music(song)" *ngIf="song.audio" class="fa fa-music fa-lg" style="padding-right: 6px"></i>
     </td>
 
     <td style="text-align: center; color: var(--textOnBackground)">
