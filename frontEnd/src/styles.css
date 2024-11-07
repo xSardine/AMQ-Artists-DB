@@ -15,6 +15,12 @@
   --background: #555;
   --textOnBackground: white;
   --linkOnBackground: white;
+
+  --primaryVidstackColor: #2c2c2c;
+    --audio-bg: var(--primaryVidstackColor);
+    --audio-volume-bg: var(--primaryVidstackColor);
+    --media-menu-bg: var(--primaryVidstackColor);
+    --media-slider-value-bg: var(--primaryVidstackColor)
 }
 
 body {
