@@ -73,8 +73,8 @@ def is_ranked_time():
     if (
         # CST
         (
-            (date.hour == 2 and date.minute >= 30)
-            or (date.hour == 3 and date.minute < 23)
+            (date.hour == 1 and date.minute >= 30)
+            or (date.hour == 2 and date.minute < 23)
         )
         # JST
         or (
@@ -618,7 +618,7 @@ def get_search_results(
     if anime_search_filters:
 
         if len(anime_search_filters.search) <= 3:
-            partial_match = True
+            partial_match = False
         else:
             partial_match = anime_search_filters.partial_match
 
@@ -673,7 +673,7 @@ def get_search_results(
     if song_name_search_filters and not is_ranked:
 
         if len(song_name_search_filters.search) <= 3:
-            partial_match = True
+            partial_match = False
         else:
             partial_match = song_name_search_filters.partial_match
 
@@ -716,7 +716,7 @@ def get_search_results(
     if artist_search_filters and not is_ranked:
 
         if len(artist_search_filters.search) <= 3:
-            partial_match = True
+            partial_match = False
         else:
             partial_match = artist_search_filters.partial_match
 
@@ -743,7 +743,7 @@ def get_search_results(
     if composer_search_filters and not is_ranked:
 
         if len(composer_search_filters.search) <= 3:
-            partial_match = True
+            partial_match = False
         else:
             partial_match = composer_search_filters.partial_match
 
