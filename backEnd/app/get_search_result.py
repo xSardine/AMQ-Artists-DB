@@ -617,8 +617,13 @@ def get_search_results(
     anime_songs_list = []
     if anime_search_filters:
 
+        if len(anime_search_filters.search) <= 3:
+            partial_match = True
+        else:
+            partial_match = anime_search_filters.partial_match
+
         anime_search = utils.get_regex_search(
-            anime_search_filters.search, anime_search_filters.partial_match
+            anime_search_filters.search, partial_match
         )
 
         anime_songs_list = []
@@ -666,8 +671,14 @@ def get_search_results(
     # Song Name filter not available during ranked
     songName_songs_list = []
     if song_name_search_filters and not is_ranked:
+
+        if len(song_name_search_filters.search) <= 3:
+            partial_match = True
+        else:
+            partial_match = song_name_search_filters.partial_match
+
         songName_search = utils.get_regex_search(
-            song_name_search_filters.search, song_name_search_filters.partial_match
+            song_name_search_filters.search, partial_match
         )
 
         songName_songs_list = []
@@ -704,12 +715,17 @@ def get_search_results(
 
     if artist_search_filters and not is_ranked:
 
+        if len(artist_search_filters.search) <= 3:
+            partial_match = True
+        else:
+            partial_match = artist_search_filters.partial_match
+
         artist_songs_list, artist_ids = process_artist(
             cursor,
             song_database,
             artist_database,
             artist_search_filters.search,
-            artist_search_filters.partial_match,
+            partial_match,
             authorized_types,
             authorized_broadcasts,
             authorized_song_categories,
@@ -726,12 +742,17 @@ def get_search_results(
 
     if composer_search_filters and not is_ranked:
 
+        if len(composer_search_filters.search) <= 3:
+            partial_match = True
+        else:
+            partial_match = composer_search_filters.partial_match
+
         composer_songs_list, composer_ids = process_composer(
             cursor,
             song_database,
             artist_database,
             composer_search_filters.search,
-            composer_search_filters.partial_match,
+            partial_match,
             composer_search_filters.arrangement,
             authorized_types,
             authorized_broadcasts,

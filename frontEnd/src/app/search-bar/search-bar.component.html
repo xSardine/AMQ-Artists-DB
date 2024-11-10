@@ -444,6 +444,17 @@
         />
         Ignore Duplicates
       </label>
+
+      <label
+        class="check"
+        title="If activated, results only have to contain the filter and not match it exactly"
+        ><input
+          type="checkbox"
+          (change)="mainFilterPartialMatch = !mainFilterPartialMatch"
+          [checked]="mainFilterPartialMatch"
+        />
+        Partial Match
+      </label>
     </div>
 
     <div style="display: inline">
