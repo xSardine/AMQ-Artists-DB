@@ -72,6 +72,7 @@ export class AppComponent implements AfterViewInit {
     if (this.audioPlayerRef) {
       this.audioPlayer = this.audioPlayerRef.nativeElement;
       (this.audioPlayer as any).crossOrigin = true;
+      (this.audioPlayer as any).keyTarget = 'document';
       this.audioPlayer.startLoading();
     } else {
       console.error('Player is not defined in ngAfterViewInit');
