@@ -161,6 +161,7 @@ splitting_exception_list = [
     ("(K)NoW_NAME:AIJ", ("(K)NoW_NAME", "AIJ")),
     ("(K)NoW_NAME:eNu", ("(K)NoW_NAME", "eNu")),
     # other
+    ("Nao Touyama & Nozomi Nishida (from Walküre)", ("Nao Touyama", "Nozomi Nishida")),
     ("TOWA TEI WITH UA", ("TOWA TEI", "UA")),
     ("TOWA TEI WITH TAPRIKK SWEEZEE", ("TOWA TEI", "TAPRIKK SWEEZEE")),
     (
@@ -514,35 +515,35 @@ splitting_exception_list = [
     ("Akebonoyama Chuugaku Band with T", ("Akebonoyama Chuugaku Band with T",)),
     (
         "Yuji Ohno & Lupintic Six with Friends feat. Miyuki Sawashiro",
-        ("Yuji Ohno", "Lupintic Six with Friends", "Miyuki Sawashiro"),
+        ("Yuji Ohno & Lupintic Six with Friends", "Miyuki Sawashiro"),
     ),
     (
         "Yuji Ohno & Lupintic Six with Friends feat. Lyn Inaizumi",
-        ("Yuji Ohno", "Lupintic Six with Friends", "Lyn Inaizumi"),
+        ("Yuji Ohno & Lupintic Six with Friends", "Lyn Inaizumi"),
     ),
     (
         "Yuji Ohno & Lupintic Six with Friends feat. Sakura Fujiwara",
-        ("Yuji Ohno", "Lupintic Six with Friends", "Sakura Fujiwara"),
+        ("Yuji Ohno & Lupintic Six with Friends", "Sakura Fujiwara"),
     ),
     (
         "Yuji Ohno & Lupintic Six with Friends feat. Shigeru Matsuzaki",
-        ("Yuji Ohno", "Lupintic Six with Friends", "Shigeru Matsuzaki"),
+        ("Yuji Ohno & Lupintic Six with Friends", "Shigeru Matsuzaki"),
     ),
     (
         "Yuji Ohno & Lupintic Six with Friends",
-        ("Yuji Ohno", "Lupintic Six with Friends"),
+        ("Yuji Ohno & Lupintic Six with Friends"),
     ),
     (
         "Yuji Ohno & Lupintic Six with Friends feat. Akari Dritschler",
-        ("Yuji Ohno", "Lupintic Six with Friends", "Akari Dritschler"),
+        ("Yuji Ohno & Lupintic Six with Friends", "Akari Dritschler"),
     ),
     (
-        "Yuji Ohno&Lupintic Five with Friends feat. Yoshie Nakano (EGO-WRAPPIN')",
-        ("Yuji Ohno", "Lupintic Five with Friends", "Yoshie Nakano (EGO-WRAPPIN')"),
+        "Yuji Ohno & Lupintic Five with Friends Featuring Yoshie Nakano (EGO-WRAPPIN')",
+        ("Yuji Ohno & Lupintic Five with Friends", "Yoshie Nakano (EGO-WRAPPIN')"),
     ),
     (
         "Yuji Ohno & Lupintic Five with Friends Feat. DOUBLE",
-        ("Yuji Ohno", "Lupintic Five with Friends", "DOUBLE"),
+        ("Yuji Ohno & Lupintic Five with Friends", "DOUBLE"),
     ),
     # ,
     ("RAY PARKER,JR.", ("RAY PARKER,JR.",)),

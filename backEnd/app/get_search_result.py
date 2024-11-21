@@ -73,8 +73,8 @@ def is_ranked_time():
     if (
         # CST
         (
-            (date.hour == 1 and date.minute >= 30)
-            or (date.hour == 2 and date.minute < 23)
+            (date.hour == 2 and date.minute >= 30)
+            or (date.hour == 3 and date.minute < 23)
         )
         # JST
         or (
@@ -211,11 +211,12 @@ def check_meets_artists_requirements(
 
     # Exceptions for groups that have line ups, but also songs with no line ups : they should be considered both a group and artist
     LINE_UP_EXCEPTIONS = [
-        215,
+        33,  # Tokyo Konsei
+        215,  # Suginami
+        1736,  # JDK
         4261,
         7695,
         6678,
-        1736,  # JDK
     ]
 
     song_artists = [
@@ -264,11 +265,12 @@ def check_meets_composers_requirements(
 
     # Exceptions for groups that have line ups, but also songs with no line ups : they should be considered both a group and artist
     LINE_UP_EXCEPTIONS = [
-        215,
+        33,  # Tokyo Konsei
+        215,  # Suginami
+        1736,  # JDK
         4261,
         7695,
         6678,
-        1736,  # JDK
     ]
 
     song_composers = [

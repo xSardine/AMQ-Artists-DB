@@ -1,8 +1,10 @@
 from __future__ import annotations
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 from pydantic import BaseModel, Field
 from typing import List, Optional
+
 import get_search_result
 import sql_calls, utils
 from random import randrange
@@ -199,6 +201,8 @@ class Song_Entry(BaseModel):
 
 # Launch API
 app = FastAPI()
+
+app.add_middleware(GZipMiddleware, minimum_size=1000)  # Compress responses > 1000 bytes
 
 app.add_middleware(
     CORSMiddleware,
