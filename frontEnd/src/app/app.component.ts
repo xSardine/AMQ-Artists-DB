@@ -14,9 +14,10 @@ class CustomLocalMediaStorage extends LocalMediaStorage {
 }
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss'],
+    standalone: false
 })
 export class AppComponent implements AfterViewInit {
   @ViewChild('audioPlayerRef', { static: false }) audioPlayerRef!: ElementRef;

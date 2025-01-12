@@ -2,13 +2,14 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { SearchRequestService } from '../core/services/search-request.service';
 
 @Component({
-  selector: 'app-song-table',
-  templateUrl: './song-table.component.html',
-  styleUrls: ['./song-table.component.css'],
-  host: {
-    '(document:click)': 'onAnyClick($event)',
-  },
-  template: ` {{ message }} `,
+    selector: 'app-song-table',
+    templateUrl: './song-table.component.html',
+    styleUrls: ['./song-table.component.css'],
+    host: {
+        '(document:click)': 'onAnyClick($event)',
+    },
+    template: ` {{ message }} `,
+    standalone: false
 })
 export class SongTableComponent {
   constructor(private searchRequestService: SearchRequestService) {}
