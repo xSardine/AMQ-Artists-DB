@@ -131,7 +131,7 @@ export class SearchBarComponent implements OnInit {
       if (this.animeFilter.length > 0) {
         tmp_anime_filter = {
           search: this.animeFilter,
-          partial_match: this.animeFilterPartialMatch,
+          partial_match: this.mainFilterPartialMatch,
         };
       } else {
         tmp_anime_filter = undefined;
