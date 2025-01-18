@@ -161,6 +161,7 @@ splitting_exception_list = [
     ("(K)NoW_NAME:AIJ", ("(K)NoW_NAME", "AIJ")),
     ("(K)NoW_NAME:eNu", ("(K)NoW_NAME", "eNu")),
     # other
+    ("Ogiyahagi produced by Yasushi Akimoto feat. toutou", ("Ogiyahagi", "toutou")),
     ("Nao Touyama & Nozomi Nishida (from Walküre)", ("Nao Touyama", "Nozomi Nishida")),
     ("TOWA TEI WITH UA", ("TOWA TEI", "UA")),
     ("TOWA TEI WITH TAPRIKK SWEEZEE", ("TOWA TEI", "TAPRIKK SWEEZEE")),
@@ -168,6 +169,7 @@ splitting_exception_list = [
         "REAL AKIBA BOYZ loves Kasumi Taguchi & AiRyA from REAL AKIBA BAND",
         ("REAL AKIBA BOYZ", "Kasumi Taguchi", "AiRyA from REAL AKIBA BAND"),
     ),
+    ("REAL AKIBA BOYZ loves Shoko Nakagawa", ("REAL AKIBA BOYZ", "Shoko Nakagawa")),
     ("m-flo loves Alex (CLAZZIQUAI PROJECT)", ("m-flo", "Alex (CLAZZIQUAI PROJECT)")),
     (
         "THE RZA Feat: The Reverend William Burk",
@@ -251,6 +253,7 @@ splitting_exception_list = [
         "Hashiguchikanaderiya hugs The Super Ball",
         ("Hashiguchikanaderiya", "The Super Ball"),
     ),
+    ("Hammer (Featuring. The Home Boy Chair)", ("Hammer", "The Home Boy Chair")),
     ## Force NOT splitting (exception on splitters)
     # ・
     (
@@ -341,6 +344,7 @@ splitting_exception_list = [
     ("MAYUKO & Luminous", ("MAYUKO & Luminous",)),
     ("Benjamin & mpi", ("Benjamin & mpi",)),
     ("Benjamin & mpi, Laco", ("Benjamin & mpi", "Laco")),
+    ("Hiroyuki Sawano feat. Benjamin & mpi", ("Hiroyuki Sawano", "Benjamin & mpi")),
     ("Laugh & Peace", ("Laugh & Peace",)),
     ("Beom&Nang", ("Beom&Nang",)),
     ("K&K Factory", ("K&K Factory",)),
@@ -416,6 +420,7 @@ splitting_exception_list = [
         ("Kishida Kyoudan &THE Akeboshi Rockets",),
     ),
     ("HIKAKIN & SEIKIN", ("HIKAKIN & SEIKIN",)),
+    ("HIKAKIN & SEIKIN with Mayumi Tanaka", ("HIKAKIN & SEIKIN", "Mayumi Tanaka")),
     ("Athena & Robikerottsu", ("Athena & Robikerottsu",)),
     ("QUANGO & SPARKY", ("QUANGO & SPARKY",)),
     ("TAKAO & THE VIEW", ("TAKAO & THE VIEW",)),
@@ -605,6 +610,7 @@ splitting_exception_list = [
     ("sophie+", ("sophie+",)),
     ("Megami-ryousei+α", ("Megami-ryousei+α",)),
     # other
+    ("SSGIRLS feat. Mikako Komatsu", ("SSGIRLS feat. Mikako Komatsu",)),
     ("DWB feat. NIRGILIS", ("DWB feat. NIRGILIS",)),
     ("DWB feat. fade", ("DWB feat. fade",)),
     ("AUO feat. MORISAKI WIN", ("AUO feat. MORISAKI WIN",)),
@@ -650,7 +656,7 @@ splitting_exception_list = [
     ("22/7", ("22/7",)),
     ("Yukichi Kasaku/men", ("Yukichi Kasaku/men",)),
     ("Prhythm/epx", ("Prhythm/epx",)),
-    ("HoneyWorks meets YURiCa/Hanatan", ("HoneyWorks", "YURiCa/Hanatan")),
+    ("HoneyWorks meets YURiCa/Hanatan", ("YURiCa/Hanatan")),
     ("Bach/Gounod", ("Johann Sebastian Bach", "Charles Gounod")),
     ("m-flo\u2665DOPING PANDA", ("m-flo", "DOPING PANDA")),
     ## removing longer strings (removing longer string to avoid having dumb artists names)
@@ -774,7 +780,7 @@ splitting_exception_list = [
     ("Pokemon Kids (+Ikue Ootani)", ("Pokemon Kids", "Ikue Ootani")),
     (
         "HoneyWorks meets Sayuringo Gundan + Manatsu-san Respect Gundan from Nogizaka46",
-        ("HoneyWorks", "Sayuringo Gundan", "Manatsu-san Respect Gundan"),
+        ("Sayuringo Gundan", "Manatsu-san Respect Gundan"),
     ),
     ("G-Eazy (featuring Bente Violet McPherson)", ("G-Eazy", "Bente Violet McPherson")),
     ("Masayoshi Ooishi (feat. Yukari Tamura)", ("Masayoshi Ooishi", "Yukari Tamura")),
@@ -790,6 +796,10 @@ splitting_exception_list = [
     (
         "Shirahamazaka Koukou Gasshou-bu & Seigaku-bu",
         ("Shirahamazaka Koukou Gasshou-bu", "Shirahamazaka Koukou Seigaku-bu"),
+    ),
+    (
+        "Ndaho & Peketan from Fischer's",
+        ("Ndaho from Fischer's", "Peketan from Fischer's"),
     ),
     # Aikatsu
     (

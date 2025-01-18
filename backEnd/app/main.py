@@ -666,3 +666,51 @@ async def filter_season(season: str):
     song_list = [utils.format_song(artist_database, song) for song in songs]
 
     return song_list
+
+
+# this endpoing returns a .json dict containter every key annId value linked_ids
+@app.get("/api/annid_linked_ids")
+async def annid_linked_ids():
+    cursor = sql_calls.connect_to_database(sql_calls.database_path)
+
+    get_all_animes = "SELECT * from animes"
+    animes = sql_calls.run_sql_command(cursor, get_all_animes)
+
+    alt_names = "SELECT * from link_anime_alt_name"
+    alt_names = sql_calls.run_sql_command(cursor, alt_names)
+
+    output_json = {}
+    for anime in animes:
+        (
+            annId,
+            malId,
+            anidbId,
+            anilistId,
+            kitsuId,
+            animeENName,
+            _,
+            animeJPName,
+            animeVintage,
+            animeType,
+            animeCategory,
+        ) = anime
+
+        alt_names_list = []
+        for alt_name in alt_names:
+            if alt_name[0] == annId:
+                alt_names_list.append(alt_name[3])
+
+        output_json[annId] = {
+            "animeENName": animeENName,
+            "animeJPName": animeJPName,
+            "animeAltName": alt_names_list,
+            "linked_ids": {
+                "annId": annId,
+                "myanimelist": malId,
+                "anidb": anidbId,
+                "anilist": anilistId,
+                "kitsu": kitsuId,
+            },
+        }
+
+    return output_json

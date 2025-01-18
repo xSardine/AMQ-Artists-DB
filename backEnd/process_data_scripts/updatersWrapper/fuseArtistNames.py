@@ -48,6 +48,9 @@ def process():
         artist_database,
     )
 
+    print(ids)
+
+    center_line_up = ids[0][1]
     ids = [id[0] for id in ids]
 
     if len(ids) < 2:
@@ -56,7 +59,7 @@ def process():
 
     recap_artist = ""
     for artist in ids:
-        recap_artist += f"{artist}> {artist_database[artist]['names']} - {artist_database[artist]['groups']} - {artist_database[artist]['members']}\n"
+        recap_artist += f"{artist}> {artist_database[artist]['names'][0]['romaji_name']} - {artist_database[artist]['groups']} - {artist_database[artist]['members']}\n"
 
     center_id = ids[0]
     removed_ids = ids
@@ -70,7 +73,7 @@ def process():
     # Updating link in song_database for artist, composers and arrangers of deleted artists
     line_up_id = -1
     if artist_database[center_id]["members"]:
-        line_up_id = 0
+        line_up_id = center_line_up
     for annId in song_database:
         anime = song_database[annId]
         for song in anime["songs"]:
@@ -106,16 +109,17 @@ def process():
                 for member in line_up:
                     if member[0] in removed_ids:
                         print(
-                            f"{artist['names'][0]} Member: {member[0]} {member[1]} → {[center_id, line_up_id]}"
+                            f"{artist['names'][0]} Member: {member[0]} {member[1]} → {[center_id, center_line_up]}"
                         )
                         member[0] = center_id
-                        member[1] = line_up_id
+                        member[1] = center_line_up
             for group in artist["groups"]:
                 if group[0] in removed_ids:
                     print(
-                        f"{artist['names'][0]} Group: {group[0]} {group[1]} → {[center_id, group[1]]}"
+                        f"{artist['names'][0]} Group: {group[0]} {group[1]} → {[center_id, center_line_up]}"
                     )
                     group[0] = center_id
+                    group[1] = center_line_up
         artist_database.pop(id)
 
     print()
