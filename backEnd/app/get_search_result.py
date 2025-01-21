@@ -73,8 +73,8 @@ def is_ranked_time():
     if (
         # CST
         (
-            (date.hour == 2 and date.minute >= 30)
-            or (date.hour == 3 and date.minute < 23)
+            (date.hour == 1 and date.minute >= 30)
+            or (date.hour == 2 and date.minute < 23)
         )
         # JST
         or (
@@ -217,6 +217,7 @@ def check_meets_artists_requirements(
         4261,
         7695,
         6678,
+        5611,  # Uchuujin
     ]
 
     song_artists = [
@@ -260,7 +261,12 @@ def check_meets_artists_requirements(
 
 
 def check_meets_composers_requirements(
-    artist_database, song, composer_ids, group_granularity, max_other_artist
+    artist_database,
+    song,
+    composer_ids,
+    group_granularity,
+    max_other_artist,
+    arrangement,
 ):
 
     # Exceptions for groups that have line ups, but also songs with no line ups : they should be considered both a group and artist
@@ -277,47 +283,16 @@ def check_meets_composers_requirements(
         [artist, int(line_up)]
         for artist, line_up in zip(song[27].split(","), song[28].split(","))
     ]
-    song_artists_flat = get_member_list_flat(artist_database, song_composers)
+    if arrangement:
+        song_composers += [
+            [artist, int(line_up)]
+            for artist, line_up in zip(song[31].split(","), song[32].split(","))
+        ]
+    song_artists_flat = set(get_member_list_flat(artist_database, song_composers))
 
     for composer_id in composer_ids:
 
         line_ups = [[[str(composer_id), -1]]]
-
-        artist = artist_database[str(composer_id)]
-
-        if artist["line_ups"]:
-
-            line_ups = [
-                line_up["members"]
-                for line_up in artist["line_ups"]
-                # if line_up["line_up_type"] == "composers"  # TODO : add it once we start having more composer line up counterpart to normal groups
-            ]
-
-            # if composer_id in LINE_UP_EXCEPTIONS: TODO : add it once we start having more composer line up counterpart to normal groups
-            line_ups += [[[str(composer_id), -1]]]  # TODO
-
-        for line_up in line_ups:
-            checked_list = get_member_list_flat(artist_database, line_up)
-            present_artist, additional_artist = compare_two_artist_list(
-                song_artists_flat, checked_list
-            )
-
-            if (
-                present_artist >= 1
-                and additional_artist <= max_other_artist
-                and present_artist >= min(group_granularity, len(line_up))
-            ):
-                return True
-
-    song_arrangers = [
-        [artist, int(line_up)]
-        for artist, line_up in zip(song[31].split(","), song[32].split(","))
-    ]
-    song_artists_flat = get_member_list_flat(artist_database, song_arrangers)
-
-    for arranger_id in composer_ids:
-
-        line_ups = [[[str(arranger_id), -1]]]
 
         artist = artist_database[str(composer_id)]
 
@@ -542,6 +517,7 @@ def process_composer(
             composer_ids,
             group_granularity,
             max_other_artist,
+            arrangement,
         ):
             final_song_list.append(song)
 
@@ -619,7 +595,7 @@ def get_search_results(
     anime_songs_list = []
     if anime_search_filters:
 
-        if len(anime_search_filters.search) <= 3:
+        if len(anime_search_filters.search) <= 2:
             partial_match = False
         else:
             partial_match = anime_search_filters.partial_match
@@ -674,7 +650,7 @@ def get_search_results(
     songName_songs_list = []
     if song_name_search_filters and not is_ranked:
 
-        if len(song_name_search_filters.search) <= 3:
+        if len(song_name_search_filters.search) <= 2:
             partial_match = False
         else:
             partial_match = song_name_search_filters.partial_match
@@ -717,7 +693,7 @@ def get_search_results(
 
     if artist_search_filters and not is_ranked:
 
-        if len(artist_search_filters.search) <= 3:
+        if len(artist_search_filters.search) <= 2:
             partial_match = False
         else:
             partial_match = artist_search_filters.partial_match
@@ -744,7 +720,7 @@ def get_search_results(
 
     if composer_search_filters and not is_ranked:
 
-        if len(composer_search_filters.search) <= 3:
+        if len(composer_search_filters.search) <= 2:
             partial_match = False
         else:
             partial_match = composer_search_filters.partial_match
