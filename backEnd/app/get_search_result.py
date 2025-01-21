@@ -279,11 +279,13 @@ def check_meets_composers_requirements(
         6678,
     ]
 
-    song_composers = [
-        [artist, int(line_up)]
-        for artist, line_up in zip(song[27].split(","), song[28].split(","))
-    ]
-    if arrangement:
+    song_composers = []
+    if song[27]:
+        song_composers += [
+            [artist, int(line_up)]
+            for artist, line_up in zip(song[27].split(","), song[28].split(","))
+        ]
+    if arrangement and song[31]:
         song_composers += [
             [artist, int(line_up)]
             for artist, line_up in zip(song[31].split(","), song[32].split(","))
