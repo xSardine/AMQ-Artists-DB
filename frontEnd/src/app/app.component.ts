@@ -14,9 +14,10 @@ class CustomLocalMediaStorage extends LocalMediaStorage {
 }
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss'],
+    standalone: false
 })
 export class AppComponent implements AfterViewInit {
   @ViewChild('audioPlayerRef', { static: false }) audioPlayerRef!: ElementRef;
@@ -72,6 +73,7 @@ export class AppComponent implements AfterViewInit {
     if (this.audioPlayerRef) {
       this.audioPlayer = this.audioPlayerRef.nativeElement;
       (this.audioPlayer as any).crossOrigin = true;
+      (this.audioPlayer as any).keyTarget = 'document';
       this.audioPlayer.startLoading();
     } else {
       console.error('Player is not defined in ngAfterViewInit');
