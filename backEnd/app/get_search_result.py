@@ -915,7 +915,7 @@ def get_composer_ids_song_list(
 
 
 def get_annId_song_list(
-    annId,
+    annIds,
     ignore_duplicate,
     authorized_types,
     authorized_broadcasts,
@@ -929,18 +929,19 @@ def get_annId_song_list(
 
     print("-------------------------")
     print("Date: ", str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")))
-    print(f"annId_filter: {annId}")
+    print(f"annId_filter: {annIds}")
     print(f"ignore_dups: {ignore_duplicate}", end=" | ")
     print(f"types: {authorized_types}", end=" | ")
     print(f"broadcasts: {authorized_broadcasts}", end=" | ")
     print(f"song_categories: {authorized_song_categories}")
 
-    if not str(annId).isdigit():
-        return []
+    if len(annIds) == 1:
+        if not str(annIds[0]).isdigit():
+            return []
 
     songs = sql_calls.get_songs_list_from_annIds(
         cursor,
-        [annId],
+        annIds,
         authorized_types,
         authorized_broadcasts,
         authorized_song_categories,
