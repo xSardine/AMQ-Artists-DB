@@ -935,9 +935,11 @@ def get_annId_song_list(
     print(f"broadcasts: {authorized_broadcasts}", end=" | ")
     print(f"song_categories: {authorized_song_categories}")
 
-    if len(annIds) == 1:
-        if not str(annIds[0]).isdigit():
-            return []
+    if len(annIds) == 0:
+        return []
+
+    if not all(str(annId).isdigit() for annId in annIds):
+        return []
 
     songs = sql_calls.get_songs_list_from_annIds(
         cursor,
