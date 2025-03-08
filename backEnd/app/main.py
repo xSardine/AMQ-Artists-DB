@@ -1,10 +1,10 @@
 from __future__ import annotations
 from fastapi import FastAPI
+from fastapi.exceptions import HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from pydantic import BaseModel, Field
 from typing import List, Optional
-
 import get_search_result
 import sql_calls, utils
 from random import randrange
@@ -119,6 +119,24 @@ class Composer_ID_Search_Request(BaseModel):
 
 class annId_Search_Request(BaseModel):
     annId: int
+    ignore_duplicate: Optional[bool] = False
+
+    opening_filter: Optional[bool] = True
+    ending_filter: Optional[bool] = True
+    insert_filter: Optional[bool] = True
+
+    normal_broadcast: Optional[bool] = True
+    dub: Optional[bool] = True
+    rebroadcast: Optional[bool] = True
+
+    standard: Optional[bool] = True
+    instrumental: Optional[bool] = True
+    chanting: Optional[bool] = True
+    character: Optional[bool] = True
+
+
+class annIdList_Search_Request(BaseModel):
+    annIds: List[int] = []
     ignore_duplicate: Optional[bool] = False
 
     opening_filter: Optional[bool] = True
@@ -473,7 +491,62 @@ async def search_request(query: annId_Search_Request):
         return []
 
     song_list = get_search_result.get_annId_song_list(
-        query.annId,
+        [query.annId],
+        query.ignore_duplicate,
+        authorized_type,
+        authorized_broadcasts,
+        authorized_song_categories,
+    )
+
+    return song_list
+
+
+@app.post("/api/annIdList_request", response_model=List[Song_Entry])
+async def search_request(query: annIdList_Search_Request):
+
+    authorized_type = []
+    if query.opening_filter:
+        authorized_type.append(1)
+    if query.ending_filter:
+        authorized_type.append(2)
+    if query.insert_filter:
+        authorized_type.append(3)
+
+    authorized_broadcasts = []
+    if query.normal_broadcast:
+        authorized_broadcasts.append("Normal")
+    if query.dub:
+        authorized_broadcasts.append("Dub")
+    if query.rebroadcast:
+        authorized_broadcasts.append("Rebroadcast")
+
+    authorized_song_categories = []
+    if query.standard:
+        authorized_song_categories.append("Standard")
+        authorized_song_categories.append("No Category")
+    if query.instrumental:
+        authorized_song_categories.append("Instrumental")
+    if query.chanting:
+        authorized_song_categories.append("Chanting")
+    if query.character:
+        authorized_song_categories.append("Character")
+
+    if not authorized_type:
+        return []
+
+    if not authorized_broadcasts:
+        return []
+
+    if not authorized_song_categories:
+        return []
+
+    if len(query.annIds) > 500:
+        raise HTTPException(
+            status_code=400, detail="Too many annIds. Maximum allowed is 500."
+        )
+
+    song_list = get_search_result.get_annId_song_list(
+        query.annIds,
         query.ignore_duplicate,
         authorized_type,
         authorized_broadcasts,
@@ -523,8 +596,9 @@ async def malIDs_request(query: malIds_Search_Request):
         return []
 
     if len(query.malIds) > 500:
-        # return error message
-        return "Too many malIds"
+        raise HTTPException(
+            status_code=400, detail="Too many malIDs. Maximum allowed is 500."
+        )
 
     song_list = get_search_result.get_malIds_song_list(
         query.malIds,

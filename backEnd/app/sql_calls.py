@@ -215,7 +215,8 @@ def get_songs_list_from_annIds(
     if "Normal" not in authorized_broadcasts:
         broadcast_filter += " AND isDub == 1 AND isRebroadcast == 1"
 
-    get_songs_from_annId = f"SELECT * from songsFull WHERE songType IN ({','.join('?'*len(authorized_types))}) AND annId IN ({','.join('?'*len(annIds))}) {broadcast_filter} AND songCategory IN ({','.join('?'*len(authorized_song_categories))}) LIMIT 500"
+    get_songs_from_annId = f"SELECT * from songsFull WHERE songType IN ({','.join('?'*len(authorized_types))}) AND annId IN ({','.join('?'*len(annIds))}) {broadcast_filter} AND songCategory IN ({','.join('?'*len(authorized_song_categories))})"
+
     return run_sql_command(
         cursor,
         get_songs_from_annId,

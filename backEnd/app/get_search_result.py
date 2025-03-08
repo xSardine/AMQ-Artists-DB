@@ -132,7 +132,7 @@ def combine_results(
         + artist_songs_list
         + composer_songs_list
     ):
-        if len(final_song_list) >= max_nb_songs:
+        if max_nb_songs and len(final_song_list) >= max_nb_songs:
             break
 
         if song[13] in songId_done:
@@ -915,7 +915,7 @@ def get_composer_ids_song_list(
 
 
 def get_annId_song_list(
-    annId,
+    annIds,
     ignore_duplicate,
     authorized_types,
     authorized_broadcasts,
@@ -929,25 +929,36 @@ def get_annId_song_list(
 
     print("-------------------------")
     print("Date: ", str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")))
-    print(f"annId_filter: {annId}")
+    print(f"annId_filter: {annIds if len(annIds) < 5 else f'{len(annIds)} annIds'}")
     print(f"ignore_dups: {ignore_duplicate}", end=" | ")
     print(f"types: {authorized_types}", end=" | ")
     print(f"broadcasts: {authorized_broadcasts}", end=" | ")
     print(f"song_categories: {authorized_song_categories}")
 
-    if not str(annId).isdigit():
+    if len(annIds) == 0:
+        return []
+
+    if not all(str(annId).isdigit() for annId in annIds):
         return []
 
     songs = sql_calls.get_songs_list_from_annIds(
         cursor,
-        [annId],
+        annIds,
         authorized_types,
         authorized_broadcasts,
         authorized_song_categories,
     )
 
     songs = combine_results(
-        artist_database, songs, [], [], [], [], False, ignore_duplicate
+        artist_database,
+        songs,
+        [],
+        [],
+        [],
+        [],
+        False,
+        ignore_duplicate,
+        max_nb_songs=None,
     )
 
     stop = timeit.default_timer()
@@ -1004,7 +1015,7 @@ def get_malIds_song_list(
         [],
         False,
         ignore_duplicate,
-        max_nb_songs=99999,
+        max_nb_songs=None,
     )
 
     stop = timeit.default_timer()
