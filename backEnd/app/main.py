@@ -1,10 +1,10 @@
 from __future__ import annotations
 from fastapi import FastAPI
+from fastapi.exceptions import HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from pydantic import BaseModel, Field
 from typing import List, Optional
-
 import get_search_result
 import sql_calls, utils
 from random import randrange
@@ -540,6 +540,11 @@ async def search_request(query: annIdList_Search_Request):
     if not authorized_song_categories:
         return []
 
+    if len(query.annIds) > 500:
+        raise HTTPException(
+            status_code=400, detail="Too many annIds. Maximum allowed is 500."
+        )
+
     song_list = get_search_result.get_annId_song_list(
         query.annIds,
         query.ignore_duplicate,
@@ -591,8 +596,9 @@ async def malIDs_request(query: malIds_Search_Request):
         return []
 
     if len(query.malIds) > 500:
-        # return error message
-        return "Too many malIds"
+        raise HTTPException(
+            status_code=400, detail="Too many malIDs. Maximum allowed is 500."
+        )
 
     song_list = get_search_result.get_malIds_song_list(
         query.malIds,
