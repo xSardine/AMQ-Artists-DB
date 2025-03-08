@@ -25,4 +25,4 @@ sudo gunicorn --keyfile=</path_to_privkey/privkey.pem> --certfile=</path_to_full
 
 A sample of the database is available in `backEnd/app/data/Enhanced-AMQ-Database.sample.db` ;
 This database is a clone of the entire database, except it doesn't have links for the songs (beside the first 500 songs).
-Rename it to `Enhanced-AMQ-Database.db` to make it the main database.
+Rename it to `Enhanced-AMQ-Database.db` to make it work.
