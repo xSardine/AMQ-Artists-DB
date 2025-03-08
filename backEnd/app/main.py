@@ -342,15 +342,11 @@ async def search_request(query: Search_Request):
 async def get_50_random_songs():
     cursor = sql_calls.connect_to_database(sql_calls.database_path)
 
-    songIds = [randrange(28000) for i in range(50)]
+    query = "SELECT * FROM songsFull ORDER BY RANDOM() LIMIT 50"
+    cursor.execute(query)
+    songs = cursor.fetchall()
 
     artist_database = sql_calls.extract_artist_database()
-
-    # Extract every song from song IDs
-    get_songs_from_songs_ids = (
-        f"SELECT * from songsFull WHERE songId IN ({','.join('?'*len(songIds))})"
-    )
-    songs = sql_calls.run_sql_command(cursor, get_songs_from_songs_ids, songIds)
 
     song_list = [utils.format_song(artist_database, song) for song in songs]
 
