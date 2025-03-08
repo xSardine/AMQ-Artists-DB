@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 
 database = Path("../app/data/Enhanced-AMQ-Database.db")
+sample_database = Path("../app/data/Enhanced-AMQ-Database.sample.db")
 song_database_path = Path("../app/data/song_database.json")
 artist_database_path = Path("../app/data/artist_database.json")
 
@@ -106,7 +107,7 @@ CREATE TABLE link_artist_name (
     "romaji_name" VARCHAR(255) NOT NULL,
     FOREIGN KEY ("artist_id")
         REFERENCES artist ("id"),
-    UNIQUE (artist_id, romaji_name)
+    UNIQUE (artist_id, original_name, romaji_name)
 );
 
 CREATE TABLE link_song_artist (
@@ -535,6 +536,18 @@ except sqlite3.Error as error:
     print("\n", error, "\n")
 
 try:
+    sample_sqliteConnection = sqlite3.connect(sample_database)
+    sample_cursor = sample_sqliteConnection.cursor()
+    for command in RESET_DB_SQL.split(";"):
+        run_sql_command(sample_cursor, command)
+    sample_sqliteConnection.commit()
+    sample_cursor.close()
+    sample_sqliteConnection.close()
+    print("Sample Reset successful :)")
+except sqlite3.Error as error:
+    print("\n", error, "\n")
+
+try:
     sqliteConnection = sqlite3.connect(database)
     cursor = sqliteConnection.cursor()
     print("Connection successful :)")
@@ -663,3 +676,36 @@ cursor.close()
 sqliteConnection.close()
 print("Convertion Done :) - normal")
 print()
+
+
+try:
+    # Connect to the source database
+    source_conn = sqlite3.connect(database)
+    # Connect to the destination database
+    dest_conn = sqlite3.connect(sample_database)
+
+    # Perform the backup
+    source_conn.backup(dest_conn)
+
+    print("Database cloned successfully :)")
+
+    # Update query to set HQ, MQ, and audio to NULL for all rows except the first 500
+    dest_cursor = dest_conn.cursor()
+    dest_cursor.execute(
+        """
+        UPDATE songs
+        SET HQ = NULL, MQ = NULL, audio = NULL
+        WHERE id > 500;
+    """
+    )
+
+    print("Successfully updated songs table :)")
+
+    dest_conn.commit()
+    dest_cursor.close()
+
+    # Close connections
+    dest_conn.close()
+    source_conn.close()
+except sqlite3.Error as error:
+    print("Error while cloning database:", error)

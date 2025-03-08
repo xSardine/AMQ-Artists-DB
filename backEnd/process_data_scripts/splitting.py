@@ -182,14 +182,14 @@ splitting_exception_list = [
         ("Mica Caldito", "mpi", "Mika Kobayashi", "Hiroyuki Sawano"),
     ),
     ("mpi Produced by Hiroyuki Sawano", ("mpi", "Hiroyuki Sawano")),
-    ("Team.Nekokan [Neko] featuring.atsuko", ("Team.Nekokan [Neko]", "atsuko")),
-    ("Team.Nekokan [Neko] featuring.Lia", ("Team.Nekokan [Neko]", "Lia")),
+    ("Team.Nekokan [Neko] featuring. atsuko", ("Team.Nekokan [Neko]", "atsuko")),
+    ("Team.Nekokan [Neko] featuring. Lia", ("Team.Nekokan [Neko]", "Lia")),
     (
-        "Team.Nekokan [Neko] featuring.Junca Amaoto",
+        "Team.Nekokan [Neko] featuring. Junca Amaoto",
         ("Team.Nekokan [Neko]", "Junca Amaoto"),
     ),
     (
-        "Team.Nekokan [Neko] featuring.Rekka Katakiri",
+        "Team.Nekokan [Neko] featuring. Rekka Katakiri",
         ("Team.Nekokan [Neko]", "Rekka Katakiri"),
     ),
     ("Rinko Maki (with Dynamite You)", ("Rinko Maki", "Dynamite You")),
@@ -492,6 +492,7 @@ splitting_exception_list = [
     ("Tim Timebomb and the Interrupters", ("Tim Timebomb and the Interrupters",)),
     ("Yuusuke (ex. HIGH and MIGHTY COLOR)", ("Yuusuke (ex. HIGH and MIGHTY COLOR)",)),
     # x
+    ("R×R", ("R×R",)),
     ("Shin Kawasaki (Kari)×beni-shouga", ("Shin Kawasaki (Kari)×beni-shouga",)),
     ("YABI\u00d7YABI", ("YABI\u00d7YABI",)),
     ("Chun×4", ("Chun×4",)),
@@ -551,6 +552,7 @@ splitting_exception_list = [
         ("Yuji Ohno & Lupintic Five with Friends", "DOUBLE"),
     ),
     # ,
+    ("Sakurakou 3-2, Sakurakou 2-1", ("Sakurakou 3-2, Sakurakou 2-1",)),
     ("RAY PARKER,JR.", ("RAY PARKER,JR.",)),
     ("TA,COOL", ("TA,COOL",)),
     ("Pete Mac, Jr.", ("Pete Mac, Jr.",)),
@@ -763,6 +765,10 @@ splitting_exception_list = [
     ("Ami Onuki (PUFFY)", ("Ami Onuki",)),
     ("ichigo from Kishida Kyoudan &THE Akeboshi Rockets", ("ichigo",)),
     ## Reformatting of the string (reformate the string by adding or removing some part to have better artists name)
+    (
+        "Kazuya Akiho・Kouji Akiho (from Carrot Club)",
+        ("Kazuya Akiho (from Carrot Club)", "Kouji Akiho (from Carrot Club)"),
+    ),
     ("HENTAI SHINSHI CLUB (feat. kojikoji)", ("HENTAI SHINSHI CLUB", "kojikoji")),
     ("yama (feat. Nakimushi)", ("yama", "Nakimushi")),
     (

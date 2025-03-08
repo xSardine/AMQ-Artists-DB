@@ -20,3 +20,9 @@ uvicorn main:app --host 127.0.0.1 --port 8000 --reload
 Using let's encrypt certificate
 
 sudo gunicorn --keyfile=</path_to_privkey/privkey.pem> --certfile=</path_to_fullchain/fullchain.pem> -k uvicorn.workers.UvicornWorker main:app --bind=<ip_adress>
+
+## Database
+
+A sample of the database is available in `backEnd/app/data/Enhanced-AMQ-Database.sample.db` ;
+This database is a clone of the entire database, except it doesn't have links for the songs (beside the first 500 songs).
+Rename it to `Enhanced-AMQ-Database.db` to make it the main database.

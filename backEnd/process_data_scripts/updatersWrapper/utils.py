@@ -265,6 +265,7 @@ def get_artist_id(
     exact_match=False,
     excluded_ids=[],
     verbose=True,
+    amq_id=None,
 ):
     ids = []
     if not exact_match:
@@ -311,7 +312,7 @@ def get_artist_id(
             exit()
             # return -1
         new_id = add_new_artist_to_DB(artist_database, artist)
-        print(f"/!\ COULDN'T FIND {artist}, adding {new_id}")
+        print(f"/!\ COULDN'T FIND {artist} ({amq_id}), adding {new_id}")
         return new_id
 
     if len(ids) > 1:
@@ -324,12 +325,12 @@ def get_artist_id(
         recap_str = get_recap_artists(song_database, artist_database, ids)
 
         if not_exist_ok:
-            input_message = f"\nMultiple artist found for {artist}, please input the correct ID (-1 if NONE):\n{recap_str}"
+            input_message = f"\nMultiple artist found for {artist} ({amq_id}), please input the correct ID (-1 if NONE):\n{recap_str}"
             disambiguated_id = ask_integer_input(
                 input_message, [int(id) for id in ids] + [-1]
             )
         else:
-            input_message = f"\nMultiple artist found for {artist}, please input the correct ID:\n{recap_str}"
+            input_message = f"\nMultiple artist found for {artist} ({amq_id}), please input the correct ID:\n{recap_str}"
             disambiguated_id = ask_integer_input(input_message, [int(id) for id in ids])
 
         if disambiguated_id == -1:

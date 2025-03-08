@@ -214,6 +214,7 @@ def check_meets_artists_requirements(
         33,  # Tokyo Konsei
         215,  # Suginami
         1736,  # JDK
+        1639,  # System-B
         4261,
         7695,
         6678,

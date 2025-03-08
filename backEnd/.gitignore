@@ -1,5 +1,8 @@
 *.pyc
 *.db
+!Enhanced-AMQ-Database.sample.db
+*.json
+!artist_database.json
 commands.txt
 songs_database.json
 expand_database.json
