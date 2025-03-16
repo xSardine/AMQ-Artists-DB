@@ -313,6 +313,8 @@ splitting_exception_list = [
     ("The S・h・e", ("The S・h・e",)),
     ("Teikoku Kageki-dan・Hana-gumi", ("Teikoku Kageki-dan・Hana-gumi",)),
     # &
+    ("meia&soya", ("meia&soya",)),
+    ("Yoko Kon & Pinky to Killers", ("Yoko Kon & Pinky to Killers",)),
     ("KEEN (C&K)", ("KEEN (C&K)",)),
     ("Giga & TeddyLoid", ("Giga & TeddyLoid",)),
     (

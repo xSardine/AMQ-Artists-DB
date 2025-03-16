@@ -151,6 +151,9 @@ def ask_line_up(
     while True:
         user_input = input(message)
 
+        if user_input.startswith("$"):
+            user_input = " ".join(user_input.split(" ")[1:])
+
         if user_input == "!":
             break
 

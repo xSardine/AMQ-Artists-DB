@@ -205,10 +205,6 @@ def format_song(artist_database, song):
 
             arrangers.append(current_arranger)
 
-    # TODO : remove this once we are synced with AMQ
-    songComposer = ", ".join([composer["names"][0] for composer in composers])
-    songArranger = ", ".join([arranger["names"][0] for arranger in arrangers])
-
     songinfo = {
         "annId": song[0],
         "linked_ids": {
@@ -228,11 +224,9 @@ def format_song(artist_database, song):
         "songType": type,
         "songCategory": song[18],
         "songName": song[20],
-        "songArtist": song[22],
-        # "songComposer": song[26], # TODO : activate that method whenever we are synced with AMQ
-        "songComposer": songComposer,
-        # "songArranger": song[30], # TODO : activate that method whenever we are synced with AMQ
-        "songArranger": songArranger,
+        "songArtist": song[22] if song[22] else "",
+        "songComposer": song[26] if song[26] else "",
+        "songArranger": song[30] if song[30] else "",
         "songDifficulty": song[33],
         "isDub": song[34],
         "isRebroadcast": song[35],
