@@ -244,10 +244,6 @@ splitting_exception_list = [
         "Uchuu Shoujo Vanaren-tai wants Aya Hirano",
         ("Uchuu Shoujo Vanaren-tai", "Aya Hirano"),
     ),
-    (
-        "Naruyoshi Kikuchi y Pepe Tormento Azcarar feat. Ichiko Hashimoto",
-        ("Naruyoshi Kikuchi", "Pepe Tormento Azcarar", "Ichiko Hashimoto"),
-    ),
     ("Sukima Switch produced by Tamio Okuda", ("Sukima Switch", "Tamio Okuda")),
     (
         "Hashiguchikanaderiya hugs The Super Ball",
@@ -256,6 +252,7 @@ splitting_exception_list = [
     ("Hammer (Featuring. The Home Boy Chair)", ("Hammer", "The Home Boy Chair")),
     ## Force NOT splitting (exception on splitters)
     # ・
+    ("Y・F ZOMBIE COMPANY", ("Y・F ZOMBIE COMPANY",)),
     (
         "B-CLUB\u30fbBAND feat. Hiromi Tsuru, Aya Hisakawa, Yumi Touma, Hinako Kanamaru, Junko Shimakata",
         (
@@ -512,6 +509,7 @@ splitting_exception_list = [
     ("nana×nana", ("nana×nana",)),
     ("U×Mishi", ("U×Mishi",)),
     # with
+    ("NyaaKB with Tsuchinoko Panda", ("NyaaKB with Tsuchinoko Panda",)),
     ('Takumi Nakayama with "R"', ('Takumi Nakayama with "R"',)),
     ("YOURI with the CASH", ("YOURI with the CASH",)),
     ("KYAN MARIE with MEDUSA", ("KYAN MARIE with MEDUSA",)),
@@ -577,6 +575,8 @@ splitting_exception_list = [
     ("Wake Up, May'n!", ("Wake Up, May'n!",)),
     ("Kagrra,", ("Kagrra,",)),
     # +
+    ('Hiroshi Kakizaki + "r" Project', ('Hiroshi Kakizaki + "r" Project',)),
+    ("Helios+trope", ("Helios+trope",)),
     ("ma2k from roughsketch+", ("ma2k from roughsketch+",)),
     ("405+D", ("405+D",)),
     ("encounter+", ("encounter+",)),
@@ -607,10 +607,6 @@ splitting_exception_list = [
     ("+earth☆sky feat. ayaka morikawa", ("+earth☆sky", "ayaka morikawa")),
     ("SUMMONERS 2+", ("SUMMONERS 2+",)),
     ("DIALOGUE+", ("DIALOGUE+",)),
-    (
-        "MERI+Noriyuki, Kanami, Haato & Shima no Nyanko-tachi",
-        ("MERI+Noriyuki", "Kanami", "Haato", "Shima no Nyanko-tachi"),
-    ),
     ("sophie+", ("sophie+",)),
     ("Megami-ryousei+α", ("Megami-ryousei+α",)),
     # other
@@ -687,6 +683,7 @@ splitting_exception_list = [
         "SawanoHiroyuki[nZk]:TOMORROW X TOGETHER",
         ("SawanoHiroyuki[nZk]", "TOMORROW X TOGETHER"),
     ),
+    ("SawanoHiroyuki[nZk]:Rei", ("SawanoHiroyuki[nZk]", "Rei")),
     ("SawanoHiroyuki[nZk]:Motohiro Hata", ("SawanoHiroyuki[nZk]", "Motohiro Hata")),
     ("SawanoHiroyuki[nZk]:Akihito Okano", ("SawanoHiroyuki[nZk]", "Akihito Okano")),
     ("SawanoHiroyuki[nZk]:XAI", ("SawanoHiroyuki[nZk]", "XAI")),
@@ -725,6 +722,7 @@ splitting_exception_list = [
     ("HARU & SAYAKA from UNIVERS★L D", ("HARU", "SAYAKA")),
     ("UL-SAYS [from T.P.D]", ("UL-SAYS",)),
     ("BACK-ON & Lil' Fang (from FAKY)", ("BACK-ON", "Lil' Fang")),
+    ("Ai Orikasa to Jankenman Chorus-tai", ("Ai Orikasa", "Jankenman Chorus-tai")),
     ("Daiki Nakamura to The King Stars", ("Daiki Nakamura", "The King Stars")),
     (
         "Charisma.com to RYO-Z Onii-san (RIP SLYME)",

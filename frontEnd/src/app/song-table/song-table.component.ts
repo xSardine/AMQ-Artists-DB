@@ -2,14 +2,14 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { SearchRequestService } from '../core/services/search-request.service';
 
 @Component({
-    selector: 'app-song-table',
-    templateUrl: './song-table.component.html',
-    styleUrls: ['./song-table.component.css'],
-    host: {
-        '(document:click)': 'onAnyClick($event)',
-    },
-    template: ` {{ message }} `,
-    standalone: false
+  selector: 'app-song-table',
+  templateUrl: './song-table.component.html',
+  styleUrls: ['./song-table.component.css'],
+  host: {
+    '(document:click)': 'onAnyClick($event)',
+  },
+  template: ` {{ message }} `,
+  standalone: false,
 })
 export class SongTableComponent {
   constructor(private searchRequestService: SearchRequestService) {}
@@ -120,8 +120,8 @@ export class SongTableComponent {
       },
       // CET EU
       {
-        start: new Date().setUTCHours(19, 30, 0, 0),
-        end: new Date().setUTCHours(20, 23, 0, 0),
+        start: new Date().setUTCHours(18, 30, 0, 0),
+        end: new Date().setUTCHours(19, 23, 0, 0),
       },
     ];
 

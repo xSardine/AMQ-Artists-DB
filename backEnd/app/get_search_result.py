@@ -83,8 +83,8 @@ def is_ranked_time():
         )
         # CET
         or (
-            (date.hour == 19 and date.minute >= 30)
-            or (date.hour == 20 and date.minute < 23)
+            (date.hour == 18 and date.minute >= 30)
+            or (date.hour == 19 and date.minute < 23)
         )
     ):
         return True
@@ -112,6 +112,10 @@ def combine_results(
     and_logic=False,
     ignore_duplicate=False,
     max_nb_songs=500,
+    anime_search_filters=None,
+    song_name_search_filters=None,
+    artist_search_filters=None,
+    composer_search_filters=None,
 ):
     """
     Combine the results of the different search filters
@@ -139,12 +143,13 @@ def combine_results(
             continue
 
         duplicate_ID = get_duplicate_in_list(final_song_list, song)
+
         if and_logic:
             if (
-                (not artist_songs_list or song in artist_songs_list)
-                and (not anime_songs_list or song in anime_songs_list)
-                and (not songName_songs_list or song in songName_songs_list)
-                and (not composer_songs_list or song in composer_songs_list)
+                (not artist_search_filters or song in artist_songs_list)
+                and (not anime_search_filters or song in anime_songs_list)
+                and (not song_name_search_filters or song in songName_songs_list)
+                and (not composer_search_filters or song in composer_songs_list)
             ):
                 if not ignore_duplicate or duplicate_ID == -1:
                     songId_done.append(song[13])
@@ -213,8 +218,11 @@ def check_meets_artists_requirements(
     LINE_UP_EXCEPTIONS = [
         33,  # Tokyo Konsei
         215,  # Suginami
+        546,  # Pokemon Kids
         1736,  # JDK
         1639,  # System-B
+        8086,  # IPD voice
+        20185,  # School mates
         4261,
         7695,
         6678,
@@ -274,10 +282,15 @@ def check_meets_composers_requirements(
     LINE_UP_EXCEPTIONS = [
         33,  # Tokyo Konsei
         215,  # Suginami
+        546,  # Pokemon Kids
         1736,  # JDK
+        1639,  # System-B
+        8086,  # IPD voice
+        20185,  # School mates
         4261,
         7695,
         6678,
+        5611,  # Uchuujin
     ]
 
     song_composers = []
@@ -755,6 +768,10 @@ def get_search_results(
         and_logic,
         ignore_duplicate,
         max_nb_songs,
+        anime_search_filters=anime_search_filters,
+        song_name_search_filters=song_name_search_filters,
+        artist_search_filters=artist_search_filters,
+        composer_search_filters=composer_search_filters,
     )
 
     print(f"Post Process: {round(timeit.default_timer() - start, 4)}", end=" | ")

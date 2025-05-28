@@ -7,10 +7,10 @@ import {
 } from '@angular/platform-browser';
 
 @Component({
-    selector: 'app-search-bar',
-    templateUrl: './search-bar.component.html',
-    styleUrls: ['./search-bar.component.css'],
-    standalone: false
+  selector: 'app-search-bar',
+  templateUrl: './search-bar.component.html',
+  styleUrls: ['./search-bar.component.css'],
+  standalone: false,
 })
 export class SearchBarComponent implements OnInit {
   constructor(
@@ -76,8 +76,8 @@ export class SearchBarComponent implements OnInit {
       },
       // CET EU
       {
-        start: new Date().setUTCHours(19, 30, 0, 0),
-        end: new Date().setUTCHours(20, 23, 0, 0),
+        start: new Date().setUTCHours(18, 30, 0, 0),
+        end: new Date().setUTCHours(19, 23, 0, 0),
       },
     ];
 
