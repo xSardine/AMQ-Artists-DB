@@ -146,10 +146,26 @@ def combine_results(
 
         if and_logic:
             if (
-                (not artist_search_filters or song in artist_songs_list)
-                and (not anime_search_filters or song in anime_songs_list)
-                and (not song_name_search_filters or song in songName_songs_list)
-                and (not composer_search_filters or song in composer_songs_list)
+                (
+                    not artist_search_filters
+                    or not artist_search_filters.search
+                    or song in artist_songs_list
+                )
+                and (
+                    not anime_search_filters
+                    or not anime_search_filters.search
+                    or song in anime_songs_list
+                )
+                and (
+                    not song_name_search_filters
+                    or not song_name_search_filters.search
+                    or song in songName_songs_list
+                )
+                and (
+                    not composer_search_filters
+                    or not composer_search_filters.search
+                    or song in composer_songs_list
+                )
             ):
                 if not ignore_duplicate or duplicate_ID == -1:
                     songId_done.append(song[13])
