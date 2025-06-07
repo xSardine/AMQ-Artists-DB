@@ -19,11 +19,11 @@ ANIME_REGEX_REPLACE_RULES = [
     {"input": "ú", "replace": "[úÚ]"},
     # Ü can't lower correctly with sqlite lower function
     {"input": "ü", "replace": "[üÜ]"},
-    {"input": "u", "replace": "([uūŪûúùüǖμυ]|uu)"},
+    {"input": "ou", "replace": "(ou|ō|o)"},
     {"input": "uu", "replace": "(uu|u|ū)"},
+    {"input": "u", "replace": "([uūŪûúÚùüÜǖμυ]|uu)"},
     # Ω can't lower correctly with sqlite lower function
     {"input": "ω", "replace": "[ωΩ]"},
-    {"input": "w", "replace": "[wω]"},
     # Ō can't lower correctly with sqlite lower function
     {"input": "ō", "replace": "[ōŌ]"},
     # Φ can't lower correctly with  lower function
@@ -33,11 +33,13 @@ ANIME_REGEX_REPLACE_RULES = [
     # Ó can't lower correctly with sqlite lower function
     {"input": "ó", "replace": "[óÓ]"},
     # Ö can't lower correctly with sqlite lower function
-    {"input": "ou", "replace": "(ou|ō|o)"},
+    {"input": "ö", "replace": "[öÖ]"},
+    {"input": "0", "replace": "[0Ө]"},
     {"input": "oo", "replace": "(oo|ō|o)"},
     {"input": "oh", "replace": "(oh|ō|o)"},
     {"input": "wo", "replace": "(wo|o)"},
-    {"input": "o", "replace": "([oōŌóòöôøØӨφΦο]|ou|oo|oh|wo)"},
+    {"input": "o", "replace": "([oōŌóÓòöÖôøØ0ӨφΦο]|ou|oo|oh|wo)"},
+    {"input": "w", "replace": "[wω]"},
     {"input": "aa", "replace": "(aa|a)"},
     {"input": "ae", "replace": "(ae|æ)"},
     # Λ can't lower correctly with sqlite lower function
@@ -54,7 +56,7 @@ ANIME_REGEX_REPLACE_RULES = [
     {"input": "ā", "replace": "[āĀ]"},
     # Å can't lower correctly with sqlite lower function
     {"input": "å", "replace": "[åÅ]"},
-    {"input": "a", "replace": "([aäãάΆ@âàÀáạåæā∀λΛ]|aa)"},
+    {"input": "a", "replace": "([aəäãάΆ@âàÀáÁạåÅæāĀ∀λΛ]|aa)"},
     # ↄ can't lower correctly with sqlite lower function
     {"input": "ↄ", "replace": "[ↄↃ]"},
     {"input": "c", "replace": "[cςč℃⊃ↄↃϛ]"},
@@ -64,17 +66,18 @@ ANIME_REGEX_REPLACE_RULES = [
     {"input": "ë", "replace": "[ëË]"},
     # Ǝ can't lower correctly with sqlite lower function
     {"input": "ǝ", "replace": "[ǝƎ]"},
-    {"input": "e", "replace": "[eəéÉêёëèæēǝƎ]"},
+    {"input": "e", "replace": "[eəéÉêёëËèæēǝƎ]"},
     {"input": "'", "replace": "['’ˈ]"},
-    {"input": "n", "replace": "[nñ]"},
-    {"input": "0", "replace": "[0Ө]"},
+    {"input": "n", "replace": "[nñň]"},
     {"input": "2", "replace": "[2²₂]"},
     {"input": "3", "replace": "[3³]"},
     {"input": "5", "replace": "[5⁵]"},
     {"input": "*", "replace": "[*✻＊✳︎]"},
+    {"input": "ii", "replace": "(ii|i)"},
     {"input": "i", "replace": "([iíίɪ]|ii)"},
     {"input": "x", "replace": "[x×]"},
     {"input": "b", "replace": "[bßβ]"},
+    {"input": "ss", "replace": "(ss|ß)"},
     # я can't lower correctly with sqlite lower function
     {"input": "я", "replace": "[яЯ]"},
     {"input": "r", "replace": "[rяЯ]"},
