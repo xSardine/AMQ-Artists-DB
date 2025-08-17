@@ -227,6 +227,7 @@ class Anime_List_Links(BaseModel):
 class Song_Entry(BaseModel):
     annId: int
     annSongId: int
+    amqSongId: int
     animeENName: str
     animeJPName: str
     animeAltName: Optional[List[str]]

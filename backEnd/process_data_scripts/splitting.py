@@ -55,10 +55,6 @@ splitting_exception_list = [
     ("Me to Humbert Humbert", ("Me", "Humbert Humbert")),
     ("Unsho Ishizuka to Pokemon Kids", ("Unsho Ishizuka", "Pokemon Kids")),
     (
-        "Mori no Ki Jidou Gasshou-dan to Sono Otomodachi",
-        ("Mori no Ki Jidou Gasshou-dan", "Sono Otomodachi"),
-    ),
-    (
         "Sogeking to Shounen Shoujo Gasshou-dan",
         ("Sogeking", "Shounen Shoujo Gasshou-dan"),
     ),
@@ -171,6 +167,7 @@ splitting_exception_list = [
     ),
     ("REAL AKIBA BOYZ loves Shoko Nakagawa", ("REAL AKIBA BOYZ", "Shoko Nakagawa")),
     ("m-flo loves Alex (CLAZZIQUAI PROJECT)", ("m-flo", "Alex (CLAZZIQUAI PROJECT)")),
+    ("m-flo loves Adee A.", ("m-flo", "Adee A.")),
     (
         "THE RZA Feat: The Reverend William Burk",
         ("THE RZA", "The Reverend William Burk"),
@@ -509,6 +506,7 @@ splitting_exception_list = [
     ("nana×nana", ("nana×nana",)),
     ("U×Mishi", ("U×Mishi",)),
     # with
+    ("Babbit with Kodocha-tai", ("Babbit with Kodocha-tai",)),
     ("NyaaKB with Tsuchinoko Panda", ("NyaaKB with Tsuchinoko Panda",)),
     ('Takumi Nakayama with "R"', ('Takumi Nakayama with "R"',)),
     ("YOURI with the CASH", ("YOURI with the CASH",)),
@@ -575,6 +573,7 @@ splitting_exception_list = [
     ("Wake Up, May'n!", ("Wake Up, May'n!",)),
     ("Kagrra,", ("Kagrra,",)),
     # +
+    ("t+pazolite", ("t+pazolite",)),
     ('Hiroshi Kakizaki + "r" Project', ('Hiroshi Kakizaki + "r" Project',)),
     ("Helios+trope", ("Helios+trope",)),
     ("ma2k from roughsketch+", ("ma2k from roughsketch+",)),
