@@ -26,7 +26,7 @@ class Search_Filter(BaseModel):
 
     class Config:
         # This will search for every fripSide song, as well as every Yoshino Nanjo song with not more than 2 other artists
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "search": "fripSide",
                 "partial_match": True,
@@ -60,7 +60,7 @@ class Search_Request(BaseModel):
     character: Optional[bool] = True
 
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "anime_search_filter": {
                     "search": "White Album",
@@ -174,12 +174,50 @@ class malIds_Search_Request(BaseModel):
 class artist(BaseModel):
     id: int
     names: List[str]
-    line_up_id: Optional[int]
-    groups: Optional[List[artist]]
-    members: Optional[List[artist]]
+    line_up_id: Optional[int] = -1
+    groups: Optional[List[artist]] = None
+    members: Optional[List[artist]] = None
 
 
-artist.update_forward_refs()
+artist.model_rebuild()
+
+
+class Anime_List_Links(BaseModel):
+    myanimelist: Optional[int]
+    anidb: Optional[int]
+    anilist: Optional[int]
+    kitsu: Optional[int]
+
+
+class Song_Entry(BaseModel):
+    annId: int
+    annSongId: int
+    animeENName: str
+    animeJPName: str
+    animeAltName: Optional[List[str]]
+    animeVintage: Optional[str]
+    linked_ids: Anime_List_Links
+    animeType: Optional[str]
+    animeCategory: Optional[str]
+    songType: str
+    songName: str
+    songArtist: str
+    songComposer: str
+    songArranger: str
+    songDifficulty: Optional[float]
+    songCategory: Optional[str]
+    songLength: Optional[float]
+    isDub: Optional[bool]
+    isRebroadcast: Optional[bool]
+    HQ: Optional[str]
+    MQ: Optional[str]
+    audio: Optional[str]
+    artists: List[artist]
+    composers: List[artist]
+    arrangers: List[artist]
+
+
+()
 
 
 class Anime_List_Links(BaseModel):
