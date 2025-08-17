@@ -217,9 +217,6 @@ class Song_Entry(BaseModel):
     arrangers: List[artist]
 
 
-()
-
-
 class Anime_List_Links(BaseModel):
     myanimelist: Optional[int]
     anidb: Optional[int]
