@@ -1058,3 +1058,59 @@ def get_malIds_song_list(
     print(f"nb_results: {len(songs)}")
 
     return songs
+
+
+def get_annSongIds_song_list(
+    annSongIds,
+    ignore_duplicate,
+    authorized_types=[1, 2, 3],
+    authorized_broadcasts=["Normal", "Dub", "Rebroadcast"],
+    authorized_song_categories=["Standard", "Chanting", "Instrumental", "Character"],
+):
+
+    start = timeit.default_timer()
+
+    cursor = sql_calls.connect_to_database(sql_calls.database_path)
+
+    artist_database = sql_calls.extract_artist_database()
+
+    print("-------------------------")
+    print("Date: ", str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")))
+    print(f"annSongIds_filter: {annSongIds if len(annSongIds) < 5 else f'{len(annSongIds)} annSongIds'}")
+    print(f"ignore_dups: {ignore_duplicate}", end=" | ")
+    print(f"types: {authorized_types}", end=" | ")
+    print(f"broadcasts: {authorized_broadcasts}", end=" | ")
+    print(f"song_categories: {authorized_song_categories}")
+
+    if len(annSongIds) == 0:
+        return []
+
+    if not all(str(annSongId).isdigit() for annSongId in annSongIds):
+        return []
+
+    songs = sql_calls.get_songs_list_from_annSongIds(
+        cursor,
+        annSongIds,
+        authorized_types,
+        authorized_broadcasts,
+        authorized_song_categories,
+    )
+
+    songs = combine_results(
+        artist_database,
+        songs,
+        [],
+        [],
+        [],
+        [],
+        False,
+        ignore_duplicate,
+        max_nb_songs=None,
+    )
+
+    stop = timeit.default_timer()
+
+    print(f"computing_time: {round(stop - start, 4)}", end=" | ")
+    print(f"nb_results: {len(songs)}")
+
+    return songs
