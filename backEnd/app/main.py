@@ -171,6 +171,42 @@ class malIds_Search_Request(BaseModel):
     character: Optional[bool] = True
 
 
+class annSongIds_Search_Request(BaseModel):
+    annSongIds: List[int] = []
+    ignore_duplicate: Optional[bool] = False
+
+    opening_filter: Optional[bool] = True
+    ending_filter: Optional[bool] = True
+    insert_filter: Optional[bool] = True
+
+    normal_broadcast: Optional[bool] = True
+    dub: Optional[bool] = True
+    rebroadcast: Optional[bool] = True
+
+    standard: Optional[bool] = True
+    instrumental: Optional[bool] = True
+    chanting: Optional[bool] = True
+    character: Optional[bool] = True
+
+
+class Season_Search_Request(BaseModel):
+    season: str
+    ignore_duplicate: Optional[bool] = False
+
+    opening_filter: Optional[bool] = True
+    ending_filter: Optional[bool] = True
+    insert_filter: Optional[bool] = True
+
+    normal_broadcast: Optional[bool] = True
+    dub: Optional[bool] = True
+    rebroadcast: Optional[bool] = True
+
+    standard: Optional[bool] = True
+    instrumental: Optional[bool] = True
+    chanting: Optional[bool] = True
+    character: Optional[bool] = True
+
+
 class artist(BaseModel):
     id: int
     names: List[str]
@@ -643,6 +679,175 @@ async def malIDs_request(query: malIds_Search_Request):
     return song_list
 
 
+@app.post("/api/ann_song_ids_request", response_model=List[Song_Entry])
+async def ann_song_ids_request(query: annSongIds_Search_Request):
+
+    authorized_type = []
+    if query.opening_filter:
+        authorized_type.append(1)
+    if query.ending_filter:
+        authorized_type.append(2)
+    if query.insert_filter:
+        authorized_type.append(3)
+
+    authorized_broadcasts = []
+    if query.normal_broadcast:
+        authorized_broadcasts.append("Normal")
+    if query.dub:
+        authorized_broadcasts.append("Dub")
+    if query.rebroadcast:
+        authorized_broadcasts.append("Rebroadcast")
+
+    authorized_song_categories = []
+    if query.standard:
+        authorized_song_categories.append("Standard")
+        authorized_song_categories.append("No Category")
+    if query.instrumental:
+        authorized_song_categories.append("Instrumental")
+    if query.chanting:
+        authorized_song_categories.append("Chanting")
+    if query.character:
+        authorized_song_categories.append("Character")
+
+    if not authorized_type:
+        return []
+
+    if not authorized_broadcasts:
+        return []
+
+    if not authorized_song_categories:
+        return []
+
+    if len(query.annSongIds) > 500:
+        raise HTTPException(
+            status_code=400, detail="Too many annSongIds. Maximum allowed is 500."
+        )
+
+    song_list = get_search_result.get_annSongIds_song_list(
+        query.annSongIds,
+        query.ignore_duplicate,
+        authorized_type,
+        authorized_broadcasts,
+        authorized_song_categories,
+    )
+
+    return song_list
+
+
+# api points that returns all songs from a specific season
+@app.post("/api/filter_season", response_model=List[Song_Entry])
+async def filter_season(query: Season_Search_Request):
+
+    # check it's correctly formatted
+    possible_seasons = ["Winter", "Spring", "Summer", "Fall"]
+
+    if len(query.season.split(" ")) != 2:
+        raise HTTPException(
+            status_code=400, detail="Invalid season format. Please use 'Season Year'."
+        )
+
+    sson, year = query.season.split(" ")
+    if sson not in possible_seasons:
+        raise HTTPException(
+            status_code=400, detail="Invalid season. Please use 'Winter', 'Spring', 'Summer', or 'Fall'."
+        )
+
+    if not year.isdigit():
+        raise HTTPException(
+            status_code=400, detail="Invalid year. Please use a 4-digit year."
+        )
+
+    if len(year) != 4:
+        raise HTTPException(
+            status_code=400, detail="Invalid year. Please use a 4-digit year."
+        )
+
+    # Apply filters
+    authorized_type = []
+    if query.opening_filter:
+        authorized_type.append(1)
+    if query.ending_filter:
+        authorized_type.append(2)
+    if query.insert_filter:
+        authorized_type.append(3)
+
+    authorized_broadcasts = []
+    if query.normal_broadcast:
+        authorized_broadcasts.append("Normal")
+    if query.dub:
+        authorized_broadcasts.append("Dub")
+    if query.rebroadcast:
+        authorized_broadcasts.append("Rebroadcast")
+
+    authorized_song_categories = []
+    if query.standard:
+        authorized_song_categories.append("Standard")
+        authorized_song_categories.append("No Category")
+    if query.instrumental:
+        authorized_song_categories.append("Instrumental")
+    if query.chanting:
+        authorized_song_categories.append("Chanting")
+    if query.character:
+        authorized_song_categories.append("Character")
+
+    if not authorized_type:
+        return []
+
+    if not authorized_broadcasts:
+        return []
+
+    if not authorized_song_categories:
+        return []
+
+    cursor = sql_calls.connect_to_database(sql_calls.database_path)
+
+    # Build the SQL query with filters
+    base_query = "SELECT * from songsFull WHERE animeVintage LIKE ?"
+    params = [f"%{query.season}%"]
+    
+    # Add song type filter
+    if authorized_type:
+        type_placeholders = ",".join(["?"] * len(authorized_type))
+        base_query += f" AND songType IN ({type_placeholders})"
+        params.extend(authorized_type)
+    
+    # Add broadcast type filter (following the same logic as other endpoints)
+    broadcast_filter = ""
+    if "Dub" not in authorized_broadcasts:
+        broadcast_filter += " AND isDub == 0"
+    if "Rebroadcast" not in authorized_broadcasts:
+        broadcast_filter += " AND isRebroadcast == 0"
+    if "Normal" not in authorized_broadcasts:
+        broadcast_filter += " AND isDub == 1 AND isRebroadcast == 1"
+    
+    base_query += broadcast_filter
+    
+    # Add song category filter
+    if authorized_song_categories:
+        category_placeholders = ",".join(["?"] * len(authorized_song_categories))
+        base_query += f" AND songCategory IN ({category_placeholders})"
+        params.extend(authorized_song_categories)
+
+    songs = sql_calls.run_sql_command(cursor, base_query, params)
+
+    artist_database = sql_calls.extract_artist_database()
+
+    song_list = [utils.format_song(artist_database, song) for song in songs]
+
+    # Apply duplicate filtering if requested
+    if query.ignore_duplicate:
+        seen_songs = set()
+        filtered_songs = []
+        for song in song_list:
+            song_key = f"{song.songName} by {song.songArtist}"
+            if song_key not in seen_songs:
+                seen_songs.add(song_key)
+                filtered_songs.append(song)
+        song_list = filtered_songs
+
+    return song_list
+
+
 # api point that returns every possible songartist string for autocompletion
 @app.get("/api/artist_autocomplete")
 async def artist_autocomplete(
@@ -740,38 +945,6 @@ async def anime_name_autocomplete(
     anime_name_list = sorted(anime_name_list, key=lambda x: x.lower())
 
     return anime_name_list
-
-
-# api points that returns all songs from a specific season
-@app.get("/api/filter_season")
-async def filter_season(season: str):
-
-    # check it's correctly formatted
-    possible_seasons = ["Winter", "Spring", "Summer", "Fall"]
-
-    if len(season.split(" ")) != 2:
-        return f"{season} is an invalid season, please use the format 'Season Year'. Example : 'Winter 2021'"
-
-    sson, year = season.split(" ")
-    if sson not in possible_seasons:
-        return f"{sson} is an invalid season, please use the format 'Season Year'. Example : 'Winter 2021'"
-
-    if not year.isdigit():
-        return f"{year} is an invalid year, please use the format 'Season Year'. Example : 'Winter 2021'"
-
-    if len(year) != 4:
-        return f"{year} is an invalid year, please use the format 'Season Year'. Example : 'Winter 2021'"
-
-    cursor = sql_calls.connect_to_database(sql_calls.database_path)
-
-    get_all_songs = "SELECT * from songsFull WHERE animeVintage LIKE ?"
-    songs = sql_calls.run_sql_command(cursor, get_all_songs, [f"%{season}%"])
-
-    artist_database = sql_calls.extract_artist_database()
-
-    song_list = [utils.format_song(artist_database, song) for song in songs]
-
-    return song_list
 
 
 # this endpoing returns a .json dict containter every key annId value linked_ids

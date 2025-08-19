@@ -248,6 +248,30 @@ def get_songs_list_from_malIds(
     )
 
 
+def get_songs_list_from_annSongIds(
+    cursor,
+    annSongIds,
+    authorized_types,
+    authorized_broadcasts,
+    authorized_song_categories,
+):
+
+    broadcast_filter = ""
+    if "Dub" not in authorized_broadcasts:
+        broadcast_filter += " AND isDub == 0"
+    if "Rebroadcast" not in authorized_broadcasts:
+        broadcast_filter += " AND isRebroadcast == 0"
+    if "Normal" not in authorized_broadcasts:
+        broadcast_filter += " AND isDub == 1 AND isRebroadcast == 1"
+
+    get_songs_from_annSongIds = f"SELECT * from songsFull WHERE songType IN ({','.join('?'*len(authorized_types))}) AND annSongId IN ({','.join('?'*len(annSongIds))}) {broadcast_filter} AND songCategory IN ({','.join('?'*len(authorized_song_categories))})"
+    return run_sql_command(
+        cursor,
+        get_songs_from_annSongIds,
+        authorized_types + annSongIds + authorized_song_categories,
+    )
+
+
 def get_song_list_from_songArtist(
     cursor, regex, authorized_types, authorized_broadcasts, authorized_song_categories
 ):
