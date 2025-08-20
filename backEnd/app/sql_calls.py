@@ -272,6 +272,30 @@ def get_songs_list_from_annSongIds(
     )
 
 
+def get_songs_list_from_amqSongIds(
+    cursor,
+    amqSongIds,
+    authorized_types,
+    authorized_broadcasts,
+    authorized_song_categories,
+):
+
+    broadcast_filter = ""
+    if "Dub" not in authorized_broadcasts:
+        broadcast_filter += " AND isDub == 0"
+    if "Rebroadcast" not in authorized_broadcasts:
+        broadcast_filter += " AND isRebroadcast == 0"
+    if "Normal" not in authorized_broadcasts:
+        broadcast_filter += " AND isDub == 1 AND isRebroadcast == 1"
+
+    get_songs_from_amqSongIds = f"SELECT * from songsFull WHERE songType IN ({','.join('?'*len(authorized_types))}) AND amqSongId IN ({','.join('?'*len(amqSongIds))}) {broadcast_filter} AND songCategory IN ({','.join('?'*len(authorized_song_categories))})"
+    return run_sql_command(
+        cursor,
+        get_songs_from_amqSongIds,
+        authorized_types + amqSongIds + authorized_song_categories,
+    )
+
+
 def get_song_list_from_songArtist(
     cursor, regex, authorized_types, authorized_broadcasts, authorized_song_categories
 ):

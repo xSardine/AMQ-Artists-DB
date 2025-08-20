@@ -189,6 +189,24 @@ class annSongIds_Search_Request(BaseModel):
     character: Optional[bool] = True
 
 
+class amqSongIds_Search_Request(BaseModel):
+    amqSongIds: List[int] = []
+    ignore_duplicate: Optional[bool] = False
+
+    opening_filter: Optional[bool] = True
+    ending_filter: Optional[bool] = True
+    insert_filter: Optional[bool] = True
+
+    normal_broadcast: Optional[bool] = True
+    dub: Optional[bool] = True
+    rebroadcast: Optional[bool] = True
+
+    standard: Optional[bool] = True
+    instrumental: Optional[bool] = True
+    chanting: Optional[bool] = True
+    character: Optional[bool] = True
+
+
 class Season_Search_Request(BaseModel):
     season: str
     ignore_duplicate: Optional[bool] = False
@@ -844,6 +862,61 @@ async def filter_season(query: Season_Search_Request):
                 seen_songs.add(song_key)
                 filtered_songs.append(song)
         song_list = filtered_songs
+
+    return song_list
+
+
+@app.post("/api/amq_song_ids_request", response_model=List[Song_Entry])
+async def amq_song_ids_request(query: amqSongIds_Search_Request):
+
+    authorized_type = []
+    if query.opening_filter:
+        authorized_type.append(1)
+    if query.ending_filter:
+        authorized_type.append(2)
+    if query.insert_filter:
+        authorized_type.append(3)
+
+    authorized_broadcasts = []
+    if query.normal_broadcast:
+        authorized_broadcasts.append("Normal")
+    if query.dub:
+        authorized_broadcasts.append("Dub")
+    if query.rebroadcast:
+        authorized_broadcasts.append("Rebroadcast")
+
+    authorized_song_categories = []
+    if query.standard:
+        authorized_song_categories.append("Standard")
+        authorized_song_categories.append("No Category")
+    if query.instrumental:
+        authorized_song_categories.append("Instrumental")
+    if query.chanting:
+        authorized_song_categories.append("Chanting")
+    if query.character:
+        authorized_song_categories.append("Character")
+
+    if not authorized_type:
+        return []
+
+    if not authorized_broadcasts:
+        return []
+
+    if not authorized_song_categories:
+        return []
+
+    if len(query.amqSongIds) > 500:
+        raise HTTPException(
+            status_code=400, detail="Too many amqSongIds. Maximum allowed is 500."
+        )
+
+    song_list = get_search_result.get_amqSongIds_song_list(
+        query.amqSongIds,
+        query.ignore_duplicate,
+        authorized_type,
+        authorized_broadcasts,
+        authorized_song_categories,
+    )
 
     return song_list
 
