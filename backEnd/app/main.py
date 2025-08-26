@@ -10,7 +10,7 @@ import sql_calls, utils
 from random import randrange
 
 
-class Search_Filter(BaseModel):
+class SearchFilter(BaseModel):
     search: str
     partial_match: Optional[bool] = True
 
@@ -36,11 +36,11 @@ class Search_Filter(BaseModel):
         }
 
 
-class Search_Request(BaseModel):
-    anime_search_filter: Optional[Search_Filter] = []
-    song_name_search_filter: Optional[Search_Filter] = []
-    artist_search_filter: Optional[Search_Filter] = []
-    composer_search_filter: Optional[Search_Filter] = []
+class SearchRequest(BaseModel):
+    anime_search_filter: Optional[SearchFilter] = []
+    song_name_search_filter: Optional[SearchFilter] = []
+    artist_search_filter: Optional[SearchFilter] = []
+    composer_search_filter: Optional[SearchFilter] = []
 
     and_logic: Optional[bool] = True
 
@@ -78,7 +78,7 @@ class Search_Request(BaseModel):
         }
 
 
-class Artist_ID_Search_Request(BaseModel):
+class ArtistIdSearchRequest(BaseModel):
     artist_ids: List[int] = []
     group_granularity: Optional[int] = Field(99, ge=0)
     max_other_artist: Optional[int] = Field(0, ge=0)
@@ -98,7 +98,7 @@ class Artist_ID_Search_Request(BaseModel):
     character: Optional[bool] = True
 
 
-class Composer_ID_Search_Request(BaseModel):
+class ComposerIdSearchRequest(BaseModel):
     composer_ids: List[int] = []
     arrangement: Optional[bool] = True
     ignore_duplicate: Optional[bool] = False
@@ -117,7 +117,7 @@ class Composer_ID_Search_Request(BaseModel):
     character: Optional[bool] = True
 
 
-class annId_Search_Request(BaseModel):
+class AnnIdSearchRequest(BaseModel):
     annId: int
     ignore_duplicate: Optional[bool] = False
 
@@ -135,8 +135,8 @@ class annId_Search_Request(BaseModel):
     character: Optional[bool] = True
 
 
-class annIdList_Search_Request(BaseModel):
-    annIds: List[int] = []
+class AnnIdsSearchRequest(BaseModel):
+    ann_ids: List[int] = []
     ignore_duplicate: Optional[bool] = False
 
     opening_filter: Optional[bool] = True
@@ -153,8 +153,8 @@ class annIdList_Search_Request(BaseModel):
     character: Optional[bool] = True
 
 
-class malIds_Search_Request(BaseModel):
-    malIds: List[int] = []
+class MalIdsSearchRequest(BaseModel):
+    mal_ids: List[int] = []
     ignore_duplicate: Optional[bool] = False
 
     opening_filter: Optional[bool] = True
@@ -171,8 +171,8 @@ class malIds_Search_Request(BaseModel):
     character: Optional[bool] = True
 
 
-class annSongIds_Search_Request(BaseModel):
-    annSongIds: List[int] = []
+class AnnSongIdsSearchRequest(BaseModel):
+    ann_song_ids: List[int] = []
     ignore_duplicate: Optional[bool] = False
 
     opening_filter: Optional[bool] = True
@@ -189,8 +189,8 @@ class annSongIds_Search_Request(BaseModel):
     character: Optional[bool] = True
 
 
-class amqSongIds_Search_Request(BaseModel):
-    amqSongIds: List[int] = []
+class AmqSongIdsSearchRequest(BaseModel):
+    amq_song_ids: List[int] = []
     ignore_duplicate: Optional[bool] = False
 
     opening_filter: Optional[bool] = True
@@ -207,7 +207,7 @@ class amqSongIds_Search_Request(BaseModel):
     character: Optional[bool] = True
 
 
-class Season_Search_Request(BaseModel):
+class SeasonSearchRequest(BaseModel):
     season: str
     ignore_duplicate: Optional[bool] = False
 
@@ -225,60 +225,25 @@ class Season_Search_Request(BaseModel):
     character: Optional[bool] = True
 
 
-class artist(BaseModel):
+class Artist(BaseModel):
     id: int
     names: List[str]
     line_up_id: Optional[int] = -1
-    groups: Optional[List[artist]] = None
-    members: Optional[List[artist]] = None
+    groups: Optional[List[Artist]] = None
+    members: Optional[List[Artist]] = None
 
 
-artist.model_rebuild()
+Artist.model_rebuild()
 
 
-class Anime_List_Links(BaseModel):
+class AnimeListLinks(BaseModel):
     myanimelist: Optional[int]
     anidb: Optional[int]
     anilist: Optional[int]
     kitsu: Optional[int]
 
 
-class Song_Entry(BaseModel):
-    annId: int
-    annSongId: int
-    animeENName: str
-    animeJPName: str
-    animeAltName: Optional[List[str]]
-    animeVintage: Optional[str]
-    linked_ids: Anime_List_Links
-    animeType: Optional[str]
-    animeCategory: Optional[str]
-    songType: str
-    songName: str
-    songArtist: str
-    songComposer: str
-    songArranger: str
-    songDifficulty: Optional[float]
-    songCategory: Optional[str]
-    songLength: Optional[float]
-    isDub: Optional[bool]
-    isRebroadcast: Optional[bool]
-    HQ: Optional[str]
-    MQ: Optional[str]
-    audio: Optional[str]
-    artists: List[artist]
-    composers: List[artist]
-    arrangers: List[artist]
-
-
-class Anime_List_Links(BaseModel):
-    myanimelist: Optional[int]
-    anidb: Optional[int]
-    anilist: Optional[int]
-    kitsu: Optional[int]
-
-
-class Song_Entry(BaseModel):
+class SongEntry(BaseModel):
     annId: int
     annSongId: int
     amqSongId: int
@@ -286,7 +251,7 @@ class Song_Entry(BaseModel):
     animeJPName: str
     animeAltName: Optional[List[str]]
     animeVintage: Optional[str]
-    linked_ids: Anime_List_Links
+    linked_ids: AnimeListLinks
     animeType: Optional[str]
     animeCategory: Optional[str]
     songType: str
@@ -302,9 +267,9 @@ class Song_Entry(BaseModel):
     HQ: Optional[str]
     MQ: Optional[str]
     audio: Optional[str]
-    artists: List[artist]
-    composers: List[artist]
-    arrangers: List[artist]
+    artists: List[Artist]
+    composers: List[Artist]
+    arrangers: List[Artist]
 
 
 # Launch API
@@ -373,9 +338,9 @@ def format_arranger_ids(artist_database, arranger_id):
 
     return arranger
 
-
-@app.post("/api/search_request", response_model=List[Song_Entry])
-async def search_request(query: Search_Request):
+# Process filter parameters from a search request and return authorized lists
+# Raises HTTPException if no filters are selected
+def process_filters(query):
     authorized_type = []
     if query.opening_filter:
         authorized_type.append(1)
@@ -404,13 +369,40 @@ async def search_request(query: Search_Request):
         authorized_song_categories.append("Character")
 
     if not authorized_type:
-        return []
+        raise HTTPException(
+            status_code=400,
+            detail="At least one song type filter (opening, ending, or insert) must be enabled."
+        )
 
     if not authorized_broadcasts:
-        return []
+        raise HTTPException(
+            status_code=400,
+            detail="At least one broadcast type filter (normal, dub, or rebroadcast) must be enabled."
+        )
 
     if not authorized_song_categories:
-        return []
+        raise HTTPException(
+            status_code=400,
+            detail="At least one song category filter (standard, instrumental, chanting, or character) must be enabled."
+        )
+
+    return authorized_type, authorized_broadcasts, authorized_song_categories
+
+
+@app.post("/api/search_request", response_model=List[SongEntry])
+async def search_request(query: SearchRequest):
+    # Check if ranked time restrictions apply
+    if get_search_result.is_ranked_time():
+        # Check if any restricted filters are being used
+        if (query.song_name_search_filter and query.song_name_search_filter.search) or \
+           (query.artist_search_filter and query.artist_search_filter.search) or \
+           (query.composer_search_filter and query.composer_search_filter.search):
+            raise HTTPException(
+                status_code=503,
+                detail="Search temporarily unavailable during ranked time. Song name, artist, and composer searches are disabled."
+            )
+
+    authorized_type, authorized_broadcasts, authorized_song_categories = process_filters(query)
 
     song_list = get_search_result.get_search_results(
         query.anime_search_filter,
@@ -428,7 +420,7 @@ async def search_request(query: Search_Request):
     return song_list
 
 
-@app.post("/api/get_50_random_songs", response_model=List[Song_Entry])
+@app.post("/api/get_50_random_songs", response_model=List[SongEntry])
 async def get_50_random_songs():
     cursor = sql_calls.connect_to_database(sql_calls.database_path)
 
@@ -443,44 +435,16 @@ async def get_50_random_songs():
     return song_list
 
 
-@app.post("/api/artist_ids_request", response_model=List[Song_Entry])
-async def search_request(query: Artist_ID_Search_Request):
+@app.post("/api/artist_ids_request", response_model=List[SongEntry])
+async def artist_ids_request(query: ArtistIdSearchRequest):
+    # Check if ranked time restrictions apply
+    if get_search_result.is_ranked_time():
+        raise HTTPException(
+            status_code=503,
+            detail="Artist ID search temporarily unavailable during ranked time."
+        )
 
-    authorized_type = []
-    if query.opening_filter:
-        authorized_type.append(1)
-    if query.ending_filter:
-        authorized_type.append(2)
-    if query.insert_filter:
-        authorized_type.append(3)
-
-    authorized_broadcasts = []
-    if query.normal_broadcast:
-        authorized_broadcasts.append("Normal")
-    if query.dub:
-        authorized_broadcasts.append("Dub")
-    if query.rebroadcast:
-        authorized_broadcasts.append("Rebroadcast")
-
-    authorized_song_categories = []
-    if query.standard:
-        authorized_song_categories.append("Standard")
-        authorized_song_categories.append("No Category")
-    if query.instrumental:
-        authorized_song_categories.append("Instrumental")
-    if query.chanting:
-        authorized_song_categories.append("Chanting")
-    if query.character:
-        authorized_song_categories.append("Character")
-
-    if not authorized_type:
-        return []
-
-    if not authorized_broadcasts:
-        return []
-
-    if not authorized_song_categories:
-        return []
+    authorized_type, authorized_broadcasts, authorized_song_categories = process_filters(query)
 
     song_list = get_search_result.get_artists_ids_song_list(
         query.artist_ids,
@@ -495,35 +459,16 @@ async def search_request(query: Artist_ID_Search_Request):
     return song_list
 
 
-@app.post("/api/composer_ids_request", response_model=List[Song_Entry])
-async def search_request(query: Composer_ID_Search_Request):
+@app.post("/api/composer_ids_request", response_model=List[SongEntry])
+async def composer_ids_request(query: ComposerIdSearchRequest):
+    # Check if ranked time restrictions apply
+    if get_search_result.is_ranked_time():
+        raise HTTPException(
+            status_code=503,
+            detail="Composer ID search temporarily unavailable during ranked time."
+        )
 
-    authorized_type = []
-    if query.opening_filter:
-        authorized_type.append(1)
-    if query.ending_filter:
-        authorized_type.append(2)
-    if query.insert_filter:
-        authorized_type.append(3)
-
-    authorized_broadcasts = []
-    if query.normal_broadcast:
-        authorized_broadcasts.append("Normal")
-    if query.dub:
-        authorized_broadcasts.append("Dub")
-    if query.rebroadcast:
-        authorized_broadcasts.append("Rebroadcast")
-
-    authorized_song_categories = []
-    if query.standard:
-        authorized_song_categories.append("Standard")
-        authorized_song_categories.append("No Category")
-    if query.instrumental:
-        authorized_song_categories.append("Instrumental")
-    if query.chanting:
-        authorized_song_categories.append("Chanting")
-    if query.character:
-        authorized_song_categories.append("Character")
+    authorized_type, authorized_broadcasts, authorized_song_categories = process_filters(query)
 
     song_list = get_search_result.get_composer_ids_song_list(
         query.composer_ids,
@@ -537,46 +482,12 @@ async def search_request(query: Composer_ID_Search_Request):
     return song_list
 
 
-@app.post("/api/annId_request", response_model=List[Song_Entry])
-async def search_request(query: annId_Search_Request):
+@app.post("/api/annId_request", response_model=List[SongEntry], deprecated=True)
+async def annId_request(query: AnnIdSearchRequest):
 
-    authorized_type = []
-    if query.opening_filter:
-        authorized_type.append(1)
-    if query.ending_filter:
-        authorized_type.append(2)
-    if query.insert_filter:
-        authorized_type.append(3)
+    authorized_type, authorized_broadcasts, authorized_song_categories = process_filters(query)
 
-    authorized_broadcasts = []
-    if query.normal_broadcast:
-        authorized_broadcasts.append("Normal")
-    if query.dub:
-        authorized_broadcasts.append("Dub")
-    if query.rebroadcast:
-        authorized_broadcasts.append("Rebroadcast")
-
-    authorized_song_categories = []
-    if query.standard:
-        authorized_song_categories.append("Standard")
-        authorized_song_categories.append("No Category")
-    if query.instrumental:
-        authorized_song_categories.append("Instrumental")
-    if query.chanting:
-        authorized_song_categories.append("Chanting")
-    if query.character:
-        authorized_song_categories.append("Character")
-
-    if not authorized_type:
-        return []
-
-    if not authorized_broadcasts:
-        return []
-
-    if not authorized_song_categories:
-        return []
-
-    song_list = get_search_result.get_annId_song_list(
+    song_list = get_search_result.get_ann_ids_song_list(
         [query.annId],
         query.ignore_duplicate,
         authorized_type,
@@ -587,52 +498,18 @@ async def search_request(query: annId_Search_Request):
     return song_list
 
 
-@app.post("/api/annIdList_request", response_model=List[Song_Entry])
-async def search_request(query: annIdList_Search_Request):
+@app.post("/api/ann_ids_request", response_model=List[SongEntry])
+async def ann_ids_request(query: AnnIdsSearchRequest):
 
-    authorized_type = []
-    if query.opening_filter:
-        authorized_type.append(1)
-    if query.ending_filter:
-        authorized_type.append(2)
-    if query.insert_filter:
-        authorized_type.append(3)
+    authorized_type, authorized_broadcasts, authorized_song_categories = process_filters(query)
 
-    authorized_broadcasts = []
-    if query.normal_broadcast:
-        authorized_broadcasts.append("Normal")
-    if query.dub:
-        authorized_broadcasts.append("Dub")
-    if query.rebroadcast:
-        authorized_broadcasts.append("Rebroadcast")
-
-    authorized_song_categories = []
-    if query.standard:
-        authorized_song_categories.append("Standard")
-        authorized_song_categories.append("No Category")
-    if query.instrumental:
-        authorized_song_categories.append("Instrumental")
-    if query.chanting:
-        authorized_song_categories.append("Chanting")
-    if query.character:
-        authorized_song_categories.append("Character")
-
-    if not authorized_type:
-        return []
-
-    if not authorized_broadcasts:
-        return []
-
-    if not authorized_song_categories:
-        return []
-
-    if len(query.annIds) > 500:
+    if len(query.ann_ids) > 500:
         raise HTTPException(
-            status_code=400, detail="Too many annIds. Maximum allowed is 500."
+            status_code=400, detail="Too many ANN IDs. Maximum allowed is 500."
         )
 
-    song_list = get_search_result.get_annId_song_list(
-        query.annIds,
+    song_list = get_search_result.get_ann_ids_song_list(
+        query.ann_ids,
         query.ignore_duplicate,
         authorized_type,
         authorized_broadcasts,
@@ -642,52 +519,18 @@ async def search_request(query: annIdList_Search_Request):
     return song_list
 
 
-@app.post("/api/malIDs_request")
-async def malIDs_request(query: malIds_Search_Request):
+@app.post("/api/mal_ids_request", response_model=List[SongEntry])
+async def mal_ids_request(query: MalIdsSearchRequest):
 
-    authorized_type = []
-    if query.opening_filter:
-        authorized_type.append(1)
-    if query.ending_filter:
-        authorized_type.append(2)
-    if query.insert_filter:
-        authorized_type.append(3)
+    authorized_type, authorized_broadcasts, authorized_song_categories = process_filters(query)
 
-    authorized_broadcasts = []
-    if query.normal_broadcast:
-        authorized_broadcasts.append("Normal")
-    if query.dub:
-        authorized_broadcasts.append("Dub")
-    if query.rebroadcast:
-        authorized_broadcasts.append("Rebroadcast")
-
-    authorized_song_categories = []
-    if query.standard:
-        authorized_song_categories.append("Standard")
-        authorized_song_categories.append("No Category")
-    if query.instrumental:
-        authorized_song_categories.append("Instrumental")
-    if query.chanting:
-        authorized_song_categories.append("Chanting")
-    if query.character:
-        authorized_song_categories.append("Character")
-
-    if not authorized_type:
-        return []
-
-    if not authorized_broadcasts:
-        return []
-
-    if not authorized_song_categories:
-        return []
-
-    if len(query.malIds) > 500:
+    if len(query.mal_ids) > 500:
         raise HTTPException(
-            status_code=400, detail="Too many malIDs. Maximum allowed is 500."
+            status_code=400, detail="Too many MAL IDs. Maximum allowed is 500."
         )
 
-    song_list = get_search_result.get_malIds_song_list(
-        query.malIds,
+    song_list = get_search_result.get_mal_ids_song_list(
+        query.mal_ids,
         query.ignore_duplicate,
         authorized_type,
         authorized_broadcasts,
@@ -697,52 +540,18 @@ async def malIDs_request(query: malIds_Search_Request):
     return song_list
 
 
-@app.post("/api/ann_song_ids_request", response_model=List[Song_Entry])
-async def ann_song_ids_request(query: annSongIds_Search_Request):
+@app.post("/api/ann_song_ids_request", response_model=List[SongEntry])
+async def ann_song_ids_request(query: AnnSongIdsSearchRequest):
 
-    authorized_type = []
-    if query.opening_filter:
-        authorized_type.append(1)
-    if query.ending_filter:
-        authorized_type.append(2)
-    if query.insert_filter:
-        authorized_type.append(3)
+    authorized_type, authorized_broadcasts, authorized_song_categories = process_filters(query)
 
-    authorized_broadcasts = []
-    if query.normal_broadcast:
-        authorized_broadcasts.append("Normal")
-    if query.dub:
-        authorized_broadcasts.append("Dub")
-    if query.rebroadcast:
-        authorized_broadcasts.append("Rebroadcast")
-
-    authorized_song_categories = []
-    if query.standard:
-        authorized_song_categories.append("Standard")
-        authorized_song_categories.append("No Category")
-    if query.instrumental:
-        authorized_song_categories.append("Instrumental")
-    if query.chanting:
-        authorized_song_categories.append("Chanting")
-    if query.character:
-        authorized_song_categories.append("Character")
-
-    if not authorized_type:
-        return []
-
-    if not authorized_broadcasts:
-        return []
-
-    if not authorized_song_categories:
-        return []
-
-    if len(query.annSongIds) > 500:
+    if len(query.ann_song_ids) > 500:
         raise HTTPException(
-            status_code=400, detail="Too many annSongIds. Maximum allowed is 500."
+            status_code=400, detail="Too many ANN Song IDs. Maximum allowed is 500."
         )
 
-    song_list = get_search_result.get_annSongIds_song_list(
-        query.annSongIds,
+    song_list = get_search_result.get_ann_song_ids_song_list(
+        query.ann_song_ids,
         query.ignore_duplicate,
         authorized_type,
         authorized_broadcasts,
@@ -751,167 +560,54 @@ async def ann_song_ids_request(query: annSongIds_Search_Request):
 
     return song_list
 
+
+@app.post("/api/amq_song_ids_request", response_model=List[SongEntry])
+async def amq_song_ids_request(query: AmqSongIdsSearchRequest):
+
+    authorized_type, authorized_broadcasts, authorized_song_categories = process_filters(query)
+
+    if len(query.amq_song_ids) > 500:
+        raise HTTPException(
+            status_code=400, detail="Too many AMQ Song IDs. Maximum allowed is 500."
+        )
+
+    song_list = get_search_result.get_amq_song_ids_song_list(
+        query.amq_song_ids,
+        query.ignore_duplicate,
+        authorized_type,
+        authorized_broadcasts,
+        authorized_song_categories,
+    )
+
+    return song_list
 
 # api points that returns all songs from a specific season
-@app.post("/api/filter_season", response_model=List[Song_Entry])
-async def filter_season(query: Season_Search_Request):
-
-    # check it's correctly formatted
+@app.post("/api/season_request", response_model=List[SongEntry])
+async def season_request(query: SeasonSearchRequest):
+    # Validate season format
     possible_seasons = ["Winter", "Spring", "Summer", "Fall"]
+    query.season = query.season.capitalize()
 
     if len(query.season.split(" ")) != 2:
         raise HTTPException(
             status_code=400, detail="Invalid season format. Please use 'Season Year'."
         )
 
-    sson, year = query.season.split(" ")
-    if sson not in possible_seasons:
+    season, year = query.season.split(" ")
+    if season not in possible_seasons:
         raise HTTPException(
             status_code=400, detail="Invalid season. Please use 'Winter', 'Spring', 'Summer', or 'Fall'."
         )
 
-    if not year.isdigit():
+    if not year.isdigit() or len(year) != 4:
         raise HTTPException(
             status_code=400, detail="Invalid year. Please use a 4-digit year."
         )
 
-    if len(year) != 4:
-        raise HTTPException(
-            status_code=400, detail="Invalid year. Please use a 4-digit year."
-        )
+    authorized_type, authorized_broadcasts, authorized_song_categories = process_filters(query)
 
-    # Apply filters
-    authorized_type = []
-    if query.opening_filter:
-        authorized_type.append(1)
-    if query.ending_filter:
-        authorized_type.append(2)
-    if query.insert_filter:
-        authorized_type.append(3)
-
-    authorized_broadcasts = []
-    if query.normal_broadcast:
-        authorized_broadcasts.append("Normal")
-    if query.dub:
-        authorized_broadcasts.append("Dub")
-    if query.rebroadcast:
-        authorized_broadcasts.append("Rebroadcast")
-
-    authorized_song_categories = []
-    if query.standard:
-        authorized_song_categories.append("Standard")
-        authorized_song_categories.append("No Category")
-    if query.instrumental:
-        authorized_song_categories.append("Instrumental")
-    if query.chanting:
-        authorized_song_categories.append("Chanting")
-    if query.character:
-        authorized_song_categories.append("Character")
-
-    if not authorized_type:
-        return []
-
-    if not authorized_broadcasts:
-        return []
-
-    if not authorized_song_categories:
-        return []
-
-    cursor = sql_calls.connect_to_database(sql_calls.database_path)
-
-    # Build the SQL query with filters
-    base_query = "SELECT * from songsFull WHERE animeVintage LIKE ?"
-    params = [f"%{query.season}%"]
-    
-    # Add song type filter
-    if authorized_type:
-        type_placeholders = ",".join(["?"] * len(authorized_type))
-        base_query += f" AND songType IN ({type_placeholders})"
-        params.extend(authorized_type)
-    
-    # Add broadcast type filter (following the same logic as other endpoints)
-    broadcast_filter = ""
-    if "Dub" not in authorized_broadcasts:
-        broadcast_filter += " AND isDub == 0"
-    if "Rebroadcast" not in authorized_broadcasts:
-        broadcast_filter += " AND isRebroadcast == 0"
-    if "Normal" not in authorized_broadcasts:
-        broadcast_filter += " AND isDub == 1 AND isRebroadcast == 1"
-    
-    base_query += broadcast_filter
-    
-    # Add song category filter
-    if authorized_song_categories:
-        category_placeholders = ",".join(["?"] * len(authorized_song_categories))
-        base_query += f" AND songCategory IN ({category_placeholders})"
-        params.extend(authorized_song_categories)
-
-    songs = sql_calls.run_sql_command(cursor, base_query, params)
-
-    artist_database = sql_calls.extract_artist_database()
-
-    song_list = [utils.format_song(artist_database, song) for song in songs]
-
-    # Apply duplicate filtering if requested
-    if query.ignore_duplicate:
-        seen_songs = set()
-        filtered_songs = []
-        for song in song_list:
-            song_key = f"{song.songName} by {song.songArtist}"
-            if song_key not in seen_songs:
-                seen_songs.add(song_key)
-                filtered_songs.append(song)
-        song_list = filtered_songs
-
-    return song_list
-
-
-@app.post("/api/amq_song_ids_request", response_model=List[Song_Entry])
-async def amq_song_ids_request(query: amqSongIds_Search_Request):
-
-    authorized_type = []
-    if query.opening_filter:
-        authorized_type.append(1)
-    if query.ending_filter:
-        authorized_type.append(2)
-    if query.insert_filter:
-        authorized_type.append(3)
-
-    authorized_broadcasts = []
-    if query.normal_broadcast:
-        authorized_broadcasts.append("Normal")
-    if query.dub:
-        authorized_broadcasts.append("Dub")
-    if query.rebroadcast:
-        authorized_broadcasts.append("Rebroadcast")
-
-    authorized_song_categories = []
-    if query.standard:
-        authorized_song_categories.append("Standard")
-        authorized_song_categories.append("No Category")
-    if query.instrumental:
-        authorized_song_categories.append("Instrumental")
-    if query.chanting:
-        authorized_song_categories.append("Chanting")
-    if query.character:
-        authorized_song_categories.append("Character")
-
-    if not authorized_type:
-        return []
-
-    if not authorized_broadcasts:
-        return []
-
-    if not authorized_song_categories:
-        return []
-
-    if len(query.amqSongIds) > 500:
-        raise HTTPException(
-            status_code=400, detail="Too many amqSongIds. Maximum allowed is 500."
-        )
-
-    song_list = get_search_result.get_amqSongIds_song_list(
-        query.amqSongIds,
+    song_list = get_search_result.get_season_song_list(
+        query.season,
         query.ignore_duplicate,
         authorized_type,
         authorized_broadcasts,
@@ -976,7 +672,7 @@ async def song_name_autocomplete(
         song_name = song_name[0]
         song_name_list.append(song_name)
 
-    # sort by legnth
+    # sort by length
     song_name_list = sorted(song_name_list, key=lambda x: len(x))[0:count]
 
     return song_name_list
@@ -1020,37 +716,29 @@ async def anime_name_autocomplete(
     return anime_name_list
 
 
-# this endpoing returns a .json dict containter every key annId value linked_ids
-@app.get("/api/annid_linked_ids")
+# this endpoint returns a .json dict containing every key annId value linked_ids
+@app.get("/api/annid_linked_ids", response_model=dict)
 async def annid_linked_ids():
     cursor = sql_calls.connect_to_database(sql_calls.database_path)
 
-    get_all_animes = "SELECT * from animes"
-    animes = sql_calls.run_sql_command(cursor, get_all_animes)
-
-    alt_names = "SELECT * from link_anime_alt_name"
-    alt_names = sql_calls.run_sql_command(cursor, alt_names)
+    # Optimized single query using JOIN instead of nested loops
+    get_all_animes_with_alt_names = """
+    SELECT 
+        a.annId, a.malId, a.anidbId, a.anilistId, a.kitsuId, a.animeENName, a.animeJPName,
+        GROUP_CONCAT(alt.romaji_name, '\\$') as alt_names
+    FROM animes a
+    LEFT JOIN link_anime_alt_name alt ON a.annId = alt.annId
+    GROUP BY a.annId
+    """
+    
+    animes = sql_calls.run_sql_command(cursor, get_all_animes_with_alt_names)
 
     output_json = {}
     for anime in animes:
-        (
-            annId,
-            malId,
-            anidbId,
-            anilistId,
-            kitsuId,
-            animeENName,
-            _,
-            animeJPName,
-            animeVintage,
-            animeType,
-            animeCategory,
-        ) = anime
+        annId, malId, anidbId, anilistId, kitsuId, animeENName, animeJPName, alt_names_concat = anime
 
-        alt_names_list = []
-        for alt_name in alt_names:
-            if alt_name[0] == annId:
-                alt_names_list.append(alt_name[3])
+        # Parse the concatenated alt names (split by \$ separator)
+        alt_names_list = alt_names_concat.split("\\$") if alt_names_concat else []
 
         output_json[annId] = {
             "animeENName": animeENName,
@@ -1066,3 +754,121 @@ async def annid_linked_ids():
         }
 
     return output_json
+
+
+# api endpoint that returns true or false if ranked restrictions are active
+@app.get("/api/ranked_time_status", response_model=dict)
+async def get_ranked_time_status():
+    return {
+        "active": get_search_result.is_ranked_time()
+    }
+
+
+# api endpoint that counts the total number of songs, anime, artists, and seasons in the database
+@app.get("/api/database_totals", response_model=dict)
+async def get_database_totals():
+    cursor = sql_calls.connect_to_database(sql_calls.database_path)
+    
+    # Single optimized query - one table scan approach
+    stats_query = """
+    SELECT 
+        COUNT(*) as total_songs,
+        COUNT(DISTINCT annId) as total_anime,
+        SUM(songType = 1) as opening_count,
+        SUM(songType = 2) as ending_count,
+        SUM(songType = 3) as insert_count,
+        SUM(isDub = 1) as dub_count,
+        SUM(isRebroadcast = 1) as rebroadcast_count,
+        SUM(isDub = 0 AND isRebroadcast = 0) as normal_count,
+        SUM(HQ IS NOT NULL) as hq_count,
+        SUM(MQ IS NOT NULL) as mq_count,
+        SUM(audio IS NOT NULL) as audio_count
+    FROM songs
+    """
+    results = sql_calls.run_sql_command(cursor, stats_query)
+
+    # Get main statistics from first row
+    first_row = results[0]
+    total_songs = first_row[0]
+    total_anime = first_row[1]
+    
+    songs_by_type = {
+        "Opening": first_row[2],
+        "Ending": first_row[3],
+        "Insert": first_row[4]
+    }
+    
+    songs_by_broadcast = {
+        "Dub": first_row[5],
+        "Rebroadcast": first_row[6],
+        "Normal": first_row[7]
+    }
+    
+    links_by_type = {
+        "HQ": first_row[8],
+        "MQ": first_row[9],
+        "audio": first_row[10]
+    }
+
+    # Get artist count - separate query because the artists table is independent from the songs table
+    artist_count_query = "SELECT COUNT(*) FROM artists"
+    artist_results = sql_calls.run_sql_command(cursor, artist_count_query)
+    total_artists = artist_results[0][0]
+    
+    # Get category statistics - separate query because it requires GROUP BY
+    # Main query returns 1 row with totals, but categories need multiple rows (one per category)
+    category_query = """
+    SELECT songCategory, COUNT(*) as count 
+    FROM songs 
+    WHERE songCategory IS NOT NULL
+    GROUP BY songCategory
+    """
+    category_results = sql_calls.run_sql_command(cursor, category_query)
+    songs_by_category = {}
+    for row in category_results:
+        songs_by_category[row[0]] = row[1]
+    
+    # Get anime type and season statistics - combined query using songsFull view
+    # Both require GROUP BY operations and use the same view
+    anime_type_and_season_query = """
+    SELECT 
+        'anime_type' as data_type,
+        animeType as value,
+        COUNT(*) as count 
+    FROM songsFull 
+    WHERE animeType IS NOT NULL
+    GROUP BY animeType
+    
+    UNION ALL
+    
+    SELECT 
+        'season_count' as data_type,
+        'total' as value,
+        COUNT(DISTINCT animeVintage) as count 
+    FROM songsFull 
+    WHERE animeVintage IS NOT NULL
+    """
+    anime_type_and_season_results = sql_calls.run_sql_command(cursor, anime_type_and_season_query)
+    
+    songs_by_anime_type = {}
+    total_seasons = 0
+    
+    for row in anime_type_and_season_results:
+        data_type, value, count = row
+        if data_type == "anime_type":
+            songs_by_anime_type[value] = count
+        elif data_type == "season_count":
+            total_seasons = count
+        
+    
+    return {
+        "total_songs": total_songs,
+        "total_anime": total_anime,
+        "total_artists": total_artists,
+        "total_seasons": total_seasons,
+        "links_by_type": links_by_type,
+        "songs_by_type": songs_by_type,
+        "songs_by_broadcast": songs_by_broadcast,
+        "songs_by_category": songs_by_category,
+        "songs_by_anime_type": songs_by_anime_type,
+    }

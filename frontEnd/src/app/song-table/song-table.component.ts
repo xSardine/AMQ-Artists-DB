@@ -414,7 +414,7 @@ export class SongTableComponent {
 
   searchAnnId(id: any) {
     let body = {
-      annId: id,
+      ann_ids: [id],
       ignore_duplicate: false,
       opening_filter: true,
       ending_filter: true,

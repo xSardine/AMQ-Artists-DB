@@ -43,7 +43,7 @@ export class SearchRequestService {
 
   annIdSearchRequest(body: object): Observable<any> {
     return this.http
-      .post(this.api_url + '/api/annId_request', body)
+      .post(this.api_url + '/api/ann_ids_request', body)
       .pipe(catchError(this.handleError));
   }
 
