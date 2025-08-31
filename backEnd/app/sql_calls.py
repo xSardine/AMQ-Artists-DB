@@ -92,7 +92,7 @@ def extract_artist_database():
             return {}
 
         artist_database[str(info[0])] = {
-            "names": info[1].split("\$"),
+            "names": info[1].split("\\$"),
             "groups": (
                 [
                     [group, int(line_up)]
@@ -199,100 +199,115 @@ def connect_to_database(database_path):
         exit(0)
 
 
-def get_songs_list_from_annIds(
+def build_broadcast_filter(authorized_broadcasts):
+    """
+    Build SQL WHERE clause for broadcast filtering.
+    
+    Args:
+        authorized_broadcasts: List of allowed broadcast types ("Normal", "Dub", "Rebroadcast")
+    
+    Returns:
+        str: SQL WHERE clause fragment for broadcast filtering
+        
+    Examples:
+        - ["Normal", "Dub", "Rebroadcast"] -> "" (no filtering)
+        - ["Normal", "Dub"] -> " AND isRebroadcast == 0"
+        - ["Normal"] -> " AND isDub == 0 AND isRebroadcast == 0"
+        - ["Dub", "Rebroadcast"] -> " AND (isDub == 1 OR isRebroadcast == 1)"
+    """
+    if not authorized_broadcasts:
+        return ""
+    
+    conditions = []
+    
+    # Normal broadcasts: isDub == 0 AND isRebroadcast == 0
+    if "Normal" not in authorized_broadcasts:
+        conditions.append("(isDub == 1 OR isRebroadcast == 1)")
+    
+    # Dub broadcasts: isDub == 1
+    if "Dub" not in authorized_broadcasts:
+        conditions.append("isDub == 0")
+    
+    # Rebroadcast broadcasts: isRebroadcast == 1
+    if "Rebroadcast" not in authorized_broadcasts:
+        conditions.append("isRebroadcast == 0")
+    
+    if not conditions:
+        return ""
+    
+    return " AND " + " AND ".join(conditions)
+
+
+def get_songs_list_from_ann_ids(
     cursor,
-    annIds,
+    ann_ids,
     authorized_types,
     authorized_broadcasts,
     authorized_song_categories,
 ):
 
-    broadcast_filter = ""
-    if "Dub" not in authorized_broadcasts:
-        broadcast_filter += " AND isDub == 0"
-    if "Rebroadcast" not in authorized_broadcasts:
-        broadcast_filter += " AND isRebroadcast == 0"
-    if "Normal" not in authorized_broadcasts:
-        broadcast_filter += " AND isDub == 1 AND isRebroadcast == 1"
+    broadcast_filter = build_broadcast_filter(authorized_broadcasts)
 
-    get_songs_from_annId = f"SELECT * from songsFull WHERE songType IN ({','.join('?'*len(authorized_types))}) AND annId IN ({','.join('?'*len(annIds))}) {broadcast_filter} AND songCategory IN ({','.join('?'*len(authorized_song_categories))})"
+    get_songs_from_annId = f"SELECT * from songsFull WHERE songType IN ({','.join('?'*len(authorized_types))}) AND annId IN ({','.join('?'*len(ann_ids))}) {broadcast_filter} AND songCategory IN ({','.join('?'*len(authorized_song_categories))})"
 
     return run_sql_command(
         cursor,
         get_songs_from_annId,
-        authorized_types + annIds + authorized_song_categories,
+        authorized_types + ann_ids + authorized_song_categories,
     )
 
 
-def get_songs_list_from_malIds(
+def get_songs_list_from_mal_ids(
     cursor,
-    malIds,
+    mal_ids,
     authorized_types,
     authorized_broadcasts,
     authorized_song_categories,
 ):
 
-    broadcast_filter = ""
-    if "Dub" not in authorized_broadcasts:
-        broadcast_filter += " AND isDub == 0"
-    if "Rebroadcast" not in authorized_broadcasts:
-        broadcast_filter += " AND isRebroadcast == 0"
-    if "Normal" not in authorized_broadcasts:
-        broadcast_filter += " AND isDub == 1 AND isRebroadcast == 1"
+    broadcast_filter = build_broadcast_filter(authorized_broadcasts)
 
-    get_songs_from_malIds = f"SELECT * from songsFull WHERE songType IN ({','.join('?'*len(authorized_types))}) AND malId IN ({','.join('?'*len(malIds))}) {broadcast_filter} AND songCategory IN ({','.join('?'*len(authorized_song_categories))})"
+    get_songs_from_malIds = f"SELECT * from songsFull WHERE songType IN ({','.join('?'*len(authorized_types))}) AND malId IN ({','.join('?'*len(mal_ids))}) {broadcast_filter} AND songCategory IN ({','.join('?'*len(authorized_song_categories))})"
     return run_sql_command(
         cursor,
         get_songs_from_malIds,
-        authorized_types + malIds + authorized_song_categories,
+        authorized_types + mal_ids + authorized_song_categories,
     )
 
 
-def get_songs_list_from_annSongIds(
+def get_songs_list_from_ann_song_ids(
     cursor,
-    annSongIds,
+    ann_song_ids,
     authorized_types,
     authorized_broadcasts,
     authorized_song_categories,
 ):
 
-    broadcast_filter = ""
-    if "Dub" not in authorized_broadcasts:
-        broadcast_filter += " AND isDub == 0"
-    if "Rebroadcast" not in authorized_broadcasts:
-        broadcast_filter += " AND isRebroadcast == 0"
-    if "Normal" not in authorized_broadcasts:
-        broadcast_filter += " AND isDub == 1 AND isRebroadcast == 1"
+    broadcast_filter = build_broadcast_filter(authorized_broadcasts)
 
-    get_songs_from_annSongIds = f"SELECT * from songsFull WHERE songType IN ({','.join('?'*len(authorized_types))}) AND annSongId IN ({','.join('?'*len(annSongIds))}) {broadcast_filter} AND songCategory IN ({','.join('?'*len(authorized_song_categories))})"
+    get_songs_from_annSongIds = f"SELECT * from songsFull WHERE songType IN ({','.join('?'*len(authorized_types))}) AND annSongId IN ({','.join('?'*len(ann_song_ids))}) {broadcast_filter} AND songCategory IN ({','.join('?'*len(authorized_song_categories))})"
     return run_sql_command(
         cursor,
         get_songs_from_annSongIds,
-        authorized_types + annSongIds + authorized_song_categories,
+        authorized_types + ann_song_ids + authorized_song_categories,
     )
 
 
-def get_songs_list_from_amqSongIds(
+def get_songs_list_from_amq_song_ids(
     cursor,
-    amqSongIds,
+    amq_song_ids,
     authorized_types,
     authorized_broadcasts,
     authorized_song_categories,
 ):
 
-    broadcast_filter = ""
-    if "Dub" not in authorized_broadcasts:
-        broadcast_filter += " AND isDub == 0"
-    if "Rebroadcast" not in authorized_broadcasts:
-        broadcast_filter += " AND isRebroadcast == 0"
-    if "Normal" not in authorized_broadcasts:
-        broadcast_filter += " AND isDub == 1 AND isRebroadcast == 1"
+    broadcast_filter = build_broadcast_filter(authorized_broadcasts)
 
-    get_songs_from_amqSongIds = f"SELECT * from songsFull WHERE songType IN ({','.join('?'*len(authorized_types))}) AND amqSongId IN ({','.join('?'*len(amqSongIds))}) {broadcast_filter} AND songCategory IN ({','.join('?'*len(authorized_song_categories))})"
+    get_songs_from_amqSongIds = f"SELECT * from songsFull WHERE songType IN ({','.join('?'*len(authorized_types))}) AND amqSongId IN ({','.join('?'*len(amq_song_ids))}) {broadcast_filter} AND songCategory IN ({','.join('?'*len(authorized_song_categories))})"
     return run_sql_command(
         cursor,
         get_songs_from_amqSongIds,
-        authorized_types + amqSongIds + authorized_song_categories,
+        authorized_types + amq_song_ids + authorized_song_categories,
     )
 
 
@@ -301,13 +316,7 @@ def get_song_list_from_songArtist(
 ):
     # TODO Indexes on lower ?
 
-    broadcast_filter = ""
-    if "Dub" not in authorized_broadcasts:
-        broadcast_filter += " AND isDub == 0"
-    if "Rebroadcast" not in authorized_broadcasts:
-        broadcast_filter += " AND isRebroadcast == 0"
-    if "Normal" not in authorized_broadcasts:
-        broadcast_filter += " AND isDub == 1 AND isRebroadcast == 1"
+    broadcast_filter = build_broadcast_filter(authorized_broadcasts)
 
     get_song_list_from_songArtist = f"SELECT * from songsFull WHERE songType IN ({','.join('?'*len(authorized_types))}) {broadcast_filter} AND songCategory IN ({','.join('?'*len(authorized_song_categories))}) AND lower(romajiSongArtist) REGEXP ? LIMIT 500"
     return run_sql_command(
@@ -398,3 +407,37 @@ def get_artist_groups(cursor, artist_id):
             [group, line_up]
             for group, line_up in zip(groups[1].split(","), groups[2].split(","))
         ]
+
+
+def get_songs_list_from_season(
+    cursor,
+    season,
+    authorized_types,
+    authorized_broadcasts,
+    authorized_song_categories,
+):
+    """
+    Get songs from a specific season with proper broadcast filtering.
+    Uses the same broadcast filtering logic as other functions in this module.
+    """
+    # Build the SQL query with filters
+    base_query = "SELECT * from songsFull WHERE animeVintage LIKE ?"
+    params = [f"%{season}%"]
+    
+    # Add song type filter
+    if authorized_types:
+        type_placeholders = ",".join(["?"] * len(authorized_types))
+        base_query += f" AND songType IN ({type_placeholders})"
+        params.extend(authorized_types)
+    
+    # Add broadcast type filter
+    broadcast_filter = build_broadcast_filter(authorized_broadcasts)
+    base_query += broadcast_filter
+    
+    # Add song category filter
+    if authorized_song_categories:
+        category_placeholders = ",".join(["?"] * len(authorized_song_categories))
+        base_query += f" AND songCategory IN ({category_placeholders})"
+        params.extend(authorized_song_categories)
+
+    return run_sql_command(cursor, base_query, params)

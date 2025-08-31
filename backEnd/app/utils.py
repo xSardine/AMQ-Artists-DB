@@ -260,7 +260,7 @@ def format_song(artist_database, song):
         },
         "animeJPName": song[6] if song[6] else song[7],
         "animeENName": song[7] if song[7] else song[6],
-        "animeAltName": song[9].split("\$") if song[9] else song[9],
+        "animeAltName": song[9].split("\\$") if song[9] else song[9],
         "animeVintage": song[10],
         "animeType": song[11],
         "animeCategory": song[12],

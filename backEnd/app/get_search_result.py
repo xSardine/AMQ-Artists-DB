@@ -642,7 +642,7 @@ def get_search_results(
             found = False
 
             for name in [anime["animeJPName"], anime["animeENName"]] + (
-                anime["animeAltNames"].split("\$")
+                anime["animeAltNames"].split("\\$")
                 if "animeAltNames" in anime and anime["animeAltNames"]
                 else []
             ):
@@ -948,8 +948,8 @@ def get_composer_ids_song_list(
     return final_songs
 
 
-def get_annId_song_list(
-    annIds,
+def get_ann_ids_song_list(
+    ann_ids,
     ignore_duplicate,
     authorized_types,
     authorized_broadcasts,
@@ -963,21 +963,21 @@ def get_annId_song_list(
 
     print("-------------------------")
     print("Date: ", str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")))
-    print(f"annId_filter: {annIds if len(annIds) < 5 else f'{len(annIds)} annIds'}")
+    print(f"ann_ids_filter: {ann_ids if len(ann_ids) < 5 else f'{len(ann_ids)} ann_ids'}")
     print(f"ignore_dups: {ignore_duplicate}", end=" | ")
     print(f"types: {authorized_types}", end=" | ")
     print(f"broadcasts: {authorized_broadcasts}", end=" | ")
     print(f"song_categories: {authorized_song_categories}")
 
-    if len(annIds) == 0:
+    if len(ann_ids) == 0:
         return []
 
-    if not all(str(annId).isdigit() for annId in annIds):
+    if not all(str(ann_id).isdigit() for ann_id in ann_ids):
         return []
 
-    songs = sql_calls.get_songs_list_from_annIds(
+    songs = sql_calls.get_songs_list_from_ann_ids(
         cursor,
-        annIds,
+        ann_ids,
         authorized_types,
         authorized_broadcasts,
         authorized_song_categories,
@@ -1003,8 +1003,8 @@ def get_annId_song_list(
     return songs
 
 
-def get_malIds_song_list(
-    malIds,
+def get_mal_ids_song_list(
+    mal_ids,
     ignore_duplicate,
     authorized_types=[1, 2, 3],
     authorized_broadcasts=["Normal", "Dub", "Rebroadcast"],
@@ -1019,19 +1019,19 @@ def get_malIds_song_list(
 
     print("-------------------------")
     print("Date: ", str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")))
-    print(f"malIds_filter: {len(malIds)}")
+    print(f"mal_ids_filter: {len(mal_ids)}")
     print(f"ignore_dups: {ignore_duplicate}", end=" | ")
     print(f"types: {authorized_types}", end=" | ")
     print(f"broadcasts: {authorized_broadcasts}", end=" | ")
     print(f"song_categories: {authorized_song_categories}")
 
-    for malId in malIds:
-        if not str(malId).isdigit():
+    for mal_id in mal_ids:
+        if not str(mal_id).isdigit():
             return []
 
-    songs = sql_calls.get_songs_list_from_malIds(
+    songs = sql_calls.get_songs_list_from_mal_ids(
         cursor,
-        malIds,
+        mal_ids,
         authorized_types,
         authorized_broadcasts,
         authorized_song_categories,
@@ -1060,8 +1060,8 @@ def get_malIds_song_list(
     return songs
 
 
-def get_annSongIds_song_list(
-    annSongIds,
+def get_ann_song_ids_song_list(
+    ann_song_ids,
     ignore_duplicate,
     authorized_types=[1, 2, 3],
     authorized_broadcasts=["Normal", "Dub", "Rebroadcast"],
@@ -1076,21 +1076,21 @@ def get_annSongIds_song_list(
 
     print("-------------------------")
     print("Date: ", str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")))
-    print(f"annSongIds_filter: {annSongIds if len(annSongIds) < 5 else f'{len(annSongIds)} annSongIds'}")
+    print(f"ann_song_ids_filter: {ann_song_ids if len(ann_song_ids) < 5 else f'{len(ann_song_ids)} ann_song_ids'}")
     print(f"ignore_dups: {ignore_duplicate}", end=" | ")
     print(f"types: {authorized_types}", end=" | ")
     print(f"broadcasts: {authorized_broadcasts}", end=" | ")
     print(f"song_categories: {authorized_song_categories}")
 
-    if len(annSongIds) == 0:
+    if len(ann_song_ids) == 0:
         return []
 
-    if not all(str(annSongId).isdigit() for annSongId in annSongIds):
+    if not all(str(ann_song_id).isdigit() for ann_song_id in ann_song_ids):
         return []
 
-    songs = sql_calls.get_songs_list_from_annSongIds(
+    songs = sql_calls.get_songs_list_from_ann_song_ids(
         cursor,
-        annSongIds,
+        ann_song_ids,
         authorized_types,
         authorized_broadcasts,
         authorized_song_categories,
@@ -1116,8 +1116,8 @@ def get_annSongIds_song_list(
     return songs
 
 
-def get_amqSongIds_song_list(
-    amqSongIds,
+def get_amq_song_ids_song_list(
+    amq_song_ids,
     ignore_duplicate,
     authorized_types=[1, 2, 3],
     authorized_broadcasts=["Normal", "Dub", "Rebroadcast"],
@@ -1132,21 +1132,71 @@ def get_amqSongIds_song_list(
 
     print("-------------------------")
     print("Date: ", str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")))
-    print(f"amqSongIds_filter: {amqSongIds if len(amqSongIds) < 5 else f'{len(amqSongIds)} amqSongIds'}")
+    print(f"amq_song_ids_filter: {amq_song_ids if len(amq_song_ids) < 5 else f'{len(amq_song_ids)} amq_song_ids'}")
     print(f"ignore_dups: {ignore_duplicate}", end=" | ")
     print(f"types: {authorized_types}", end=" | ")
     print(f"broadcasts: {authorized_broadcasts}", end=" | ")
     print(f"song_categories: {authorized_song_categories}")
 
-    if len(amqSongIds) == 0:
+    if len(amq_song_ids) == 0:
         return []
 
-    if not all(str(amqSongId).isdigit() for amqSongId in amqSongIds):
+    if not all(str(amq_song_id).isdigit() for amq_song_id in amq_song_ids):
         return []
 
-    songs = sql_calls.get_songs_list_from_amqSongIds(
+    songs = sql_calls.get_songs_list_from_amq_song_ids(
         cursor,
-        amqSongIds,
+        amq_song_ids,
+        authorized_types,
+        authorized_broadcasts,
+        authorized_song_categories,
+    )
+
+    songs = combine_results(
+        artist_database,
+        songs,
+        [],
+        [],
+        [],
+        [],
+        False,
+        ignore_duplicate,
+        max_nb_songs=None,
+    )
+
+    stop = timeit.default_timer()
+
+    print(f"computing_time: {round(stop - start, 4)}", end=" | ")
+    print(f"nb_results: {len(songs)}")
+
+    return songs
+
+
+def get_season_song_list(
+    season,
+    ignore_duplicate,
+    authorized_types=[1, 2, 3],
+    authorized_broadcasts=["Normal", "Dub", "Rebroadcast"],
+    authorized_song_categories=["Standard", "Chanting", "Instrumental", "Character"],
+):
+
+    start = timeit.default_timer()
+
+    cursor = sql_calls.connect_to_database(sql_calls.database_path)
+
+    artist_database = sql_calls.extract_artist_database()
+
+    print("-------------------------")
+    print("Date: ", str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")))
+    print(f"season_filter: {season}")
+    print(f"ignore_dups: {ignore_duplicate}", end=" | ")
+    print(f"types: {authorized_types}", end=" | ")
+    print(f"broadcasts: {authorized_broadcasts}", end=" | ")
+    print(f"song_categories: {authorized_song_categories}")
+
+    songs = sql_calls.get_songs_list_from_season(
+        cursor,
+        season,
         authorized_types,
         authorized_broadcasts,
         authorized_song_categories,
