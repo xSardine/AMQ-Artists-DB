@@ -1,8 +1,9 @@
-import utils, sql_calls
-from datetime import datetime
+import utils
+import sql_calls
 import timeit
-from datetime import datetime
 import re
+from datetime import datetime, timezone, time as dt_time
+from zoneinfo import ZoneInfo
 
 
 def add_main_log(
@@ -67,27 +68,32 @@ def add_main_log(
     return
 
 
+# List of ranked region timezones and their start and end times
+ranked_schedules = [
+    ("Europe/Copenhagen", (20, 30), (21, 23)),
+    ("America/Chicago", (20, 30), (21, 23)),
+    ("Asia/Tokyo", (20, 30), (21, 23))
+]
+
+
 def is_ranked_time():
-    date = datetime.utcnow()
-    # If ranked time UTC
-    if (
-        # CST
-        (
-            (date.hour == 1 and date.minute >= 30)
-            or (date.hour == 2 and date.minute < 23)
-        )
-        # JST
-        or (
-            (date.hour == 11 and date.minute >= 30)
-            or (date.hour == 12 and date.minute < 23)
-        )
-        # CET
-        or (
-            (date.hour == 18 and date.minute >= 30)
-            or (date.hour == 19 and date.minute < 23)
-        )
-    ):
-        return True
+    """
+    Ranked starts at 20:30 local time for three regions and lasts until 21:23 local time:
+      - Central: Europe/Copenhagen (CEST/CET)
+      - Western: America/Chicago (CDT/CST)
+      - East: Asia/Tokyo (JST, no DST)
+
+    This uses IANA time zones so DST switches are handled automatically per region.
+    """
+    now_utc = datetime.now(timezone.utc)
+
+    for tz_name, (start_h, start_m), (end_h, end_m) in ranked_schedules:
+        local_t = now_utc.astimezone(ZoneInfo(tz_name)).time()
+        start_t = dt_time(hour=start_h, minute=start_m)
+        end_t = dt_time(hour=end_h, minute=end_m)
+        if start_t <= local_t < end_t:
+            return True
+
     return False
 
 
