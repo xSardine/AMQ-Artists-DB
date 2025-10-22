@@ -1,8 +1,9 @@
-import utils, sql_calls
-from datetime import datetime
+import utils
+import sql_calls
 import timeit
-from datetime import datetime
 import re
+from datetime import datetime, timezone, time as dt_time
+from zoneinfo import ZoneInfo
 
 
 def add_main_log(
@@ -67,28 +68,71 @@ def add_main_log(
     return
 
 
+"""
+Ranked starts at 20:30 local time for three regions and lasts until 21:23 local time:
+    - Central: Europe/Copenhagen (CEST/CET)
+    - Western: America/Chicago (CDT/CST)
+    - East: Asia/Tokyo (JST, no DST)
+
+This uses IANA time zones so DST switches are handled automatically per region.
+"""
+RANKED_REGIONS = [
+    ("Europe/Copenhagen", "Central"),
+    ("America/Chicago", "Western"),
+    ("Asia/Tokyo", "Eastern"),
+]
+RANKED_START_TIME = dt_time(hour=20, minute=30)
+RANKED_END_TIME = dt_time(hour=21, minute=23)
+RANKED_REGION_ZONES = [ZoneInfo(tz) for (tz, _) in RANKED_REGIONS]
+RANKED_REGION_LABELS = [label for (_, label) in RANKED_REGIONS]
+
+
+# Returns true if AMQ ranked is currently active
 def is_ranked_time():
-    date = datetime.utcnow()
-    # If ranked time UTC
-    if (
-        # CST
-        (
-            (date.hour == 1 and date.minute >= 30)
-            or (date.hour == 2 and date.minute < 23)
-        )
-        # JST
-        or (
-            (date.hour == 11 and date.minute >= 30)
-            or (date.hour == 12 and date.minute < 23)
-        )
-        # CET
-        or (
-            (date.hour == 18 and date.minute >= 30)
-            or (date.hour == 19 and date.minute < 23)
-        )
-    ):
-        return True
+    now_utc = datetime.now(timezone.utc)
+    for tz_info in RANKED_REGION_ZONES:
+        local_t = now_utc.astimezone(tz_info).time()
+        if RANKED_START_TIME <= local_t < RANKED_END_TIME:
+            return True
     return False
+
+
+# Returns ranked time status, region, and time remaining for a given datetime
+def get_ranked_time_info(date=None):
+    if date is None:
+        dt_utc = datetime.now(timezone.utc)
+    else:
+        if not isinstance(date, datetime):
+            raise TypeError("Input must be a datetime object or None")
+        dt_utc = date.astimezone(timezone.utc) if date.tzinfo else date.replace(tzinfo=timezone.utc)
+    server_time = dt_utc.isoformat()
+
+    for index, tz_info in enumerate(RANKED_REGION_ZONES):
+        local_dt = dt_utc.astimezone(tz_info)
+        local_t = local_dt.time()
+        if RANKED_START_TIME <= local_t < RANKED_END_TIME:
+            local_end = local_dt.replace(
+                hour=RANKED_END_TIME.hour,
+                minute=RANKED_END_TIME.minute,
+                second=0,
+                microsecond=0,
+            )
+            remaining_total_seconds = max(0, int((local_end - local_dt).total_seconds()))
+            return {
+                "active": True,
+                "region": RANKED_REGION_LABELS[index],
+                "remaining_minutes": remaining_total_seconds // 60,
+                "remaining_seconds": remaining_total_seconds % 60,
+                "server_time": server_time,
+            }
+
+    return {
+        "active": False,
+        "region": None,
+        "remaining_minutes": None,
+        "remaining_seconds": None,
+        "server_time": server_time,
+    }
 
 
 def get_duplicate_in_list(list, song):

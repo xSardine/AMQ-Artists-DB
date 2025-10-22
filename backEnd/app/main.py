@@ -756,12 +756,11 @@ async def annid_linked_ids():
     return output_json
 
 
-# api endpoint that returns true or false if ranked restrictions are active
+# api endpoint that returns information about ranked restrictions
 @app.get("/api/ranked_time_status", response_model=dict)
 async def get_ranked_time_status():
-    return {
-        "active": get_search_result.is_ranked_time()
-    }
+    # {active: bool, region: Western|Central|Eastern|None, remaining_minutes: int|None, remaining_seconds: int|None, server_time: str}
+    return get_search_result.get_ranked_time_info()
 
 
 # api endpoint that counts the total number of songs, anime, artists, and seasons in the database
