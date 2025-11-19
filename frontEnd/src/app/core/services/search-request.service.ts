@@ -47,6 +47,44 @@ export class SearchRequestService {
       .pipe(catchError(this.handleError));
   }
 
+  // Returns current ranked status and minutes left using IANA zones
+  getRankedStatusNow(): { active: boolean; remainingMinutes: number } {
+    console.log('getRankedStatusNow');
+    const nowDate = new Date();
+    const zones = [
+      'America/Chicago',
+      'Asia/Tokyo',
+      'Europe/Copenhagen',
+    ];
+
+    const START_SEC = 73800; // 20:30:00
+    const END_SEC = 76980;   // 21:23:00
+
+    for (const tz of zones) {
+      const fmt = new Intl.DateTimeFormat('en-US', {
+        timeZone: tz,
+        hour12: false,
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+      });
+      const parts = fmt.formatToParts(nowDate);
+      const get = (t: string) => Number(parts.find(p => p.type === t)?.value || 0);
+      const hh = get('hour');
+      const mm = get('minute');
+      const ss = get('second');
+      const localSec = hh * 3600 + mm * 60 + ss;
+
+      if (localSec >= START_SEC && localSec < END_SEC) {
+        const remainingMs = (END_SEC - localSec) * 1000;
+        const remainingMinutes = Math.ceil(remainingMs / 60000);
+        return { active: true, remainingMinutes };
+      }
+    }
+
+    return { active: false, remainingMinutes: 0 };
+  }
+
   private handleError(error: HttpErrorResponse) {
     if (error.status === 0) {
       // A client-side or network error occurred. Handle it accordingly.
