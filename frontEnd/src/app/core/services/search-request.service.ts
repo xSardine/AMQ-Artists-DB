@@ -49,7 +49,6 @@ export class SearchRequestService {
 
   // Returns current ranked status and minutes left using IANA zones
   getRankedStatusNow(): { active: boolean; remainingMinutes: number } {
-    console.log('getRankedStatusNow');
     const nowDate = new Date();
     const zones = [
       'America/Chicago',
