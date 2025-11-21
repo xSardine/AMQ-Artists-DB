@@ -61,47 +61,10 @@ export class SearchBarComponent implements OnInit {
   rankedTime = false;
   RankedDisabledTimeLeft = 0;
 
-  checkRankedTime() {
-    // Define the ranked time intervals as an array of objects
-    let rankedTimeIntervals = [
-      // CST NA
-      {
-        start: new Date().setUTCHours(1, 30, 0, 0),
-        end: new Date().setUTCHours(2, 23, 0, 0),
-      },
-      // JST Asia
-      {
-        start: new Date().setUTCHours(11, 30, 0, 0),
-        end: new Date().setUTCHours(12, 23, 0, 0),
-      },
-      // CET EU
-      {
-        start: new Date().setUTCHours(18, 30, 0, 0),
-        end: new Date().setUTCHours(19, 23, 0, 0),
-      },
-    ];
-
-    // Get the current time in the user's local time zone
-    let date = Date.now();
-
-    // Find the ranked time interval that the current time is within
-    let rankedTimeInterval = rankedTimeIntervals.find((interval) => {
-      return date >= interval.start && date < interval.end;
-    });
-
-    // If a ranked time interval was found, calculate the amount of time left until the end of the ranked period
-    if (rankedTimeInterval) {
-      this.RankedDisabledTimeLeft = Math.ceil(
-        (rankedTimeInterval.end - date) / 1000 / 60
-      );
-      return true;
-    }
-
-    return false;
-  }
-
   ngOnInit(): void {
-    this.rankedTime = this.checkRankedTime();
+    const status = this.searchRequestService.getRankedStatusNow();
+    this.rankedTime = status.active;
+    this.RankedDisabledTimeLeft = status.remainingMinutes;
     this.currentSongList = this.searchRequestService
       .getFirstNRequest()
       .subscribe((data) => {
@@ -118,11 +81,9 @@ export class SearchBarComponent implements OnInit {
       tmp_composer_filter;
     let tmp_select = false;
 
-    if (this.checkRankedTime()) {
-      this.rankedTime = true;
-    } else {
-      this.rankedTime = false;
-    }
+    const status = this.searchRequestService.getRankedStatusNow();
+    this.rankedTime = status.active;
+    this.RankedDisabledTimeLeft = status.remainingMinutes;
 
     if (this.selectedCombination == 'Intersection') {
       tmp_select = true;
