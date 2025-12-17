@@ -47,6 +47,48 @@ export class SearchRequestService {
       .pipe(catchError(this.handleError));
   }
 
+  // All time zones where the ranked window is observed.
+  private static readonly RANKED_TIMEZONES = [
+    'Europe/Copenhagen',
+    'America/Chicago',
+    'Asia/Tokyo',
+  ];
+
+  // Ranked window boundaries in seconds-since-midnight.
+  private static readonly RANKED_START_SEC = 73800; // 20:30:00
+  private static readonly RANKED_END_SEC = 76980; // 21:23:00
+
+  // Format `date` for `timeZone` and return how many seconds have elapsed since midnight.
+  private getSecondsSinceStartOfDay(date: Date, timeZone: string): number {
+    const fmt = new Intl.DateTimeFormat('en-US', {
+      timeZone: timeZone,
+      hour12: false,
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    });
+    const parts = fmt.formatToParts(date);
+    const get = (type: string) => Number(parts.find((p) => p.type === type)?.value || 0);
+    return get('hour') * 3600 + get('minute') * 60 + get('second');
+  }
+
+  // Determine whether the current time falls inside the ranked window for any tracked zone.
+  // If so, return how many whole minutes remain until the window closes.
+  getRankedStatusNow(): { active: boolean; remainingMinutes: number } {
+    const nowDate = new Date();
+
+    for (const tz of SearchRequestService.RANKED_TIMEZONES) {
+      const localSec = this.getSecondsSinceStartOfDay(nowDate, tz);
+
+      if (localSec >= SearchRequestService.RANKED_START_SEC && localSec < SearchRequestService.RANKED_END_SEC) {
+        const remainingMinutes = Math.ceil((SearchRequestService.RANKED_END_SEC - localSec) / 60);
+        return { active: true, remainingMinutes };
+      }
+    }
+
+    return { active: false, remainingMinutes: 0 };
+  }
+
   private handleError(error: HttpErrorResponse) {
     if (error.status === 0) {
       // A client-side or network error occurred. Handle it accordingly.
