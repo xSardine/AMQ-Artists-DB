@@ -6,6 +6,36 @@ from datetime import datetime, timezone, time as dt_time
 from zoneinfo import ZoneInfo
 
 
+def song_passes_filters(
+    song,
+    authorized_types,
+    authorized_broadcasts,
+    authorized_song_categories,
+    authorized_anime_types,
+):
+    if song[16] not in authorized_types:
+        return False
+
+    if song[18] not in authorized_song_categories:
+        return False
+
+    if (not song[34] and not song[35]) and "Normal" not in authorized_broadcasts:
+        return False
+
+    if song[34] and "Dub" not in authorized_broadcasts:
+        if not song[35] or "Rebroadcast" not in authorized_broadcasts:
+            return False
+
+    if song[35] and "Rebroadcast" not in authorized_broadcasts:
+        return False
+
+    if len(authorized_anime_types) < len(sql_calls.ALL_ANIME_TYPES):
+        if song[11] not in authorized_anime_types:
+            return False
+
+    return True
+
+
 def add_main_log(
     anime_search_filters,
     song_name_search_filters,
@@ -16,6 +46,7 @@ def add_main_log(
     authorized_types,
     authorized_broadcasts,
     authorized_song_categories,
+    authorized_anime_types,
 ):
 
     print("-------------------------")
@@ -63,7 +94,8 @@ def add_main_log(
     print("Ignore Duplicates: ", ignore_duplicate, end=" | ")
     print("Types: ", authorized_types, end=" | ")
     print("Broadcasts: ", authorized_broadcasts, end=" | ")
-    print("Song Categories: ", authorized_song_categories)
+    print("Song Categories: ", authorized_song_categories, end=" | ")
+    print("Anime Types: ", authorized_anime_types)
 
     return
 
@@ -399,39 +431,28 @@ def check_meets_composers_requirements(
     return False
 
 
-def get_song_list_from_songIds_JSON(
+def get_song_list_from_song_ids_json(
     song_database,
     songIds,
     authorized_types,
     authorized_broadcasts,
     authorized_song_categories,
+    authorized_anime_types,
 ):
     song_list = []
 
     for songId in songIds:
-
-        if song_database[songId][16] not in authorized_types:
+        song = song_database[songId]
+        if not song_passes_filters(
+            song,
+            authorized_types,
+            authorized_broadcasts,
+            authorized_song_categories,
+            authorized_anime_types,
+        ):
             continue
 
-        if song_database[songId][18] not in authorized_song_categories:
-            continue
-
-        if (
-            not song_database[songId][34] and not song_database[songId][35]
-        ) and "Normal" not in authorized_broadcasts:
-            continue
-
-        if song_database[songId][34] and "Dub" not in authorized_broadcasts:
-            if (
-                not song_database[songId][35]
-                or "Rebroadcast" not in authorized_broadcasts
-            ):
-                continue
-
-        if song_database[songId][35] and "Rebroadcast" not in authorized_broadcasts:
-            continue
-
-        song_list.append(song_database[songId])
+        song_list.append(song)
 
     return song_list
 
@@ -459,15 +480,21 @@ def process_artist(
     artist_database,
     search,
     partial_match,
+    match_case,
     authorized_types,
     authorized_broadcasts,
     authorized_song_categories,
+    authorized_anime_types,
     group_granularity,
     max_other_artist,
 ):
-    artist_search = utils.get_regex_search(search, partial_match, swap_words=True)
+    artist_search = utils.get_regex_search(
+        search, partial_match, swap_words=True, match_case=match_case
+    )
 
-    artist_ids = sql_calls.get_artist_ids_from_regex(cursor, artist_search)
+    artist_ids = sql_calls.get_artist_ids_from_regex(
+        cursor, artist_search, match_case=match_case
+    )
 
     # If no IDs found, fall back to indexing on songArtist string
     if not artist_ids:
@@ -477,6 +504,8 @@ def process_artist(
             authorized_types,
             authorized_broadcasts,
             authorized_song_categories,
+            authorized_anime_types,
+            match_case=match_case,
         )
         return artist_songs_list, artist_ids
 
@@ -505,12 +534,13 @@ def process_artist(
         list(set(artist_ids + [group[0] for group in all_groups] + members)),
     )
 
-    artist_songs_list = get_song_list_from_songIds_JSON(
+    artist_songs_list = get_song_list_from_song_ids_json(
         song_database,
         songIds,
         authorized_types,
         authorized_broadcasts,
         authorized_song_categories,
+        authorized_anime_types,
     )
 
     final_song_list = []
@@ -533,17 +563,23 @@ def process_composer(
     artist_database,
     search,
     partial_match,
+    match_case,
     arrangement,
     authorized_types,
     authorized_broadcasts,
     authorized_song_categories,
+    authorized_anime_types,
     group_granularity,
     max_other_artist,
 ):
 
-    composer_search = utils.get_regex_search(search, partial_match, swap_words=True)
+    composer_search = utils.get_regex_search(
+        search, partial_match, swap_words=True, match_case=match_case
+    )
 
-    composer_ids = sql_calls.get_artist_ids_from_regex(cursor, composer_search)
+    composer_ids = sql_calls.get_artist_ids_from_regex(
+        cursor, composer_search, match_case=match_case
+    )
 
     # If no IDs found, do not fall back to raw string for computing time
     if not composer_ids:
@@ -577,12 +613,13 @@ def process_composer(
         arrangement=arrangement,
     )
 
-    artist_songs_list = get_song_list_from_songIds_JSON(
+    artist_songs_list = get_song_list_from_song_ids_json(
         song_database,
         songIds,
         authorized_types,
         authorized_broadcasts,
         authorized_song_categories,
+        authorized_anime_types,
     )
 
     final_song_list = []
@@ -611,6 +648,7 @@ def get_search_results(
     authorized_types,
     authorized_broadcasts,
     authorized_song_categories,
+    authorized_anime_types,
 ):
     startstart = timeit.default_timer()
 
@@ -630,6 +668,7 @@ def get_search_results(
         authorized_types,
         authorized_broadcasts,
         authorized_song_categories,
+        authorized_anime_types,
     )
 
     is_ranked = is_ranked_time()
@@ -656,12 +695,13 @@ def get_search_results(
 
         # annId Filter
         if str(anime_search_filters.search).isdigit():
-            annId_songs_list = sql_calls.get_songs_list_from_annIds(
+            annId_songs_list = sql_calls.get_songs_list_from_ann_ids(
                 cursor,
                 [anime_search_filters.search],
                 authorized_types,
                 authorized_broadcasts,
                 authorized_song_categories,
+                authorized_anime_types,
             )
 
     print(f"annId on Main: {round(timeit.default_timer() - start, 4)}", end=" | ")
@@ -676,8 +716,9 @@ def get_search_results(
         else:
             partial_match = anime_search_filters.partial_match
 
+        match_case = anime_search_filters.match_case
         anime_search = utils.get_regex_search(
-            anime_search_filters.search, partial_match
+            anime_search_filters.search, partial_match, match_case=match_case
         )
 
         anime_songs_list = []
@@ -693,28 +734,18 @@ def get_search_results(
                 if not name or found:
                     continue
 
-                if re.match(anime_search, name.lower()):
+                if utils.regex_match(anime_search, name, match_case):
                     found = True
 
             if found:
                 for song in anime["songs"]:
-
-                    if song[16] not in authorized_types:
-                        continue
-
-                    if song[18] not in authorized_song_categories:
-                        continue
-
-                    if (
-                        not song[34] and not song[35]
-                    ) and "Normal" not in authorized_broadcasts:
-                        continue
-
-                    if song[34] and "Dub" not in authorized_broadcasts:
-                        if not song[35] or "Rebroadcast" not in authorized_broadcasts:
-                            continue
-
-                    if song[35] and "Rebroadcast" not in authorized_broadcasts:
+                    if not song_passes_filters(
+                        song,
+                        authorized_types,
+                        authorized_broadcasts,
+                        authorized_song_categories,
+                        authorized_anime_types,
+                    ):
                         continue
 
                     anime_songs_list.append(song)
@@ -731,31 +762,22 @@ def get_search_results(
         else:
             partial_match = song_name_search_filters.partial_match
 
+        match_case = song_name_search_filters.match_case
         songName_search = utils.get_regex_search(
-            song_name_search_filters.search, partial_match
+            song_name_search_filters.search, partial_match, match_case=match_case
         )
 
         songName_songs_list = []
         for songId in song_database:
             song = song_database[songId]
-            if re.match(songName_search, song[20].lower()):
-
-                if song[16] not in authorized_types:
-                    continue
-
-                if song[18] not in authorized_song_categories:
-                    continue
-
-                if (
-                    not song[34] and not song[35]
-                ) and "Normal" not in authorized_broadcasts:
-                    continue
-
-                if song[34] and "Dub" not in authorized_broadcasts:
-                    if not song[35] or "Rebroadcast" not in authorized_broadcasts:
-                        continue
-
-                if song[35] and "Rebroadcast" not in authorized_broadcasts:
+            if utils.regex_match(songName_search, song[20], match_case):
+                if not song_passes_filters(
+                    song,
+                    authorized_types,
+                    authorized_broadcasts,
+                    authorized_song_categories,
+                    authorized_anime_types,
+                ):
                     continue
 
                 songName_songs_list.append(song)
@@ -780,9 +802,11 @@ def get_search_results(
             artist_database,
             artist_search_filters.search,
             partial_match,
+            artist_search_filters.match_case,
             authorized_types,
             authorized_broadcasts,
             authorized_song_categories,
+            authorized_anime_types,
             artist_search_filters.group_granularity,
             artist_search_filters.max_other_artist,
         )
@@ -807,10 +831,12 @@ def get_search_results(
             artist_database,
             composer_search_filters.search,
             partial_match,
+            composer_search_filters.match_case,
             composer_search_filters.arrangement,
             authorized_types,
             authorized_broadcasts,
             authorized_song_categories,
+            authorized_anime_types,
             composer_search_filters.group_granularity,
             composer_search_filters.max_other_artist,
         )
@@ -855,6 +881,7 @@ def get_artists_ids_song_list(
     authorized_types,
     authorized_broadcasts,
     authorized_song_categories,
+    authorized_anime_types,
 ):
     start = timeit.default_timer()
 
@@ -868,7 +895,8 @@ def get_artists_ids_song_list(
     print(f"ignore_dups: {ignore_duplicate}", end=" | ")
     print(f"types: {authorized_types}", end=" | ")
     print(f"broadcasts: {authorized_broadcasts}", end=" | ")
-    print(f"song_categories: {authorized_song_categories}")
+    print(f"song_categories: {authorized_song_categories}", end=" | ")
+    print(f"anime_types: {authorized_anime_types}")
 
     if not artist_ids:
         return []
@@ -884,12 +912,13 @@ def get_artists_ids_song_list(
 
     song_database = sql_calls.extract_song_database()
 
-    songs = get_song_list_from_songIds_JSON(
+    songs = get_song_list_from_song_ids_json(
         song_database,
         songIds,
         authorized_types,
         authorized_broadcasts,
         authorized_song_categories,
+        authorized_anime_types,
     )
 
     final_songs = []
@@ -923,6 +952,7 @@ def get_composer_ids_song_list(
     authorized_types,
     authorized_broadcasts,
     authorized_song_categories,
+    authorized_anime_types,
 ):
     start = timeit.default_timer()
 
@@ -936,7 +966,8 @@ def get_composer_ids_song_list(
     print(f"ignore_dups: {ignore_duplicate}", end=" | ")
     print(f"types: {authorized_types}", end=" | ")
     print(f"broadcasts: {authorized_broadcasts}", end=" | ")
-    print(f"song_categories: {authorized_song_categories}")
+    print(f"song_categories: {authorized_song_categories}", end=" | ")
+    print(f"anime_types: {authorized_anime_types}")
 
     if not composer_ids:
         return []
@@ -952,12 +983,13 @@ def get_composer_ids_song_list(
 
     song_database = sql_calls.extract_song_database()
 
-    songs = get_song_list_from_songIds_JSON(
+    songs = get_song_list_from_song_ids_json(
         song_database,
         songIds,
         authorized_types,
         authorized_broadcasts,
         authorized_song_categories,
+        authorized_anime_types,
     )
 
     final_songs = []
@@ -998,6 +1030,7 @@ def get_ann_ids_song_list(
     authorized_types,
     authorized_broadcasts,
     authorized_song_categories,
+    authorized_anime_types,
 ):
     start = timeit.default_timer()
 
@@ -1025,6 +1058,7 @@ def get_ann_ids_song_list(
         authorized_types,
         authorized_broadcasts,
         authorized_song_categories,
+        authorized_anime_types,
     )
 
     songs = combine_results(
@@ -1053,6 +1087,7 @@ def get_mal_ids_song_list(
     authorized_types=[1, 2, 3],
     authorized_broadcasts=["Normal", "Dub", "Rebroadcast"],
     authorized_song_categories=["Standard", "Chanting", "Instrumental", "Character"],
+    authorized_anime_types=sql_calls.ALL_ANIME_TYPES,
 ):
 
     start = timeit.default_timer()
@@ -1079,6 +1114,7 @@ def get_mal_ids_song_list(
         authorized_types,
         authorized_broadcasts,
         authorized_song_categories,
+        authorized_anime_types,
     )
 
     if not songs:
@@ -1110,6 +1146,7 @@ def get_ann_song_ids_song_list(
     authorized_types=[1, 2, 3],
     authorized_broadcasts=["Normal", "Dub", "Rebroadcast"],
     authorized_song_categories=["Standard", "Chanting", "Instrumental", "Character"],
+    authorized_anime_types=sql_calls.ALL_ANIME_TYPES,
 ):
 
     start = timeit.default_timer()
@@ -1138,6 +1175,7 @@ def get_ann_song_ids_song_list(
         authorized_types,
         authorized_broadcasts,
         authorized_song_categories,
+        authorized_anime_types,
     )
 
     songs = combine_results(
@@ -1166,6 +1204,7 @@ def get_amq_song_ids_song_list(
     authorized_types=[1, 2, 3],
     authorized_broadcasts=["Normal", "Dub", "Rebroadcast"],
     authorized_song_categories=["Standard", "Chanting", "Instrumental", "Character"],
+    authorized_anime_types=sql_calls.ALL_ANIME_TYPES,
 ):
 
     start = timeit.default_timer()
@@ -1194,6 +1233,7 @@ def get_amq_song_ids_song_list(
         authorized_types,
         authorized_broadcasts,
         authorized_song_categories,
+        authorized_anime_types,
     )
 
     songs = combine_results(
@@ -1222,6 +1262,7 @@ def get_season_song_list(
     authorized_types=[1, 2, 3],
     authorized_broadcasts=["Normal", "Dub", "Rebroadcast"],
     authorized_song_categories=["Standard", "Chanting", "Instrumental", "Character"],
+    authorized_anime_types=sql_calls.ALL_ANIME_TYPES,
 ):
 
     start = timeit.default_timer()
@@ -1244,6 +1285,7 @@ def get_season_song_list(
         authorized_types,
         authorized_broadcasts,
         authorized_song_categories,
+        authorized_anime_types,
     )
 
     songs = combine_results(

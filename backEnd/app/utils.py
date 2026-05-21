@@ -104,8 +104,9 @@ def apply_regex_rules(search):
     return search
 
 
-def get_regex_search(og_search, partial_match=True, swap_words=False):
-    og_search = escapeRegExp(og_search.lower())
+def get_regex_search(og_search, partial_match=True, swap_words=False, match_case=False):
+    normalized_search = og_search if match_case else og_search.lower()
+    og_search = escapeRegExp(normalized_search)
     search = apply_regex_rules(og_search)
     search = "^" + search + "$" if not partial_match else ".*" + search + ".*"
 
@@ -121,6 +122,12 @@ def get_regex_search(og_search, partial_match=True, swap_words=False):
             )
             search = f"({search})|({alt_search})"
     return search
+
+
+def regex_match(regex, text, match_case=False):
+    if not text:
+        return False
+    return re.match(regex, text if match_case else text.lower())
 
 
 def format_song(artist_database, song):
