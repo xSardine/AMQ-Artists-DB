@@ -691,13 +691,11 @@ try:
 
     # Update query to set HQ, MQ, and audio to NULL for all rows except the first 500
     dest_cursor = dest_conn.cursor()
-    dest_cursor.execute(
-        """
+    dest_cursor.execute("""
         UPDATE songs
         SET HQ = NULL, MQ = NULL, audio = NULL
         WHERE id > 500;
-    """
-    )
+    """)
 
     print("Successfully updated songs table :)")
 

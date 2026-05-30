@@ -104,7 +104,11 @@ def get_ranked_time_info(date=None):
     else:
         if not isinstance(date, datetime):
             raise TypeError("Input must be a datetime object or None")
-        dt_utc = date.astimezone(timezone.utc) if date.tzinfo else date.replace(tzinfo=timezone.utc)
+        dt_utc = (
+            date.astimezone(timezone.utc)
+            if date.tzinfo
+            else date.replace(tzinfo=timezone.utc)
+        )
     server_time = dt_utc.isoformat()
 
     for index, tz_info in enumerate(RANKED_REGION_ZONES):
@@ -117,7 +121,9 @@ def get_ranked_time_info(date=None):
                 second=0,
                 microsecond=0,
             )
-            remaining_total_seconds = max(0, int((local_end - local_dt).total_seconds()))
+            remaining_total_seconds = max(
+                0, int((local_end - local_dt).total_seconds())
+            )
             return {
                 "active": True,
                 "region": RANKED_REGION_LABELS[index],
@@ -278,6 +284,9 @@ def check_meets_artists_requirements(
     LINE_UP_EXCEPTIONS = [
         33,  # Tokyo Konsei
         215,  # Suginami
+        19619,  # It's Follies
+        23630,  # Hanamaru Gakudan
+        466,  # Mori no Ki Jidou Gasshou-dan
         546,  # Pokemon Kids
         1736,  # JDK
         1639,  # System-B
@@ -342,6 +351,9 @@ def check_meets_composers_requirements(
     LINE_UP_EXCEPTIONS = [
         33,  # Tokyo Konsei
         215,  # Suginami
+        23630,  # Hanamaru Gakudan
+        19619,  # It's Follies
+        466,  # Mori no Ki Jidou Gasshou-dan
         546,  # Pokemon Kids
         1736,  # JDK
         1639,  # System-B
@@ -1007,7 +1019,9 @@ def get_ann_ids_song_list(
 
     print("-------------------------")
     print("Date: ", str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")))
-    print(f"ann_ids_filter: {ann_ids if len(ann_ids) < 5 else f'{len(ann_ids)} ann_ids'}")
+    print(
+        f"ann_ids_filter: {ann_ids if len(ann_ids) < 5 else f'{len(ann_ids)} ann_ids'}"
+    )
     print(f"ignore_dups: {ignore_duplicate}", end=" | ")
     print(f"types: {authorized_types}", end=" | ")
     print(f"broadcasts: {authorized_broadcasts}", end=" | ")
@@ -1120,7 +1134,9 @@ def get_ann_song_ids_song_list(
 
     print("-------------------------")
     print("Date: ", str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")))
-    print(f"ann_song_ids_filter: {ann_song_ids if len(ann_song_ids) < 5 else f'{len(ann_song_ids)} ann_song_ids'}")
+    print(
+        f"ann_song_ids_filter: {ann_song_ids if len(ann_song_ids) < 5 else f'{len(ann_song_ids)} ann_song_ids'}"
+    )
     print(f"ignore_dups: {ignore_duplicate}", end=" | ")
     print(f"types: {authorized_types}", end=" | ")
     print(f"broadcasts: {authorized_broadcasts}", end=" | ")
@@ -1176,7 +1192,9 @@ def get_amq_song_ids_song_list(
 
     print("-------------------------")
     print("Date: ", str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")))
-    print(f"amq_song_ids_filter: {amq_song_ids if len(amq_song_ids) < 5 else f'{len(amq_song_ids)} amq_song_ids'}")
+    print(
+        f"amq_song_ids_filter: {amq_song_ids if len(amq_song_ids) < 5 else f'{len(amq_song_ids)} amq_song_ids'}"
+    )
     print(f"ignore_dups: {ignore_duplicate}", end=" | ")
     print(f"types: {authorized_types}", end=" | ")
     print(f"broadcasts: {authorized_broadcasts}", end=" | ")
