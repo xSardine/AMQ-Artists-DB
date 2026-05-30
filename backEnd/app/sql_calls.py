@@ -238,22 +238,45 @@ def build_broadcast_filter(authorized_broadcasts):
     return " AND " + " AND ".join(conditions)
 
 
+ALL_ANIME_TYPES = ["TV", "Movie", "OVA", "ONA", "Special", "Doujin"]
+
+
+def build_anime_type_filter(authorized_anime_types):
+    """
+    Build SQL WHERE clause for anime type filtering.
+
+    When all types are authorized, no filter is applied so songs with a NULL
+    animeType are still included.
+    """
+    if not authorized_anime_types or len(authorized_anime_types) >= len(
+        ALL_ANIME_TYPES
+    ):
+        return "", []
+
+    placeholders = ",".join("?" * len(authorized_anime_types))
+    return f" AND animeType IN ({placeholders})", authorized_anime_types
+
+
 def get_songs_list_from_ann_ids(
     cursor,
     ann_ids,
     authorized_types,
     authorized_broadcasts,
     authorized_song_categories,
+    authorized_anime_types,
 ):
 
     broadcast_filter = build_broadcast_filter(authorized_broadcasts)
+    anime_type_filter, anime_type_params = build_anime_type_filter(
+        authorized_anime_types
+    )
 
-    get_songs_from_annId = f"SELECT * from songsFull WHERE songType IN ({','.join('?'*len(authorized_types))}) AND annId IN ({','.join('?'*len(ann_ids))}) {broadcast_filter} AND songCategory IN ({','.join('?'*len(authorized_song_categories))})"
+    get_songs_from_annId = f"SELECT * from songsFull WHERE songType IN ({','.join('?'*len(authorized_types))}) AND annId IN ({','.join('?'*len(ann_ids))}) {broadcast_filter}{anime_type_filter} AND songCategory IN ({','.join('?'*len(authorized_song_categories))})"
 
     return run_sql_command(
         cursor,
         get_songs_from_annId,
-        authorized_types + ann_ids + authorized_song_categories,
+        authorized_types + ann_ids + anime_type_params + authorized_song_categories,
     )
 
 
@@ -263,15 +286,19 @@ def get_songs_list_from_mal_ids(
     authorized_types,
     authorized_broadcasts,
     authorized_song_categories,
+    authorized_anime_types,
 ):
 
     broadcast_filter = build_broadcast_filter(authorized_broadcasts)
+    anime_type_filter, anime_type_params = build_anime_type_filter(
+        authorized_anime_types
+    )
 
-    get_songs_from_malIds = f"SELECT * from songsFull WHERE songType IN ({','.join('?'*len(authorized_types))}) AND malId IN ({','.join('?'*len(mal_ids))}) {broadcast_filter} AND songCategory IN ({','.join('?'*len(authorized_song_categories))})"
+    get_songs_from_malIds = f"SELECT * from songsFull WHERE songType IN ({','.join('?'*len(authorized_types))}) AND malId IN ({','.join('?'*len(mal_ids))}) {broadcast_filter}{anime_type_filter} AND songCategory IN ({','.join('?'*len(authorized_song_categories))})"
     return run_sql_command(
         cursor,
         get_songs_from_malIds,
-        authorized_types + mal_ids + authorized_song_categories,
+        authorized_types + mal_ids + anime_type_params + authorized_song_categories,
     )
 
 
@@ -281,15 +308,22 @@ def get_songs_list_from_ann_song_ids(
     authorized_types,
     authorized_broadcasts,
     authorized_song_categories,
+    authorized_anime_types,
 ):
 
     broadcast_filter = build_broadcast_filter(authorized_broadcasts)
+    anime_type_filter, anime_type_params = build_anime_type_filter(
+        authorized_anime_types
+    )
 
-    get_songs_from_annSongIds = f"SELECT * from songsFull WHERE songType IN ({','.join('?'*len(authorized_types))}) AND annSongId IN ({','.join('?'*len(ann_song_ids))}) {broadcast_filter} AND songCategory IN ({','.join('?'*len(authorized_song_categories))})"
+    get_songs_from_annSongIds = f"SELECT * from songsFull WHERE songType IN ({','.join('?'*len(authorized_types))}) AND annSongId IN ({','.join('?'*len(ann_song_ids))}) {broadcast_filter}{anime_type_filter} AND songCategory IN ({','.join('?'*len(authorized_song_categories))})"
     return run_sql_command(
         cursor,
         get_songs_from_annSongIds,
-        authorized_types + ann_song_ids + authorized_song_categories,
+        authorized_types
+        + ann_song_ids
+        + anime_type_params
+        + authorized_song_categories,
     )
 
 
@@ -299,30 +333,52 @@ def get_songs_list_from_amq_song_ids(
     authorized_types,
     authorized_broadcasts,
     authorized_song_categories,
+    authorized_anime_types,
 ):
 
     broadcast_filter = build_broadcast_filter(authorized_broadcasts)
+    anime_type_filter, anime_type_params = build_anime_type_filter(
+        authorized_anime_types
+    )
 
-    get_songs_from_amqSongIds = f"SELECT * from songsFull WHERE songType IN ({','.join('?'*len(authorized_types))}) AND amqSongId IN ({','.join('?'*len(amq_song_ids))}) {broadcast_filter} AND songCategory IN ({','.join('?'*len(authorized_song_categories))})"
+    get_songs_from_amqSongIds = f"SELECT * from songsFull WHERE songType IN ({','.join('?'*len(authorized_types))}) AND amqSongId IN ({','.join('?'*len(amq_song_ids))}) {broadcast_filter}{anime_type_filter} AND songCategory IN ({','.join('?'*len(authorized_song_categories))})"
     return run_sql_command(
         cursor,
         get_songs_from_amqSongIds,
-        authorized_types + amq_song_ids + authorized_song_categories,
+        authorized_types
+        + amq_song_ids
+        + anime_type_params
+        + authorized_song_categories,
     )
 
 
 def get_song_list_from_songArtist(
-    cursor, regex, authorized_types, authorized_broadcasts, authorized_song_categories
+    cursor,
+    regex,
+    authorized_types,
+    authorized_broadcasts,
+    authorized_song_categories,
+    authorized_anime_types,
+    match_case=False,
 ):
     # TODO Indexes on lower ?
 
     broadcast_filter = build_broadcast_filter(authorized_broadcasts)
+    anime_type_filter, anime_type_params = build_anime_type_filter(
+        authorized_anime_types
+    )
+    song_artist_column = (
+        "romajiSongArtist" if match_case else "lower(romajiSongArtist)"
+    )
 
-    get_song_list_from_songArtist = f"SELECT * from songsFull WHERE songType IN ({','.join('?'*len(authorized_types))}) {broadcast_filter} AND songCategory IN ({','.join('?'*len(authorized_song_categories))}) AND lower(romajiSongArtist) REGEXP ? LIMIT 500"
+    get_song_list_from_songArtist = f"SELECT * from songsFull WHERE songType IN ({','.join('?'*len(authorized_types))}) {broadcast_filter}{anime_type_filter} AND songCategory IN ({','.join('?'*len(authorized_song_categories))}) AND {song_artist_column} REGEXP ? LIMIT 500"
     return run_sql_command(
         cursor,
         get_song_list_from_songArtist,
-        authorized_types + authorized_song_categories + [regex],
+        authorized_types
+        + anime_type_params
+        + authorized_song_categories
+        + [regex],
     )
 
 
@@ -357,9 +413,10 @@ def get_songs_ids_from_composing_team_ids(cursor, composer_ids, arrangement):
     return songIds
 
 
-def get_artist_ids_from_regex(cursor, regex):
+def get_artist_ids_from_regex(cursor, regex, match_case=False):
     # TODO Index on lower ?
-    get_artist_ids_from_regex = "SELECT artist_id from link_artist_name WHERE lower(romaji_name) REGEXP ? GROUP BY artist_id LIMIT 50"
+    name_column = "romaji_name" if match_case else "lower(romaji_name)"
+    get_artist_ids_from_regex = f"SELECT artist_id from link_artist_name WHERE {name_column} REGEXP ? GROUP BY artist_id LIMIT 50"
     artist_ids = [
         id[0] for id in run_sql_command(cursor, get_artist_ids_from_regex, [regex])
     ]
@@ -415,6 +472,7 @@ def get_songs_list_from_season(
     authorized_types,
     authorized_broadcasts,
     authorized_song_categories,
+    authorized_anime_types,
 ):
     """
     Get songs from a specific season with proper broadcast filtering.
@@ -433,6 +491,12 @@ def get_songs_list_from_season(
     # Add broadcast type filter
     broadcast_filter = build_broadcast_filter(authorized_broadcasts)
     base_query += broadcast_filter
+
+    anime_type_filter, anime_type_params = build_anime_type_filter(
+        authorized_anime_types
+    )
+    base_query += anime_type_filter
+    params.extend(anime_type_params)
     
     # Add song category filter
     if authorized_song_categories:
