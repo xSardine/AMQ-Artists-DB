@@ -93,8 +93,8 @@ ANIME_REGEX_REPLACE_RULES = [
 
 def escapeRegExp(str):
     str = re.escape(str)
-    str = str.replace("\ ", " ")
-    str = str.replace("\*", "*")
+    str = str.replace("\\ ", " ")
+    str = str.replace("\\*", "*")
     return str
 
 

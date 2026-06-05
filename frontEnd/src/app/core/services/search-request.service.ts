@@ -68,7 +68,8 @@ export class SearchRequestService {
       second: '2-digit',
     });
     const parts = fmt.formatToParts(date);
-    const get = (type: string) => Number(parts.find((p) => p.type === type)?.value || 0);
+    const get = (type: string) =>
+      Number(parts.find((p) => p.type === type)?.value || 0);
     return get('hour') * 3600 + get('minute') * 60 + get('second');
   }
 
@@ -80,8 +81,13 @@ export class SearchRequestService {
     for (const tz of SearchRequestService.RANKED_TIMEZONES) {
       const localSec = this.getSecondsSinceStartOfDay(nowDate, tz);
 
-      if (localSec >= SearchRequestService.RANKED_START_SEC && localSec < SearchRequestService.RANKED_END_SEC) {
-        const remainingMinutes = Math.ceil((SearchRequestService.RANKED_END_SEC - localSec) / 60);
+      if (
+        localSec >= SearchRequestService.RANKED_START_SEC &&
+        localSec < SearchRequestService.RANKED_END_SEC
+      ) {
+        const remainingMinutes = Math.ceil(
+          (SearchRequestService.RANKED_END_SEC - localSec) / 60,
+        );
         return { active: true, remainingMinutes };
       }
     }
@@ -98,7 +104,7 @@ export class SearchRequestService {
       // The response body may contain clues as to what went wrong.
       console.error(
         `Backend returned code ${error.status}, body was: `,
-        error.error
+        error.error,
       );
     }
     // Return an observable with a user-facing error message.

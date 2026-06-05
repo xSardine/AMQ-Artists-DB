@@ -558,16 +558,33 @@
   </div>
 </div>
 
+<div class="table-controls" *ngIf="songTable" (click)="$event.stopPropagation()">
+  <button class="column-settings-toggle" (click)="toggleColumnSettings($event)">
+    Columns ({{ tableHeaders.length }}/{{ availableColumns.length }})
+  </button>
+
+  <div class="column-settings-panel" *ngIf="showColumnSettings">
+    <label *ngFor="let column of availableColumns" class="column-setting-row">
+      <input
+        type="checkbox"
+        [checked]="isColumnVisible(column.key)"
+        (change)="toggleColumn(column.key, $any($event.target).checked)"
+      />
+      {{ column.header }}
+    </label>
+  </div>
+</div>
+
 <table id="table" *ngIf="songTable">
   <!-- ADD HEADERS -->
   <tr>
     <th
       *ngFor="let col of tableHeaders"
       style="cursor: pointer"
-      title="Sort by {{ col }}"
+      title="Sort by {{ getHeaderLabel(col) }}"
       (click)="sortFunction(col)"
     >
-      {{ col }}
+      {{ getHeaderLabel(col) }}
     </th>
     <th style="text-align: center">mp3</th>
     <th
@@ -580,130 +597,107 @@
 
   <!-- BIND ARRAY TO TABLE -->
   <tr *ngFor="let song of songTable">
-    <td style="white-space: nowrap">
-      <i
-        style="
-          cursor: pointer;
-          margin-right: 8px;
-          color: var(--textOnBackground);
-        "
-        (click)="displaySongIngoPopup(song)"
-        title="More information"
-        class="fa fa-plus"
-      ></i>
-      <i
-        style="
-          cursor: pointer;
-          margin-right: 4px;
-          color: var(--textOnBackground);
-        "
-        title="Search songs in this entry"
-        (click)="searchAnnId(song.annId)"
-        class="fa fa-search"
-      ></i>
-      <span
-        class="copyable"
-        title="Copy to clipboard"
-        (click)="copyToClipboard($event, song.annId)"
-        >{{ song.annId }}</span
-      >
-    </td>
+    <ng-container *ngFor="let col of tableHeaders">
+      <td [ngSwitch]="col" [style.white-space]="col === 'annId' || col === 'Song Type' ? 'nowrap' : null">
+        <ng-container *ngSwitchCase="'annId'">
+          <i
+            style="
+              cursor: pointer;
+              margin-right: 8px;
+              color: var(--textOnBackground);
+            "
+            (click)="displaySongIngoPopup(song)"
+            title="More information"
+            class="fa fa-plus"
+          ></i>
+          <i
+            style="
+              cursor: pointer;
+              margin-right: 4px;
+              color: var(--textOnBackground);
+            "
+            title="Search songs in this entry"
+            (click)="searchAnnId(song.annId)"
+            class="fa fa-search"
+          ></i>
+          <span
+            class="copyable"
+            title="Copy to clipboard"
+            (click)="copyToClipboard($event, song.annId + '')"
+            >{{ song.annId }}</span
+          >
+        </ng-container>
 
-    <td>
-      <span
-        class="copyable"
-        title="Copy to clipboard"
-        (click)="
-          copyToClipboard(
-            $event,
-            animeTitleLang == 'JP' ? song.animeJPName : song.animeENName
-          )
-        "
-        >{{
-          animeTitleLang == "JP" ? song.animeJPName : song.animeENName
-        }}</span
-      >
-    </td>
+        <ng-container *ngSwitchCase="'Artist'">
+          <i
+            *ngIf="!rankedTime"
+            style="
+              cursor: pointer;
+              margin-right: 6px;
+              color: var(--textOnBackground);
+            "
+            title="Search songs by this artist(s)"
+            (click)="searchArtistIds(song.artists)"
+            class="fa fa-search"
+          ></i>
+          <span
+            class="copyable"
+            title="Copy to clipboard"
+            (click)="copyToClipboard($event, getColumnCopyValue(song, col))"
+            >{{ getColumnDisplayValue(song, col) }}</span
+          >
+        </ng-container>
 
-    <td style="white-space: nowrap">
-      <span
-        class="copyable"
-        title="Copy to clipboard"
-        (click)="copyToClipboard($event, song.songType)"
-        >{{ song.songType }}</span
-      >
-    </td>
+        <ng-container *ngSwitchCase="'Composer'">
+          <i
+            *ngIf="!rankedTime"
+            style="
+              cursor: pointer;
+              margin-right: 6px;
+              color: var(--textOnBackground);
+            "
+            title="Search songs composed or arranged by this composer(s)"
+            (click)="searchComposerIds(song.composers)"
+            class="fa fa-search"
+          ></i>
+          <span
+            class="copyable"
+            title="Copy to clipboard"
+            (click)="copyToClipboard($event, getColumnCopyValue(song, col))"
+            >{{ getColumnDisplayValue(song, col) }}</span
+          >
+        </ng-container>
 
-    <td>
-      <span
-        class="copyable"
-        title="Copy to clipboard"
-        (click)="copyToClipboard($event, song.songName)"
-        >{{ song.songName }}</span
-      >
-    </td>
+        <ng-container *ngSwitchCase="'Arranger'">
+          <i
+            *ngIf="!rankedTime"
+            style="
+              cursor: pointer;
+              margin-right: 6px;
+              color: var(--textOnBackground);
+            "
+            title="Search songs composed or arranged by this arranger(s)"
+            (click)="searchComposerIds(song.arrangers)"
+            class="fa fa-search"
+          ></i>
+          <span
+            class="copyable"
+            title="Copy to clipboard"
+            (click)="copyToClipboard($event, getColumnCopyValue(song, col))"
+            >{{ getColumnDisplayValue(song, col) }}</span
+          >
+        </ng-container>
 
-    <td>
-      <i
-        *ngIf="!rankedTime"
-        style="
-          cursor: pointer;
-          margin-right: 6px;
-          color: var(--textOnBackground);
-        "
-        title="Search songs by this artist(s)"
-        (click)="searchArtistIds(song.artists)"
-        class="fa fa-search"
-      ></i>
-      <span
-        class="copyable"
-        title="Copy to clipboard"
-        (click)="copyToClipboard($event, song.songArtist)"
-        >{{ song.songArtist }}</span
-      >
-    </td>
-
-    <td
-    *ngIf="composerDisplay">
-      <i
-        *ngIf="!rankedTime"
-        style="
-          cursor: pointer;
-          margin-right: 6px;
-          color: var(--textOnBackground);
-        "
-        title="Search songs composed or arranged by this composer(s)"
-        (click)="searchComposerIds(song.composers)"
-        class="fa fa-search"
-      ></i>
-      <span
-        class="copyable"
-        title="Copy to clipboard"
-        (click)="copyToClipboard($event, song.songComposer)"
-        >{{ song.songComposer }}</span
-      >
-    </td>
-
-    <td
-    *ngIf="composerDisplay">
-      <i
-        *ngIf="!rankedTime"
-        style="
-          cursor: pointer;
-          margin-right: 6px;
-          color: var(--textOnBackground);
-        "
-        title="Search songs composed or arranged by this arranger(s)"
-        (click)="searchComposerIds(song.arrangers)"
-        class="fa fa-search"
-      ></i>
-      <span
-        class="copyable"
-        title="Copy to clipboard"
-        (click)="copyToClipboard($event, song.songArranger)"
-        >{{ song.songArranger }}</span
-      >
-    </td>
+        <ng-container *ngSwitchDefault>
+          <span
+            class="copyable"
+            title="Copy to clipboard"
+            (click)="copyToClipboard($event, getColumnCopyValue(song, col))"
+            >{{ getColumnDisplayValue(song, col) }}</span
+          >
+        </ng-container>
+      </td>
+    </ng-container>
 
     <td
       *ngIf="isCurrentPlayingSong(song) && !rankedTime"
@@ -715,8 +709,13 @@
         -webkit-text-stroke: 0.5px #fff;
       "
     >
-    <i (click)="playMP3music(song)" *ngIf="song.audio" class="fa fa-music fa-lg" style="padding-right: 6px"></i>
-  </td>
+      <i
+        (click)="playMP3music(song)"
+        *ngIf="song.audio"
+        class="fa fa-music fa-lg"
+        style="padding-right: 6px"
+      ></i>
+    </td>
 
     <td
       *ngIf="!isCurrentPlayingSong(song) && !rankedTime"
@@ -726,7 +725,13 @@
         cursor: pointer;
       "
     >
-      <i title="Listen to mp3" (click)="playMP3music(song)" *ngIf="song.audio" class="fa fa-music fa-lg" style="padding-right: 6px"></i>
+      <i
+        title="Listen to mp3"
+        (click)="playMP3music(song)"
+        *ngIf="song.audio"
+        class="fa fa-music fa-lg"
+        style="padding-right: 6px"
+      ></i>
     </td>
 
     <td style="text-align: center; color: var(--textOnBackground)">

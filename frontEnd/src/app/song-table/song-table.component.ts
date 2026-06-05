@@ -1,6 +1,12 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { SearchRequestService } from '../core/services/search-request.service';
 
+type SongColumnDefinition = {
+  key: string;
+  header: string;
+  defaultVisible: boolean;
+};
+
 @Component({
   selector: 'app-song-table',
   templateUrl: './song-table.component.html',
@@ -17,9 +23,38 @@ export class SongTableComponent {
   @Input() songTable: any;
   @Input() previousBody: any;
   @Input() animeTitleLang: any;
-  @Input() composerDisplay: boolean = true;
 
-  tableHeaders = ['annId', 'Anime', 'Type', 'Song Name', 'Artist'];
+  tableHeaders: string[] = [];
+  availableColumns: SongColumnDefinition[] = [];
+  columnVisibility: Record<string, boolean> = {};
+  showColumnSettings: boolean = false;
+  private readonly columnVisibilityStorageKey = 'songTable.columnVisibility';
+  private loadedColumnVisibilityFromStorage = false;
+
+  private readonly allColumns: SongColumnDefinition[] = [
+    { key: 'annId', header: 'annId', defaultVisible: true },
+    { key: 'annSongId', header: 'Song ID', defaultVisible: false },
+    { key: 'Lists', header: 'Anime Lists', defaultVisible: false },
+    { key: 'Season', header: 'Season', defaultVisible: true },
+    { key: 'Anime Category', header: 'Anime Category', defaultVisible: true },
+    { key: 'Anime', header: 'Anime', defaultVisible: true },
+    { key: 'Song Type', header: 'Song Type', defaultVisible: true },
+    { key: 'Song Category', header: 'Song Category', defaultVisible: false },
+    { key: 'Song Name', header: 'Song Name', defaultVisible: true },
+    { key: 'Artist', header: 'Artist', defaultVisible: true },
+    { key: 'Composer', header: 'Composer', defaultVisible: false },
+    { key: 'Arranger', header: 'Arranger', defaultVisible: false },
+    { key: 'Length', header: 'Length', defaultVisible: false },
+    { key: 'Difficulty', header: 'Difficulty', defaultVisible: false },
+  ];
+
+  private readonly seasonOrder: Record<string, number> = {
+    Winter: 0,
+    Spring: 1,
+    Summer: 2,
+    Fall: 3,
+    Autumn: 3,
+  };
 
   @Output() mp3PlayerClicked = new EventEmitter();
   playMP3music(song: any) {
@@ -38,25 +73,104 @@ export class SongTableComponent {
   }
 
   ngOnInit() {
-    this.tableHeaders = ['annId', 'Anime', 'Type', 'Song Name', 'Artist'];
-    if (this.composerDisplay) {
-      this.tableHeaders.push('Composer');
-      this.tableHeaders.push('Arranger');
-    }
+    this.initializeColumns();
   }
 
   ngOnChanges(changes: Event) {
-    this.tableHeaders = ['annId', 'Anime', 'Type', 'Song Name', 'Artist'];
-    if (this.composerDisplay) {
-      this.tableHeaders.push('Composer');
-      this.tableHeaders.push('Arranger');
-    }
+    this.initializeColumns();
     const status = this.searchRequestService.getRankedStatusNow();
     this.RankedDisabledTimeLeft = status.remainingMinutes;
     this.rankedTime = status.active;
     this.ascendingOrder = false;
     this.currentAverage = this.computeAverage(this.songTable);
     this.sortFunction('annId');
+  }
+
+  initializeColumns() {
+    this.availableColumns = this.allColumns;
+
+    if (!this.loadedColumnVisibilityFromStorage) {
+      this.loadColumnVisibilityFromStorage();
+      this.loadedColumnVisibilityFromStorage = true;
+    }
+
+    const activeColumnKeys = new Set(this.availableColumns.map((c) => c.key));
+
+    for (const key of Object.keys(this.columnVisibility)) {
+      if (!activeColumnKeys.has(key)) {
+        delete this.columnVisibility[key];
+      }
+    }
+
+    for (const column of this.availableColumns) {
+      if (this.columnVisibility[column.key] === undefined) {
+        this.columnVisibility[column.key] = column.defaultVisible;
+      }
+    }
+
+    this.tableHeaders = this.availableColumns
+      .filter((column) => this.columnVisibility[column.key])
+      .map((column) => column.key);
+
+    this.saveColumnVisibilityToStorage();
+  }
+
+  getHeaderLabel(columnKey: string) {
+    return (
+      this.availableColumns.find((column) => column.key === columnKey)
+        ?.header || columnKey
+    );
+  }
+
+  isColumnVisible(columnKey: string) {
+    return !!this.columnVisibility[columnKey];
+  }
+
+  toggleColumn(columnKey: string, visible: boolean) {
+    this.columnVisibility[columnKey] = visible;
+    this.tableHeaders = this.availableColumns
+      .filter((column) => this.columnVisibility[column.key])
+      .map((column) => column.key);
+    this.saveColumnVisibilityToStorage();
+  }
+
+  loadColumnVisibilityFromStorage() {
+    try {
+      const rawValue = localStorage.getItem(this.columnVisibilityStorageKey);
+      if (!rawValue) {
+        return;
+      }
+
+      const parsed = JSON.parse(rawValue);
+      if (!parsed || typeof parsed !== 'object') {
+        return;
+      }
+
+      for (const column of this.allColumns) {
+        const value = (parsed as Record<string, unknown>)[column.key];
+        if (typeof value === 'boolean') {
+          this.columnVisibility[column.key] = value;
+        }
+      }
+    } catch (_error) {
+      // Ignore invalid persisted state and keep defaults.
+    }
+  }
+
+  saveColumnVisibilityToStorage() {
+    try {
+      localStorage.setItem(
+        this.columnVisibilityStorageKey,
+        JSON.stringify(this.columnVisibility),
+      );
+    } catch (_error) {
+      // Ignore storage failures.
+    }
+  }
+
+  toggleColumnSettings(event: Event) {
+    event.stopPropagation();
+    this.showColumnSettings = !this.showColumnSettings;
   }
 
   isCurrentPlayingSong(song: any) {
@@ -134,7 +248,7 @@ export class SongTableComponent {
   }
 
   sortArtists(
-    artists: { names: string[]; groups: string[]; members: string[] }[]
+    artists: { names: string[]; groups: string[]; members: string[] }[],
   ) {
     // Create a new, sorted array of artists
     const sortedArtists = artists
@@ -144,11 +258,11 @@ export class SongTableComponent {
         // If either property is missing, the length will be treated as -1 (to compensate with title header)
         // for names specifically, 0 and 1 will be treated as -1 as well
         let aLength =
-          ((a.names?.length ?? -1) <= 1 ? -1 : a.names?.length ?? -1) +
+          ((a.names?.length ?? -1) <= 1 ? -1 : (a.names?.length ?? -1)) +
           (a.groups?.length ?? -1) +
           (a.members?.length ?? -1);
         let bLength =
-          ((b.names?.length ?? -1) <= 1 ? -1 : b.names?.length ?? -1) +
+          ((b.names?.length ?? -1) <= 1 ? -1 : (b.names?.length ?? -1)) +
           (b.groups?.length ?? -1) +
           (b.members?.length ?? -1);
 
@@ -172,37 +286,106 @@ export class SongTableComponent {
     const type1 = this.getTypeAndNumber(songType1);
     const type2 = this.getTypeAndNumber(songType2);
 
-    // Create an object to map the song type to a sortable value
     const songTypes = ['Opening', 'Ending', 'Insert'];
 
-    // Compare the song types first, and if they are equal, compare the numbers
-    return -(
+    return (
       songTypes.indexOf(type1.type) - songTypes.indexOf(type2.type) ||
       type1.number - type2.number
     );
   }
 
+  parseVintage(vintage: string) {
+    const parsed = /^([A-Za-z]+)\s+(\d{4})$/.exec((vintage || '').trim());
+
+    if (!parsed) {
+      return { season: '', year: null, seasonIndex: 4 };
+    }
+
+    const normalizedSeason =
+      parsed[1].charAt(0).toUpperCase() + parsed[1].slice(1).toLowerCase();
+    const year = parseInt(parsed[2], 10);
+    const seasonIndex = this.seasonOrder[normalizedSeason] ?? 4;
+
+    return { season: normalizedSeason, year, seasonIndex };
+  }
+
+  getSeasonYearValue(song: any) {
+    const parsed = this.parseVintage(song?.animeVintage || '');
+    if (parsed.year === null) {
+      return song?.animeVintage || '-';
+    }
+
+    return `${parsed.season} ${parsed.year}`;
+  }
+
+  getSortValue(song: any, colName: string) {
+    switch (colName) {
+      case 'Song Type':
+        return song.songType;
+      case 'Song Name':
+        return song.songName;
+      case 'Artist':
+        return song.songArtist;
+      case 'Anime':
+        return this.animeTitleLang == 'JP'
+          ? song.animeJPName
+          : song.animeENName;
+      case 'Season': {
+        const parsed = this.parseVintage(song.animeVintage || '');
+        if (parsed.year === null) {
+          return -1;
+        }
+
+        return parsed.year * 10 + parsed.seasonIndex;
+      }
+      case 'Anime Category':
+        return song.animeCategory;
+      case 'Song Category':
+        return song.songCategory;
+      case 'Difficulty':
+        return Number(song.songDifficulty ?? -1);
+      case 'Length':
+        return Number(song.songLength ?? -1);
+      case 'Composer':
+        return song.songComposer;
+      case 'Arranger':
+        return song.songArranger;
+      default:
+        return song[colName];
+    }
+  }
+
+  comparePrimitiveValues(aValue: any, bValue: any) {
+    if (aValue === bValue) return 0;
+    if (aValue === undefined || aValue === null) return 1;
+    if (bValue === undefined || bValue === null) return -1;
+
+    if (typeof aValue === 'number' && typeof bValue === 'number') {
+      return aValue < bValue ? -1 : 1;
+    }
+
+    return String(aValue).localeCompare(String(bValue), undefined, {
+      numeric: true,
+      sensitivity: 'base',
+    });
+  }
+
   compareTwoSongs(colName: string, a: any, b: any) {
     let comparison;
 
-    // Compare values of song type if colName is songType
-    if (colName === 'Type') {
+    if (colName === 'Song Type') {
       comparison = this.compareSongsType(a['songType'], b['songType']);
-      // else compare value of given column
     } else {
-      comparison =
-        a[colName] < b[colName] ? 1 : a[colName] > b[colName] ? -1 : 0;
+      comparison = this.comparePrimitiveValues(
+        this.getSortValue(a, colName),
+        this.getSortValue(b, colName),
+      );
     }
 
-    // If we sort on annId the songs have the same annId, compare songType
     if (comparison === 0 && colName === 'annId') {
       comparison = this.compareSongsType(a['songType'], b['songType']);
-    }
-
-    // Else if we sort on anything else, and they have the same value, compare on annId
-    else if (comparison === 0) {
-      comparison =
-        a['annId'] > b['annId'] ? -1 : a['annId'] < b['annId'] ? 1 : 0;
+    } else if (comparison === 0) {
+      comparison = this.comparePrimitiveValues(a['annId'], b['annId']);
     }
 
     return this.ascendingOrder ? comparison : -comparison;
@@ -213,32 +396,85 @@ export class SongTableComponent {
       return;
     }
 
-    const colNamesMap: Record<string, string> = {
-      'Song Name': 'songName',
-      Artist: 'songArtist',
-      Anime: this.animeTitleLang == 'JP' ? 'animeJPName' : 'animeENName',
-    };
-
-    const sortColName = colNamesMap[colName] || colName;
-
-    this.songTable.sort((a: any, b: any) =>
-      this.compareTwoSongs(sortColName, a, b)
-    );
-
-    // update the lastColName and ascendingOrder properties
     if (this.lastColName !== colName) {
       this.lastColName = colName;
       this.ascendingOrder = true;
     } else {
       this.ascendingOrder = !this.ascendingOrder;
     }
+
+    this.songTable.sort((a: any, b: any) =>
+      this.compareTwoSongs(colName, a, b),
+    );
   }
 
   onAnyClick() {
+    if (this.showColumnSettings) {
+      this.showColumnSettings = false;
+    }
+
     if (this.showSongInfoPopup && !this.doubleClickPreventer) {
       this.showSongInfoPopup = !this.showSongInfoPopup;
     } else if (this.showSongInfoPopup) {
       this.doubleClickPreventer = !this.doubleClickPreventer;
+    }
+  }
+
+  getColumnDisplayValue(song: any, colName: string) {
+    switch (colName) {
+      case 'Song Type':
+        return song.songType || '-';
+      case 'Song Name':
+        return song.songName || '-';
+      case 'Artist':
+        return song.songArtist || '-';
+      case 'Anime':
+        return this.animeTitleLang == 'JP'
+          ? song.animeJPName
+          : song.animeENName;
+      case 'Season':
+        return this.getSeasonYearValue(song);
+      case 'Anime Category':
+        return song.animeCategory || '-';
+      case 'Song Category':
+        return song.songCategory || '-';
+      case 'Difficulty':
+        return song.songDifficulty != null ? `${song.songDifficulty}%` : '-';
+      case 'Length':
+        return song.songLength != null ? `${song.songLength}s` : '-';
+      case 'Composer':
+        return song.songComposer || '-';
+      case 'Arranger':
+        return song.songArranger || '-';
+      default:
+        return song[colName] ?? '-';
+    }
+  }
+
+  getColumnCopyValue(song: any, colName: string) {
+    switch (colName) {
+      case 'Song Type':
+        return song.songType || '';
+      case 'Song Name':
+        return song.songName || '';
+      case 'Artist':
+        return song.songArtist || '';
+      case 'Anime':
+        return this.animeTitleLang == 'JP'
+          ? song.animeJPName
+          : song.animeENName;
+      case 'Season':
+        return this.getSeasonYearValue(song);
+      case 'Difficulty':
+        return song.songDifficulty != null ? String(song.songDifficulty) : '';
+      case 'Length':
+        return song.songLength != null ? String(song.songLength) : '';
+      case 'Composer':
+        return song.songComposer || '';
+      case 'Arranger':
+        return song.songArranger || '';
+      default:
+        return song[colName] != null ? String(song[colName]) : '';
     }
   }
 
@@ -283,7 +519,7 @@ export class SongTableComponent {
     this.gridStyle = {
       'grid-template-columns': `repeat(${Math.min(
         this.maxGridNb,
-        this.popUpArtistsInfo.length
+        this.popUpArtistsInfo.length,
       )}, 1fr)`,
     };
     this.subGridStyle = {

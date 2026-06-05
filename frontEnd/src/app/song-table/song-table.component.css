@@ -52,6 +52,45 @@
   color: var(--textOnBackground);
 }
 
+.table-controls {
+  position: relative;
+  margin: 8px 0 12px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.column-settings-toggle {
+  border: 1px solid var(--primaryColor);
+  background-color: var(--primaryColor);
+  color: var(--textOnPrimary);
+  padding: 6px 10px;
+  font-family: "Custom Font", sans-serif;
+  cursor: pointer;
+}
+
+.column-settings-panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 2;
+  min-width: 220px;
+  border: 1px solid #7e7e7e;
+  background-color: var(--background);
+  color: var(--textOnBackground);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  padding: 8px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.column-setting-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 2px;
+  cursor: pointer;
+}
+
 .container {
   overflow: hidden;
   width: 100%;
@@ -152,7 +191,9 @@
   padding: 0;
   border: 4px solid #888;
   width: 70%;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  box-shadow:
+    0 4px 8px 0 rgba(0, 0, 0, 0.2),
+    0 6px 20px 0 rgba(0, 0, 0, 0.19);
   animation-name: animatetop;
   animation-duration: 0.4s;
 }

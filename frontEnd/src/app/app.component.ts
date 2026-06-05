@@ -14,10 +14,10 @@ class CustomLocalMediaStorage extends LocalMediaStorage {
 }
 
 @Component({
-    selector: 'app-root',
-    templateUrl: './app.component.html',
-    styleUrls: ['./app.component.scss'],
-    standalone: false
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss'],
+  standalone: false,
 })
 export class AppComponent implements AfterViewInit {
   @ViewChild('audioPlayerRef', { static: false }) audioPlayerRef!: ElementRef;
@@ -31,11 +31,9 @@ export class AppComponent implements AfterViewInit {
   currentlyPlayingArtist: any = '';
   currentlyPlayingSongName: any = '';
   animeTitleLang: string = 'JP';
-  composerDisplay: boolean = true;
 
   // Keys for storing player preferences in localStorage
   private readonly langKey = 'animeTitleLang';
-  private readonly composerKey = 'composerDisplay';
 
   receiveSongList($event: any) {
     this.songList = $event;
@@ -52,20 +50,11 @@ export class AppComponent implements AfterViewInit {
   private initializeTableSettings() {
     const savedLang = localStorage.getItem(this.langKey);
     this.animeTitleLang = savedLang ? savedLang : 'JP';
-
-    const savedComposerDisplay = localStorage.getItem(this.composerKey);
-    this.composerDisplay =
-      savedComposerDisplay !== null ? savedComposerDisplay === 'true' : true;
   }
 
   toggleAnimeLang() {
     this.animeTitleLang = this.animeTitleLang === 'JP' ? 'EN' : 'JP';
     localStorage.setItem(this.langKey, this.animeTitleLang);
-  }
-
-  toggleComposerDisplay() {
-    this.composerDisplay = !this.composerDisplay;
-    localStorage.setItem(this.composerKey, this.composerDisplay.toString());
   }
 
   ngAfterViewInit() {
