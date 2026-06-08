@@ -46,7 +46,7 @@
 
 
 
-      <h3 style="text-align: center; text-decoration: underline; margin: 0; flex: 1;">
+      <h3 style="text-align: center; text-decoration: underline; margin: 0;">
         Song Information
       </h3>
 
@@ -102,7 +102,7 @@
           <p
             class="clickable"
             (click)="copyToClipboard($event, popUpSongCat)"
-            title="Copy Song Difficulty to clipboard"
+            title="Copy Category to clipboard"
             style="margin-top: 0"
           >
             {{ popUpSongCat }}
@@ -206,7 +206,7 @@
       <h3 style="text-align: center; text-decoration: underline">
         Artists Information
       </h3>
-      <div class="grid" [ngStyle]="gridStyle">
+      <div class="grid" [ngStyle]="getGridStyle(popUpArtistsInfo.length)">
         <div *ngFor="let artist of popUpArtistsInfo">
           <p style="margin: 5px">
             <i
@@ -214,7 +214,7 @@
               style="cursor: pointer; margin-right: 6px"
               title="Search songs sung by this artist"
               (click)="searchArtistIds(artist)"
-              class="fa fa-search"
+              class="fa fa-search table-action-icon"
             ></i>
             <span
               class="popUpText"
@@ -238,7 +238,7 @@
           <div
             *ngIf="artist['names'].length > 1"
             class="subGrid"
-            [ngStyle]="subGridStyle"
+            [ngStyle]="getSubGridStyle(popUpArtistsInfo.length)"
           >
             <div *ngFor="let name of artist['names']">
               <span
@@ -264,7 +264,7 @@
           <div
             *ngIf="artist['members'] != undefined"
             class="subGrid"
-            [ngStyle]="subGridStyle"
+            [ngStyle]="getSubGridStyle(popUpArtistsInfo.length)"
           >
             <div *ngFor="let member of artist['members']">
               <i
@@ -272,7 +272,7 @@
                 style="cursor: pointer; margin-right: 6px"
                 title="Search songs sung by this member"
                 (click)="searchArtistIds(member)"
-                class="fa fa-search"
+                class="fa fa-search table-action-icon"
               ></i>
               <span
                 class="popUpText"
@@ -297,7 +297,7 @@
           <div
             *ngIf="artist['groups'] != undefined"
             class="subGrid"
-            [ngStyle]="subGridStyle"
+            [ngStyle]="getSubGridStyle(popUpArtistsInfo.length)"
           >
             <div *ngFor="let group of artist['groups']">
               <i
@@ -305,7 +305,7 @@
                 style="cursor: pointer; margin-right: 6px"
                 title="Search songs sung by this group"
                 (click)="searchArtistIds(group)"
-                class="fa fa-search"
+                class="fa fa-search table-action-icon"
               ></i>
               <span
                 class="popUpText"
@@ -324,7 +324,7 @@
       >
         Composers Information
       </h3>
-      <div class="grid" [ngStyle]="gridStyle">
+      <div class="grid" [ngStyle]="getGridStyle(popUpComposersInfo.length)">
         <div *ngFor="let composer of popUpComposersInfo">
           <p style="margin: 5px">
             <i
@@ -332,7 +332,7 @@
               style="cursor: pointer; margin-right: 6px"
               title="Search songs composed by this composer"
               (click)="searchComposerIds(composer)"
-              class="fa fa-search"
+              class="fa fa-search table-action-icon"
             ></i>
             <span
               class="popUpText"
@@ -356,7 +356,7 @@
           <div
             *ngIf="composer['names'].length > 1"
             class="subGrid"
-            [ngStyle]="subGridStyle"
+            [ngStyle]="getSubGridStyle(popUpComposersInfo.length)"
           >
             <div *ngFor="let name of composer['names']">
               <span
@@ -382,7 +382,7 @@
           <div
             *ngIf="composer['members'] != undefined"
             class="subGrid"
-            [ngStyle]="subGridStyle"
+            [ngStyle]="getSubGridStyle(popUpComposersInfo.length)"
           >
             <div *ngFor="let member of composer['members']">
               <i
@@ -390,7 +390,7 @@
                 style="cursor: pointer; margin-right: 6px"
                 title="Search songs composed by this member"
                 (click)="searchComposerIds(member)"
-                class="fa fa-search"
+                class="fa fa-search table-action-icon"
               ></i>
               <span
                 class="popUpText"
@@ -415,7 +415,7 @@
           <div
             *ngIf="composer['groups'] != undefined"
             class="subGrid"
-            [ngStyle]="subGridStyle"
+            [ngStyle]="getSubGridStyle(popUpComposersInfo.length)"
           >
             <div *ngFor="let group of composer['groups']">
               <i
@@ -423,7 +423,7 @@
                 style="cursor: pointer; margin-right: 6px"
                 title="Search songs composed by this group"
                 (click)="searchComposerIds(group)"
-                class="fa fa-search"
+                class="fa fa-search table-action-icon"
               ></i>
               <span
                 class="popUpText"
@@ -442,7 +442,7 @@
       >
         Arrangers Information
       </h3>
-      <div class="grid" [ngStyle]="gridStyle">
+      <div class="grid" [ngStyle]="getGridStyle(popUpArrangersInfo.length)">
         <div *ngFor="let arranger of popUpArrangersInfo">
           <p style="margin: 5px">
             <i
@@ -450,7 +450,7 @@
               style="cursor: pointer; margin-right: 6px"
               title="Search songs composed by this arranger"
               (click)="searchComposerIds(arranger)"
-              class="fa fa-search"
+              class="fa fa-search table-action-icon"
             ></i>
             <span
               class="popUpText"
@@ -474,7 +474,7 @@
           <div
             *ngIf="arranger['names'].length > 1"
             class="subGrid"
-            [ngStyle]="subGridStyle"
+            [ngStyle]="getSubGridStyle(popUpArrangersInfo.length)"
           >
             <div *ngFor="let name of arranger['names']">
               <span
@@ -500,7 +500,7 @@
           <div
             *ngIf="arranger['members'] != undefined"
             class="subGrid"
-            [ngStyle]="subGridStyle"
+            [ngStyle]="getSubGridStyle(popUpArrangersInfo.length)"
           >
             <div *ngFor="let member of arranger['members']">
               <i
@@ -508,7 +508,7 @@
                 style="cursor: pointer; margin-right: 6px"
                 title="Search songs composed by this member"
                 (click)="searchComposerIds(member)"
-                class="fa fa-search"
+                class="fa fa-search table-action-icon"
               ></i>
               <span
                 class="popUpText"
@@ -533,7 +533,7 @@
           <div
             *ngIf="arranger['groups'] != undefined"
             class="subGrid"
-            [ngStyle]="subGridStyle"
+            [ngStyle]="getSubGridStyle(popUpArrangersInfo.length)"
           >
             <div *ngFor="let group of arranger['groups']">
               <i
@@ -541,7 +541,7 @@
                 style="cursor: pointer; margin-right: 6px"
                 title="Search songs composed by this group"
                 (click)="searchComposerIds(group)"
-                class="fa fa-search"
+                class="fa fa-search table-action-icon"
               ></i>
               <span
                 class="popUpText"
@@ -558,12 +558,21 @@
   </div>
 </div>
 
-<div class="table-controls" *ngIf="songTable" (click)="$event.stopPropagation()">
-  <button class="column-settings-toggle" (click)="toggleColumnSettings($event)">
+<div class="table-controls" *ngIf="songTable || searchErrorMessage" (click)="$event.stopPropagation()">
+  <div *ngIf="searchErrorMessage" class="search-error-banner" role="alert">
+    <span class="search-error-banner-icon" aria-hidden="true"><i class="fa fa-exclamation-triangle"></i></span>
+    <span class="search-error-banner-text">
+      <span class="search-error-banner-title">Search Error</span>
+      {{ searchErrorMessage }}
+    </span>
+  </div>
+
+  <div class="table-controls-actions" *ngIf="songTable">
+  <button id="column-settings-toggle" class="column-settings-toggle" (click)="toggleColumnSettings($event)">
     Columns ({{ tableHeaders.length }}/{{ availableColumns.length }})
   </button>
 
-  <div class="column-settings-panel" *ngIf="showColumnSettings">
+  <div id="column-settings-panel" class="column-settings-panel" *ngIf="showColumnSettings">
     <label *ngFor="let column of availableColumns" class="column-setting-row">
       <input
         type="checkbox"
@@ -573,6 +582,7 @@
       {{ column.header }}
     </label>
   </div>
+  </div>
 </div>
 
 <table id="table" *ngIf="songTable">
@@ -580,13 +590,13 @@
   <tr>
     <th
       *ngFor="let col of tableHeaders"
-      style="cursor: pointer"
-      title="Sort by {{ getHeaderLabel(col) }}"
-      (click)="sortFunction(col)"
+      [style.cursor]="isColumnSortable(col) ? 'pointer' : 'default'"
+      [style.text-align]="col === 'Play Audio' ? 'center' : null"
+      [attr.title]="isColumnSortable(col) ? 'Sort by ' + getHeaderLabel(col) : null"
+      (click)="onHeaderClick(col)"
     >
       {{ getHeaderLabel(col) }}
     </th>
-    <th style="text-align: center">mp3</th>
     <th
       title="#Number of Songs (%Average Difficulty)"
       style="text-align: center"
@@ -598,27 +608,27 @@
   <!-- BIND ARRAY TO TABLE -->
   <tr *ngFor="let song of songTable">
     <ng-container *ngFor="let col of tableHeaders">
-      <td [ngSwitch]="col" [style.white-space]="col === 'annId' || col === 'Song Type' ? 'nowrap' : null">
+      <td
+        [ngSwitch]="col"
+        [style.text-align]="col === 'Play Audio' ? 'center' : null"
+        [style.white-space]="
+          col === 'annId' || col === 'Song Type' || col === 'Lists' || col === 'Song Links'
+            ? 'nowrap'
+            : null
+        "
+      >
         <ng-container *ngSwitchCase="'annId'">
           <i
-            style="
-              cursor: pointer;
-              margin-right: 8px;
-              color: var(--textOnBackground);
-            "
-            (click)="displaySongIngoPopup(song)"
+            style="margin-right: 8px"
+            class="fa fa-plus table-action-icon"
+            (click)="displaySongInfoPopup(song)"
             title="More information"
-            class="fa fa-plus"
           ></i>
           <i
-            style="
-              cursor: pointer;
-              margin-right: 4px;
-              color: var(--textOnBackground);
-            "
+            style="margin-right: 4px"
+            class="fa fa-search table-action-icon"
             title="Search songs in this entry"
             (click)="searchAnnId(song.annId)"
-            class="fa fa-search"
           ></i>
           <span
             class="copyable"
@@ -631,14 +641,10 @@
         <ng-container *ngSwitchCase="'Artist'">
           <i
             *ngIf="!rankedTime"
-            style="
-              cursor: pointer;
-              margin-right: 6px;
-              color: var(--textOnBackground);
-            "
+            style="margin-right: 6px"
+            class="fa fa-search table-action-icon"
             title="Search songs by this artist(s)"
             (click)="searchArtistIds(song.artists)"
-            class="fa fa-search"
           ></i>
           <span
             class="copyable"
@@ -651,14 +657,10 @@
         <ng-container *ngSwitchCase="'Composer'">
           <i
             *ngIf="!rankedTime"
-            style="
-              cursor: pointer;
-              margin-right: 6px;
-              color: var(--textOnBackground);
-            "
+            style="margin-right: 6px"
+            class="fa fa-search table-action-icon"
             title="Search songs composed or arranged by this composer(s)"
             (click)="searchComposerIds(song.composers)"
-            class="fa fa-search"
           ></i>
           <span
             class="copyable"
@@ -671,14 +673,10 @@
         <ng-container *ngSwitchCase="'Arranger'">
           <i
             *ngIf="!rankedTime"
-            style="
-              cursor: pointer;
-              margin-right: 6px;
-              color: var(--textOnBackground);
-            "
+            style="margin-right: 6px"
+            class="fa fa-search table-action-icon"
             title="Search songs composed or arranged by this arranger(s)"
             (click)="searchComposerIds(song.arrangers)"
-            class="fa fa-search"
           ></i>
           <span
             class="copyable"
@@ -686,6 +684,49 @@
             (click)="copyToClipboard($event, getColumnCopyValue(song, col))"
             >{{ getColumnDisplayValue(song, col) }}</span
           >
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'Lists'">
+          <div class="table-icon-links">
+            <ng-container *ngFor="let site of animeListSites">
+              <a
+                *ngIf="site.getUrl(song) as siteUrl"
+                [href]="siteUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="table-site-link"
+                [title]="site.alt"
+              >
+                <img [src]="site.img" class="table-site-icon" [alt]="site.alt" />
+              </a>
+            </ng-container>
+          </div>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'Song Links'">
+          <div *ngIf="!rankedTime" class="table-song-links">
+            <ng-container *ngFor="let link of songDistLinks">
+              <a
+                *ngIf="shouldShowSongLink(song, link)"
+                class="table-song-link"
+                [href]="getDistLink(song[link.field])"
+                target="_blank"
+                rel="noopener noreferrer"
+                [title]="link.title"
+                >{{ link.label }}</a
+              >
+            </ng-container>
+          </div>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'Play Audio'">
+          <i
+            *ngIf="!rankedTime && song.audio"
+            title="Listen to mp3"
+            (click)="playMP3music(song)"
+            class="fa fa-music fa-lg play-icon"
+            [class.active]="isCurrentPlayingSong(song)"
+          ></i>
         </ng-container>
 
         <ng-container *ngSwitchDefault>
@@ -699,48 +740,10 @@
       </td>
     </ng-container>
 
-    <td
-      *ngIf="isCurrentPlayingSong(song) && !rankedTime"
-      title="Listen to mp3"
-      style="
-        text-align: center;
-        color: rgb(226, 148, 4);
-        cursor: pointer;
-        -webkit-text-stroke: 0.5px #fff;
-      "
-    >
-      <i
-        (click)="playMP3music(song)"
-        *ngIf="song.audio"
-        class="fa fa-music fa-lg"
-        style="padding-right: 6px"
-      ></i>
-    </td>
-
-    <td
-      *ngIf="!isCurrentPlayingSong(song) && !rankedTime"
-      style="
-        text-align: center;
-        color: var(--textOnBackground);
-        cursor: pointer;
-      "
-    >
-      <i
-        title="Listen to mp3"
-        (click)="playMP3music(song)"
-        *ngIf="song.audio"
-        class="fa fa-music fa-lg"
-        style="padding-right: 6px"
-      ></i>
-    </td>
-
     <td style="text-align: center; color: var(--textOnBackground)">
-      <span
-        title="Delete song from list"
-        (click)="deleteRowEntry(song)"
-        style="cursor: pointer"
-        ><i class="fa fa-trash fa-lg" aria-hidden="true"></i
-      ></span>
+      <span title="Delete song from list" (click)="deleteRowEntry(song)">
+        <i class="fa fa-trash fa-lg table-action-icon" aria-hidden="true"></i>
+      </span>
     </td>
   </tr>
 </table>

@@ -1,27 +1,33 @@
 # Front End
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.2.5.
+Angular app for [AnisongDB](https://anisongdb.com), built with [Angular CLI](https://github.com/angular/angular-cli) **19** (see `package.json` for exact versions).
 
-Most of the component are done from scratch because I wanted to train on front end coding, as it is something that I am not familiar with.
-
-Exception is for the mp3 player: <https://github.com/vime-js/vime>
+Most components are custom-built because I wanted to train on front end coding. The audio player uses [Vidstack](https://www.vidstack.io/).
 
 ## Development server
 
-TODO : Remove dependency to Vime by using a maintained library (Vidstack ?), and migrate to Angular 18.
-
-There are dependencies problems, simply running `npm install` will not work. You need to install the dependencies like so :
-Remove the folder `node_modules` if it exists and run the following commands :
+From the `frontEnd` folder:
 
 ```bash
-npm ci --legacy-peer-deps
-npm install @vime/core --force
+npm install
+npm start
 ```
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Open `http://localhost:4200/`. The app reloads when you change source files.
 
-You need a working backend : Either run one locally following the instructions in the README.md of the backend folder, or use the one deployed on anisongdb.
-The value to change is located in `AMQ-Artists-DB\frontEnd\src\app\core\services\search-request.service.ts`.
+If `npm install` fails on peer dependencies, try:
+
+```bash
+npm install --legacy-peer-deps
+```
+
+## API backend
+
+You need a running API for the front end to display search results:
+Dev server uses `127.0.0.1:8000` by default (you can change this to anisongdb.com if you don't want to start the backend).
+To change this, edit `apiUrl` in `frontEnd/src/environments/environment.ts`.
+
+Production builds use `frontEnd/src/environments/environment.prod.ts` instead (`ng build` swaps it in automatically via `angular.json`).
 
 ## Code scaffolding
 

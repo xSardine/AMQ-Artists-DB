@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { SearchRequestService } from '../core/services/search-request.service';
 import {
   DomSanitizer,
@@ -12,7 +12,7 @@ import {
   styleUrls: ['./search-bar.component.css'],
   standalone: false,
 })
-export class SearchBarComponent implements OnInit {
+export class SearchBarComponent implements OnInit, OnDestroy {
   constructor(
     private sanitizer: DomSanitizer,
     private searchRequestService: SearchRequestService
@@ -38,7 +38,7 @@ export class SearchBarComponent implements OnInit {
   composerFilter: string = '';
   maximumRandomsFilter: string = '99';
   minimalMembersFilter: string = '0';
-  selectedCombination: string = 'Union';
+  selectedCombination: string = 'Union (OR)';
   mainFilterPartialMatch: boolean = true;
   animeFilterPartialMatch: boolean = true;
   songNameFilterPartialMatch: boolean = true;
@@ -56,21 +56,62 @@ export class SearchBarComponent implements OnInit {
   showInstrumentals: boolean = true;
   showChantings: boolean = true;
   showCharacters: boolean = true;
+  showTv: boolean = true;
+  showMovie: boolean = true;
+  showOva: boolean = true;
+  showOna: boolean = true;
+  showSpecial: boolean = true;
+  showDoujin: boolean = true;
   showAdvancedFilters: boolean = false;
 
   rankedTime = false;
-  RankedDisabledTimeLeft = 0;
+  rankedRegion: string | null = null;
+  rankedRemainingMinutes = 0;
+  private rankedCountdownTimer: ReturnType<typeof setInterval> | null = null;
 
   ngOnInit(): void {
-    const status = this.searchRequestService.getRankedStatusNow();
-    this.rankedTime = status.active;
-    this.RankedDisabledTimeLeft = status.remainingMinutes;
+    this.refreshRankedStatus();
+    this.rankedCountdownTimer = setInterval(() => this.refreshRankedStatus(), 1000);
     this.currentSongList = this.searchRequestService
       .getFirstNRequest()
       .subscribe((data) => {
         this.currentSongList = data;
         this.sendSongList(this.currentSongList);
       });
+  }
+
+  ngOnDestroy(): void {
+    if (this.rankedCountdownTimer !== null) {
+      clearInterval(this.rankedCountdownTimer);
+    }
+  }
+
+  private refreshRankedStatus(): void {
+    const status = this.searchRequestService.getRankedStatus();
+    this.rankedTime = status.active;
+    this.rankedRegion = status.region;
+    this.rankedRemainingMinutes = status.remainingMinutes;
+  }
+
+  private songFilterOptions() {
+    return {
+      opening_filter: this.showOpenings,
+      ending_filter: this.showEndings,
+      insert_filter: this.showInserts,
+      normal_broadcast: this.showNormalBroadcasts,
+      dub: this.showDubs,
+      rebroadcast: this.showRebroadcasts,
+      standard: this.showStandards,
+      instrumental: this.showInstrumentals,
+      chanting: this.showChantings,
+      character: this.showCharacters,
+      tv_filter: this.showTv,
+      movie_filter: this.showMovie,
+      ova_filter: this.showOva,
+      ona_filter: this.showOna,
+      special_filter: this.showSpecial,
+      doujin_filter: this.showDoujin,
+    };
   }
 
   onSearchCallKey(): void {
@@ -81,40 +122,13 @@ export class SearchBarComponent implements OnInit {
       tmp_composer_filter;
     let tmp_select = false;
 
-    const status = this.searchRequestService.getRankedStatusNow();
-    this.rankedTime = status.active;
-    this.RankedDisabledTimeLeft = status.remainingMinutes;
+    this.refreshRankedStatus();
 
-    if (this.selectedCombination == 'Intersection') {
+    if (this.selectedCombination == 'Intersection (AND)') {
       tmp_select = true;
     }
 
-    if (this.rankedTime) {
-      if (this.animeFilter.length > 0) {
-        tmp_anime_filter = {
-          search: this.animeFilter,
-          partial_match: this.mainFilterPartialMatch,
-        };
-      } else {
-        tmp_anime_filter = undefined;
-      }
-
-      body = {
-        anime_search_filter: tmp_anime_filter,
-        and_logic: tmp_select,
-        ignore_duplicate: this.ignoreDuplicate,
-        opening_filter: this.showOpenings,
-        ending_filter: this.showEndings,
-        insert_filter: this.showInserts,
-        normal_broadcast: this.showNormalBroadcasts,
-        dub: this.showDubs,
-        rebroadcast: this.showRebroadcasts,
-        standard: this.showStandards,
-        instrumental: this.showInstrumentals,
-        chanting: this.showChantings,
-        character: this.showCharacters,
-      };
-    } else if (this.showAdvancedFilters) {
+    if (this.showAdvancedFilters) {
       if (this.animeFilter.length > 0) {
         tmp_anime_filter = {
           search: this.animeFilter,
@@ -152,7 +166,6 @@ export class SearchBarComponent implements OnInit {
 
       if (this.composerFilter.length > 0) {
         if (!this.minimalMembersFilter) {
-          console.log('not set :(');
           this.minimalMembersFilter = '0';
         }
         if (!this.maximumRandomsFilter) {
@@ -176,16 +189,7 @@ export class SearchBarComponent implements OnInit {
         composer_search_filter: tmp_composer_filter,
         and_logic: tmp_select,
         ignore_duplicate: this.ignoreDuplicate,
-        opening_filter: this.showOpenings,
-        ending_filter: this.showEndings,
-        insert_filter: this.showInserts,
-        normal_broadcast: this.showNormalBroadcasts,
-        dub: this.showDubs,
-        rebroadcast: this.showRebroadcasts,
-        standard: this.showStandards,
-        instrumental: this.showInstrumentals,
-        chanting: this.showChantings,
-        character: this.showCharacters,
+        ...this.songFilterOptions(),
       };
     } else {
       if (this.mainFilter.length == 0) {
@@ -196,16 +200,20 @@ export class SearchBarComponent implements OnInit {
           composer_search_filter: undefined,
           and_logic: tmp_select,
           ignore_duplicate: this.ignoreDuplicate,
-          opening_filter: this.showOpenings,
-          ending_filter: this.showEndings,
-          insert_filter: this.showInserts,
-          normal_broadcast: this.showNormalBroadcasts,
-          dub: this.showDubs,
-          rebroadcast: this.showRebroadcasts,
-          standard: this.showStandards,
-          instrumental: this.showInstrumentals,
-          chanting: this.showChantings,
-          character: this.showCharacters,
+          ...this.songFilterOptions(),
+        };
+      } else if (this.rankedTime) {
+        body = {
+          anime_search_filter: {
+            search: this.mainFilter,
+            partial_match: this.mainFilterPartialMatch,
+          },
+          song_name_search_filter: undefined,
+          artist_search_filter: undefined,
+          composer_search_filter: undefined,
+          and_logic: tmp_select,
+          ignore_duplicate: this.ignoreDuplicate,
+          ...this.songFilterOptions(),
         };
       } else {
         body = {
@@ -230,16 +238,7 @@ export class SearchBarComponent implements OnInit {
           },
           and_logic: tmp_select,
           ignore_duplicate: this.ignoreDuplicate,
-          opening_filter: this.showOpenings,
-          ending_filter: this.showEndings,
-          insert_filter: this.showInserts,
-          normal_broadcast: this.showNormalBroadcasts,
-          dub: this.showDubs,
-          rebroadcast: this.showRebroadcasts,
-          standard: this.showStandards,
-          instrumental: this.showInstrumentals,
-          chanting: this.showChantings,
-          character: this.showCharacters,
+          ...this.songFilterOptions(),
         };
       }
     }
@@ -265,6 +264,14 @@ export class SearchBarComponent implements OnInit {
 
   downloadJsonHref: SafeUrl = '';
   downloadFileName: string = 'Init_SongList.json';
+
+  openJsonHelp() {
+    window.open(
+      'https://github.com/xSardine/AMQ-Artists-DB/tree/main/misc_scripts#misc-scripts',
+      '_blank',
+      'noopener',
+    );
+  }
 
   generateDownloadJsonUri() {
     // Use template literals and the `join` method to generate the file name

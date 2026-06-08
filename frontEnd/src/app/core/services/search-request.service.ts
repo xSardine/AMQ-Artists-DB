@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { BehaviorSubject, catchError, Observable, throwError } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -9,105 +9,150 @@ import { catchError } from 'rxjs/operators';
 export class SearchRequestService {
   constructor(private http: HttpClient) {}
 
-  configUrl = 'assets/config.json';
+  private readonly apiUrl = environment.apiUrl;
+  private readonly searchErrorSubject = new BehaviorSubject<string | null>(null);
+  readonly searchError$ = this.searchErrorSubject.asObservable();
 
-  /*
-  http://127.0.0.1:8000
-  https://anisongdb.com
-  */
-  api_url = 'http://127.0.0.1:8000';
+  clearSearchError(): void {
+    this.searchErrorSubject.next(null);
+  }
+
+  private apiPost(path: string, body: object): Observable<any> {
+    this.clearSearchError();
+    return this.http
+      .post(this.apiUrl + path, body, {
+        headers: { 'X-Client-Id': 'AnisongDB' },
+      })
+      .pipe(catchError((error) => this.handleError(error)));
+  }
 
   getFirstNRequest(): Observable<any> {
-    return this.http
-      .post(this.api_url + '/api/get_50_random_songs', {})
-      .pipe(catchError(this.handleError));
+    return this.apiPost('/api/get_50_random_songs', {});
   }
 
   searchRequest(body: object): Observable<any> {
-    return this.http
-      .post(this.api_url + '/api/search_request', body)
-      .pipe(catchError(this.handleError));
+    return this.apiPost('/api/search_request', body);
   }
 
   artistIdsSearchRequest(body: object): Observable<any> {
-    return this.http
-      .post(this.api_url + '/api/artist_ids_request', body)
-      .pipe(catchError(this.handleError));
+    return this.apiPost('/api/artist_ids_request', body);
   }
 
   composerIdsSearchRequest(body: object): Observable<any> {
-    return this.http
-      .post(this.api_url + '/api/composer_ids_request', body)
-      .pipe(catchError(this.handleError));
+    return this.apiPost('/api/composer_ids_request', body);
   }
 
   annIdSearchRequest(body: object): Observable<any> {
-    return this.http
-      .post(this.api_url + '/api/ann_ids_request', body)
-      .pipe(catchError(this.handleError));
+    return this.apiPost('/api/ann_ids_request', body);
   }
 
-  // All time zones where the ranked window is observed.
-  private static readonly RANKED_TIMEZONES = [
-    'Europe/Copenhagen',
-    'America/Chicago',
-    'Asia/Tokyo',
-  ];
+  // AMQ ranked window: 20:30–21:23 local in Central, Western, or Eastern regions.
+  private static readonly RANKED_START_SEC = (20 * 60 + 30) * 60;
+  private static readonly RANKED_END_SEC = (21 * 60 + 23) * 60;
 
-  // Ranked window boundaries in seconds-since-midnight.
-  private static readonly RANKED_START_SEC = 73800; // 20:30:00
-  private static readonly RANKED_END_SEC = 76980; // 21:23:00
-
-  // Format `date` for `timeZone` and return how many seconds have elapsed since midnight.
-  private getSecondsSinceStartOfDay(date: Date, timeZone: string): number {
+  // Cached Intl formatters per zone for local time-of-day in seconds.
+  private static readonly RANKED_REGIONS: ReadonlyArray<{
+    region: string;
+    localSeconds: (date: Date) => number;
+  }> = [
+    { timeZone: 'Europe/Copenhagen', region: 'Central' },
+    { timeZone: 'America/Chicago', region: 'Western' },
+    { timeZone: 'Asia/Tokyo', region: 'Eastern' },
+  ].map(({ timeZone, region }) => {
     const fmt = new Intl.DateTimeFormat('en-US', {
-      timeZone: timeZone,
-      hour12: false,
+      timeZone,
+      hourCycle: 'h23',
       hour: '2-digit',
       minute: '2-digit',
       second: '2-digit',
     });
-    const parts = fmt.formatToParts(date);
-    const get = (type: string) =>
-      Number(parts.find((p) => p.type === type)?.value || 0);
-    return get('hour') * 3600 + get('minute') * 60 + get('second');
-  }
+    return {
+      region,
+      localSeconds(date: Date) {
+        const parts = fmt.formatToParts(date);
+        const get = (type: string) => Number(parts.find((p) => p.type === type)?.value || 0);
+        return get('hour') * 3600 + get('minute') * 60 + get('second');
+      },
+    };
+  });
 
-  // Determine whether the current time falls inside the ranked window for any tracked zone.
-  // If so, return how many whole minutes remain until the window closes.
-  getRankedStatusNow(): { active: boolean; remainingMinutes: number } {
-    const nowDate = new Date();
-
-    for (const tz of SearchRequestService.RANKED_TIMEZONES) {
-      const localSec = this.getSecondsSinceStartOfDay(nowDate, tz);
+  // Determine whether the AMQ ranked window is currently active for any supported time zone
+  getRankedStatus(date: Date = new Date()) {
+    for (const { region, localSeconds } of SearchRequestService.RANKED_REGIONS) {
+      const localSec = localSeconds(date);
 
       if (
         localSec >= SearchRequestService.RANKED_START_SEC &&
         localSec < SearchRequestService.RANKED_END_SEC
       ) {
-        const remainingMinutes = Math.ceil(
-          (SearchRequestService.RANKED_END_SEC - localSec) / 60,
-        );
-        return { active: true, remainingMinutes };
+        const remainingTotalSeconds = SearchRequestService.RANKED_END_SEC - localSec;
+        return {
+          active: true,
+          region,
+          remainingMinutes: Math.floor(remainingTotalSeconds / 60),
+          remainingSeconds: remainingTotalSeconds % 60,
+        };
       }
     }
 
-    return { active: false, remainingMinutes: 0 };
+    return {
+      active: false,
+      remainingMinutes: 0,
+      remainingSeconds: 0,
+      region: null,
+    };
   }
 
+  // Log HTTP failures, surface a message for the UI, and rethrow for subscribers.
   private handleError(error: HttpErrorResponse) {
-    if (error.status === 0) {
-      // A client-side or network error occurred. Handle it accordingly.
-      console.error('An error occurred:', error.error);
-    } else {
-      // The backend returned an unsuccessful response code.
-      // The response body may contain clues as to what went wrong.
-      console.error(
-        `Backend returned code ${error.status}, body was: `,
-        error.error,
-      );
+    console.error(
+      error.status === 0 ? 'An error occurred:' : `Backend returned code ${error.status}, body was:`,
+      error.error,
+    );
+    this.searchErrorSubject.next(this.formatSearchErrorMessage(error));
+    return throwError(() => error);
+  }
+
+  private formatSearchErrorMessage(error: HttpErrorResponse): string {
+    return this.extractErrorDetail(error) ?? 'Search failed';
+  }
+
+  private extractErrorDetail(error: HttpErrorResponse): string | null {
+    const body = error.error;
+    if (body == null) {
+      return null;
     }
-    // Return an observable with a user-facing error message.
-    return throwError('Something bad happened; please try again later.');
+
+    if (typeof body === 'string') {
+      const text = body.trim();
+      return text || null;
+    }
+
+    if (typeof body !== 'object') {
+      return null;
+    }
+
+    const detail = (body as { detail?: unknown }).detail;
+    if (typeof detail === 'string') {
+      const text = detail.trim();
+      return text || null;
+    }
+
+    if (Array.isArray(detail)) {
+      const messages = detail
+        .map((item) => {
+          if (typeof item === 'string') {
+            return item.trim();
+          }
+          if (item && typeof item === 'object' && 'msg' in item) {
+            return String((item as { msg: unknown }).msg).trim();
+          }
+          return '';
+        })
+        .filter(Boolean);
+      return messages.length ? messages.join(' ') : null;
+    }
+
+    return null;
   }
 }

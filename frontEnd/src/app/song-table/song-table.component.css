@@ -35,7 +35,39 @@
 
 .copyable:hover {
   cursor: pointer;
-  color: orange;
+  color: var(--accentColor);
+}
+
+.table-icon-links {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.table-site-link {
+  line-height: 0;
+}
+
+.table-site-icon {
+  height: 22px;
+  width: auto;
+  display: block;
+}
+
+.table-song-links {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.table-song-link {
+  color: var(--textOnBackground);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.table-song-link:hover {
+  color: var(--accentColor);
 }
 
 #table th {
@@ -46,17 +78,83 @@
   color: var(--textOnPrimary);
 }
 
-.mp3logo {
-  font-size: 30px;
+.table-action-icon {
   cursor: pointer;
   color: var(--textOnBackground);
+}
+
+.table-action-icon:hover {
+  color: var(--accentColor);
+}
+
+.play-icon {
+  padding-right: 3px;
+  cursor: pointer;
+  color: var(--textOnBackground);
+  transition: color 0.15s ease;
+}
+
+.play-icon:not(.active):hover {
+  color: var(--accentColor);
+}
+
+.play-icon.active {
+  color: var(--accentColor);
+  -webkit-text-stroke: 0.5px rgba(255, 255, 255, 0.65);
+  text-shadow:
+    0 0 6px var(--accentColorGlow),
+    0 0 12px var(--accentColorGlow);
 }
 
 .table-controls {
   position: relative;
   margin: 8px 0 12px;
   display: flex;
-  justify-content: flex-end;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.search-error-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  flex: 0 1 auto;
+  width: fit-content;
+  max-width: 100%;
+  padding: 6px 12px;
+  border: 1px solid #ff4d4d;
+  background: rgba(255, 77, 77, 0.1);
+  color: var(--textOnBackground);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.search-error-banner-icon {
+  flex-shrink: 0;
+  color: #ff4d4d;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.search-error-banner-text {
+  min-width: 0;
+}
+
+.search-error-banner-title {
+  font-weight: 600;
+  color: #ff4d4d;
+  margin-right: 6px;
+}
+
+.table-controls-actions {
+  position: relative;
+  display: flex;
+  flex-shrink: 0;
+  margin-left: auto;
 }
 
 .column-settings-toggle {
@@ -205,12 +303,12 @@
 
 .clickable:hover {
   cursor: pointer;
-  color: orange;
+  color: var(--accentColor);
 }
 
 .popUpText:hover {
   cursor: pointer;
-  color: orange;
+  color: var(--accentColor);
 }
 
 /* Add Animation */
