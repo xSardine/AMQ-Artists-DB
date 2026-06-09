@@ -1,70 +1,382 @@
 @import "font-awesome/css/font-awesome.css";
 
-.textInputFilter {
-  /* width: 100%; */
-  font-size: 14px;
-  border: 1px solid #aaa;
-  float: none;
-  background-color: var(--songTablePairColor);
+:host {
+  display: block;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+.ranked-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 0 0 8px;
+  padding: 6px 12px;
+  border: 1px solid #ffcc00;
+  background: rgba(255, 204, 0, 0.1);
   color: var(--textOnBackground);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.ranked-banner-icon {
+  flex-shrink: 0;
+  color: #ffcc00;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.ranked-banner-text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.ranked-banner-info {
+  flex-shrink: 0;
+  align-self: center;
+  margin-left: auto;
+  padding: 0;
+  border: none;
+  background: none;
+  color: #ffcc00;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.ranked-banner-info:hover,
+.ranked-banner-info:focus-visible {
+  color: #ffe14a;
+}
+
+.ranked-banner-info:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 204, 0, 0.35);
+}
+
+.ranked-banner-info.tooltip:focus-within .tooltiptext,
+.ranked-banner-info.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
+.ranked-banner-info.tooltip .tooltiptext {
+  top: calc(100% + 6px);
+  bottom: auto;
+  left: auto;
+  right: 0;
+  transform: none;
+  width: min(360px, calc(100vw - 24px));
+  max-width: min(360px, calc(100vw - 24px));
+  font-size: 12px;
+  text-align: left;
+}
+
+.ranked-banner-info-tooltip strong {
+  display: block;
+  margin-top: 8px;
+  color: #ffcc00;
+}
+
+.ranked-banner-info-tooltip strong:first-child {
+  margin-top: 0;
+}
+
+.ranked-banner-info-tooltip p {
+  margin: 4px 0 0;
+}
+
+.ranked-banner-info-tooltip ul {
+  margin: 4px 0 0;
+  padding-left: 18px;
+}
+
+.ranked-banner-info-tooltip li {
+  margin: 2px 0;
+}
+
+.ranked-banner-info-tooltip code {
+  font-size: 11px;
+}
+
+.ranked-banner-title {
+  font-weight: 600;
+  color: #ffcc00;
+  margin-right: 6px;
+}
+
+.ranked-banner-region {
+  display: inline-block;
+  vertical-align: baseline;
+  padding: 1px 6px;
+  margin-right: 6px;
+  border: 1px solid #ffcc00;
+  background: rgba(255, 204, 0, 0.1);
+  color: #ffcc00;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.textInputFilter {
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.2;
+  min-height: 32px;
+  padding: 7px 10px;
+  border: 1px solid #7e7e7e;
+  background-color: var(--songTableImpairColor);
+  color: var(--textOnBackground);
+  box-sizing: border-box;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.textInputFilter:hover {
+  border-color: #999;
+}
+
+.textInputFilter:focus {
+  outline: none;
+  border-color: var(--accentColor);
+  box-shadow: 0 0 0 2px var(--accentColorGlow);
 }
 
 .textInputFilter::placeholder {
   color: var(--textOnBackground);
 }
 
+input[type="search"] {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
 input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
   cursor: pointer;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round' d='M2 2l8 8M10 2L2 10'/%3E%3C/svg%3E")
+    center / 12px no-repeat;
+  opacity: 0.75;
 }
 
-.showFilter {
-  padding-left: 30px;
-  cursor: pointer;
-  float: right;
-  color: var(--textOnBackground);
+input[type="search"]::-webkit-search-cancel-button:hover {
+  opacity: 1;
 }
 
-.helpButton {
-  padding-left: 30px;
+input[type="search"]::-moz-search-clear-button {
   cursor: pointer;
+  filter: brightness(0) invert(1);
+  opacity: 0.75;
+}
+
+input[type="search"]::-moz-search-clear-button:hover {
+  opacity: 1;
+}
+
+.search-btn {
+  border: 1px solid var(--primaryColor);
+  background-color: var(--primaryColor);
+  color: var(--textOnPrimary);
+  padding: 7px 14px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+  min-height: 32px;
+  cursor: pointer;
+  flex: 0 0 auto;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.05s ease;
+}
+
+.search-btn:hover {
+  background-color: var(--songTableHoverColor);
+  border-color: #444;
+}
+
+.search-btn:active {
+  transform: translateY(1px);
+}
+
+.search-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.45);
+}
+
+.main-search-input {
+  flex: 1 1 12rem;
+  max-width: 420px;
+  min-width: 8rem;
+  width: auto;
+}
+
+.filter-input {
+  flex: 1 1 10rem;
+  max-width: 230px;
+  min-width: 8rem;
+  width: auto;
+}
+
+.filter-input-narrow {
+  width: 3rem;
+  min-width: 3rem;
+  padding: 7px 6px;
+  text-align: center;
+}
+
+.numeric-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: default;
   color: var(--textOnBackground);
+  white-space: nowrap;
+}
+
+input[type="number"] {
+  appearance: textfield;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.search-bar-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  max-width: 100%;
 }
 
 .mainFilter {
-  position: static;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  flex: 1 1 auto;
+  min-width: 0;
 }
+
+.search-bar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+
+.showFilter,
+.helpButton {
+  cursor: pointer;
+  color: var(--textOnBackground);
+  white-space: nowrap;
+  flex: 0 0 auto;
+  font: inherit;
+  padding: 0;
+  border: none;
+  background: none;
+}
+
+.showFilter {
+  text-decoration: none;
+}
+
+.showFilter:hover,
+.helpButton:hover {
+  color: var(--accentColorHover);
+}
+
+.showFilter:focus-visible,
+.helpButton:focus-visible {
+  outline: none;
+  color: var(--accentColor);
+  box-shadow: 0 0 0 2px var(--accentColorGlow);
+}
+
 .mainFilter ::placeholder {
-  opacity: 0.7; /* Firefox */
+  opacity: 0.7;
 }
 
 .filters {
-  margin-top: 14px;
   display: block;
-  border-radius: 25px;
-  padding: 3px 0px;
   text-align: center;
   animation-name: animatetop;
-  animation-duration: 0.7s;
+  animation-duration: 0.5s;
   color: var(--textOnBackground);
+  max-width: 100%;
 }
+
 .filters ::placeholder {
-  opacity: 0.7; /* Firefox */
+  opacity: 0.7;
+}
+
+.filter-field-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px 8px;
+  padding-bottom: 5px;
+}
+
+.filter-field-row.loose {
+  padding-bottom: 8px;
+}
+
+.filter-group-label {
+  white-space: nowrap;
+  color: var(--textOnBackground);
 }
 
 .check {
   cursor: pointer;
-  border: 10px;
-  border-color: black;
-  display: inline-block;
-  margin: 0px 5px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin: 0;
   color: var(--textOnBackground);
+  white-space: nowrap;
+  flex: 0 0 auto;
 }
 
 .selectFilter {
   cursor: pointer;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.2;
+  min-height: 32px;
+  padding: 7px 28px 7px 10px;
+  border: 1px solid #7e7e7e;
+  background-color: var(--songTableImpairColor);
+  color: var(--textOnBackground);
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23ffffff' d='M2 4l4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-/* Add Animation */
+.selectFilter:hover {
+  border-color: #999;
+}
+
+.selectFilter:focus {
+  outline: none;
+  border-color: var(--accentColor);
+  box-shadow: 0 0 0 2px var(--accentColorGlow);
+}
+
+.selectFilter option {
+  background-color: var(--songTableImpairColor);
+  color: var(--textOnBackground);
+}
+
 @keyframes animatetop {
   from {
     top: -300px;

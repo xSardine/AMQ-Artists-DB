@@ -1,10 +1,24 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { SearchRequestService } from '../core/services/search-request.service';
+import { Subscription } from 'rxjs';
 
 type SongColumnDefinition = {
   key: string;
   header: string;
   defaultVisible: boolean;
+  sortable?: boolean;
+};
+
+type AnimeListSite = {
+  img: string;
+  alt: string;
+  getUrl: (song: any) => string | null;
+};
+
+type SongDistLink = {
+  label: string;
+  title: string;
+  field: 'HQ' | 'MQ' | 'audio';
 };
 
 @Component({
@@ -13,12 +27,15 @@ type SongColumnDefinition = {
   styleUrls: ['./song-table.component.css'],
   host: {
     '(document:click)': 'onAnyClick($event)',
+    '(document:keydown)': 'onDocumentKeydown($event)',
   },
-  template: ` {{ message }} `,
   standalone: false,
 })
-export class SongTableComponent {
+export class SongTableComponent implements OnInit, OnDestroy {
   constructor(private searchRequestService: SearchRequestService) {}
+
+  searchErrorMessage: string | null = null;
+  private searchErrorSubscription: Subscription | null = null;
 
   @Input() songTable: any;
   @Input() previousBody: any;
@@ -32,9 +49,9 @@ export class SongTableComponent {
   private loadedColumnVisibilityFromStorage = false;
 
   private readonly allColumns: SongColumnDefinition[] = [
-    { key: 'annId', header: 'annId', defaultVisible: true },
+    { key: 'annId', header: 'ANN ID', defaultVisible: true },
     { key: 'annSongId', header: 'Song ID', defaultVisible: false },
-    { key: 'Lists', header: 'Anime Lists', defaultVisible: false },
+    { key: 'Lists', header: 'Anime Lists', defaultVisible: false, sortable: false },
     { key: 'Season', header: 'Season', defaultVisible: true },
     { key: 'Anime Category', header: 'Anime Category', defaultVisible: true },
     { key: 'Anime', header: 'Anime', defaultVisible: true },
@@ -44,8 +61,59 @@ export class SongTableComponent {
     { key: 'Artist', header: 'Artist', defaultVisible: true },
     { key: 'Composer', header: 'Composer', defaultVisible: false },
     { key: 'Arranger', header: 'Arranger', defaultVisible: false },
+    { key: 'Song Links', header: 'Song Links', defaultVisible: false, sortable: false },
+    { key: 'Play Audio', header: 'Play', defaultVisible: true, sortable: false },
     { key: 'Length', header: 'Length', defaultVisible: false },
     { key: 'Difficulty', header: 'Difficulty', defaultVisible: false },
+  ];
+
+  private readonly naedistBase = 'https://naedist.animemusicquiz.com/';
+
+  readonly animeListSites: AnimeListSite[] = [
+    {
+      img: 'assets/img/ANN_Logo.png',
+      alt: 'Anime News Network',
+      getUrl: (song) =>
+        `https://www.animenewsnetwork.com/encyclopedia/anime.php?id=${song.annId}`,
+    },
+    {
+      img: 'assets/img/MyAnimeList_Logo.png',
+      alt: 'MyAnimeList',
+      getUrl: (song) =>
+        song.linked_ids?.myanimelist
+          ? `https://myanimelist.net/anime/${song.linked_ids.myanimelist}`
+          : null,
+    },
+    {
+      img: 'assets/img/AniDB_Logo.png',
+      alt: 'Anidb',
+      getUrl: (song) =>
+        song.linked_ids?.anidb
+          ? `https://anidb.net/anime/${song.linked_ids.anidb}`
+          : null,
+    },
+    {
+      img: 'assets/img/AniList_logo.png',
+      alt: 'Anilist',
+      getUrl: (song) =>
+        song.linked_ids?.anilist
+          ? `https://anilist.co/anime/${song.linked_ids.anilist}`
+          : null,
+    },
+    {
+      img: 'assets/img/Kitsu_Logo.png',
+      alt: 'Kitsu',
+      getUrl: (song) =>
+        song.linked_ids?.kitsu
+          ? `https://kitsu.app/anime/${song.linked_ids.kitsu}`
+          : null,
+    },
+  ];
+
+  readonly songDistLinks: SongDistLink[] = [
+    { label: '720', title: 'Open 720 link', field: 'HQ' },
+    { label: '480', title: 'Open 480 link', field: 'MQ' },
+    { label: 'MP3', title: 'Open MP3 link', field: 'audio' },
   ];
 
   private readonly seasonOrder: Record<string, number> = {
@@ -74,12 +142,20 @@ export class SongTableComponent {
 
   ngOnInit() {
     this.initializeColumns();
+    this.searchErrorSubscription = this.searchRequestService.searchError$.subscribe(
+      (message) => {
+        this.searchErrorMessage = message;
+      },
+    );
+  }
+
+  ngOnDestroy() {
+    this.searchErrorSubscription?.unsubscribe();
   }
 
   ngOnChanges(changes: Event) {
     this.initializeColumns();
-    const status = this.searchRequestService.getRankedStatusNow();
-    this.RankedDisabledTimeLeft = status.remainingMinutes;
+    const status = this.searchRequestService.getRankedStatus();
     this.rankedTime = status.active;
     this.ascendingOrder = false;
     this.currentAverage = this.computeAverage(this.songTable);
@@ -124,6 +200,27 @@ export class SongTableComponent {
 
   isColumnVisible(columnKey: string) {
     return !!this.columnVisibility[columnKey];
+  }
+
+  isColumnSortable(columnKey: string) {
+    return (
+      this.availableColumns.find((column) => column.key === columnKey)
+        ?.sortable !== false
+    );
+  }
+
+  onHeaderClick(columnKey: string) {
+    if (this.isColumnSortable(columnKey)) {
+      this.sortFunction(columnKey);
+    }
+  }
+
+  getDistLink(filename: string | null | undefined) {
+    return filename ? `${this.naedistBase}${filename}` : '';
+  }
+
+  shouldShowSongLink(song: any, link: SongDistLink) {
+    return !!song[link.field];
   }
 
   toggleColumn(columnKey: string, visible: boolean) {
@@ -179,9 +276,27 @@ export class SongTableComponent {
 
   maxGridNb: number = 3;
 
+  getGridStyle(itemCount: number) {
+    return {
+      'grid-template-columns': `repeat(${Math.min(
+        this.maxGridNb,
+        itemCount,
+      )}, 1fr)`,
+    };
+  }
+
+  getSubGridStyle(itemCount: number) {
+    return {
+      'grid-template-columns': `repeat(${
+        this.maxGridNb - Math.min(this.maxGridNb, itemCount) + 1
+      }, 1fr)`,
+    };
+  }
+
   lastColName: string = '';
   ascendingOrder: boolean = false;
   showSongInfoPopup: boolean = false;
+  songInfoPopupIndex = -1;
   doubleClickPreventer: boolean = false;
   animeJPName: string = '';
 
@@ -211,13 +326,10 @@ export class SongTableComponent {
   popUpComposersInfo: any = [];
   popUpArrangersInfo: any = [];
   currentAverage: any;
-  gridStyle: any;
-  subGridStyle: any;
   clipboardPopUpStyle: any;
   show: boolean = false;
 
   rankedTime = false;
-  RankedDisabledTimeLeft = 0;
   currentPlayingSong: any;
 
   copyToClipboard(event: any, copytext: string) {
@@ -392,7 +504,7 @@ export class SongTableComponent {
   }
 
   sortFunction(colName: string) {
-    if (!this.songTable) {
+    if (!this.songTable || !this.isColumnSortable(colName)) {
       return;
     }
 
@@ -414,10 +526,55 @@ export class SongTableComponent {
     }
 
     if (this.showSongInfoPopup && !this.doubleClickPreventer) {
-      this.showSongInfoPopup = !this.showSongInfoPopup;
+      this.showSongInfoPopup = false;
+      this.songInfoPopupIndex = -1;
     } else if (this.showSongInfoPopup) {
       this.doubleClickPreventer = !this.doubleClickPreventer;
     }
+  }
+
+  onDocumentKeydown(event: KeyboardEvent) {
+    if (!this.showSongInfoPopup) {
+      return;
+    }
+
+    const target = event.target as HTMLElement | null;
+    const tag = target?.tagName;
+    if (
+      tag === 'INPUT' ||
+      tag === 'TEXTAREA' ||
+      tag === 'SELECT' ||
+      target?.isContentEditable
+    ) {
+      return;
+    }
+
+    if (event.key === 'ArrowLeft') {
+      event.preventDefault();
+      this.navigateSongInfoPopup(-1);
+    } else if (event.key === 'ArrowRight') {
+      event.preventDefault();
+      this.navigateSongInfoPopup(1);
+    }
+  }
+
+  navigateSongInfoPopup(delta: number) {
+    const length = this.songTable?.length ?? 0;
+    if (length <= 1) {
+      return;
+    }
+
+    const nextIndex =
+      (this.songInfoPopupIndex + delta + length) % length;
+    this.songInfoPopupIndex = nextIndex;
+    this.populateSongInfoPopup(this.songTable[nextIndex]);
+    this.scrollSongInfoModalToTop();
+  }
+
+  private scrollSongInfoModalToTop() {
+    setTimeout(() => {
+      document.getElementById('myModal')?.scrollTo(0, 0);
+    });
   }
 
   getColumnDisplayValue(song: any, colName: string) {
@@ -478,7 +635,22 @@ export class SongTableComponent {
     }
   }
 
-  displaySongIngoPopup(song: any) {
+  displaySongInfoPopup(song: any) {
+    const index = this.songTable?.findIndex((row: any) => row === song) ?? -1;
+
+    if (this.showSongInfoPopup && index >= 0 && index === this.songInfoPopupIndex) {
+      this.showSongInfoPopup = false;
+      this.songInfoPopupIndex = -1;
+      return;
+    }
+
+    this.songInfoPopupIndex = index >= 0 ? index : 0;
+    this.populateSongInfoPopup(song);
+    this.showSongInfoPopup = true;
+    this.doubleClickPreventer = true;
+  }
+
+  private populateSongInfoPopup(song: any) {
     this.popUpannURL =
       'https://www.animenewsnetwork.com/encyclopedia/anime.php?id=' +
       song.annId;
@@ -513,22 +685,7 @@ export class SongTableComponent {
     this.popUpArtistsInfo = this.sortArtists(song.artists);
     this.popUpComposersInfo = song.composers;
     this.popUpArrangersInfo = song.arrangers;
-    this.showSongInfoPopup = !this.showSongInfoPopup;
-    this.doubleClickPreventer = true;
     this.animeJPName = song.animeJPName;
-    this.gridStyle = {
-      'grid-template-columns': `repeat(${Math.min(
-        this.maxGridNb,
-        this.popUpArtistsInfo.length,
-      )}, 1fr)`,
-    };
-    this.subGridStyle = {
-      'grid-template-columns': `repeat(${
-        this.maxGridNb -
-        Math.min(this.maxGridNb, this.popUpArtistsInfo.length) +
-        1
-      }, 1fr)`,
-    };
   }
 
   deleteRowEntry(song: any) {
@@ -552,10 +709,6 @@ export class SongTableComponent {
       artist_ids: id_arr,
       group_granularity: 0,
       max_other_artist: 99,
-      ignore_duplicate: false,
-      opening_filter: true,
-      ending_filter: true,
-      insert_filter: true,
     };
 
     if (JSON.stringify(body) === JSON.stringify(this.previousBody)) {
@@ -588,10 +741,6 @@ export class SongTableComponent {
     let body = {
       composer_ids: id_arr,
       arrangement: true,
-      ignore_duplicate: false,
-      opening_filter: true,
-      ending_filter: true,
-      insert_filter: true,
     };
 
     if (JSON.stringify(body) === JSON.stringify(this.previousBody)) {
@@ -613,10 +762,6 @@ export class SongTableComponent {
   searchAnnId(id: any) {
     let body = {
       ann_ids: [id],
-      ignore_duplicate: false,
-      opening_filter: true,
-      ending_filter: true,
-      insert_filter: true,
     };
 
     if (JSON.stringify(body) === JSON.stringify(this.previousBody)) {

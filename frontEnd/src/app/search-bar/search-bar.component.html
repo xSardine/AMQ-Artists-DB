@@ -1,135 +1,174 @@
-<h5 style="color: white; text-align: center">
-  This database is built upon the database of
-  <a href="https://animemusicquiz.com/" style="color: #ff4d4d">AMQ</a>. However it is a personal project, and is not affiliated with AMQ in any way.
-  <br />
-  AMQ is using
-  <a href="https://catbox.moe/" style="color: #ff4d4d">Catbox</a> as its main
-  video host, and consequently, this website is using it too. Catbox is a free
-  service, but it cost a lot to push all that bandwidth.
-  <br />
-  If you want to help cover the cost of catbox's traffic for AMQ, you can donate to their
-  <a href="https://www.patreon.com/NextWorldGames" style="color: #ff4d4d"
-    >Patreon</a>
-</h5>
+<div *ngIf="rankedTime" class="ranked-banner" role="status" aria-live="polite">
+  <span class="ranked-banner-icon" aria-hidden="true"><i class="fa fa-shield"></i></span>
+  <span class="ranked-banner-text">
+    <span class="ranked-banner-title">AMQ Ranked</span>
+    <span class="ranked-banner-region">{{ rankedRegion }}</span>
+    Some functionality disabled – <strong>{{ rankedRemainingMinutes }}</strong> minutes remaining
+  </span>
+  <button
+    type="button"
+    class="ranked-banner-info tooltip"
+    aria-label="About AMQ Ranked restrictions"
+  >
+    <i class="fa fa-info-circle" aria-hidden="true"></i>
+    <span class="tooltiptext ranked-banner-info-tooltip">
+      <strong>What is Ranked?</strong>
+      <p>
+        Ranked is a daily scheduled multiplayer mode in Anime Music Quiz. During this time, AnisongDB limits
+        features that could expose song audio and song/artist/composer scouting to prevent cheating.
+      </p>
 
-<div *ngIf="!rankedTime">
-  <div class="mainFilter">
-    <div *ngIf="!showAdvancedFilters" style="display: inline">
-      <button
-        type="button"
-        (click)="onSearchCallKey()"
-        style="margin-right: 5px"
-      >
-        Search
-      </button>
+      <strong>Schedule</strong>
+      <p>
+        Each window runs 8:30 PM–9:23 PM (53 minutes) during that region's local time.
+      </p>
+      <ul>
+        <li><strong>Central</strong> Europe/Copenhagen (CET/CEST)</li>
+        <li><strong>Western</strong> America/Chicago (CDT/CST)</li>
+        <li><strong>Eastern</strong> Asia/Tokyo (JST)</li>
+      </ul>
 
-      <input
-        #mainFilterInput
-        placeholder="Search by anime, song name or artist"
-        title="Search by anime, song name or artist"
-        style="width: 420px"
-        class="textInputFilter"
-        type="search"
-        (keyup.enter)="onSearchCallKey()"
-        (input)="mainFilter = mainFilterInput.value"
+      <strong>API Endpoints Disabled</strong>
+      <ul>
+        <li>Song name search</li>
+        <li>Artist search</li>
+        <li>Composer search</li>
+      </ul>
+
+      <strong>Table &amp; UI disabled</strong>
+      <ul>
+        <li>Song Links column</li>
+        <li>Play Audio column</li>
+        <li>Artist, composer, and arranger quick-search icons</li>
+      </ul>
+    </span>
+  </button>
+</div>
+
+<div class="search-bar-header">
+  <div *ngIf="!showAdvancedFilters" class="mainFilter">
+    <button id="search-btn-main" type="button" class="search-btn" (click)="onSearchCallKey()">Search</button>
+
+    <input
+      id="search-input-main"
+      #mainFilterInput
+      [placeholder]="rankedTime ? 'Search by anime' : 'Search by anime, song name or artist'"
+      [title]="rankedTime ? 'Search by anime' : 'Search by anime, song name or artist'"
+      class="textInputFilter main-search-input"
+      type="search"
+      (keyup.enter)="onSearchCallKey()"
+      (input)="mainFilter = mainFilterInput.value"
+    />
+
+    <label class="check" for="search-main-checkbox-op"
+      ><input
+        id="search-main-checkbox-op"
+        type="checkbox"
+        (change)="showOpenings = !showOpenings"
+        [checked]="showOpenings"
       />
+      OP
+    </label>
+    <label class="check" for="search-main-checkbox-ed"
+      ><input
+        id="search-main-checkbox-ed"
+        type="checkbox"
+        (change)="showEndings = !showEndings"
+        [checked]="showEndings"
+      />
+      ED
+    </label>
+    <label class="check" for="search-main-checkbox-ins"
+      ><input
+        id="search-main-checkbox-ins"
+        type="checkbox"
+        (change)="showInserts = !showInserts"
+        [checked]="showInserts"
+      />
+      INS
+    </label>
 
-      <label class="check"
-        ><input
-          type="checkbox"
-          (change)="showOpenings = !showOpenings"
-          [checked]="showOpenings"
-        />
-        OP
-      </label>
-      <label class="check"
-        ><input
-          type="checkbox"
-          (change)="showEndings = !showEndings"
-          [checked]="showEndings"
-        />
-        ED
-      </label>
-      <label class="check"
-        ><input
-          type="checkbox"
-          (change)="showInserts = !showInserts"
-          [checked]="showInserts"
-        />
-        INS
-      </label>
+    <label class="check" for="search-main-checkbox-ignore-duplicates"
+      ><input
+        id="search-main-checkbox-ignore-duplicates"
+        type="checkbox"
+        (change)="ignoreDuplicate = !ignoreDuplicate"
+        [checked]="ignoreDuplicate"
+      />
+      Ignore Duplicates
+    </label>
 
-      <label class="check"
-        ><input
-          type="checkbox"
-          (change)="ignoreDuplicate = !ignoreDuplicate"
-          [checked]="ignoreDuplicate"
-        />
-        Ignore Duplicates
-      </label>
-
-      <label
-        class="check"
-        title="If activated, results only have to contain the filter and not match it exactly"
-        ><input
-          type="checkbox"
-          (change)="mainFilterPartialMatch = !mainFilterPartialMatch"
-          [checked]="mainFilterPartialMatch"
-        />
-        Partial Match
-      </label>
-    </div>
-
-    <div style="display: inline">
-      <span
-        class="helpButton"
-        style="float: right; padding-left: 12px"
-        title="What can I do with that JSON?"
-        onClick="window.open('https://github.com/xSardine/AMQ-Artists-DB/tree/main/misc_scripts#misc-scripts','_blank')"
-      >
-        <i class="fa fa-question-circle"></i>
-      </span>
-
-      <a
-        class="showFilter"
-        (click)="generateDownloadJsonUri()"
-        [href]="downloadJsonHref"
-        download="{{ downloadFileName }}"
-      >
-        <i class="fa fa-download"></i> Download Song List as JSON
-      </a>
-
-      <span
-        class="showFilter"
-        (click)="showAdvancedFilters = !showAdvancedFilters; mainFilter = ''"
-      >
-        <i class="fa fa-cog"></i> Toggle Advanced Filters
-      </span>
-    </div>
+    <label
+      class="check"
+      for="search-main-checkbox-partial-match"
+      title="If activated, results only have to contain the filter and not match it exactly"
+      ><input
+        id="search-main-checkbox-partial-match"
+        type="checkbox"
+        (change)="mainFilterPartialMatch = !mainFilterPartialMatch"
+        [checked]="mainFilterPartialMatch"
+      />
+      Partial Match
+    </label>
   </div>
 
-  <br />
+  <div class="search-bar-actions">
+    <button
+      id="search-toggle-advanced"
+      type="button"
+      class="showFilter"
+      [title]="showAdvancedFilters ? 'Switch to simple search' : 'Toggle advanced filters'"
+      (click)="showAdvancedFilters = !showAdvancedFilters; mainFilter = ''"
+    >
+      <i class="fa fa-cog"></i> {{ showAdvancedFilters ? 'Simple' : 'Advanced' }}
+    </button>
 
-  <div *ngIf="showAdvancedFilters" class="filters">
-    <div style="display: block; padding-bottom: 5px">
-      <label class="check"
+    <a
+      id="search-download-json"
+      class="showFilter"
+      title="Download Song List as JSON"
+      (click)="generateDownloadJsonUri()"
+      [href]="downloadJsonHref"
+      download="{{ downloadFileName }}"
+    >
+      <i class="fa fa-download"></i> JSON
+    </a>
+
+    <button
+      id="search-help-json"
+      type="button"
+      class="helpButton"
+      title="What can I do with that JSON?"
+      (click)="openJsonHelp()"
+    >
+      <i class="fa fa-question-circle"></i>
+    </button>
+  </div>
+</div>
+
+<div *ngIf="showAdvancedFilters" class="filters">
+    <div class="filter-field-row">
+      <label class="check" for="search-adv-checkbox-op"
         ><input
+          id="search-adv-checkbox-op"
           type="checkbox"
           (change)="showOpenings = !showOpenings"
           [checked]="showOpenings"
         />
         OP
       </label>
-      <label class="check"
+      <label class="check" for="search-adv-checkbox-ed"
         ><input
+          id="search-adv-checkbox-ed"
           type="checkbox"
           (change)="showEndings = !showEndings"
           [checked]="showEndings"
         />
         ED
       </label>
-      <label class="check"
+      <label class="check" for="search-adv-checkbox-ins"
         ><input
+          id="search-adv-checkbox-ins"
           type="checkbox"
           (change)="showInserts = !showInserts"
           [checked]="showInserts"
@@ -137,6 +176,7 @@
         INS
       </label>
       <span
+        id="search-adv-help-filters"
         class="helpButton"
         title="Help understanding settings"
         onClick="window.open('https://github.com/xSardine/AMQ-Artists-DB#filters','_blank')"
@@ -145,22 +185,24 @@
       </span>
     </div>
 
-    <div style="display: block; padding-bottom: 5px">
+    <div class="filter-field-row">
       <input
+        id="search-input-anime"
         #animeFilterInput
-        class="textInputFilter"
+        class="textInputFilter filter-input"
         type="search"
         placeholder="Search by anime..."
         title="Search by anime name"
-        style="width: 230px"
         (keyup.enter)="onSearchCallKey()"
         (input)="animeFilter = animeFilterInput.value"
       />
 
       <label
         class="check"
+        for="search-adv-checkbox-anime-partial-match"
         title="If activated, results only have to contain the filter and not match it exactly"
         ><input
+          id="search-adv-checkbox-anime-partial-match"
           type="checkbox"
           (change)="animeFilterPartialMatch = !animeFilterPartialMatch"
           [checked]="animeFilterPartialMatch"
@@ -169,22 +211,24 @@
       </label>
     </div>
 
-    <div style="display: block; padding-bottom: 5px">
+    <div class="filter-field-row">
       <input
+        id="search-input-song-name"
         #songNameFilterInput
-        class="textInputFilter"
+        class="textInputFilter filter-input"
         placeholder="Search by song name..."
         title="Search by song name"
         type="search"
-        style="width: 230px"
         (keyup.enter)="onSearchCallKey()"
         (input)="songNameFilter = songNameFilterInput.value"
       />
 
       <label
         class="check"
+        for="search-adv-checkbox-song-name-partial-match"
         title="If activated, results only have to contain the filter and not match it exactly"
         ><input
+          id="search-adv-checkbox-song-name-partial-match"
           type="checkbox"
           (change)="songNameFilterPartialMatch = !songNameFilterPartialMatch"
           [checked]="songNameFilterPartialMatch"
@@ -193,22 +237,24 @@
       </label>
     </div>
 
-    <div style="display: block; padding-bottom: 8px">
+    <div class="filter-field-row loose">
       <input
+        id="search-input-artist"
         #artistFilterInput
-        class="textInputFilter"
+        class="textInputFilter filter-input"
         placeholder="Search by artist..."
         type="search"
         title="Search by artist"
-        style="width: 230px"
         (keyup.enter)="onSearchCallKey()"
         (input)="artistFilter = artistFilterInput.value"
       />
 
       <label
         class="check"
+        for="search-adv-checkbox-artist-partial-match"
         title="If activated, results only have to contain the filter and not match it exactly"
         ><input
+          id="search-adv-checkbox-artist-partial-match"
           type="checkbox"
           (change)="artistFilterPartialMatch = !artistFilterPartialMatch"
           [checked]="artistFilterPartialMatch"
@@ -217,22 +263,24 @@
       </label>
     </div>
 
-    <div style="display: block; padding-bottom: 8px">
+    <div class="filter-field-row loose">
       <input
+        id="search-input-composer"
         #composerFilterInput
-        class="textInputFilter"
+        class="textInputFilter filter-input"
         placeholder="Search by composer..."
         type="search"
         title="Search by composer"
-        style="width: 230px"
         (keyup.enter)="onSearchCallKey()"
         (input)="composerFilter = composerFilterInput.value"
       />
 
       <label
         class="check"
+        for="search-adv-checkbox-composer-partial-match"
         title="If activated, results only have to contain the filter and not match it exactly"
         ><input
+          id="search-adv-checkbox-composer-partial-match"
           type="checkbox"
           (change)="composerFilterPartialMatch = !composerFilterPartialMatch"
           [checked]="composerFilterPartialMatch"
@@ -241,9 +289,11 @@
       </label>
       <label
         class="check"
+        for="search-adv-checkbox-composer-arrangement"
         title="If activated, it will also add songs where they only participated in the arrangement"
       >
         <input
+          id="search-adv-checkbox-composer-arrangement"
           type="checkbox"
           (change)="composerFilterArrangement = !composerFilterArrangement"
           [checked]="composerFilterArrangement"
@@ -252,47 +302,51 @@
       </label>
     </div>
 
-    <div style="display: block; padding-bottom: 8px">
-      <label
-        ><div class="tooltip">
+    <div class="filter-field-row loose">
+      <label class="numeric-filter" for="search-input-max-other-people">
+        <div class="tooltip">
           Max Other People
           <span class="tooltiptext">This is the maximum amount of people that are not in your Artist or Composer Filter field who are allowed</span>
-        </div><input
+        </div>
+        <input
+          id="search-input-max-other-people"
           #maximumRandomsFilterInput
-          placeholder="99..."
-          style="width: 40px; margin-left: 5px"
-          type="search"
-          class="textInputFilter"
+          class="textInputFilter filter-input-narrow"
+          type="number"
+          min="0"
+          step="1"
           (keyup.enter)="onSearchCallKey()"
           (input)="maximumRandomsFilter = maximumRandomsFilterInput.value"
           [value]="maximumRandomsFilter"
-      /></label>
-    </div>
-
-    <div style="display: block; padding-bottom: 8px">
-      <label
-        ><div class="tooltip">
+        />
+      </label>
+      <label class="numeric-filter" for="search-input-min-group-members">
+        <div class="tooltip">
           Min Group Members
           <span class="tooltiptext">This is the minimum amount of people from the group in Artist or Composer filter that needs to be present (only useful for groups)</span>
-        </div><input
+        </div>
+        <input
+          id="search-input-min-group-members"
           #minimalMembersFilterInput
-          placeholder="0..."
-          style="width: 40px; margin-left: 5px"
-          type="search"
-          class="textInputFilter"
+          class="textInputFilter filter-input-narrow"
+          type="number"
+          min="0"
+          step="1"
           (keyup.enter)="onSearchCallKey()"
           (input)="minimalMembersFilter = minimalMembersFilterInput.value"
           [value]="minimalMembersFilter"
-      /></label>
+        />
+      </label>
     </div>
 
-    <div style="display: block; padding-bottom: 5px">
+    <div class="filter-field-row">
       <label
         title="Define how the filters will be combine together"
-        for="showonly"
+        for="search-select-filter-combination"
         >Filters Combination:
       </label>
       <select
+        id="search-select-filter-combination"
         (change)="selectFilterCombinationChangeHandler($event)"
         class="selectFilter"
       >
@@ -300,13 +354,14 @@
           title=" A song needs to match at least one of the filters"
           selected="selected"
         >
-          Union
+          Union (OR)
         </option>
-        <option title="A song needs to match every filter">Intersection</option>
+        <option title="A song needs to match every filter">Intersection (AND)</option>
       </select>
 
-      <label class="check"
+      <label class="check" for="search-adv-checkbox-ignore-duplicates"
         ><input
+          id="search-adv-checkbox-ignore-duplicates"
           type="checkbox"
           (change)="ignoreDuplicate = !ignoreDuplicate"
           [checked]="ignoreDuplicate"
@@ -315,25 +370,29 @@
       </label>
     </div>
 
-    <div style="display: block; padding-bottom: 5px">
-      <label class="check"
+    <div class="filter-field-row">
+      <span class="filter-group-label">Broadcast:</span>
+      <label class="check" for="search-adv-checkbox-normal-broadcasts"
         ><input
+          id="search-adv-checkbox-normal-broadcasts"
           type="checkbox"
           (change)="showNormalBroadcasts = !showNormalBroadcasts"
           [checked]="showNormalBroadcasts"
         />
-        Normal Broadcasts
+        Normal
       </label>
-      <label class="check"
+      <label class="check" for="search-adv-checkbox-dubs"
         ><input
+          id="search-adv-checkbox-dubs"
           type="checkbox"
           (change)="showDubs = !showDubs"
           [checked]="showDubs"
         />
         Dubs
       </label>
-      <label class="check"
+      <label class="check" for="search-adv-checkbox-rebroadcasts"
         ><input
+          id="search-adv-checkbox-rebroadcasts"
           type="checkbox"
           (change)="showRebroadcasts = !showRebroadcasts"
           [checked]="showRebroadcasts"
@@ -342,139 +401,103 @@
       </label>
     </div>
 
-    <div style="display: block; padding-bottom: 5px">
-      <label class="check"
+    <div class="filter-field-row">
+      <span class="filter-group-label">Category:</span>
+      <label class="check" for="search-adv-checkbox-standard"
         ><input
+          id="search-adv-checkbox-standard"
           type="checkbox"
           (change)="showStandards = !showStandards"
           [checked]="showStandards"
         />
         Standard
       </label>
-      <label class="check"
+      <label class="check" for="search-adv-checkbox-character"
         ><input
+          id="search-adv-checkbox-character"
           type="checkbox"
           (change)="showCharacters = !showCharacters"
           [checked]="showCharacters"
         />
         Character
       </label>
-      <label class="check"
+      <label class="check" for="search-adv-checkbox-chanting"
         ><input
+          id="search-adv-checkbox-chanting"
           type="checkbox"
           (change)="showChantings = !showChantings"
           [checked]="showChantings"
         />
         Chanting
       </label>
-      <label class="check"
+      <label class="check" for="search-adv-checkbox-instrumental"
         ><input
+          id="search-adv-checkbox-instrumental"
           type="checkbox"
           (change)="showInstrumentals = !showInstrumentals"
           [checked]="showInstrumentals"
         />
         Instrumental
       </label>
-
     </div>
 
-    <button type="button" (click)="onSearchCallKey()">Search</button>
+    <div class="filter-field-row">
+      <span class="filter-group-label">Media:</span>
+      <label class="check" for="search-adv-checkbox-tv"
+        ><input
+          id="search-adv-checkbox-tv"
+          type="checkbox"
+          (change)="showTv = !showTv"
+          [checked]="showTv"
+        />
+        TV
+      </label>
+      <label class="check" for="search-adv-checkbox-movie"
+        ><input
+          id="search-adv-checkbox-movie"
+          type="checkbox"
+          (change)="showMovie = !showMovie"
+          [checked]="showMovie"
+        />
+        Movie
+      </label>
+      <label class="check" for="search-adv-checkbox-ova"
+        ><input
+          id="search-adv-checkbox-ova"
+          type="checkbox"
+          (change)="showOva = !showOva"
+          [checked]="showOva"
+        />
+        OVA
+      </label>
+      <label class="check" for="search-adv-checkbox-ona"
+        ><input
+          id="search-adv-checkbox-ona"
+          type="checkbox"
+          (change)="showOna = !showOna"
+          [checked]="showOna"
+        />
+        ONA
+      </label>
+      <label class="check" for="search-adv-checkbox-special"
+        ><input
+          id="search-adv-checkbox-special"
+          type="checkbox"
+          (change)="showSpecial = !showSpecial"
+          [checked]="showSpecial"
+        />
+        Special
+      </label>
+      <label class="check" for="search-adv-checkbox-doujin"
+        ><input
+          id="search-adv-checkbox-doujin"
+          type="checkbox"
+          (change)="showDoujin = !showDoujin"
+          [checked]="showDoujin"
+        />
+        Doujin
+      </label>
+    </div>
+
+    <button id="search-btn-advanced" type="button" class="search-btn" (click)="onSearchCallKey()">Search</button>
   </div>
-</div>
-
-<div *ngIf="rankedTime">
-  <h1 style="color: white; text-align: center">
-    AMQ Ranked Time : Limited functionalities.
-  </h1>
-  <h2 style="color: white; text-align: center">
-    Time left : {{ RankedDisabledTimeLeft }} minutes
-  </h2>
-
-  <div class="mainFilter">
-    <div style="display: inline">
-      <button
-        style="margin-right: 10px; margin-bottom: 10px"
-        type="button"
-        (click)="onSearchCallKey()"
-      >
-        Search
-      </button>
-
-      <input
-        #tempAnimeFilter
-        placeholder="Search by anime"
-        title="Search by anime"
-        style="width: 420px"
-        class="textInputFilter"
-        type="search"
-        (keyup.enter)="onSearchCallKey()"
-        (input)="animeFilter = tempAnimeFilter.value"
-      />
-
-      <label class="check"
-        ><input
-          type="checkbox"
-          (change)="showOpenings = !showOpenings"
-          [checked]="showOpenings"
-        />
-        OP
-      </label>
-      <label class="check"
-        ><input
-          type="checkbox"
-          (change)="showEndings = !showEndings"
-          [checked]="showEndings"
-        />
-        ED
-      </label>
-      <label class="check"
-        ><input
-          type="checkbox"
-          (change)="showInserts = !showInserts"
-          [checked]="showInserts"
-        />
-        INS
-      </label>
-
-      <label class="check"
-        ><input
-          type="checkbox"
-          (change)="ignoreDuplicate = !ignoreDuplicate"
-          [checked]="ignoreDuplicate"
-        />
-        Ignore Duplicates
-      </label>
-
-      <label
-        class="check"
-        title="If activated, results only have to contain the filter and not match it exactly"
-        ><input
-          type="checkbox"
-          (change)="mainFilterPartialMatch = !mainFilterPartialMatch"
-          [checked]="mainFilterPartialMatch"
-        />
-        Partial Match
-      </label>
-    </div>
-
-    <div style="display: inline">
-      <span
-        class="helpButton"
-        style="float: right; padding-left: 12px"
-        title="What can I do with that JSON?"
-        onClick="window.open('https://github.com/xSardine/AMQ-Artists-DB/tree/main/misc_scripts#misc-scripts','_blank')"
-      >
-        <i class="fa fa-question-circle"></i>
-      </span>
-
-      <a
-        class="showFilter"
-        (click)="generateDownloadJsonUri()"
-        [href]="downloadJsonHref"
-        download="{{ downloadFileName }}"
-      >
-        <i class="fa fa-download"></i> Download Song List as JSON
-      </a>
-    </div>
-  </div>
-</div>

@@ -198,6 +198,25 @@
 
 /*  End Toggle Switch  */
 
+.content {
+  max-width: 100%;
+  overflow-x: clip;
+  box-sizing: border-box;
+}
+
+.amq-disclaimer {
+  margin: 4px 0 65px;
+  padding: 0;
+  text-align: center;
+  color: var(--textOnBackground);
+  font-size: 14px;
+  line-height: 1.3;
+}
+
+.amq-disclaimer a {
+  color: #ff4d4d;
+}
+
 :host {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
     Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
