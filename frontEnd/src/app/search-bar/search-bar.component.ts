@@ -1,10 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { SearchRequestService } from '../core/services/search-request.service';
-import {
-  DomSanitizer,
-  SafeResourceUrl,
-  SafeUrl,
-} from '@angular/platform-browser';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-search-bar',
@@ -114,6 +110,15 @@ export class SearchBarComponent implements OnInit, OnDestroy {
     };
   }
 
+  // Returns the season string if text matches formats like "Winter 2024" (case-insensitive), otherwise null
+  private parseSeasonQuery(text: string): string | null {
+    text = text.trim();
+    if (/^(winter|spring|summer|fall) (\d{4})$/i.test(text)) {
+      return text;
+    }
+    return null;
+  }
+
   onSearchCallKey(): void {
     let body: any;
     let tmp_anime_filter,
@@ -192,7 +197,14 @@ export class SearchBarComponent implements OnInit, OnDestroy {
         ...this.songFilterOptions(),
       };
     } else {
-      if (this.mainFilter.length == 0) {
+      const season = this.parseSeasonQuery(this.mainFilter);
+      if (season) {
+        body = {
+          season,
+          ignore_duplicate: this.ignoreDuplicate,
+          ...this.songFilterOptions(),
+        };
+      } else if (this.mainFilter.length == 0) {
         body = {
           anime_search_filter: undefined,
           song_name_search_filter: undefined,
@@ -250,12 +262,14 @@ export class SearchBarComponent implements OnInit, OnDestroy {
     this.previousBody = body;
     this.sendPrevBody(body);
 
-    this.currentSongList = this.searchRequestService
-      .searchRequest(body)
-      .subscribe((data) => {
-        this.currentSongList = data;
-        this.sendSongList(this.currentSongList);
-      });
+    const request$ = body.season
+      ? this.searchRequestService.seasonRequest(body)
+      : this.searchRequestService.searchRequest(body);
+
+    this.currentSongList = request$.subscribe((data) => {
+      this.currentSongList = data;
+      this.sendSongList(this.currentSongList);
+    });
   }
 
   selectFilterCombinationChangeHandler(event: any) {

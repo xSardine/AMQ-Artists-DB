@@ -34,6 +34,10 @@ export class SearchRequestService {
     return this.apiPost('/api/search_request', body);
   }
 
+  seasonRequest(body: object): Observable<any> {
+    return this.apiPost('/api/season_request', body);
+  }
+
   artistIdsSearchRequest(body: object): Observable<any> {
     return this.apiPost('/api/artist_ids_request', body);
   }
