@@ -1,7 +1,8 @@
 @import "font-awesome/css/font-awesome.css";
 
-#body {
-  background-color: var(--background);
+:host {
+  display: block;
+  overflow: visible;
 }
 
 #table {
@@ -23,10 +24,6 @@
 
 #table tr:nth-child(even) {
   background-color: var(--songTableImpairColor);
-}
-
-#table tr > *:nth-child(0) {
-  display: none;
 }
 
 #table tr:hover {
@@ -111,11 +108,186 @@
   margin: 8px 0 12px;
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
   gap: 8px;
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
+}
+
+.table-controls-start {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.table-results-summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--textOnBackground);
+}
+
+.table-stats-popover {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.table-results-label {
+  font-weight: 600;
+}
+
+.table-stats-info {
+  border: none;
+  background: transparent;
+  color: var(--textOnBackground);
+  padding: 2px;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.table-stats-info:hover,
+.table-stats-info[aria-expanded="true"] {
+  color: var(--accentColor);
+}
+
+.table-stats-info:focus-visible {
+  outline: 2px solid var(--accentColor);
+  outline-offset: 2px;
+}
+
+.table-stats-panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 20;
+  min-width: 280px;
+  width: min(360px, calc(100vw - 24px));
+  max-height: min(70vh, 480px);
+  overflow-y: auto;
+  border: 1px solid rgba(126, 126, 126, 0.55);
+  background-color: var(--songTableHoverColor);
+  color: var(--textOnBackground);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.38);
+  padding: 12px 14px 14px;
+  font-size: 12px;
+  line-height: 1.35;
+  text-align: left;
+}
+
+.table-stats-header {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(126, 126, 126, 0.45);
+}
+
+.table-stats-overview {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.table-stats-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  border: 1px solid rgba(126, 126, 126, 0.45);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.table-stats-tile-value {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.table-stats-tile-label {
+  font-size: 11px;
+  opacity: 0.82;
+}
+
+.table-stats-section + .table-stats-section {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(126, 126, 126, 0.35);
+}
+
+.table-stats-section-title {
+  margin: 0 0 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  opacity: 0.88;
+}
+
+.table-stats-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.table-stats-row + .table-stats-row {
+  margin-top: 4px;
+}
+
+.table-stats-row-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  flex: 1 1 50%;
+  min-width: 0;
+}
+
+.table-stats-row-label {
+  font-weight: 600;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.table-stats-row-meta {
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  font-size: 11px;
+}
+
+.table-stats-row-percent {
+  font-weight: 500;
+  opacity: 0.75;
+}
+
+.table-stats-bar-track {
+  flex: 1 1 50%;
+  min-width: 0;
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.28);
+  overflow: hidden;
+}
+
+.table-stats-bar-fill {
+  height: 100%;
+  min-width: 2px;
+  border-radius: inherit;
+  background-color: var(--accentColor);
 }
 
 .search-error-banner {
@@ -154,7 +326,6 @@
   position: relative;
   display: flex;
   flex-shrink: 0;
-  margin-left: auto;
 }
 
 .column-settings-toggle {
@@ -170,7 +341,7 @@
   position: absolute;
   top: calc(100% + 6px);
   right: 0;
-  z-index: 2;
+  z-index: 20;
   min-width: 220px;
   border: 1px solid #7e7e7e;
   background-color: var(--background);
@@ -187,20 +358,6 @@
   gap: 8px;
   padding: 4px 2px;
   cursor: pointer;
-}
-
-.container {
-  overflow: hidden;
-  width: 100%;
-  white-space: nowrap;
-}
-
-.container > div {
-  width: 32.06%;
-  height: auto;
-  float: left;
-  margin: 0 10px 0 0;
-  background-color: blueviolet;
 }
 
 .grid {

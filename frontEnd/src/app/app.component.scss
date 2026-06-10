@@ -198,12 +198,6 @@
 
 /*  End Toggle Switch  */
 
-.content {
-  max-width: 100%;
-  overflow-x: clip;
-  box-sizing: border-box;
-}
-
 .amq-disclaimer {
   margin: 4px 0 65px;
   padding: 0;
@@ -264,11 +258,69 @@ p {
   z-index: 100;
 }
 
+.toolbar-logo-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+  min-width: 0;
+}
+
+.toolbar-title {
+  padding-left: 5px;
+  font-size: 26px;
+  white-space: nowrap;
+}
+
+.toolbar-logo {
+  width: 40px;
+  height: auto;
+}
+
+.toolbar-anime-name-label {
+  margin-right: 5px;
+}
+
+.toolbar-lang-toggle {
+  margin-right: 20px;
+}
+
 .toolbar-github-logo {
   margin-right: 20px;
   margin-bottom: 8px;
   font-size: 28px;
   color: var(--textOnBackground);
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .toolbar-title {
+    font-size: 17px;
+    padding-left: 4px;
+  }
+
+  .toolbar-logo {
+    width: 32px;
+    height: auto;
+  }
+
+  .toolbar-anime-name-label {
+    display: none;
+  }
+
+  .toolbar-github-text {
+    display: none;
+  }
+
+  .toolbar-lang-toggle {
+    margin-right: 10px;
+    width: 90px;
+  }
+
+  .toolbar-github-logo {
+    margin-right: 12px;
+    margin-bottom: 0;
+  }
 }
 
 /* The switch - the box around the slider */
