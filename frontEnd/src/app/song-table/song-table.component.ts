@@ -1052,7 +1052,7 @@ export class SongTableComponent implements OnInit, OnDestroy, OnChanges {
 
     let currentSongList;
     currentSongList = this.searchRequestService
-      .annIdSearchRequest(body)
+      .annIdsSearchRequest(body)
       .subscribe((data) => {
         currentSongList = data;
         this.sendSongList(currentSongList);

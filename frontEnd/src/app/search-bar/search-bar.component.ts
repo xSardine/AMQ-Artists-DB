@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
+import { Observable } from 'rxjs';
 import { SearchRequestService } from '../core/services/search-request.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
@@ -112,11 +113,54 @@ export class SearchBarComponent implements OnInit, OnDestroy {
 
   // Returns the season string if text matches formats like "Winter 2024" (case-insensitive), otherwise null
   private parseSeasonQuery(text: string): string | null {
-    text = text.trim();
-    if (/^(winter|spring|summer|fall) (\d{4})$/i.test(text)) {
-      return text;
+    const match = text.trim().match(/^(winter|spring|summer|fall)\s*(\d{4})$/i);
+    if (!match) {
+      return null;
     }
-    return null;
+    return `${match[1]} ${match[2]}`;
+  }
+
+  // Parses queries for ANN, MAL, ANN Song, or AMQ Song IDs with their respective keywords
+  private parseIdListQuery(
+    text: string,
+  ): { field: 'ann_ids' | 'mal_ids' | 'ann_song_ids' | 'amq_song_ids'; ids: number[] } | null {
+    const match = text.trim().match(/^(annid|malid|annsongid|amqsongid)\s+(.+)$/i);
+    if (!match) {
+      return null;
+    }
+
+    const ids = [...match[2].matchAll(/\d+/g)].map((part) => parseInt(part[0], 10));
+    if (!ids.length) {
+      return null;
+    }
+
+    const fieldByKeyword: Record<string, 'ann_ids' | 'mal_ids' | 'ann_song_ids' | 'amq_song_ids'> = {
+      annid: 'ann_ids',
+      malid: 'mal_ids',
+      annsongid: 'ann_song_ids',
+      amqsongid: 'amq_song_ids',
+    };
+
+    return { field: fieldByKeyword[match[1].toLowerCase()], ids };
+  }
+
+  private searchRequestForBody(body: any): Observable<any> {
+    if (body.season) {
+      return this.searchRequestService.seasonRequest(body);
+    }
+    if (body.ann_ids) {
+      return this.searchRequestService.annIdsSearchRequest(body);
+    }
+    if (body.mal_ids) {
+      return this.searchRequestService.malIdsSearchRequest(body);
+    }
+    if (body.ann_song_ids) {
+      return this.searchRequestService.annSongIdsSearchRequest(body);
+    }
+    if (body.amq_song_ids) {
+      return this.searchRequestService.amqSongIdsSearchRequest(body);
+    }
+    return this.searchRequestService.searchRequest(body);
   }
 
   onSearchCallKey(): void {
@@ -198,9 +242,16 @@ export class SearchBarComponent implements OnInit, OnDestroy {
       };
     } else {
       const season = this.parseSeasonQuery(this.mainFilter);
+      const idList = this.parseIdListQuery(this.mainFilter);
       if (season) {
         body = {
           season,
+          ignore_duplicate: this.ignoreDuplicate,
+          ...this.songFilterOptions(),
+        };
+      } else if (idList) {
+        body = {
+          [idList.field]: idList.ids,
           ignore_duplicate: this.ignoreDuplicate,
           ...this.songFilterOptions(),
         };
@@ -262,9 +313,7 @@ export class SearchBarComponent implements OnInit, OnDestroy {
     this.previousBody = body;
     this.sendPrevBody(body);
 
-    const request$ = body.season
-      ? this.searchRequestService.seasonRequest(body)
-      : this.searchRequestService.searchRequest(body);
+    const request$ = this.searchRequestForBody(body);
 
     this.currentSongList = request$.subscribe((data) => {
       this.currentSongList = data;
