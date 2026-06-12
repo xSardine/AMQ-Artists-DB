@@ -34,6 +34,10 @@ export class SearchRequestService {
     return this.apiPost('/api/search_request', body);
   }
 
+  seasonRequest(body: object): Observable<any> {
+    return this.apiPost('/api/season_request', body);
+  }
+
   artistIdsSearchRequest(body: object): Observable<any> {
     return this.apiPost('/api/artist_ids_request', body);
   }
@@ -42,8 +46,20 @@ export class SearchRequestService {
     return this.apiPost('/api/composer_ids_request', body);
   }
 
-  annIdSearchRequest(body: object): Observable<any> {
+  annIdsSearchRequest(body: object): Observable<any> {
     return this.apiPost('/api/ann_ids_request', body);
+  }
+
+  malIdsSearchRequest(body: object): Observable<any> {
+    return this.apiPost('/api/mal_ids_request', body);
+  }
+
+  annSongIdsSearchRequest(body: object): Observable<any> {
+    return this.apiPost('/api/ann_song_ids_request', body);
+  }
+
+  amqSongIdsSearchRequest(body: object): Observable<any> {
+    return this.apiPost('/api/amq_song_ids_request', body);
   }
 
   // AMQ ranked window: 20:30–21:23 local in Central, Western, or Eastern regions.
