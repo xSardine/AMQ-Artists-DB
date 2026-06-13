@@ -1,9 +1,9 @@
-<div *ngIf="rankedTime" class="ranked-banner" role="status" aria-live="polite">
+<div *ngIf="rankedStatus.active" class="ranked-banner" role="status" aria-live="polite">
   <span class="ranked-banner-icon" aria-hidden="true"><i class="fa fa-shield"></i></span>
   <span class="ranked-banner-text">
     <span class="ranked-banner-title">AMQ Ranked</span>
-    <span class="ranked-banner-region">{{ rankedRegion }}</span>
-    Some functionality disabled – <strong>{{ rankedRemainingMinutes }}</strong> minutes remaining
+    <span class="ranked-banner-region">{{ rankedStatus.region }}</span>
+    Some functionality disabled – <strong>{{ searchRequestService.formatRankedRemaining(rankedStatus) }}</strong> remaining
   </span>
   <button
     type="button"
@@ -52,8 +52,8 @@
     <input
       id="search-input-main"
       #mainFilterInput
-      [placeholder]="rankedTime ? 'Search by anime' : 'Search by anime, song name or artist'"
-      [title]="rankedTime ? 'Search by anime' : 'Search by anime, song name or artist'"
+      [placeholder]="rankedStatus.active ? 'Search by anime' : 'Search by anime, song name or artist'"
+      [title]="rankedStatus.active ? 'Search by anime' : 'Search by anime, song name or artist'"
       class="textInputFilter main-search-input"
       type="search"
       (keyup.enter)="onSearchCallKey()"

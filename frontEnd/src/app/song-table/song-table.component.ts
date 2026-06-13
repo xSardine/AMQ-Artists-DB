@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
-import { SearchRequestService } from '../core/services/search-request.service';
+import { SearchRequestService, RankedStatus } from '../core/services/search-request.service';
 import { Subscription } from 'rxjs';
 
 type SongColumnDefinition = {
@@ -76,6 +76,7 @@ export class SongTableComponent implements OnInit, OnDestroy, OnChanges {
 
   searchErrorMessage: string | null = null;
   private searchErrorSubscription: Subscription | null = null;
+  private rankedStatusSubscription: Subscription | null = null;
 
   @Input() songTable: any;
   @Input() previousBody: any;
@@ -191,16 +192,20 @@ export class SongTableComponent implements OnInit, OnDestroy, OnChanges {
         this.searchErrorMessage = message;
       },
     );
+    this.rankedStatusSubscription = this.searchRequestService.rankedStatus$.subscribe(
+      (status) => {
+        this.rankedStatus = status;
+      },
+    );
   }
 
   ngOnDestroy() {
     this.searchErrorSubscription?.unsubscribe();
+    this.rankedStatusSubscription?.unsubscribe();
   }
 
   ngOnChanges(changes: SimpleChanges) {
     this.initializeColumns();
-    const status = this.searchRequestService.getRankedStatus();
-    this.rankedTime = status.active;
 
     if (changes['songTable']) {
       this.ascendingOrder = false;
@@ -385,7 +390,11 @@ export class SongTableComponent implements OnInit, OnDestroy, OnChanges {
   clipboardPopUpStyle: any;
   show: boolean = false;
 
-  rankedTime = false;
+  rankedStatus: RankedStatus = {
+    active: false,
+    region: null,
+    remainingSeconds: 0,
+  };
   currentPlayingSong: any;
 
   copyToClipboard(event: any, copytext: string) {

@@ -210,7 +210,7 @@
         <div *ngFor="let artist of popUpArtistsInfo">
           <p style="margin: 5px">
             <i
-              *ngIf="!rankedTime"
+              *ngIf="!rankedStatus.active"
               style="cursor: pointer; margin-right: 6px"
               title="Search songs sung by this artist"
               (click)="searchArtistIds(artist)"
@@ -268,7 +268,7 @@
           >
             <div *ngFor="let member of artist['members']">
               <i
-                *ngIf="!rankedTime"
+                *ngIf="!rankedStatus.active"
                 style="cursor: pointer; margin-right: 6px"
                 title="Search songs sung by this member"
                 (click)="searchArtistIds(member)"
@@ -301,7 +301,7 @@
           >
             <div *ngFor="let group of artist['groups']">
               <i
-                *ngIf="!rankedTime"
+                *ngIf="!rankedStatus.active"
                 style="cursor: pointer; margin-right: 6px"
                 title="Search songs sung by this group"
                 (click)="searchArtistIds(group)"
@@ -328,7 +328,7 @@
         <div *ngFor="let composer of popUpComposersInfo">
           <p style="margin: 5px">
             <i
-              *ngIf="!rankedTime"
+              *ngIf="!rankedStatus.active"
               style="cursor: pointer; margin-right: 6px"
               title="Search songs composed by this composer"
               (click)="searchComposerIds(composer)"
@@ -386,7 +386,7 @@
           >
             <div *ngFor="let member of composer['members']">
               <i
-                *ngIf="!rankedTime"
+                *ngIf="!rankedStatus.active"
                 style="cursor: pointer; margin-right: 6px"
                 title="Search songs composed by this member"
                 (click)="searchComposerIds(member)"
@@ -419,7 +419,7 @@
           >
             <div *ngFor="let group of composer['groups']">
               <i
-                *ngIf="!rankedTime"
+                *ngIf="!rankedStatus.active"
                 style="cursor: pointer; margin-right: 6px"
                 title="Search songs composed by this group"
                 (click)="searchComposerIds(group)"
@@ -446,7 +446,7 @@
         <div *ngFor="let arranger of popUpArrangersInfo">
           <p style="margin: 5px">
             <i
-              *ngIf="!rankedTime"
+              *ngIf="!rankedStatus.active"
               style="cursor: pointer; margin-right: 6px"
               title="Search songs composed by this arranger"
               (click)="searchComposerIds(arranger)"
@@ -504,7 +504,7 @@
           >
             <div *ngFor="let member of arranger['members']">
               <i
-                *ngIf="!rankedTime"
+                *ngIf="!rankedStatus.active"
                 style="cursor: pointer; margin-right: 6px"
                 title="Search songs composed by this member"
                 (click)="searchComposerIds(member)"
@@ -537,7 +537,7 @@
           >
             <div *ngFor="let group of arranger['groups']">
               <i
-                *ngIf="!rankedTime"
+                *ngIf="!rankedStatus.active"
                 style="cursor: pointer; margin-right: 6px"
                 title="Search songs composed by this group"
                 (click)="searchComposerIds(group)"
@@ -742,7 +742,7 @@
 
         <ng-container *ngSwitchCase="'Artist'">
           <i
-            *ngIf="!rankedTime"
+            *ngIf="!rankedStatus.active"
             style="margin-right: 6px"
             class="fa fa-search table-action-icon"
             title="Search songs by this artist(s)"
@@ -758,7 +758,7 @@
 
         <ng-container *ngSwitchCase="'Composer'">
           <i
-            *ngIf="!rankedTime"
+            *ngIf="!rankedStatus.active"
             style="margin-right: 6px"
             class="fa fa-search table-action-icon"
             title="Search songs composed or arranged by this composer(s)"
@@ -774,7 +774,7 @@
 
         <ng-container *ngSwitchCase="'Arranger'">
           <i
-            *ngIf="!rankedTime"
+            *ngIf="!rankedStatus.active"
             style="margin-right: 6px"
             class="fa fa-search table-action-icon"
             title="Search songs composed or arranged by this arranger(s)"
@@ -806,7 +806,7 @@
         </ng-container>
 
         <ng-container *ngSwitchCase="'Song Links'">
-          <div *ngIf="!rankedTime" class="table-song-links">
+          <div *ngIf="!rankedStatus.active" class="table-song-links">
             <ng-container *ngFor="let link of songDistLinks">
               <a
                 *ngIf="shouldShowSongLink(song, link)"
@@ -823,7 +823,7 @@
 
         <ng-container *ngSwitchCase="'Play Audio'">
           <i
-            *ngIf="!rankedTime && song.audio"
+            *ngIf="!rankedStatus.active && song.audio"
             title="Listen to mp3"
             (click)="playMP3music(song)"
             class="fa fa-music fa-lg play-icon"

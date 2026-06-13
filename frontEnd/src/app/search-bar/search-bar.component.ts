@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
-import { Observable } from 'rxjs';
-import { SearchRequestService } from '../core/services/search-request.service';
+import { Observable, Subscription } from 'rxjs';
+import { RankedStatus, SearchRequestService } from '../core/services/search-request.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 @Component({
@@ -12,7 +12,7 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 export class SearchBarComponent implements OnInit, OnDestroy {
   constructor(
     private sanitizer: DomSanitizer,
-    private searchRequestService: SearchRequestService
+    readonly searchRequestService: SearchRequestService,
   ) {}
 
   @Input() previousBody: any;
@@ -61,14 +61,19 @@ export class SearchBarComponent implements OnInit, OnDestroy {
   showDoujin: boolean = true;
   showAdvancedFilters: boolean = false;
 
-  rankedTime = false;
-  rankedRegion: string | null = null;
-  rankedRemainingMinutes = 0;
-  private rankedCountdownTimer: ReturnType<typeof setInterval> | null = null;
+  rankedStatus: RankedStatus = {
+    active: false,
+    region: null,
+    remainingSeconds: 0,
+  };
+  private rankedStatusSubscription: Subscription | null = null;
 
   ngOnInit(): void {
-    this.refreshRankedStatus();
-    this.rankedCountdownTimer = setInterval(() => this.refreshRankedStatus(), 1000);
+    this.rankedStatusSubscription = this.searchRequestService.rankedStatus$.subscribe(
+      (status) => {
+        this.rankedStatus = status;
+      },
+    );
     this.currentSongList = this.searchRequestService
       .getFirstNRequest()
       .subscribe((data) => {
@@ -78,16 +83,7 @@ export class SearchBarComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.rankedCountdownTimer !== null) {
-      clearInterval(this.rankedCountdownTimer);
-    }
-  }
-
-  private refreshRankedStatus(): void {
-    const status = this.searchRequestService.getRankedStatus();
-    this.rankedTime = status.active;
-    this.rankedRegion = status.region;
-    this.rankedRemainingMinutes = status.remainingMinutes;
+    this.rankedStatusSubscription?.unsubscribe();
   }
 
   private songFilterOptions() {
@@ -170,8 +166,6 @@ export class SearchBarComponent implements OnInit, OnDestroy {
       tmp_artist_filter,
       tmp_composer_filter;
     let tmp_select = false;
-
-    this.refreshRankedStatus();
 
     if (this.selectedCombination == 'Intersection (AND)') {
       tmp_select = true;
@@ -265,7 +259,7 @@ export class SearchBarComponent implements OnInit, OnDestroy {
           ignore_duplicate: this.ignoreDuplicate,
           ...this.songFilterOptions(),
         };
-      } else if (this.rankedTime) {
+      } else if (this.rankedStatus.active) {
         body = {
           anime_search_filter: {
             search: this.mainFilter,
