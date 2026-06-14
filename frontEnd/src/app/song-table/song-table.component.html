@@ -210,7 +210,7 @@
         <div *ngFor="let artist of popUpArtistsInfo">
           <p style="margin: 5px">
             <i
-              *ngIf="!rankedTime"
+              *ngIf="!rankedStatus.active"
               style="cursor: pointer; margin-right: 6px"
               title="Search songs sung by this artist"
               (click)="searchArtistIds(artist)"
@@ -268,7 +268,7 @@
           >
             <div *ngFor="let member of artist['members']">
               <i
-                *ngIf="!rankedTime"
+                *ngIf="!rankedStatus.active"
                 style="cursor: pointer; margin-right: 6px"
                 title="Search songs sung by this member"
                 (click)="searchArtistIds(member)"
@@ -301,7 +301,7 @@
           >
             <div *ngFor="let group of artist['groups']">
               <i
-                *ngIf="!rankedTime"
+                *ngIf="!rankedStatus.active"
                 style="cursor: pointer; margin-right: 6px"
                 title="Search songs sung by this group"
                 (click)="searchArtistIds(group)"
@@ -328,7 +328,7 @@
         <div *ngFor="let composer of popUpComposersInfo">
           <p style="margin: 5px">
             <i
-              *ngIf="!rankedTime"
+              *ngIf="!rankedStatus.active"
               style="cursor: pointer; margin-right: 6px"
               title="Search songs composed by this composer"
               (click)="searchComposerIds(composer)"
@@ -386,7 +386,7 @@
           >
             <div *ngFor="let member of composer['members']">
               <i
-                *ngIf="!rankedTime"
+                *ngIf="!rankedStatus.active"
                 style="cursor: pointer; margin-right: 6px"
                 title="Search songs composed by this member"
                 (click)="searchComposerIds(member)"
@@ -419,7 +419,7 @@
           >
             <div *ngFor="let group of composer['groups']">
               <i
-                *ngIf="!rankedTime"
+                *ngIf="!rankedStatus.active"
                 style="cursor: pointer; margin-right: 6px"
                 title="Search songs composed by this group"
                 (click)="searchComposerIds(group)"
@@ -446,7 +446,7 @@
         <div *ngFor="let arranger of popUpArrangersInfo">
           <p style="margin: 5px">
             <i
-              *ngIf="!rankedTime"
+              *ngIf="!rankedStatus.active"
               style="cursor: pointer; margin-right: 6px"
               title="Search songs composed by this arranger"
               (click)="searchComposerIds(arranger)"
@@ -504,7 +504,7 @@
           >
             <div *ngFor="let member of arranger['members']">
               <i
-                *ngIf="!rankedTime"
+                *ngIf="!rankedStatus.active"
                 style="cursor: pointer; margin-right: 6px"
                 title="Search songs composed by this member"
                 (click)="searchComposerIds(member)"
@@ -537,7 +537,7 @@
           >
             <div *ngFor="let group of arranger['groups']">
               <i
-                *ngIf="!rankedTime"
+                *ngIf="!rankedStatus.active"
                 style="cursor: pointer; margin-right: 6px"
                 title="Search songs composed by this group"
                 (click)="searchComposerIds(group)"
@@ -558,13 +558,119 @@
   </div>
 </div>
 
-<div class="table-controls" *ngIf="songTable || searchErrorMessage" (click)="$event.stopPropagation()">
-  <div *ngIf="searchErrorMessage" class="search-error-banner" role="alert">
-    <span class="search-error-banner-icon" aria-hidden="true"><i class="fa fa-exclamation-triangle"></i></span>
-    <span class="search-error-banner-text">
-      <span class="search-error-banner-title">Search Error</span>
-      {{ searchErrorMessage }}
-    </span>
+<div class="table-controls" *ngIf="songTable || searchErrorMessage">
+  <div class="table-controls-start">
+    <div *ngIf="searchErrorMessage" class="search-error-banner" role="alert">
+      <span class="search-error-banner-icon" aria-hidden="true"><i class="fa fa-exclamation-triangle"></i></span>
+      <span class="search-error-banner-text">
+        <span class="search-error-banner-title">Search Error</span>
+        {{ searchErrorMessage }}
+      </span>
+    </div>
+
+    <div *ngIf="songTable" class="table-results-summary">
+      <span class="table-results-label">Results: {{ tableStats.songCount }}</span>
+      <div class="table-stats-popover">
+        <button
+          type="button"
+          class="table-stats-info"
+          aria-label="Table statistics"
+          [attr.aria-expanded]="showTableStats"
+          (click)="toggleTableStats($event)"
+        >
+          <i class="fa fa-info-circle" aria-hidden="true"></i>
+        </button>
+
+        <div
+          id="table-stats-panel"
+          class="table-stats-panel"
+          *ngIf="showTableStats"
+          role="region"
+          aria-label="Table statistics"
+        >
+          <div class="table-stats-header">Result statistics</div>
+
+          <div class="table-stats-overview">
+            <div class="table-stats-tile">
+              <span class="table-stats-tile-value">{{ tableStats.uniqueAnime }}</span>
+              <span class="table-stats-tile-label">Unique anime</span>
+            </div>
+            <div class="table-stats-tile">
+              <span class="table-stats-tile-value">{{ tableStats.uniqueArtists }}</span>
+              <span class="table-stats-tile-label">Unique artists</span>
+            </div>
+            <div class="table-stats-tile">
+              <span class="table-stats-tile-value">{{ tableStats.avgDifficulty }}%</span>
+              <span class="table-stats-tile-label">Avg difficulty</span>
+            </div>
+            <div class="table-stats-tile">
+              <span class="table-stats-tile-value">{{ formatAvgLength(tableStats.avgLength) }}</span>
+              <span class="table-stats-tile-label">Avg length</span>
+            </div>
+          </div>
+
+          <section class="table-stats-section">
+            <h4 class="table-stats-section-title">Song types</h4>
+            <div class="table-stats-row" *ngFor="let entry of tableStats.songTypeBreakdown">
+              <div class="table-stats-row-head">
+                <span class="table-stats-row-label">{{ entry.label }}</span>
+                <span class="table-stats-row-meta"
+                  >{{ entry.count }} <span class="table-stats-row-percent">({{ entry.percent }}%)</span></span
+                >
+              </div>
+              <div class="table-stats-bar-track" aria-hidden="true">
+                <div class="table-stats-bar-fill" [style.width.%]="entry.percent"></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="table-stats-section">
+            <h4 class="table-stats-section-title">Broadcasts</h4>
+            <div class="table-stats-row" *ngFor="let entry of tableStats.broadcastBreakdown">
+              <div class="table-stats-row-head">
+                <span class="table-stats-row-label">{{ entry.label }}</span>
+                <span class="table-stats-row-meta"
+                  >{{ entry.count }} <span class="table-stats-row-percent">({{ entry.percent }}%)</span></span
+                >
+              </div>
+              <div class="table-stats-bar-track" aria-hidden="true">
+                <div class="table-stats-bar-fill" [style.width.%]="entry.percent"></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="table-stats-section">
+            <h4 class="table-stats-section-title">Performance</h4>
+            <div class="table-stats-row" *ngFor="let entry of tableStats.performanceBreakdown">
+              <div class="table-stats-row-head">
+                <span class="table-stats-row-label">{{ entry.label }}</span>
+                <span class="table-stats-row-meta"
+                  >{{ entry.count }} <span class="table-stats-row-percent">({{ entry.percent }}%)</span></span
+                >
+              </div>
+              <div class="table-stats-bar-track" aria-hidden="true">
+                <div class="table-stats-bar-fill" [style.width.%]="entry.percent"></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="table-stats-section">
+            <h4 class="table-stats-section-title">Anime types</h4>
+            <div class="table-stats-row" *ngFor="let entry of tableStats.animeTypeBreakdown">
+              <div class="table-stats-row-head">
+                <span class="table-stats-row-label">{{ entry.label }}</span>
+                <span class="table-stats-row-meta"
+                  >{{ entry.count }} <span class="table-stats-row-percent">({{ entry.percent }}%)</span></span
+                >
+              </div>
+              <div class="table-stats-bar-track" aria-hidden="true">
+                <div class="table-stats-bar-fill" [style.width.%]="entry.percent"></div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="table-controls-actions" *ngIf="songTable">
@@ -579,7 +685,7 @@
         [checked]="isColumnVisible(column.key)"
         (change)="toggleColumn(column.key, $any($event.target).checked)"
       />
-      {{ column.header }}
+      {{ column.key }}
     </label>
   </div>
   </div>
@@ -591,17 +697,11 @@
     <th
       *ngFor="let col of tableHeaders"
       [style.cursor]="isColumnSortable(col) ? 'pointer' : 'default'"
-      [style.text-align]="col === 'Play Audio' ? 'center' : null"
+      [style.text-align]="isCenterAlignedColumn(col) ? 'center' : null"
       [attr.title]="isColumnSortable(col) ? 'Sort by ' + getHeaderLabel(col) : null"
       (click)="onHeaderClick(col)"
     >
       {{ getHeaderLabel(col) }}
-    </th>
-    <th
-      title="#Number of Songs (%Average Difficulty)"
-      style="text-align: center"
-    >
-      {{ songTable.length }} ({{ currentAverage }}%)
     </th>
   </tr>
 
@@ -610,20 +710,22 @@
     <ng-container *ngFor="let col of tableHeaders">
       <td
         [ngSwitch]="col"
-        [style.text-align]="col === 'Play Audio' ? 'center' : null"
+        [style.text-align]="isCenterAlignedColumn(col) ? 'center' : null"
         [style.white-space]="
-          col === 'annId' || col === 'Song Type' || col === 'Lists' || col === 'Song Links'
+          col === 'ANN ID' || col === 'Broadcast' || col === 'Song Type' || col === 'Lists' || col === 'Song Links'
             ? 'nowrap'
             : null
         "
       >
-        <ng-container *ngSwitchCase="'annId'">
+        <ng-container *ngSwitchCase="'Info'">
           <i
-            style="margin-right: 8px"
-            class="fa fa-plus table-action-icon"
+            class="fa fa-plus fa-lg table-action-icon"
             (click)="displaySongInfoPopup(song)"
             title="More information"
           ></i>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'ANN ID'">
           <i
             style="margin-right: 4px"
             class="fa fa-search table-action-icon"
@@ -640,7 +742,7 @@
 
         <ng-container *ngSwitchCase="'Artist'">
           <i
-            *ngIf="!rankedTime"
+            *ngIf="!rankedStatus.active"
             style="margin-right: 6px"
             class="fa fa-search table-action-icon"
             title="Search songs by this artist(s)"
@@ -656,7 +758,7 @@
 
         <ng-container *ngSwitchCase="'Composer'">
           <i
-            *ngIf="!rankedTime"
+            *ngIf="!rankedStatus.active"
             style="margin-right: 6px"
             class="fa fa-search table-action-icon"
             title="Search songs composed or arranged by this composer(s)"
@@ -672,7 +774,7 @@
 
         <ng-container *ngSwitchCase="'Arranger'">
           <i
-            *ngIf="!rankedTime"
+            *ngIf="!rankedStatus.active"
             style="margin-right: 6px"
             class="fa fa-search table-action-icon"
             title="Search songs composed or arranged by this arranger(s)"
@@ -704,7 +806,7 @@
         </ng-container>
 
         <ng-container *ngSwitchCase="'Song Links'">
-          <div *ngIf="!rankedTime" class="table-song-links">
+          <div *ngIf="!rankedStatus.active" class="table-song-links">
             <ng-container *ngFor="let link of songDistLinks">
               <a
                 *ngIf="shouldShowSongLink(song, link)"
@@ -721,12 +823,18 @@
 
         <ng-container *ngSwitchCase="'Play Audio'">
           <i
-            *ngIf="!rankedTime && song.audio"
+            *ngIf="!rankedStatus.active && song.audio"
             title="Listen to mp3"
             (click)="playMP3music(song)"
             class="fa fa-music fa-lg play-icon"
             [class.active]="isCurrentPlayingSong(song)"
           ></i>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'Delete Row'">
+          <span title="Delete song from list" (click)="deleteRowEntry(song)">
+            <i class="fa fa-trash fa-lg table-action-icon" aria-hidden="true"></i>
+          </span>
         </ng-container>
 
         <ng-container *ngSwitchDefault>
@@ -739,12 +847,6 @@
         </ng-container>
       </td>
     </ng-container>
-
-    <td style="text-align: center; color: var(--textOnBackground)">
-      <span title="Delete song from list" (click)="deleteRowEntry(song)">
-        <i class="fa fa-trash fa-lg table-action-icon" aria-hidden="true"></i>
-      </span>
-    </td>
   </tr>
 </table>
 

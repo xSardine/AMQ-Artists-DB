@@ -1,10 +1,7 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
-import { SearchRequestService } from '../core/services/search-request.service';
-import {
-  DomSanitizer,
-  SafeResourceUrl,
-  SafeUrl,
-} from '@angular/platform-browser';
+import { Observable, Subscription } from 'rxjs';
+import { RankedStatus, SearchRequestService } from '../core/services/search-request.service';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-search-bar',
@@ -15,7 +12,7 @@ import {
 export class SearchBarComponent implements OnInit, OnDestroy {
   constructor(
     private sanitizer: DomSanitizer,
-    private searchRequestService: SearchRequestService
+    readonly searchRequestService: SearchRequestService,
   ) {}
 
   @Input() previousBody: any;
@@ -64,14 +61,19 @@ export class SearchBarComponent implements OnInit, OnDestroy {
   showDoujin: boolean = true;
   showAdvancedFilters: boolean = false;
 
-  rankedTime = false;
-  rankedRegion: string | null = null;
-  rankedRemainingMinutes = 0;
-  private rankedCountdownTimer: ReturnType<typeof setInterval> | null = null;
+  rankedStatus: RankedStatus = {
+    active: false,
+    region: null,
+    remainingSeconds: 0,
+  };
+  private rankedStatusSubscription: Subscription | null = null;
 
   ngOnInit(): void {
-    this.refreshRankedStatus();
-    this.rankedCountdownTimer = setInterval(() => this.refreshRankedStatus(), 1000);
+    this.rankedStatusSubscription = this.searchRequestService.rankedStatus$.subscribe(
+      (status) => {
+        this.rankedStatus = status;
+      },
+    );
     this.currentSongList = this.searchRequestService
       .getFirstNRequest()
       .subscribe((data) => {
@@ -81,16 +83,7 @@ export class SearchBarComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.rankedCountdownTimer !== null) {
-      clearInterval(this.rankedCountdownTimer);
-    }
-  }
-
-  private refreshRankedStatus(): void {
-    const status = this.searchRequestService.getRankedStatus();
-    this.rankedTime = status.active;
-    this.rankedRegion = status.region;
-    this.rankedRemainingMinutes = status.remainingMinutes;
+    this.rankedStatusSubscription?.unsubscribe();
   }
 
   private songFilterOptions() {
@@ -114,6 +107,58 @@ export class SearchBarComponent implements OnInit, OnDestroy {
     };
   }
 
+  // Returns the season string if text matches formats like "Winter 2024" (case-insensitive), otherwise null
+  private parseSeasonQuery(text: string): string | null {
+    const match = text.trim().match(/^(winter|spring|summer|fall)\s*(\d{4})$/i);
+    if (!match) {
+      return null;
+    }
+    return `${match[1]} ${match[2]}`;
+  }
+
+  // Parses queries for ANN, MAL, ANN Song, or AMQ Song IDs with their respective keywords
+  private parseIdListQuery(
+    text: string,
+  ): { field: 'ann_ids' | 'mal_ids' | 'ann_song_ids' | 'amq_song_ids'; ids: number[] } | null {
+    const match = text.trim().match(/^(annid|malid|annsongid|amqsongid)\s+(.+)$/i);
+    if (!match) {
+      return null;
+    }
+
+    const ids = [...match[2].matchAll(/\d+/g)].map((part) => parseInt(part[0], 10));
+    if (!ids.length) {
+      return null;
+    }
+
+    const fieldByKeyword: Record<string, 'ann_ids' | 'mal_ids' | 'ann_song_ids' | 'amq_song_ids'> = {
+      annid: 'ann_ids',
+      malid: 'mal_ids',
+      annsongid: 'ann_song_ids',
+      amqsongid: 'amq_song_ids',
+    };
+
+    return { field: fieldByKeyword[match[1].toLowerCase()], ids };
+  }
+
+  private searchRequestForBody(body: any): Observable<any> {
+    if (body.season) {
+      return this.searchRequestService.seasonRequest(body);
+    }
+    if (body.ann_ids) {
+      return this.searchRequestService.annIdsSearchRequest(body);
+    }
+    if (body.mal_ids) {
+      return this.searchRequestService.malIdsSearchRequest(body);
+    }
+    if (body.ann_song_ids) {
+      return this.searchRequestService.annSongIdsSearchRequest(body);
+    }
+    if (body.amq_song_ids) {
+      return this.searchRequestService.amqSongIdsSearchRequest(body);
+    }
+    return this.searchRequestService.searchRequest(body);
+  }
+
   onSearchCallKey(): void {
     let body: any;
     let tmp_anime_filter,
@@ -121,8 +166,6 @@ export class SearchBarComponent implements OnInit, OnDestroy {
       tmp_artist_filter,
       tmp_composer_filter;
     let tmp_select = false;
-
-    this.refreshRankedStatus();
 
     if (this.selectedCombination == 'Intersection (AND)') {
       tmp_select = true;
@@ -192,7 +235,21 @@ export class SearchBarComponent implements OnInit, OnDestroy {
         ...this.songFilterOptions(),
       };
     } else {
-      if (this.mainFilter.length == 0) {
+      const season = this.parseSeasonQuery(this.mainFilter);
+      const idList = this.parseIdListQuery(this.mainFilter);
+      if (season) {
+        body = {
+          season,
+          ignore_duplicate: this.ignoreDuplicate,
+          ...this.songFilterOptions(),
+        };
+      } else if (idList) {
+        body = {
+          [idList.field]: idList.ids,
+          ignore_duplicate: this.ignoreDuplicate,
+          ...this.songFilterOptions(),
+        };
+      } else if (this.mainFilter.length == 0) {
         body = {
           anime_search_filter: undefined,
           song_name_search_filter: undefined,
@@ -202,7 +259,7 @@ export class SearchBarComponent implements OnInit, OnDestroy {
           ignore_duplicate: this.ignoreDuplicate,
           ...this.songFilterOptions(),
         };
-      } else if (this.rankedTime) {
+      } else if (this.rankedStatus.active) {
         body = {
           anime_search_filter: {
             search: this.mainFilter,
@@ -250,12 +307,12 @@ export class SearchBarComponent implements OnInit, OnDestroy {
     this.previousBody = body;
     this.sendPrevBody(body);
 
-    this.currentSongList = this.searchRequestService
-      .searchRequest(body)
-      .subscribe((data) => {
-        this.currentSongList = data;
-        this.sendSongList(this.currentSongList);
-      });
+    const request$ = this.searchRequestForBody(body);
+
+    this.currentSongList = request$.subscribe((data) => {
+      this.currentSongList = data;
+      this.sendSongList(this.currentSongList);
+    });
   }
 
   selectFilterCombinationChangeHandler(event: any) {

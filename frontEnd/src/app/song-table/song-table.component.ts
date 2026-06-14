@@ -1,5 +1,5 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
-import { SearchRequestService } from '../core/services/search-request.service';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
+import { SearchRequestService, RankedStatus } from '../core/services/search-request.service';
 import { Subscription } from 'rxjs';
 
 type SongColumnDefinition = {
@@ -8,6 +8,46 @@ type SongColumnDefinition = {
   defaultVisible: boolean;
   sortable?: boolean;
 };
+
+type TableStatsBreakdown = Record<string, number>;
+
+type StatBreakdownEntry = {
+  label: string;
+  count: number;
+  percent: number;
+};
+
+type TableStats = {
+  songCount: number;
+  uniqueAnime: number;
+  uniqueArtists: number;
+  avgDifficulty: number;
+  avgLength: number | null;
+  animeTypeBreakdown: StatBreakdownEntry[];
+  songTypeBreakdown: StatBreakdownEntry[];
+  broadcastBreakdown: StatBreakdownEntry[];
+  performanceBreakdown: StatBreakdownEntry[];
+};
+
+const EMPTY_TABLE_STATS: TableStats = {
+  songCount: 0,
+  uniqueAnime: 0,
+  uniqueArtists: 0,
+  avgDifficulty: 0,
+  avgLength: null,
+  animeTypeBreakdown: [],
+  songTypeBreakdown: [],
+  broadcastBreakdown: [],
+  performanceBreakdown: [],
+};
+
+const SONG_TYPE_SORT_ORDER = ['OP', 'ED', 'IN'];
+// Match search-bar advanced filters: Normal → Dubs → Rebroadcasts (plus combined dub+rebroadcast rows).
+const BROADCAST_SORT_ORDER = ['Normal', 'Dub', 'Rebroadcast', 'Dub, Rebroadcast'];
+// Match search-bar advanced filters Performance row.
+const PERFORMANCE_SORT_ORDER = ['Standard', 'Character', 'Chanting', 'Instrumental', 'No Category'];
+// Match search-bar advanced filters Media row (shown as Anime types in stats).
+const ANIME_TYPE_SORT_ORDER = ['TV', 'Movie', 'OVA', 'ONA', 'Special', 'Doujin'];
 
 type AnimeListSite = {
   img: string;
@@ -31,11 +71,12 @@ type SongDistLink = {
   },
   standalone: false,
 })
-export class SongTableComponent implements OnInit, OnDestroy {
+export class SongTableComponent implements OnInit, OnDestroy, OnChanges {
   constructor(private searchRequestService: SearchRequestService) {}
 
   searchErrorMessage: string | null = null;
   private searchErrorSubscription: Subscription | null = null;
+  private rankedStatusSubscription: Subscription | null = null;
 
   @Input() songTable: any;
   @Input() previousBody: any;
@@ -45,26 +86,30 @@ export class SongTableComponent implements OnInit, OnDestroy {
   availableColumns: SongColumnDefinition[] = [];
   columnVisibility: Record<string, boolean> = {};
   showColumnSettings: boolean = false;
+  showTableStats = false;
   private readonly columnVisibilityStorageKey = 'songTable.columnVisibility';
   private loadedColumnVisibilityFromStorage = false;
 
   private readonly allColumns: SongColumnDefinition[] = [
-    { key: 'annId', header: 'ANN ID', defaultVisible: true },
-    { key: 'annSongId', header: 'Song ID', defaultVisible: false },
+    { key: 'Info', header: 'Info', defaultVisible: true, sortable: false },
+    { key: 'ANN ID', header: 'ANN ID', defaultVisible: true },
+    { key: 'ANN Song ID', header: 'Song ID', defaultVisible: false },
     { key: 'Lists', header: 'Anime Lists', defaultVisible: false, sortable: false },
     { key: 'Season', header: 'Season', defaultVisible: true },
-    { key: 'Anime Category', header: 'Anime Category', defaultVisible: true },
+    { key: 'Anime Category', header: 'Anime Category', defaultVisible: false },
     { key: 'Anime', header: 'Anime', defaultVisible: true },
+    { key: 'Broadcast', header: 'Broadcast', defaultVisible: false },
     { key: 'Song Type', header: 'Song Type', defaultVisible: true },
-    { key: 'Song Category', header: 'Song Category', defaultVisible: false },
+    { key: 'Performance', header: 'Performance', defaultVisible: false },
     { key: 'Song Name', header: 'Song Name', defaultVisible: true },
     { key: 'Artist', header: 'Artist', defaultVisible: true },
     { key: 'Composer', header: 'Composer', defaultVisible: false },
     { key: 'Arranger', header: 'Arranger', defaultVisible: false },
-    { key: 'Song Links', header: 'Song Links', defaultVisible: false, sortable: false },
-    { key: 'Play Audio', header: 'Play', defaultVisible: true, sortable: false },
     { key: 'Length', header: 'Length', defaultVisible: false },
     { key: 'Difficulty', header: 'Difficulty', defaultVisible: false },
+    { key: 'Song Links', header: 'Song Links', defaultVisible: false, sortable: false },
+    { key: 'Play Audio', header: 'Play', defaultVisible: true, sortable: false },
+    { key: 'Delete Row', header: 'Del', defaultVisible: true, sortable: false },
   ];
 
   private readonly naedistBase = 'https://naedist.animemusicquiz.com/';
@@ -147,19 +192,26 @@ export class SongTableComponent implements OnInit, OnDestroy {
         this.searchErrorMessage = message;
       },
     );
+    this.rankedStatusSubscription = this.searchRequestService.rankedStatus$.subscribe(
+      (status) => {
+        this.rankedStatus = status;
+      },
+    );
   }
 
   ngOnDestroy() {
     this.searchErrorSubscription?.unsubscribe();
+    this.rankedStatusSubscription?.unsubscribe();
   }
 
-  ngOnChanges(changes: Event) {
+  ngOnChanges(changes: SimpleChanges) {
     this.initializeColumns();
-    const status = this.searchRequestService.getRankedStatus();
-    this.rankedTime = status.active;
-    this.ascendingOrder = false;
-    this.currentAverage = this.computeAverage(this.songTable);
-    this.sortFunction('annId');
+
+    if (changes['songTable']) {
+      this.ascendingOrder = false;
+      this.refreshTableStats();
+      this.sortFunction('ANN ID');
+    }
   }
 
   initializeColumns() {
@@ -192,10 +244,12 @@ export class SongTableComponent implements OnInit, OnDestroy {
   }
 
   getHeaderLabel(columnKey: string) {
-    return (
-      this.availableColumns.find((column) => column.key === columnKey)
-        ?.header || columnKey
-    );
+    const column = this.availableColumns.find((c) => c.key === columnKey);
+    return column ? column.header : columnKey;
+  }
+
+  isCenterAlignedColumn(columnKey: string) {
+    return columnKey === 'Play Audio' || columnKey === 'Info' || columnKey === 'Delete Row';
   }
 
   isColumnVisible(columnKey: string) {
@@ -267,7 +321,14 @@ export class SongTableComponent implements OnInit, OnDestroy {
 
   toggleColumnSettings(event: Event) {
     event.stopPropagation();
+    this.showTableStats = false;
     this.showColumnSettings = !this.showColumnSettings;
+  }
+
+  toggleTableStats(event: Event) {
+    event.stopPropagation();
+    this.showColumnSettings = false;
+    this.showTableStats = !this.showTableStats;
   }
 
   isCurrentPlayingSong(song: any) {
@@ -325,11 +386,15 @@ export class SongTableComponent implements OnInit, OnDestroy {
   popUpArtistsInfo: any = [];
   popUpComposersInfo: any = [];
   popUpArrangersInfo: any = [];
-  currentAverage: any;
+  tableStats: TableStats = { ...EMPTY_TABLE_STATS };
   clipboardPopUpStyle: any;
   show: boolean = false;
 
-  rankedTime = false;
+  rankedStatus: RankedStatus = {
+    active: false,
+    region: null,
+    remainingSeconds: 0,
+  };
   currentPlayingSong: any;
 
   copyToClipboard(event: any, copytext: string) {
@@ -346,7 +411,7 @@ export class SongTableComponent implements OnInit, OnDestroy {
   }
 
   computeAverage(array: any[]): number {
-    if (array === undefined) {
+    if (!array?.length) {
       return 0;
     }
 
@@ -354,9 +419,161 @@ export class SongTableComponent implements OnInit, OnDestroy {
       .filter((song) => song.songDifficulty)
       .map((song) => song.songDifficulty);
 
+    if (!diffs.length) {
+      return 0;
+    }
+
     const total = diffs.reduce((sum, item) => sum + item, 0);
 
     return +(total / diffs.length).toFixed(1);
+  }
+
+  refreshTableStats() {
+    if (!this.songTable?.length) {
+      this.tableStats = { ...EMPTY_TABLE_STATS };
+      return;
+    }
+
+    const animeIds = new Set<number>();
+    const artistIds = new Set<number>();
+    const animeTypeCounts: TableStatsBreakdown = {};
+    const songTypeCounts: TableStatsBreakdown = {};
+    const broadcastCounts: TableStatsBreakdown = {};
+    const performanceCounts: TableStatsBreakdown = {};
+    const lengths: number[] = [];
+
+    for (const song of this.songTable) {
+      if (song.annId != null) {
+        animeIds.add(song.annId);
+      }
+
+      for (const artistId of this.collectSongArtistIds(song.artists)) {
+        artistIds.add(artistId);
+      }
+
+      this.incrementStatCount(animeTypeCounts, song.animeType);
+      this.incrementStatCount(songTypeCounts, this.normalizeSongType(song.songType));
+      this.incrementStatCount(broadcastCounts, this.getBroadcastLabel(song));
+      this.incrementStatCount(performanceCounts, song.songCategory);
+
+      if (song.songLength != null && !Number.isNaN(Number(song.songLength))) {
+        lengths.push(Number(song.songLength));
+      }
+    }
+
+    const avgLength = lengths.length
+      ? +(lengths.reduce((sum, value) => sum + value, 0) / lengths.length).toFixed(1)
+      : null;
+
+    const songCount = this.songTable.length;
+
+    this.tableStats = {
+      songCount,
+      uniqueAnime: animeIds.size,
+      uniqueArtists: artistIds.size,
+      avgDifficulty: this.computeAverage(this.songTable),
+      avgLength,
+      songTypeBreakdown: this.buildStatBreakdownEntries(
+        songTypeCounts,
+        songCount,
+        SONG_TYPE_SORT_ORDER,
+      ),
+      broadcastBreakdown: this.buildStatBreakdownEntries(
+        broadcastCounts,
+        songCount,
+        BROADCAST_SORT_ORDER,
+      ),
+      performanceBreakdown: this.buildStatBreakdownEntries(
+        performanceCounts,
+        songCount,
+        PERFORMANCE_SORT_ORDER,
+      ),
+      animeTypeBreakdown: this.buildStatBreakdownEntries(
+        animeTypeCounts,
+        songCount,
+        ANIME_TYPE_SORT_ORDER,
+      ),
+    };
+  }
+
+  private normalizeSongType(songType: string | null | undefined): string {
+    if (!songType?.trim()) {
+      return '(none)';
+    }
+
+    if (songType.startsWith('Opening')) {
+      return 'OP';
+    }
+
+    if (songType.startsWith('Ending')) {
+      return 'ED';
+    }
+
+    if (songType.toLowerCase().includes('insert')) {
+      return 'IN';
+    }
+
+    return songType.trim();
+  }
+
+  private incrementStatCount(counts: TableStatsBreakdown, value: string | null | undefined) {
+    const label = value?.trim() || '(none)';
+    counts[label] = (counts[label] ?? 0) + 1;
+  }
+
+  private collectSongArtistIds(artists: any): number[] {
+    if (!artists) {
+      return [];
+    }
+
+    if (artists.id != null) {
+      return [artists.id];
+    }
+
+    if (Array.isArray(artists)) {
+      return artists.map((artist) => artist?.id).filter((id) => id != null);
+    }
+
+    return Object.values(artists)
+      .map((artist: any) => artist?.id)
+      .filter((id) => id != null);
+  }
+
+  private buildStatBreakdownEntries(
+    counts: TableStatsBreakdown,
+    total: number,
+    sortLabels?: string[],
+  ): StatBreakdownEntry[] {
+    const entries = Object.entries(counts).map(([label, count]) => ({
+      label,
+      count,
+      percent: total ? +((count / total) * 100).toFixed(1) : 0,
+    }));
+
+    if (sortLabels?.length) {
+      return entries.sort((left, right) => {
+        const leftIndex = sortLabels.indexOf(left.label);
+        const rightIndex = sortLabels.indexOf(right.label);
+        const leftRank = leftIndex === -1 ? sortLabels.length + 1 : leftIndex;
+        const rightRank = rightIndex === -1 ? sortLabels.length + 1 : rightIndex;
+
+        if (leftRank !== rightRank) {
+          return leftRank - rightRank;
+        }
+
+        return left.label.localeCompare(right.label);
+      });
+    }
+
+    return entries.sort((left, right) => left.label.localeCompare(right.label));
+  }
+
+  formatAvgLength(seconds: number | null) {
+    if (seconds == null) {
+      return '—';
+    }
+
+    return `${seconds}s`;
   }
 
   sortArtists(
@@ -430,8 +647,23 @@ export class SongTableComponent implements OnInit, OnDestroy {
     return `${parsed.season} ${parsed.year}`;
   }
 
+  getBroadcastLabel(song: any): string {
+    const labels: string[] = [];
+    if (song.isDub) {
+      labels.push('Dub');
+    }
+    if (song.isRebroadcast) {
+      labels.push('Rebroadcast');
+    }
+    return labels.length ? labels.join(', ') : 'Normal';
+  }
+
   getSortValue(song: any, colName: string) {
     switch (colName) {
+      case 'ANN ID':
+        return Number(song.annId ?? -1);
+      case 'ANN Song ID':
+        return song.annSongId === -1 ? -1 : Number(song.annSongId ?? -1);
       case 'Song Type':
         return song.songType;
       case 'Song Name':
@@ -452,7 +684,19 @@ export class SongTableComponent implements OnInit, OnDestroy {
       }
       case 'Anime Category':
         return song.animeCategory;
-      case 'Song Category':
+      case 'Broadcast': {
+        if (song.isDub && song.isRebroadcast) {
+          return 3;
+        }
+        if (song.isRebroadcast) {
+          return 2;
+        }
+        if (song.isDub) {
+          return 1;
+        }
+        return 0;
+      }
+      case 'Performance':
         return song.songCategory;
       case 'Difficulty':
         return Number(song.songDifficulty ?? -1);
@@ -494,7 +738,7 @@ export class SongTableComponent implements OnInit, OnDestroy {
       );
     }
 
-    if (comparison === 0 && colName === 'annId') {
+    if (comparison === 0 && colName === 'ANN ID') {
       comparison = this.compareSongsType(a['songType'], b['songType']);
     } else if (comparison === 0) {
       comparison = this.comparePrimitiveValues(a['annId'], b['annId']);
@@ -520,9 +764,21 @@ export class SongTableComponent implements OnInit, OnDestroy {
     );
   }
 
-  onAnyClick() {
+  onAnyClick(event: MouseEvent) {
+    const target = event.target as Node;
+
+    if (this.showTableStats) {
+      const statsPopover = document.querySelector('.table-stats-popover');
+      if (!statsPopover?.contains(target)) {
+        this.showTableStats = false;
+      }
+    }
+
     if (this.showColumnSettings) {
-      this.showColumnSettings = false;
+      const columnSettingsArea = document.querySelector('.table-controls-actions');
+      if (!columnSettingsArea?.contains(target)) {
+        this.showColumnSettings = false;
+      }
     }
 
     if (this.showSongInfoPopup && !this.doubleClickPreventer) {
@@ -534,18 +790,32 @@ export class SongTableComponent implements OnInit, OnDestroy {
   }
 
   onDocumentKeydown(event: KeyboardEvent) {
+    if (event.key === 'Escape') {
+      if (this.showSongInfoPopup) {
+        this.showSongInfoPopup = false;
+        this.songInfoPopupIndex = -1;
+        return;
+      }
+
+      if (this.showTableStats) {
+        this.showTableStats = false;
+        return;
+      }
+
+      if (this.showColumnSettings) {
+        this.showColumnSettings = false;
+        return;
+      }
+
+      return;
+    }
+
     if (!this.showSongInfoPopup) {
       return;
     }
 
-    const target = event.target as HTMLElement | null;
-    const tag = target?.tagName;
-    if (
-      tag === 'INPUT' ||
-      tag === 'TEXTAREA' ||
-      tag === 'SELECT' ||
-      target?.isContentEditable
-    ) {
+    const tag = (event.target as HTMLElement).tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') {
       return;
     }
 
@@ -579,6 +849,10 @@ export class SongTableComponent implements OnInit, OnDestroy {
 
   getColumnDisplayValue(song: any, colName: string) {
     switch (colName) {
+      case 'ANN ID':
+        return song.annId ?? '-';
+      case 'ANN Song ID':
+        return song.annSongId != null && song.annSongId !== -1 ? song.annSongId : '-';
       case 'Song Type':
         return song.songType || '-';
       case 'Song Name':
@@ -593,7 +867,9 @@ export class SongTableComponent implements OnInit, OnDestroy {
         return this.getSeasonYearValue(song);
       case 'Anime Category':
         return song.animeCategory || '-';
-      case 'Song Category':
+      case 'Broadcast':
+        return this.getBroadcastLabel(song);
+      case 'Performance':
         return song.songCategory || '-';
       case 'Difficulty':
         return song.songDifficulty != null ? `${song.songDifficulty}%` : '-';
@@ -610,6 +886,12 @@ export class SongTableComponent implements OnInit, OnDestroy {
 
   getColumnCopyValue(song: any, colName: string) {
     switch (colName) {
+      case 'ANN ID':
+        return song.annId != null ? String(song.annId) : '';
+      case 'ANN Song ID':
+        return song.annSongId != null && song.annSongId !== -1
+          ? String(song.annSongId)
+          : '';
       case 'Song Type':
         return song.songType || '';
       case 'Song Name':
@@ -622,6 +904,12 @@ export class SongTableComponent implements OnInit, OnDestroy {
           : song.animeENName;
       case 'Season':
         return this.getSeasonYearValue(song);
+      case 'Anime Category':
+        return song.animeCategory || '';
+      case 'Broadcast':
+        return this.getBroadcastLabel(song);
+      case 'Performance':
+        return song.songCategory || '';
       case 'Difficulty':
         return song.songDifficulty != null ? String(song.songDifficulty) : '';
       case 'Length':
@@ -691,7 +979,7 @@ export class SongTableComponent implements OnInit, OnDestroy {
   deleteRowEntry(song: any) {
     const id = this.songTable.findIndex((obj: any) => obj === song);
     this.songTable.splice(id, 1);
-    this.currentAverage = this.computeAverage(this.songTable);
+    this.refreshTableStats();
   }
 
   searchArtistIds(artists: any) {
@@ -773,7 +1061,7 @@ export class SongTableComponent implements OnInit, OnDestroy {
 
     let currentSongList;
     currentSongList = this.searchRequestService
-      .annIdSearchRequest(body)
+      .annIdsSearchRequest(body)
       .subscribe((data) => {
         currentSongList = data;
         this.sendSongList(currentSongList);

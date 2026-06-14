@@ -1,17 +1,32 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { BehaviorSubject, catchError, Observable, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, throwError, timer } from 'rxjs';
 import { environment } from '../../../environments/environment';
+
+export interface RankedStatus {
+  active: boolean;
+  region: string | null;
+  remainingSeconds: number;
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class SearchRequestService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    this.rankedStatusSubject = new BehaviorSubject(this.getRankedStatus());
+    this.rankedStatus$ = this.rankedStatusSubject.asObservable();
+    timer(0, 1000)
+      .pipe(map(() => this.getRankedStatus()))
+      .subscribe((status) => this.rankedStatusSubject.next(status));
+  }
 
   private readonly apiUrl = environment.apiUrl;
   private readonly searchErrorSubject = new BehaviorSubject<string | null>(null);
   readonly searchError$ = this.searchErrorSubject.asObservable();
+
+  private readonly rankedStatusSubject: BehaviorSubject<RankedStatus>;
+  readonly rankedStatus$: Observable<RankedStatus>;
 
   clearSearchError(): void {
     this.searchErrorSubject.next(null);
@@ -34,6 +49,10 @@ export class SearchRequestService {
     return this.apiPost('/api/search_request', body);
   }
 
+  seasonRequest(body: object): Observable<any> {
+    return this.apiPost('/api/season_request', body);
+  }
+
   artistIdsSearchRequest(body: object): Observable<any> {
     return this.apiPost('/api/artist_ids_request', body);
   }
@@ -42,8 +61,20 @@ export class SearchRequestService {
     return this.apiPost('/api/composer_ids_request', body);
   }
 
-  annIdSearchRequest(body: object): Observable<any> {
+  annIdsSearchRequest(body: object): Observable<any> {
     return this.apiPost('/api/ann_ids_request', body);
+  }
+
+  malIdsSearchRequest(body: object): Observable<any> {
+    return this.apiPost('/api/mal_ids_request', body);
+  }
+
+  annSongIdsSearchRequest(body: object): Observable<any> {
+    return this.apiPost('/api/ann_song_ids_request', body);
+  }
+
+  amqSongIdsSearchRequest(body: object): Observable<any> {
+    return this.apiPost('/api/amq_song_ids_request', body);
   }
 
   // AMQ ranked window: 20:30–21:23 local in Central, Western, or Eastern regions.
@@ -76,8 +107,16 @@ export class SearchRequestService {
     };
   });
 
+  private static initialRankedStatus(): RankedStatus {
+    return {
+      active: false,
+      region: null,
+      remainingSeconds: 0,
+    };
+  }
+
   // Determine whether the AMQ ranked window is currently active for any supported time zone
-  getRankedStatus(date: Date = new Date()) {
+  getRankedStatus(date: Date = new Date()): RankedStatus {
     for (const { region, localSeconds } of SearchRequestService.RANKED_REGIONS) {
       const localSec = localSeconds(date);
 
@@ -85,22 +124,24 @@ export class SearchRequestService {
         localSec >= SearchRequestService.RANKED_START_SEC &&
         localSec < SearchRequestService.RANKED_END_SEC
       ) {
-        const remainingTotalSeconds = SearchRequestService.RANKED_END_SEC - localSec;
         return {
           active: true,
           region,
-          remainingMinutes: Math.floor(remainingTotalSeconds / 60),
-          remainingSeconds: remainingTotalSeconds % 60,
+          remainingSeconds: SearchRequestService.RANKED_END_SEC - localSec,
         };
       }
     }
 
-    return {
-      active: false,
-      remainingMinutes: 0,
-      remainingSeconds: 0,
-      region: null,
-    };
+    return SearchRequestService.initialRankedStatus();
+  }
+
+  formatRankedRemaining(status: RankedStatus): string {
+    if (!status.active) {
+      return '';
+    }
+    const minutes = Math.floor(status.remainingSeconds / 60);
+    const seconds = status.remainingSeconds % 60;
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   }
 
   // Log HTTP failures, surface a message for the UI, and rethrow for subscribers.
