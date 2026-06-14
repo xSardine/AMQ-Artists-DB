@@ -5,13 +5,19 @@
   overflow: visible;
 }
 
+.table-scroll {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 #table {
   border-collapse: collapse;
   width: 100%;
   border: 1px solid var(--primaryColor);
   font-family: "Custom Font", sans-serif;
   background-color: var(--songTablePairColor);
-  margin-bottom: 65px;
   font-size: 15px;
 }
 

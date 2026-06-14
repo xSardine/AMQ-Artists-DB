@@ -691,164 +691,166 @@
   </div>
 </div>
 
-<table id="table" *ngIf="songTable">
-  <!-- ADD HEADERS -->
-  <tr>
-    <th
-      *ngFor="let col of tableHeaders"
-      [style.cursor]="isColumnSortable(col) ? 'pointer' : 'default'"
-      [style.text-align]="isCenterAlignedColumn(col) ? 'center' : null"
-      [attr.title]="isColumnSortable(col) ? 'Sort by ' + getHeaderLabel(col) : null"
-      (click)="onHeaderClick(col)"
-    >
-      {{ getHeaderLabel(col) }}
-    </th>
-  </tr>
-
-  <!-- BIND ARRAY TO TABLE -->
-  <tr *ngFor="let song of songTable">
-    <ng-container *ngFor="let col of tableHeaders">
-      <td
-        [ngSwitch]="col"
+<div class="table-scroll" *ngIf="songTable">
+  <table id="table">
+    <!-- ADD HEADERS -->
+    <tr>
+      <th
+        *ngFor="let col of tableHeaders"
+        [style.cursor]="isColumnSortable(col) ? 'pointer' : 'default'"
         [style.text-align]="isCenterAlignedColumn(col) ? 'center' : null"
-        [style.white-space]="
-          col === 'ANN ID' || col === 'Broadcast' || col === 'Song Type' || col === 'Lists' || col === 'Song Links'
-            ? 'nowrap'
-            : null
-        "
+        [attr.title]="isColumnSortable(col) ? 'Sort by ' + getHeaderLabel(col) : null"
+        (click)="onHeaderClick(col)"
       >
-        <ng-container *ngSwitchCase="'Info'">
-          <i
-            class="fa fa-plus fa-lg table-action-icon"
-            (click)="displaySongInfoPopup(song)"
-            title="More information"
-          ></i>
-        </ng-container>
+        {{ getHeaderLabel(col) }}
+      </th>
+    </tr>
 
-        <ng-container *ngSwitchCase="'ANN ID'">
-          <i
-            style="margin-right: 4px"
-            class="fa fa-search table-action-icon"
-            title="Search songs in this entry"
-            (click)="searchAnnId(song.annId)"
-          ></i>
-          <span
-            class="copyable"
-            title="Copy to clipboard"
-            (click)="copyToClipboard($event, song.annId + '')"
-            >{{ song.annId }}</span
-          >
-        </ng-container>
+    <!-- BIND ARRAY TO TABLE -->
+    <tr *ngFor="let song of songTable">
+      <ng-container *ngFor="let col of tableHeaders">
+        <td
+          [ngSwitch]="col"
+          [style.text-align]="isCenterAlignedColumn(col) ? 'center' : null"
+          [style.white-space]="
+            col === 'ANN ID' || col === 'Broadcast' || col === 'Song Type' || col === 'Lists' || col === 'Song Links'
+              ? 'nowrap'
+              : null
+          "
+        >
+          <ng-container *ngSwitchCase="'Info'">
+            <i
+              class="fa fa-plus fa-lg table-action-icon"
+              (click)="displaySongInfoPopup(song)"
+              title="More information"
+            ></i>
+          </ng-container>
 
-        <ng-container *ngSwitchCase="'Artist'">
-          <i
-            *ngIf="!rankedStatus.active"
-            style="margin-right: 6px"
-            class="fa fa-search table-action-icon"
-            title="Search songs by this artist(s)"
-            (click)="searchArtistIds(song.artists)"
-          ></i>
-          <span
-            class="copyable"
-            title="Copy to clipboard"
-            (click)="copyToClipboard($event, getColumnCopyValue(song, col))"
-            >{{ getColumnDisplayValue(song, col) }}</span
-          >
-        </ng-container>
+          <ng-container *ngSwitchCase="'ANN ID'">
+            <i
+              style="margin-right: 4px"
+              class="fa fa-search table-action-icon"
+              title="Search songs in this entry"
+              (click)="searchAnnId(song.annId)"
+            ></i>
+            <span
+              class="copyable"
+              title="Copy to clipboard"
+              (click)="copyToClipboard($event, song.annId + '')"
+              >{{ song.annId }}</span
+            >
+          </ng-container>
 
-        <ng-container *ngSwitchCase="'Composer'">
-          <i
-            *ngIf="!rankedStatus.active"
-            style="margin-right: 6px"
-            class="fa fa-search table-action-icon"
-            title="Search songs composed or arranged by this composer(s)"
-            (click)="searchComposerIds(song.composers)"
-          ></i>
-          <span
-            class="copyable"
-            title="Copy to clipboard"
-            (click)="copyToClipboard($event, getColumnCopyValue(song, col))"
-            >{{ getColumnDisplayValue(song, col) }}</span
-          >
-        </ng-container>
+          <ng-container *ngSwitchCase="'Artist'">
+            <i
+              *ngIf="!rankedStatus.active"
+              style="margin-right: 6px"
+              class="fa fa-search table-action-icon"
+              title="Search songs by this artist(s)"
+              (click)="searchArtistIds(song.artists)"
+            ></i>
+            <span
+              class="copyable"
+              title="Copy to clipboard"
+              (click)="copyToClipboard($event, getColumnCopyValue(song, col))"
+              >{{ getColumnDisplayValue(song, col) }}</span
+            >
+          </ng-container>
 
-        <ng-container *ngSwitchCase="'Arranger'">
-          <i
-            *ngIf="!rankedStatus.active"
-            style="margin-right: 6px"
-            class="fa fa-search table-action-icon"
-            title="Search songs composed or arranged by this arranger(s)"
-            (click)="searchComposerIds(song.arrangers)"
-          ></i>
-          <span
-            class="copyable"
-            title="Copy to clipboard"
-            (click)="copyToClipboard($event, getColumnCopyValue(song, col))"
-            >{{ getColumnDisplayValue(song, col) }}</span
-          >
-        </ng-container>
+          <ng-container *ngSwitchCase="'Composer'">
+            <i
+              *ngIf="!rankedStatus.active"
+              style="margin-right: 6px"
+              class="fa fa-search table-action-icon"
+              title="Search songs composed or arranged by this composer(s)"
+              (click)="searchComposerIds(song.composers)"
+            ></i>
+            <span
+              class="copyable"
+              title="Copy to clipboard"
+              (click)="copyToClipboard($event, getColumnCopyValue(song, col))"
+              >{{ getColumnDisplayValue(song, col) }}</span
+            >
+          </ng-container>
 
-        <ng-container *ngSwitchCase="'Lists'">
-          <div class="table-icon-links">
-            <ng-container *ngFor="let site of animeListSites">
-              <a
-                *ngIf="site.getUrl(song) as siteUrl"
-                [href]="siteUrl"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="table-site-link"
-                [title]="site.alt"
-              >
-                <img [src]="site.img" class="table-site-icon" [alt]="site.alt" />
-              </a>
-            </ng-container>
-          </div>
-        </ng-container>
+          <ng-container *ngSwitchCase="'Arranger'">
+            <i
+              *ngIf="!rankedStatus.active"
+              style="margin-right: 6px"
+              class="fa fa-search table-action-icon"
+              title="Search songs composed or arranged by this arranger(s)"
+              (click)="searchComposerIds(song.arrangers)"
+            ></i>
+            <span
+              class="copyable"
+              title="Copy to clipboard"
+              (click)="copyToClipboard($event, getColumnCopyValue(song, col))"
+              >{{ getColumnDisplayValue(song, col) }}</span
+            >
+          </ng-container>
 
-        <ng-container *ngSwitchCase="'Song Links'">
-          <div *ngIf="!rankedStatus.active" class="table-song-links">
-            <ng-container *ngFor="let link of songDistLinks">
-              <a
-                *ngIf="shouldShowSongLink(song, link)"
-                class="table-song-link"
-                [href]="getDistLink(song[link.field])"
-                target="_blank"
-                rel="noopener noreferrer"
-                [title]="link.title"
-                >{{ link.label }}</a
-              >
-            </ng-container>
-          </div>
-        </ng-container>
+          <ng-container *ngSwitchCase="'Lists'">
+            <div class="table-icon-links">
+              <ng-container *ngFor="let site of animeListSites">
+                <a
+                  *ngIf="site.getUrl(song) as siteUrl"
+                  [href]="siteUrl"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="table-site-link"
+                  [title]="site.alt"
+                >
+                  <img [src]="site.img" class="table-site-icon" [alt]="site.alt" />
+                </a>
+              </ng-container>
+            </div>
+          </ng-container>
 
-        <ng-container *ngSwitchCase="'Play Audio'">
-          <i
-            *ngIf="!rankedStatus.active && song.audio"
-            title="Listen to mp3"
-            (click)="playMP3music(song)"
-            class="fa fa-music fa-lg play-icon"
-            [class.active]="isCurrentPlayingSong(song)"
-          ></i>
-        </ng-container>
+          <ng-container *ngSwitchCase="'Song Links'">
+            <div *ngIf="!rankedStatus.active" class="table-song-links">
+              <ng-container *ngFor="let link of songDistLinks">
+                <a
+                  *ngIf="shouldShowSongLink(song, link)"
+                  class="table-song-link"
+                  [href]="getDistLink(song[link.field])"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  [title]="link.title"
+                  >{{ link.label }}</a
+                >
+              </ng-container>
+            </div>
+          </ng-container>
 
-        <ng-container *ngSwitchCase="'Delete Row'">
-          <span title="Delete song from list" (click)="deleteRowEntry(song)">
-            <i class="fa fa-trash fa-lg table-action-icon" aria-hidden="true"></i>
-          </span>
-        </ng-container>
+          <ng-container *ngSwitchCase="'Play Audio'">
+            <i
+              *ngIf="!rankedStatus.active && song.audio"
+              title="Listen to mp3"
+              (click)="playMP3music(song)"
+              class="fa fa-music fa-lg play-icon"
+              [class.active]="isCurrentPlayingSong(song)"
+            ></i>
+          </ng-container>
 
-        <ng-container *ngSwitchDefault>
-          <span
-            class="copyable"
-            title="Copy to clipboard"
-            (click)="copyToClipboard($event, getColumnCopyValue(song, col))"
-            >{{ getColumnDisplayValue(song, col) }}</span
-          >
-        </ng-container>
-      </td>
-    </ng-container>
-  </tr>
-</table>
+          <ng-container *ngSwitchCase="'Delete Row'">
+            <span title="Delete song from list" (click)="deleteRowEntry(song)">
+              <i class="fa fa-trash fa-lg table-action-icon" aria-hidden="true"></i>
+            </span>
+          </ng-container>
+
+          <ng-container *ngSwitchDefault>
+            <span
+              class="copyable"
+              title="Copy to clipboard"
+              (click)="copyToClipboard($event, getColumnCopyValue(song, col))"
+              >{{ getColumnDisplayValue(song, col) }}</span
+            >
+          </ng-container>
+        </td>
+      </ng-container>
+    </tr>
+  </table>
+</div>
 
 <!-- Create the pop-up with the text "copied" -->
 <div class="clipboardPopUp" *ngIf="show" [ngStyle]="clipboardPopUpStyle">

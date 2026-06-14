@@ -199,7 +199,7 @@
 /*  End Toggle Switch  */
 
 .amq-disclaimer {
-  margin: 4px 0 65px;
+  margin: 65px 0;
   padding: 0;
   text-align: center;
   color: var(--textOnBackground);
@@ -223,7 +223,7 @@
 
 #audio-player {
   position: fixed;
-  width: 99.2%;
+  width: 100%;
   bottom: 0;
 }
 
@@ -256,6 +256,13 @@ p {
   color: var(--textOnPrimary);
   font-weight: 600;
   z-index: 100;
+}
+
+.content {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 0 8px;
 }
 
 .toolbar-logo-link {
