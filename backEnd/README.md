@@ -1,74 +1,71 @@
 # Back End
 
- An anisong database with better artists links and search functions
+An anisong database with better artist links and search functions.
 
-Build with FastAPI: <https://fastapi.tiangolo.com/>
+Built with [FastAPI](https://fastapi.tiangolo.com/). Live API: [https://anisongdb.com](https://anisongdb.com)
 
-Database source:
+Database sources:
 
-- Expand Library from AMQ: <https://animemusicquiz.com/>
-- MugiBotDatabase: Data collected from in game as well as Ranked pastebins. <https://github.com/CarrC2021/MugiBot>
+- Expand Library from AMQ: [https://animemusicquiz.com/](https://animemusicquiz.com/)
+- MugiBotDatabase: data collected in-game and from ranked pastebins. [https://github.com/CarrC2021/MugiBot](https://github.com/CarrC2021/MugiBot)
 
-Then enhanced automatically/semi-automatically/manually by me.
+Then enhanced automatically or manually by me.
 
 ## Running locally
 
-Install Python 3.12 or above [here](https://www.python.org/downloads/).
+Requires **Python 3.10+** ([downloads](https://www.python.org/downloads/)).
 
-Create a virtual environment :
+### Setup
 
+Open a terminal from the repo root
 ```bash
+cd backEnd
 python -m venv venv
 ```
 
-Activate the virtual environment :
-
+Activate the virtual environment:
 ```bash
-source venv/bin/activate # Linux
-venv\Scripts\activate # Windows
+source venv/bin/activate   # Linux / macOS
+venv\Scripts\activate      # Windows
 ```
 
-Install the python dependencies :
-
+Install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
 
-Rename `app/data/Enhanced-AMQ-Database.sample.db` to `app/data/Enhanced-AMQ-Database.db`.
-
-```bash
-cp app/data/Enhanced-AMQ-Database.sample.db app/data/Enhanced-AMQ-Database.db # Linux
-copy app\data\Enhanced-AMQ-Database.sample.db app\data\Enhanced-AMQ-Database.db # Windows
-```
-
-Move to the app folder :
+Prepare the SQLite database (run from `backEnd/app`). A sample ships at `data/Enhanced-AMQ-Database.sample.db` - a clone of the full database except song links are stripped (except for the first 500 songs).
 
 ```bash
 cd app
+cp data/Enhanced-AMQ-Database.sample.db data/Enhanced-AMQ-Database.db     # Linux / macOS
+copy data/Enhanced-AMQ-Database.sample.db data/Enhanced-AMQ-Database.db   # Windows
 ```
 
-From within the app folder :
+### Start the server
+
+From `backEnd/app`:
 
 ```bash
-uvicorn main:app --host 127.0.0.1 --port 8000 --reload
+python -m uvicorn main:app --host 127.0.0.1 --port 8000 --reload
 ```
 
-The app will run on http://127.0.0.1:8000 by default. 
+The API listens on [http://127.0.0.1:8000](http://127.0.0.1:8000). Example: `POST http://127.0.0.1:8000/api/search_request`.
 
-I.E, to call the `search_request` endpoint, the call must be made to http://127.0.0.1:8000/api/search_request.
+Interactive docs: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs) or [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc).
 
-The associated documentation can be found at <http://127.0.0.1:8000/docs> or <http://127.0.0.1:8000/redoc>.
+### Request log (optional)
 
-## Start in Production
+The API serves an in-memory request log viewer from `backEnd/app/log-viewer.html`. Copy `backEnd/.env.example` to `backEnd/.env` and set `REQUEST_LOG_URL_SEGMENT` to the URL path segment you want. Defaults to `log` if `.env` is missing or the segment is blank. Restart the server after changing `.env`.
 
-Using let's encrypt certificate
+- Viewer: `http://127.0.0.1:8000/log` (or your custom segment)
+- JSON feed: `http://127.0.0.1:8000/log/feed`
+
+## Production
+
+Example with Let's Encrypt and Gunicorn (install `gunicorn` separately; run from `backEnd/app`):
+Replace the bracketed values with your Let's Encrypt paths and listen IP address.
 
 ```bash
-sudo gunicorn --keyfile=</path_to_privkey/privkey.pem> --certfile=</path_to_fullchain/fullchain.pem> -k uvicorn.workers.UvicornWorker main:app --bind=<ip_adress>
+sudo gunicorn --keyfile=[PATH_TO_PRIVKEY] --certfile=[PATH_TO_FULLCHAIN] -k uvicorn.workers.UvicornWorker main:app --bind=[HOST]:[PORT]
 ```
-
-## Database
-
-A sample of the database is available in `backEnd/app/data/Enhanced-AMQ-Database.sample.db` ;
-This database is a clone of the entire database, except it doesn't have links for the songs (beside the first 500 songs).  
-Rename it to `Enhanced-AMQ-Database.db` to make it work.

@@ -10,3 +10,4 @@ __pycache__/
 randomScripts/
 *Copie.json
 venv/
+.env
