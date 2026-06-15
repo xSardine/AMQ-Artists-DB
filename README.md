@@ -1,62 +1,52 @@
 # Project Artist Database
 
-URL: <https://anisongdb.com>
+**Live site:** [anisongdb.com](https://anisongdb.com)
 
-I'm taking in any feedbacks, tho this is just a side project for fun, so I won't promise I will implements your ideas soon (if I will ever). ~~I'll still work more on that than Ege works on AMQ, rest assured~~
+An anime song database based on [AMQ](https://animemusicquiz.com/), with extra artist metadata (aliases, group memberships, line-ups) and multi-field search. Feedback is welcome. This is a side project, so feature requests may take a while (or never happen).
 
-The main reason I decided to make this was because I felt like there wasn't any database that was fulfilling my wishes. So I decided to make one myself.
+> **Warning**  
+> Work in progress. Some features may be broken or change without notice.
 
->**Warning**  
->This is a work in progress, some stuff might not work, some stuff might change.
+## Advanced Filters
 
-## Advanced Filters Documentation
+Open **Advanced Filters** to search each field independently instead of using one combined search box.
 
-Advanced Filters will let you search specifically for an artist, a composer, a song name or an anime name (along with other settings defined below)
+Each text field has a **Partial Match** checkbox. When enabled, the query only needs to match part of the stored value (e.g. `frip` matches `fripSide`). Disable it to avoid false positives such as `angela` matching `Angela Aki`, or `YUI` matching `Yui Horie`.
 
-Each of this element has a box that can be checked:
+**Artist Filter** adds two settings:
 
-- `Partial Match`: If checked the string will only have to match part of what is in the database. I.E: Let's say you search for `frip`, it will detect `fripSide`, however for artist like `angela` and `YUI`, unchecking it will let you avoid catching stuff like `Angela Aki` or `Yui Horie`.
+- **Max Other People**: How many other credited performers are allowed on the song besides the artist or group you searched for. At `0`, only solo credits match (e.g. searching LiSA returns songs credited to LiSA alone). At `1`, at most one extra performer is allowed (a duet). The default is `99` (effectively no limit).
+- **Min Group Members**: Only applies when your artist search matches a group. Sets how many of that group's members must appear on the song when it is credited under individual names instead of the group name. At `0`, only a direct group credit counts (e.g. Sphere members singing in *Natsuiro Kiseki* under their own names are excluded). Higher values include those songs but can also match unrelated work by solo members (e.g. all Yoshino Nanjo songs when searching fripSide).
 
-Then `Artist Filter` have 2 more parameters:
+**Filter Combination** (how the anime, song, artist, and composer fields combine):
 
-- `Max Other People`: This is the maximum amount of people that are not in your `Artist Filter` field that are allowed. So if you didn't input a group, `1` mean no more than duet.
-- `Min group members`: This is only relevant if you're inputing a group name. This will ensure there is a minimal amount of group members singing in the song if it is not the group itself.
-  If 0, it will only take the group itself, meaning if all the group members are present in the song but they are not credited as the group itself, it will not include it (Sphere members in Natsuiro Kiseki for example). Setting it to a high number will catch these too but is dumb for groups with only one singer such as fripside where you will catch all Yoshino Nanjou's.
+- **Union**: A song can match any one active field (OR logic).
+- **Intersection**: A song must match every active field (AND logic).
 
-Finally:
+**Ignore Duplicate**: When the same song name and credited artist string appear on multiple anime, keep one row. If duplicates differ by anime, the row with the lower `annId` is kept. Different performer line-ups on the same song name are not treated as duplicates.
 
-- `Filter Combination`:
-  - `Union`: The song informations will have to match at least one the filter that you entered (anime/song name/artist/composer).
-  - `Intersection`: The song informations will have to match every filter that you entered.
-- `Ignore Duplicate`: This will ignore duplicates and only take into account the first instance of [Song Name by Artist] that it has encountered. (Different sets of artists are not considered duplicates)
+Click **Info** on a result row to see artist aliases, group members, and parent groups.
 
 ## Known Database Issues
 
-I know there are some problems:
+- Backup vocalists are sometimes stored as full performers, which can affect **Max Other People** (e.g. SMITH with MON, where SMITH is effectively the lead).
+- Composer credits, arranger credits, and composer line-ups are only partly built out.
 
-- Sometime, there are multiple people credited as singing, but there is one main singer, and the rest are backup and should not be considered as "other people" by the `maximum other people` settings. (Fast example: Smith with MON, where it's basically just SMITH (yu kobayashi) singing)
-- Composers and Arrangers are a work in progress
+The song list follows AMQ: missing songs, inconsistent artist spellings, and romanization mistakes usually need to be fixed upstream. Report those on the AMQ Discord after reading their pinned change-request guidelines. Artist/group relationship data and occasional extra songs are maintained here separately.
 
-I plan to work on this in the future.
+## Contributing
 
-The database is based of AMQ database, which means it also import its problems. Some song might be missing because they either are not in AMQ or because it doesn't fit AMQ requirements of what can be added. Some artists might have inconsistent name, some song names might be improperly romanized and stuff like this. All of this will not be fixed unless it is fixed in AMQ as I want to keep a 1:1 relation with their database (+ anything that I added myself), so I invite you to ask for such change directly on the AMQ discord after carefully reading the pins on how to request such changes.
+**UI feedback, feature ideas, and database corrections** are all helpful. In particular:
 
-## If you want to help me
+- Groups missing members needed to connect that group to other artists already in the database
+- Artists missing alternative names (e.g. Minami Kuribayashi / exige, or Akari Kitou vs Akari Kito)
+- Different artists sharing the same display name (e.g. Minami (Kuribayashi) vs Minami (DomexKano))
+- Groups whose member roster changes between songs and need separate line-up entries (e.g. JAM Project, Oratorio)
+- Songs that exist in AMQ but are missing here
 
-Feedbacks on the User Interface, new functionalities, etc...
-
-Let me know if you find any of these that are not properly done in the DB:
-
-- Any groups that has relevant people missing (by relevant, I mean an artist that will make a link between this group and any other group/artist already in the DB)
-- Any artists that is not linked with all their alternative names. Alternative names are proper alternative names such as Minami Kuribayashi / exige, but also database inconsistencies like Akari Kitou and Akari Kito
-- Different artists that have the exact same name such as Minami (Kuribayashi) and Minami (DomexKano), etc...
-- Groups that have different sets of singers in each songs such as Jam Project, Oratorio, etc...
-- And finally, let me know if you find any song that is in AMQ and is missing in the DB
-
-You can either DM me on Discord: xSardine#8168 for simple requests (such as database fixes), or open an issue on this repository.
+DM **xSardine#8168** on Discord for small database fixes, or open an issue in this repo.
 
 ## Thanks
 
-Egerod for making <https://animemusicquiz.com/> and the mods maintaining its database.
-
-MugitBot for providing me with their database, which helped me for the first iteration <https://github.com/CarrC2021/MugiBot>
+- [Egerod](https://animemusicquiz.com/) and the AMQ mod team for the game and its database
+- [MugiBot](https://github.com/CarrC2021/MugiBot) for the database that seeded the first version
