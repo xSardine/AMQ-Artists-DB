@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { BehaviorSubject, catchError, map, Observable, throwError, timer } from 'rxjs';
+import { BehaviorSubject, Observable, throwError, timer } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 
 export interface RankedStatus {
@@ -22,7 +23,9 @@ export class SearchRequestService {
   }
 
   private readonly apiUrl = environment.apiUrl;
-  private readonly searchErrorSubject = new BehaviorSubject<string | null>(null);
+  private readonly searchErrorSubject = new BehaviorSubject<string | null>(
+    null,
+  );
   readonly searchError$ = this.searchErrorSubject.asObservable();
 
   private readonly rankedStatusSubject: BehaviorSubject<RankedStatus>;
@@ -38,7 +41,7 @@ export class SearchRequestService {
       .post(this.apiUrl + path, body, {
         headers: { 'X-Client-Id': 'AnisongDB' },
       })
-      .pipe(catchError((error) => this.handleError(error)));
+      .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
   }
 
   getFirstNRequest(): Observable<any> {
@@ -101,7 +104,8 @@ export class SearchRequestService {
       region,
       localSeconds(date: Date) {
         const parts = fmt.formatToParts(date);
-        const get = (type: string) => Number(parts.find((p) => p.type === type)?.value || 0);
+        const get = (type: string) =>
+          Number(parts.find((p) => p.type === type)?.value || 0);
         return get('hour') * 3600 + get('minute') * 60 + get('second');
       },
     };
@@ -117,7 +121,10 @@ export class SearchRequestService {
 
   // Determine whether the AMQ ranked window is currently active for any supported time zone
   getRankedStatus(date: Date = new Date()): RankedStatus {
-    for (const { region, localSeconds } of SearchRequestService.RANKED_REGIONS) {
+    for (const {
+      region,
+      localSeconds,
+    } of SearchRequestService.RANKED_REGIONS) {
       const localSec = localSeconds(date);
 
       if (
@@ -147,7 +154,9 @@ export class SearchRequestService {
   // Log HTTP failures, surface a message for the UI, and rethrow for subscribers.
   private handleError(error: HttpErrorResponse) {
     console.error(
-      error.status === 0 ? 'An error occurred:' : `Backend returned code ${error.status}, body was:`,
+      error.status === 0
+        ? 'An error occurred:'
+        : `Backend returned code ${error.status}, body was:`,
       error.error,
     );
     this.searchErrorSubject.next(this.formatSearchErrorMessage(error));
