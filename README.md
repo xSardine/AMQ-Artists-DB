@@ -29,8 +29,7 @@ Click **Info** on a result row to see artist aliases, group members, and parent 
 
 ## Known Database Issues
 
-- Backup vocalists are sometimes stored as full performers, which can affect **Max Other People** (e.g. SMITH with MON, where SMITH is effectively the lead).
-- Composer credits, arranger credits, and composer line-ups are only partly built out.
+- Backup vocalists are sometimes stored as full performers, which can affect **Max Other People** (e.g. SMITH with MON, where SMITH is pretty much the only singer).
 
 The song list follows AMQ: missing songs, inconsistent artist spellings, and romanization mistakes usually need to be fixed upstream. Report those on the AMQ Discord after reading their pinned change-request guidelines. Artist/group relationship data and occasional extra songs are maintained here separately.
 
