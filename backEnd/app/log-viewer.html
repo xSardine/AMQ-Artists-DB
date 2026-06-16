@@ -1,0 +1,1798 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AnisongDB Log Viewer</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.2.0/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer">
+  <script>
+    (function () {
+      let theme = localStorage.getItem("anisongdb-log-theme");
+      if (!["anisongdb", "dark", "light"].includes(theme)) theme = "anisongdb";
+      document.documentElement.dataset.theme = theme;
+    })();
+  </script>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html[data-theme="anisongdb"] {
+      color-scheme: dark;
+      --bg-page: #555;
+      --bg-surface: #222;
+      --bg-surface-muted: #333;
+      --bg-inset: #444;
+      --border: #7e7e7e;
+      --border-strong: #888;
+      --text: #fff;
+      --text-muted: #ccc;
+      --text-dim: #aaa;
+      --text-label: #bbb;
+      --status-error: #f28b82;
+      --error-border: #6b3a3a;
+      --badge-blue-bg: #2d3a52;
+      --badge-blue-fg: #8ab4f8;
+      --badge-green-bg: #1e3a2a;
+      --badge-green-fg: #81c995;
+      --badge-red-bg: #3d2424;
+      --badge-red-fg: #f28b82;
+      --badge-yellow-bg: #3d3420;
+      --badge-yellow-fg: #fdd663;
+      --badge-yellow-border: #5c4e2a;
+      --badge-purple-bg: #352a45;
+      --badge-purple-fg: #d7aefb;
+      --badge-gray-bg: #222;
+      --badge-gray-fg: #bbb;
+      --badge-gray-border: #7e7e7e;
+      --badge-gray-dim: #aaa;
+      --link: #fff;
+      --banner-bg: #444;
+      --banner-border: #888;
+      --banner-code-bg: #333;
+      --banner-code-border: #7e7e7e;
+      --btn-clear-hover-bg: #3d2a2a;
+      --btn-clear-hover-border: var(--error-border);
+      --btn-clear-hover-fg: #e8a0a0;
+    }
+
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --bg-page: #161618;
+      --bg-surface: #242428;
+      --bg-surface-muted: #1e1e22;
+      --border: #3a3a40;
+      --border-strong: #44444c;
+      --text: #e8eaed;
+      --text-muted: #9aa0a6;
+      --text-dim: #80868b;
+      --text-label: #bdc1c6;
+      --status-error: #f28b82;
+      --error-border: #6b3a3a;
+      --badge-blue-bg: #2d3a52;
+      --badge-blue-fg: #8ab4f8;
+      --badge-green-bg: #1e3a2a;
+      --badge-green-fg: #81c995;
+      --badge-red-bg: #3d2424;
+      --badge-red-fg: #f28b82;
+      --badge-yellow-bg: #3d3420;
+      --badge-yellow-fg: #fdd663;
+      --badge-yellow-border: #5c4e2a;
+      --badge-purple-bg: #352a45;
+      --badge-purple-fg: #d7aefb;
+      --badge-gray-bg: #242428;
+      --badge-gray-fg: #c4c7cc;
+      --badge-gray-border: #3a3a40;
+      --badge-gray-dim: #9aa0a6;
+      --link: #8ab4f8;
+      --banner-bg: #2a2618;
+      --banner-border: #5c4e2a;
+      --banner-code-bg: #242428;
+      --banner-code-border: #5c4e2a;
+      --btn-clear-hover-bg: #3d2a2a;
+      --btn-clear-hover-border: var(--error-border);
+      --btn-clear-hover-fg: #e8a0a0;
+    }
+
+    html[data-theme="light"] {
+      color-scheme: light;
+      --bg-page: #f0f2f5;
+      --bg-surface: #fff;
+      --bg-surface-muted: #f8f9fa;
+      --border: #e0e0e0;
+      --border-strong: #ddd;
+      --text: #1a1a1a;
+      --text-muted: #666;
+      --text-dim: #888;
+      --text-label: #555;
+      --status-error: #b00020;
+      --error-border: #e8b4b8;
+      --badge-blue-bg: #e8eef7;
+      --badge-blue-fg: #1e4a8a;
+      --badge-green-bg: #e6f4ea;
+      --badge-green-fg: #137333;
+      --badge-red-bg: #fce8e6;
+      --badge-red-fg: #c5221f;
+      --badge-yellow-bg: #fef7e0;
+      --badge-yellow-fg: #8a5a00;
+      --badge-yellow-border: #e8d9a8;
+      --badge-purple-bg: #f3e8fd;
+      --badge-purple-fg: #5c2d91;
+      --badge-gray-bg: #f1f3f4;
+      --badge-gray-fg: #444;
+      --badge-gray-border: #e8e8e8;
+      --badge-gray-dim: #777;
+      --link: #1e4a8a;
+      --banner-bg: #fff8e6;
+      --banner-border: #e6d9a8;
+      --banner-code-bg: #fff;
+      --banner-code-border: #e0d5b0;
+      --btn-clear-hover-bg: var(--badge-red-bg);
+      --btn-clear-hover-border: var(--error-border);
+      --btn-clear-hover-fg: #9e4545;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: var(--bg-page);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      padding: 0.75rem 1rem;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-strong);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .header-title {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .ranked-indicator {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      background: var(--badge-yellow-bg);
+      color: var(--badge-yellow-fg);
+      border: 1px solid var(--badge-yellow-border);
+      white-space: nowrap;
+    }
+
+    .ranked-indicator[hidden] {
+      display: none;
+    }
+
+    .controls {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.85rem;
+      color: var(--text);
+    }
+
+    .controls label {
+      display: flex;
+      align-items: center;
+      gap: 0.1rem;
+      cursor: pointer;
+    }
+
+    #status {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    #status.error {
+      color: var(--status-error);
+    }
+
+    .control-icon-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2rem;
+      height: 2rem;
+      padding: 0;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      background: var(--bg-page);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 0.9rem;
+      line-height: 1;
+    }
+
+    .control-icon-btn:hover {
+      border-color: var(--link);
+      color: var(--link);
+    }
+
+    .control-icon-btn[aria-pressed="true"] {
+      background: var(--badge-blue-bg);
+      border-color: var(--badge-blue-fg);
+      color: var(--badge-blue-fg);
+    }
+
+    .control-icon-btn:focus-visible {
+      outline: 1px solid var(--link);
+      outline-offset: 1px;
+    }
+
+    .settings-modal {
+      padding: 0;
+      border: 1px solid var(--border-strong);
+      border-radius: 2px;
+      background: var(--bg-surface);
+      color: var(--text);
+      max-width: 24rem;
+      width: calc(100% - 2rem);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .settings-modal::backdrop {
+      background: rgba(0, 0, 0, 0.45);
+    }
+
+    .settings-modal-header {
+      margin: 0;
+      padding: 0.85rem 1rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border-bottom: 1px solid var(--border-strong);
+    }
+
+    .settings-modal-body {
+      padding: 1rem;
+      min-height: 3rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .settings-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .settings-field-label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-label);
+    }
+
+    .settings-select {
+      padding: 0.4rem 0.55rem;
+      font-size: 0.9rem;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      background: var(--bg-page);
+      color: var(--text);
+    }
+
+    .settings-select:focus {
+      outline: 1px solid var(--link);
+      outline-offset: 1px;
+      border-color: var(--link);
+    }
+
+    .filter-bar {
+      padding: 0.65rem 1rem;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-strong);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.65rem 1rem;
+    }
+
+    .filter-search-wrap {
+      flex: 1 1 12rem;
+      min-width: 10rem;
+      max-width: 22rem;
+    }
+
+    #logSearch {
+      width: 100%;
+      padding: 0.4rem 0.55rem;
+      font-size: 0.9rem;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      background: var(--bg-page);
+      color: var(--text);
+    }
+
+    #logSearch::placeholder {
+      color: var(--text-dim);
+    }
+
+    #logSearch:focus {
+      outline: 1px solid var(--link);
+      outline-offset: 1px;
+      border-color: var(--link);
+    }
+
+    .filter-groups {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1.25rem;
+      align-items: flex-start;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.35rem 0.5rem;
+    }
+
+    .filter-group-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: var(--text-label);
+      margin-right: 0.15rem;
+    }
+
+    .filter-checks {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem 0.65rem;
+    }
+
+    .filter-check {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.82rem;
+      color: var(--text);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .filter-check input {
+      margin: 0;
+      cursor: pointer;
+    }
+
+    .filter-bar-btn {
+      padding: 0.35rem 0.6rem;
+      font-size: 0.8rem;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      background: var(--bg-page);
+      color: var(--text);
+      cursor: pointer;
+      align-self: center;
+    }
+
+    .filter-bar-btn:hover {
+      border-color: var(--link);
+      color: var(--link);
+    }
+
+    .filter-bar-btn.clear-logs {
+      margin-left: auto;
+    }
+
+    .filter-bar-btn.clear-logs:hover {
+      background: var(--btn-clear-hover-bg);
+      border-color: var(--btn-clear-hover-border);
+      color: var(--btn-clear-hover-fg);
+    }
+
+    main {
+      flex: 1;
+      padding: 0.75rem 1rem 1rem;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #logList {
+      flex: 1;
+      height: auto;
+      min-height: 12rem;
+      max-height: calc(100vh - 11rem);
+      overflow: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .event-row {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 0.65rem 1rem;
+      align-items: start;
+      padding: 0.65rem 0.85rem;
+      background: var(--bg-surface-muted);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      font-size: 0.9rem;
+      line-height: 1.35;
+    }
+
+    .event-time-col {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      min-width: 5.5rem;
+      max-width: 9rem;
+    }
+
+    .event-time {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .event-origin-line {
+      font-size: 0.68rem;
+      line-height: 1.2;
+      color: var(--text-dim);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .event-origin-ip {
+      font-weight: 500;
+      color: var(--text-label);
+    }
+
+    .event-body {
+      min-width: 0;
+    }
+
+    .event-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.4rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.12rem 0.45rem;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+
+    .badge-blue {
+      background: var(--badge-blue-bg);
+      color: var(--badge-blue-fg);
+    }
+
+    .badge-green {
+      background: var(--badge-green-bg);
+      color: var(--badge-green-fg);
+    }
+
+    .badge-red {
+      background: var(--badge-red-bg);
+      color: var(--badge-red-fg);
+    }
+
+    .badge-yellow {
+      background: var(--badge-yellow-bg);
+      color: var(--badge-yellow-fg);
+    }
+
+    .badge-purple {
+      background: var(--badge-purple-bg);
+      color: var(--badge-purple-fg);
+    }
+
+    .badge-gray {
+      background: var(--badge-gray-bg);
+      color: var(--badge-gray-fg);
+    }
+
+    .badge-gray.badge-outline {
+      border: 1px solid var(--badge-gray-border);
+      font-weight: 500;
+      text-transform: none;
+    }
+
+    .badge-gray.badge-outline.dim {
+      color: var(--badge-gray-dim);
+    }
+
+    .badge-yellow.badge-outline {
+      border: 1px solid var(--badge-yellow-border);
+      font-weight: 500;
+      text-transform: none;
+    }
+
+    .event-query {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text);
+      margin: 0 0 0.35rem;
+      word-break: break-word;
+    }
+
+    .event-query.muted {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-dim);
+      font-style: italic;
+    }
+
+    .event-query .query-prefix {
+      font-weight: 500;
+      color: var(--text-label);
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      margin-right: 0.35rem;
+    }
+
+    .event-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      align-items: center;
+    }
+
+    .query-multi {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .query-line {
+      font-size: 0.95rem;
+      font-weight: 600;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.35rem;
+      min-width: 0;
+    }
+
+    .query-line .label {
+      font-weight: 500;
+      color: var(--text-label);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      margin-right: 0.35rem;
+    }
+
+    .query-line .query-text {
+      margin-right: 0.15rem;
+      min-width: 0;
+      max-width: 100%;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .badge-query-extra {
+      background: var(--bg-surface-muted);
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      font-weight: 500;
+      text-transform: none;
+    }
+
+    details.event-details {
+      margin-top: 0.35rem;
+      font-size: 0.78rem;
+    }
+
+    details.event-details summary {
+      cursor: pointer;
+      color: var(--link);
+      user-select: none;
+    }
+
+    details.event-details pre {
+      margin: 0.35rem 0 0;
+      padding: 0.5rem;
+      background: var(--bg-inset, var(--bg-surface-muted));
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 4px;
+      overflow: auto;
+      max-height: 8rem;
+      font-size: 0.72rem;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .event-stats {
+      text-align: right;
+      font-size: 0.85rem;
+      white-space: nowrap;
+    }
+
+    .event-stats .results {
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--text);
+    }
+
+    .event-stats .duration {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+    }
+
+    .empty-feed {
+      padding: 1.5rem;
+      text-align: center;
+      color: var(--text);
+      background: var(--bg-surface-muted);
+      border: 1px solid var(--border-strong);
+      border-radius: 2px;
+      line-height: 1.45;
+    }
+
+    .empty-feed code {
+      padding: 0.1rem 0.35rem;
+      background: var(--banner-code-bg);
+      border: 1px solid var(--banner-code-border);
+      border-radius: 3px;
+      font-size: 0.85em;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="header-title">
+      <h1>AnisongDB Log Viewer</h1>
+      <span id="rankedIndicator" class="ranked-indicator" hidden></span>
+    </div>
+    <div class="controls">
+      <span id="status">Connecting…</span>
+      <label>
+        <input type="checkbox" id="autoScroll" checked>
+        Auto-scroll
+      </label>
+      <button type="button" class="control-icon-btn" id="togglePolling" aria-pressed="false" aria-label="Polling active"
+        title="Polling active">
+        <i class="fa-solid fa-play" aria-hidden="true"></i>
+      </button>
+      <button type="button" class="control-icon-btn" id="settings" aria-label="Settings" title="Settings">
+        <i class="fa-solid fa-gear" aria-hidden="true"></i>
+      </button>
+    </div>
+  </header>
+  <dialog id="settingsModal" class="settings-modal" aria-labelledby="settingsModalTitle">
+    <h2 id="settingsModalTitle" class="settings-modal-header">Settings</h2>
+    <div class="settings-modal-body">
+      <div class="settings-field">
+        <label class="settings-field-label" for="themeSelect">Theme</label>
+        <select id="themeSelect" class="settings-select">
+          <option value="anisongdb">AnisongDB</option>
+          <option value="dark">Dark</option>
+          <option value="light">Light</option>
+        </select>
+      </div>
+      <div class="settings-field">
+        <label class="settings-field-label" for="eventDateFormat">Date format</label>
+        <select id="eventDateFormat" class="settings-select">
+          <option value="ymd">YYYY-MM-DD</option>
+          <option value="mdy">MM/DD/YYYY</option>
+          <option value="dmy">DD/MM/YYYY</option>
+        </select>
+      </div>
+      <div class="settings-field">
+        <label class="settings-field-label" for="eventTimeFormat">Time format</label>
+        <select id="eventTimeFormat" class="settings-select">
+          <option value="h24">24-hour</option>
+          <option value="h12">12-hour</option>
+        </select>
+      </div>
+      <div class="settings-field">
+        <label class="settings-field-label" for="eventTimeZone">Time zone</label>
+        <select id="eventTimeZone" class="settings-select">
+          <option value="local">Local time</option>
+          <option value="utc">UTC</option>
+        </select>
+      </div>
+    </div>
+  </dialog>
+  <div class="filter-bar" id="filterBar">
+    <div class="filter-search-wrap">
+      <input type="search" id="logSearch" placeholder="Filter logs…" autocomplete="off" spellcheck="false">
+    </div>
+    <div class="filter-groups">
+      <div class="filter-group">
+        <span class="filter-group-label">Requests</span>
+        <div class="filter-checks" id="endpointFilters"></div>
+      </div>
+      <div class="filter-group">
+        <span class="filter-group-label">Outcome</span>
+        <label class="filter-check">
+          <input type="checkbox" id="filterCompleted" checked>
+          Completed
+        </label>
+        <label class="filter-check">
+          <input type="checkbox" id="filterFailed" checked>
+          Failed
+        </label>
+      </div>
+    </div>
+    <button type="button" class="filter-bar-btn" id="resetFilters">Reset</button>
+    <button type="button" class="filter-bar-btn clear-logs" id="clearLogs"
+      title="Clear displayed events from this view">
+      Clear
+    </button>
+  </div>
+  <main>
+    <div id="logList"></div>
+  </main>
+  <script>
+    const FEED_LIMIT = 100;
+    const POLL_INTERVAL_MS = 1000;
+    const FEED_PATH = window.location.pathname.replace(/\/$/, "") + "/feed";
+
+    const REQUEST_FILTER_GROUPS = {
+      search: ["/api/search_request"],
+      ids: [
+        "/api/ann_ids_request",
+        "/api/mal_ids_request",
+        "/api/ann_song_ids_request",
+        "/api/amq_song_ids_request",
+        "/api/artist_ids_request",
+        "/api/composer_ids_request",
+        "/api/annId_request",
+      ],
+    };
+    const REQUEST_GROUP_KEYS = ["search", "ids", "other"];
+    const REQUEST_GROUP_LABELS = { search: "Search", ids: "IDs", other: "Other" };
+    const SEARCH_ENDPOINTS = new Set(REQUEST_FILTER_GROUPS.search);
+    const IDS_ENDPOINTS = new Set(REQUEST_FILTER_GROUPS.ids);
+
+    function requestGroupForEndpoint(path) {
+      if (SEARCH_ENDPOINTS.has(path)) return "search";
+      if (IDS_ENDPOINTS.has(path)) return "ids";
+      return "other";
+    }
+
+    const ENDPOINT_LABELS = {
+      "/api/search_request": "Search",
+      "/api/ann_ids_request": "ANN IDs",
+      "/api/mal_ids_request": "MAL IDs",
+      "/api/ann_song_ids_request": "ANN song IDs",
+      "/api/amq_song_ids_request": "AMQ song IDs",
+      "/api/season_request": "Season",
+      "/api/get_n_random_songs": "N random",
+      "/api/artist_ids_request": "Artist IDs",
+      "/api/composer_ids_request": "Composer IDs",
+      "/api/annId_request": "ANN ID",
+    };
+    const FILTER_STORAGE_KEY = "anisongdb-log-filters";
+    const EVENT_TIME_ZONE_KEY = "anisongdb-log-timezone";
+    const EVENT_TIME_FORMAT_KEY = "anisongdb-log-time-format";
+    const EVENT_DATE_FORMAT_KEY = "anisongdb-log-date-format";
+    const SEARCH_DEBOUNCE_MS = 200;
+
+    const SEARCH_FILTER_KEYS = [
+      ["anime_search_filter", "Anime"],
+      ["song_name_search_filter", "Song"],
+      ["artist_search_filter", "Artist"],
+      ["composer_search_filter", "Composer"],
+    ];
+
+    const BOOLEAN_GROUPS = [
+      {
+        label: "Types",
+        keys: [
+          ["opening_filter", "OP"],
+          ["ending_filter", "ED"],
+          ["insert_filter", "IN"],
+        ],
+      },
+      {
+        label: "Broadcast",
+        keys: [
+          ["normal_broadcast", "normal"],
+          ["dub", "dub"],
+          ["rebroadcast", "rebroadcast"],
+        ],
+      },
+      {
+        label: "Categories",
+        keys: [
+          ["standard", "Standard"],
+          ["instrumental", "Instrumental"],
+          ["chanting", "Chanting"],
+          ["character", "Character"],
+        ],
+      },
+      {
+        label: "Media",
+        keys: [
+          ["tv_filter", "TV"],
+          ["movie_filter", "Movie"],
+          ["ova_filter", "OVA"],
+          ["ona_filter", "ONA"],
+          ["special_filter", "Special"],
+          ["doujin_filter", "Doujin"],
+        ],
+      },
+    ];
+
+    const LOOKUP_ID_FIELDS = [
+      ["artist_ids", "Artist IDs"],
+      ["composer_ids", "Composer IDs"],
+      ["ann_ids", "ANN IDs"],
+      ["mal_ids", "MAL IDs"],
+      ["ann_song_ids", "ANN song IDs"],
+      ["amq_song_ids", "AMQ song IDs"],
+    ];
+    const LOOKUP_ID_FIELD_KEYS = LOOKUP_ID_FIELDS.map(([key]) => key);
+
+    // Ranked window (time zone aware).
+    const RANKED_START_SEC = (20 * 60 + 30) * 60; // 20:30 local
+    const RANKED_END_SEC = (21 * 60 + 23) * 60; // 21:23 local
+    const RANKED_LOCAL_TIME = [
+      { timeZone: "Europe/Copenhagen", region: "Central" },
+      { timeZone: "America/Chicago", region: "Western" },
+      { timeZone: "Asia/Tokyo", region: "Eastern" },
+    ].map(({ timeZone, region }) => {
+      const fmt = new Intl.DateTimeFormat("en-US", {
+        timeZone,
+        hourCycle: 'h23',
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      });
+      return {
+        region,
+        localSeconds(date) {
+          const parts = fmt.formatToParts(date);
+          const get = (type) => Number(parts.find((p) => p.type === type)?.value || 0);
+          return get("hour") * 3600 + get("minute") * 60 + get("second");
+        },
+      };
+    });
+    let rankedIndicatorLabel = null;
+
+    const logList = document.getElementById("logList");
+    const rankedIndicatorEl = document.getElementById("rankedIndicator");
+    const statusEl = document.getElementById("status");
+    const autoScrollEl = document.getElementById("autoScroll");
+    const togglePollingEl = document.getElementById("togglePolling");
+    const settingsEl = document.getElementById("settings");
+    const settingsModalEl = document.getElementById("settingsModal");
+    const eventDateFormatEl = document.getElementById("eventDateFormat");
+    const eventTimeFormatEl = document.getElementById("eventTimeFormat");
+    const eventTimeZoneEl = document.getElementById("eventTimeZone");
+    const themeSelectEl = document.getElementById("themeSelect");
+    const logSearchEl = document.getElementById("logSearch");
+    const endpointFiltersEl = document.getElementById("endpointFilters");
+    const filterCompletedEl = document.getElementById("filterCompleted");
+    const filterFailedEl = document.getElementById("filterFailed");
+    const resetFiltersEl = document.getElementById("resetFilters");
+    const clearLogsEl = document.getElementById("clearLogs");
+
+    let allEvents = [];
+    let cachedFiltered = [];
+    let cachedViewFilterKey = "";
+    let lastViewKey = "";
+    let searchDebounceId = null;
+    let latestFeedId = null;
+    let pollTimeoutId = null;
+    let pollInFlight = false;
+
+    const VALID_THEMES = ["anisongdb", "dark", "light"];
+
+    /** Apply theme on `<html>` and persist in localStorage. */
+    function applyTheme(theme) {
+      if (!VALID_THEMES.includes(theme)) theme = "anisongdb";
+      document.documentElement.dataset.theme = theme;
+      localStorage.setItem("anisongdb-log-theme", theme);
+      themeSelectEl.value = theme;
+    }
+
+    themeSelectEl.value = document.documentElement.dataset.theme || "anisongdb";
+    themeSelectEl.addEventListener("change", () => {
+      applyTheme(themeSelectEl.value);
+    });
+
+    /** True when live polling is paused via the polling toggle. */
+    function isPaused() {
+      return togglePollingEl.getAttribute("aria-pressed") === "true";
+    }
+
+    /** Update polling toggle icon and label to reflect current state (play = active, pause = stopped). */
+    function setPollingUi(paused) {
+      togglePollingEl.setAttribute("aria-pressed", paused ? "true" : "false");
+      const label = paused ? "Polling paused" : "Polling active";
+      togglePollingEl.title = label;
+      togglePollingEl.setAttribute("aria-label", label);
+      togglePollingEl.querySelector("i").className = paused
+        ? "fa-solid fa-pause"
+        : "fa-solid fa-play";
+    }
+
+    /** Read event date order (`ymd`, `mdy`, or `dmy`). */
+    function getEventDateFormat() {
+      const v = eventDateFormatEl.value;
+      if (v === "mdy" || v === "dmy") return v;
+      return "ymd";
+    }
+
+    /** Read event time format (`h24` or `h12`). */
+    function getEventTimeFormat() {
+      return eventTimeFormatEl.value === "h12" ? "h12" : "h24";
+    }
+
+    /** Read event timestamp zone (`local` or `utc`). */
+    function getEventTimeZone() {
+      return eventTimeZoneEl.value === "utc" ? "utc" : "local";
+    }
+
+    /** Restore event time display settings from localStorage. */
+    function loadEventTimeSettings() {
+      const storedTz = localStorage.getItem(EVENT_TIME_ZONE_KEY);
+      eventTimeZoneEl.value = storedTz === "utc" ? "utc" : "local";
+      const storedFmt = localStorage.getItem(EVENT_TIME_FORMAT_KEY);
+      eventTimeFormatEl.value = storedFmt === "h12" ? "h12" : "h24";
+      const storedDate = localStorage.getItem(EVENT_DATE_FORMAT_KEY);
+      eventDateFormatEl.value = storedDate === "mdy" || storedDate === "dmy" ? storedDate : "ymd";
+    }
+
+    /** Persist event time settings and refresh displayed event times. */
+    function onEventTimeSettingsChanged() {
+      localStorage.setItem(EVENT_DATE_FORMAT_KEY, getEventDateFormat());
+      localStorage.setItem(EVENT_TIME_FORMAT_KEY, getEventTimeFormat());
+      localStorage.setItem(EVENT_TIME_ZONE_KEY, getEventTimeZone());
+      lastViewKey = "";
+      applyView();
+    }
+
+    loadEventTimeSettings();
+    eventDateFormatEl.addEventListener("change", onEventTimeSettingsChanged);
+    eventTimeFormatEl.addEventListener("change", onEventTimeSettingsChanged);
+    eventTimeZoneEl.addEventListener("change", onEventTimeSettingsChanged);
+
+    /** Open the settings dialog. */
+    function openSettingsModal() {
+      settingsModalEl.showModal();
+      settingsModalEl.focus()
+    }
+
+    /** Close the settings dialog. */
+    function closeSettingsModal() {
+      if (settingsModalEl.open) {
+        settingsModalEl.close();
+      }
+    }
+
+    settingsEl.addEventListener("click", openSettingsModal);
+    settingsModalEl.addEventListener("click", (e) => {
+      if (e.target === settingsModalEl) {
+        closeSettingsModal();
+      }
+    });
+
+    /** Default filter UI state (all request groups on, both outcomes on). */
+    function defaultFilterState() {
+      const requestGroups = {};
+      for (const key of REQUEST_GROUP_KEYS) {
+        requestGroups[key] = true;
+      }
+      return {
+        search: "",
+        requestGroups,
+        completed: true,
+        failed: true,
+      };
+    }
+
+    /** Load saved filters from localStorage. */
+    function loadFilterState() {
+      try {
+        const raw = localStorage.getItem(FILTER_STORAGE_KEY);
+        if (!raw) return defaultFilterState();
+        const saved = JSON.parse(raw);
+        const defaults = defaultFilterState();
+        const requestGroups = { ...defaults.requestGroups };
+        if (saved.requestGroups && typeof saved.requestGroups === "object") {
+          for (const key of REQUEST_GROUP_KEYS) {
+            if (typeof saved.requestGroups[key] === "boolean") {
+              requestGroups[key] = saved.requestGroups[key];
+            }
+          }
+        } else if (saved.endpoints && typeof saved.endpoints === "object") {
+          requestGroups.search = saved.endpoints["/api/search_request"] !== false;
+          requestGroups.ids = REQUEST_FILTER_GROUPS.ids.some(
+            (path) => saved.endpoints[path] !== false
+          );
+          const otherPaths = ["/api/season_request", "/api/get_n_random_songs"];
+          requestGroups.other =
+            saved.other === true ||
+            otherPaths.some((path) => saved.endpoints[path] !== false);
+        }
+        return {
+          search: typeof saved.search === "string" ? saved.search : "",
+          requestGroups,
+          completed: saved.completed !== false,
+          failed: saved.failed !== false,
+        };
+      } catch {
+        return defaultFilterState();
+      }
+    }
+
+    /** Persist current filter controls to localStorage. */
+    function saveFilterState() {
+      localStorage.setItem(
+        FILTER_STORAGE_KEY,
+        JSON.stringify({
+          search: logSearchEl.value,
+          requestGroups: getRequestGroupFilterState(),
+          completed: filterCompletedEl.checked,
+          failed: filterFailedEl.checked,
+        })
+      );
+    }
+
+    /** Read checked state of Search / IDs / Other request-group checkboxes. */
+    function getRequestGroupFilterState() {
+      const state = { search: true, ids: true, other: true };
+      endpointFiltersEl.querySelectorAll("input[data-request-group]").forEach((el) => {
+        state[el.dataset.requestGroup] = el.checked;
+      });
+      return state;
+    }
+
+    /** Apply a saved filter state object to the filter bar controls. */
+    function applyFilterStateToUi(state) {
+      logSearchEl.value = state.search;
+      filterCompletedEl.checked = state.completed;
+      filterFailedEl.checked = state.failed;
+      endpointFiltersEl.querySelectorAll("input[data-request-group]").forEach((el) => {
+        el.checked = state.requestGroups[el.dataset.requestGroup] !== false;
+      });
+    }
+
+    /** Build Search / IDs / Other request-group checkboxes. */
+    function buildEndpointFilters() {
+      endpointFiltersEl.innerHTML = REQUEST_GROUP_KEYS.map(
+        (key) =>
+          `<label class="filter-check">
+            <input type="checkbox" data-request-group="${escapeHtml(key)}" checked>
+            ${escapeHtml(REQUEST_GROUP_LABELS[key])}
+          </label>`
+      ).join("");
+    }
+
+    /** @returns {"completed"|"failed"|null} */
+    function eventOutcome(ev) {
+      const status = ev.http_status;
+      if (status == null) return null;
+      if (status >= 400) return "failed";
+      if (status >= 200 && status < 300) return "completed";
+      return null;
+    }
+
+    /** Drop cached filtered list so the next view/status pass recomputes. */
+    function invalidateFilterCache() {
+      cachedViewFilterKey = "";
+    }
+
+    /** Filter `allEvents` once per feed+filter snapshot; reuse until events or filters change. */
+    function computeFilteredView() {
+      const dataKey = eventsKey(allEvents);
+      const filterKey = filterStateKey();
+      const combined = dataKey + "::" + filterKey;
+      if (combined === cachedViewFilterKey) {
+        return {
+          filtered: cachedFiltered,
+          viewKey: combined,
+          shown: cachedFiltered.length,
+          total: allEvents.length,
+        };
+      }
+      cachedFiltered = allEvents.filter(passesFilters);
+      cachedViewFilterKey = combined;
+      return {
+        filtered: cachedFiltered,
+        viewKey: combined,
+        shown: cachedFiltered.length,
+        total: allEvents.length,
+      };
+    }
+
+    /** Active ranked region label, or null if outside the window. */
+    function getRankedRegionNow(date = new Date()) {
+      for (const zone of RANKED_LOCAL_TIME) {
+        const sec = zone.localSeconds(date);
+        if (sec >= RANKED_START_SEC && sec < RANKED_END_SEC) {
+          return zone.region;
+        }
+      }
+      return null;
+    }
+
+    /** Update title badge only when ranked state changes (e.g. "Western Ranked"). */
+    function updateRankedIndicator(date = new Date()) {
+      if (!rankedIndicatorEl) return;
+      const region = getRankedRegionNow(date);
+      const next = region ? region + " Ranked" : null;
+      if (next === rankedIndicatorLabel) return;
+      rankedIndicatorLabel = next;
+      if (next) {
+        rankedIndicatorEl.textContent = next;
+        rankedIndicatorEl.hidden = false;
+      } else {
+        rankedIndicatorEl.textContent = "";
+        rankedIndicatorEl.hidden = true;
+      }
+    }
+
+    /** Update the header status line (counts, clock, or error message). */
+    function setStatusLine(options = {}) {
+      updateRankedIndicator();
+      if (options.error) {
+        statusEl.textContent = options.error;
+        statusEl.classList.add("error");
+        return;
+      }
+      statusEl.textContent =
+        statusCountLabel() + " · " + new Date().toLocaleTimeString();
+      statusEl.classList.remove("error");
+    }
+
+    /** Replace the log list with a single placeholder message (e.g. while loading). */
+    function showListPlaceholder(message) {
+      logList.innerHTML = `<div class="empty-feed">${escapeHtml(message)}</div>`;
+      lastViewKey = "";
+    }
+
+    /** Build a lowercase search string from an event’s endpoint, type, body, and labels. */
+    function eventSearchBlob(ev) {
+      const parts = [
+        ev.endpoint,
+        ev.http_status != null ? String(ev.http_status) : "",
+        ev.reason,
+        ev.ip,
+        endpointLabel(ev.endpoint),
+      ];
+      const body = ev.body;
+      if (ev.client) parts.push(String(ev.client));
+      if (body && typeof body === "object") {
+        if (body.season) parts.push(body.season);
+        if (body.n != null) parts.push(String(body.n));
+        for (const key of LOOKUP_ID_FIELD_KEYS) {
+          if (Array.isArray(body[key])) parts.push(body[key].join(" "));
+        }
+        if (body.annId != null) parts.push(String(body.annId));
+        for (const [key] of SEARCH_FILTER_KEYS) {
+          const text = filterSearchText(body[key]);
+          if (text) parts.push(text);
+        }
+      }
+      return parts.filter(Boolean).join(" ").toLowerCase();
+    }
+
+    /** Whether one event should appear given endpoint, outcome, and text filters. */
+    function passesFilters(ev) {
+      const groups = getRequestGroupFilterState();
+      if (!groups[requestGroupForEndpoint(ev.endpoint)]) return false;
+
+      const outcome = eventOutcome(ev);
+      if (!outcome) return false;
+      if (outcome === "completed" && !filterCompletedEl.checked) return false;
+      if (outcome === "failed" && !filterFailedEl.checked) return false;
+
+      const query = logSearchEl.value.trim().toLowerCase();
+      if (query && !eventSearchBlob(ev).includes(query)) return false;
+
+      return true;
+    }
+
+    /** Serializable key for the current filter control values. */
+    function filterStateKey() {
+      const groups = getRequestGroupFilterState();
+      return [
+        logSearchEl.value,
+        filterCompletedEl.checked,
+        filterFailedEl.checked,
+        ...REQUEST_GROUP_KEYS.map((k) => (groups[k] ? "1" : "0")),
+      ].join("|");
+    }
+
+    /** Status text for event counts (distinguishes filtered vs all-loaded). */
+    function statusCountLabel() {
+      const { shown, total } = computeFilteredView();
+      const groups = getRequestGroupFilterState();
+      const filterActive =
+        shown !== total ||
+        logSearchEl.value.trim() ||
+        !filterCompletedEl.checked ||
+        !filterFailedEl.checked ||
+        REQUEST_GROUP_KEYS.some((k) => !groups[k]);
+      return filterActive ? `${shown} shown · ${total} total` : `${total} events`;
+    }
+
+    /** Refresh the header status line (delegates to setStatusLine). */
+    function updateStatusLine() {
+      setStatusLine();
+    }
+
+    /** Re-render the log list when the feed snapshot or filters changed. */
+    function applyView() {
+      const { filtered, viewKey, total } = computeFilteredView();
+      if (viewKey === lastViewKey) return;
+      lastViewKey = viewKey;
+      logList.innerHTML = renderEvents(filtered, total);
+      if (!isPaused()) {
+        setStatusLine();
+      }
+    }
+
+    /** Persist filters, invalidate cache, and refresh the list (and status if paused). */
+    function onFiltersChanged() {
+      saveFilterState();
+      lastViewKey = "";
+      invalidateFilterCache();
+      applyView();
+      if (isPaused()) {
+        setStatusLine();
+      }
+    }
+
+    /** Restore default filter controls and refresh the view. */
+    function resetFilters() {
+      applyFilterStateToUi(defaultFilterState());
+      onFiltersChanged();
+    }
+
+    /** Clear in-memory events in the viewer without resetting the poll cursor. */
+    function clearDisplayedLogs() {
+      allEvents = [];
+      lastViewKey = "";
+      invalidateFilterCache();
+      applyView();
+      setStatusLine();
+    }
+
+    buildEndpointFilters();
+    applyFilterStateToUi(loadFilterState());
+
+    logSearchEl.addEventListener("input", () => {
+      clearTimeout(searchDebounceId);
+      searchDebounceId = setTimeout(onFiltersChanged, SEARCH_DEBOUNCE_MS);
+    });
+    filterCompletedEl.addEventListener("change", onFiltersChanged);
+    filterFailedEl.addEventListener("change", onFiltersChanged);
+    endpointFiltersEl.addEventListener("change", onFiltersChanged);
+    resetFiltersEl.addEventListener("click", resetFilters);
+    clearLogsEl.addEventListener("click", clearDisplayedLogs);
+
+    /** True if the scroll container is within 48px of the bottom. */
+    function isNearBottom(el) {
+      return el.scrollHeight - el.scrollTop - el.clientHeight < 48;
+    }
+
+    /** Build the feed URL (full window or incremental `since`), or null on file://. */
+    function feedUrl() {
+      if (window.location.protocol === "file:") {
+        return null;
+      }
+      const params = new URLSearchParams({ limit: String(FEED_LIMIT) });
+      if (latestFeedId != null) {
+        params.set("since", latestFeedId);
+      }
+      return FEED_PATH + "?" + params.toString();
+    }
+
+    /** Merge polled events into `allEvents`, respecting FEED_LIMIT; returns whether the list changed. */
+    function mergeFeedEvents(incoming, incremental) {
+      if (!incremental) {
+        allEvents = incoming.slice(-FEED_LIMIT);
+        invalidateFilterCache();
+        return incoming.length > 0 || allEvents.length === 0;
+      }
+      if (!incoming.length) {
+        return false;
+      }
+      const seen = new Set(allEvents.map((e) => e.id));
+      let added = 0;
+      for (const ev of incoming) {
+        if (!seen.has(ev.id)) {
+          allEvents.push(ev);
+          seen.add(ev.id);
+          added++;
+        }
+      }
+      if (allEvents.length > FEED_LIMIT) {
+        allEvents = allEvents.slice(-FEED_LIMIT);
+      }
+      if (added > 0) {
+        invalidateFilterCache();
+      }
+      return added > 0;
+    }
+
+    /** Advance the incremental poll cursor from the server or the last local event. */
+    function updateLatestFeedId(serverLatestId) {
+      if (serverLatestId != null && serverLatestId !== "") {
+        latestFeedId = String(serverLatestId);
+        return;
+      }
+      if (allEvents.length) {
+        latestFeedId = String(allEvents[allEvents.length - 1].id);
+      }
+    }
+
+    /** Cancel a scheduled poll timeout. */
+    function stopPolling() {
+      if (pollTimeoutId !== null) {
+        clearTimeout(pollTimeoutId);
+        pollTimeoutId = null;
+      }
+    }
+
+    /** Queue the next feed fetch unless paused or the tab is hidden. */
+    function scheduleNextPoll(delayMs) {
+      stopPolling();
+      if (isPaused() || document.hidden) {
+        return;
+      }
+      pollTimeoutId = setTimeout(() => {
+        pollTimeoutId = null;
+        fetchLogs();
+      }, delayMs);
+    }
+
+    /** Human label for an API path, with a fallback derived from the path segment. */
+    function endpointLabel(path) {
+      return ENDPOINT_LABELS[path] || path.replace(/^\/api\//, "").replace(/_/g, " ");
+    }
+
+    /** Escape text for safe HTML insertion. */
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    /** Calendar parts for an event time in the selected zone. */
+    function getEventDateParts(d) {
+      const utc = getEventTimeZone() === "utc";
+      const opts = {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        timeZone: utc ? "UTC" : undefined,
+      };
+      const parts = new Intl.DateTimeFormat("en-US", opts).formatToParts(d);
+      const pick = (type) => parts.find((p) => p.type === type)?.value ?? "";
+      return { year: pick("year"), month: pick("month"), day: pick("day") };
+    }
+
+    /** Format year/month/day according to the date-format setting. */
+    function formatEventDate(parts) {
+      const fmt = getEventDateFormat();
+      if (fmt === "mdy") return `${parts.month}/${parts.day}/${parts.year}`;
+      if (fmt === "dmy") return `${parts.day}/${parts.month}/${parts.year}`;
+      return `${parts.year}-${parts.month}-${parts.day}`;
+    }
+
+    /** Format hours/minutes/seconds according to the 12/24h setting. */
+    function formatEventTime(d) {
+      const hour12 = getEventTimeFormat() === "h12";
+      const utc = getEventTimeZone() === "utc";
+      const opts = {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12,
+      };
+      if (utc) {
+        opts.timeZone = "UTC";
+      }
+      return new Intl.DateTimeFormat(hour12 ? undefined : "sv-SE", opts).format(d);
+    }
+
+    /** Format an ISO timestamp for `.event-time` (zone, date order, and 12/24h). */
+    function formatTs(ts) {
+      if (!ts) return "—";
+      const d = new Date(ts);
+      if (Number.isNaN(d.getTime())) return ts;
+      const utc = getEventTimeZone() === "utc";
+      const dateStr = formatEventDate(getEventDateParts(d));
+      const timeStr = formatEventTime(d);
+      return utc ? `${dateStr} ${timeStr} UTC` : `${dateStr} ${timeStr}`;
+    }
+
+    /** True when a search filter object is missing or has no active search text. */
+    function isAbsentSearchFilter(value) {
+      if (value == null) return true;
+      if (Array.isArray(value)) return value.length === 0;
+      return typeof value !== "object";
+    }
+
+    /** Trimmed search string from a filter object, or null if absent. */
+    function filterSearchText(value) {
+      if (isAbsentSearchFilter(value)) return null;
+      const search = value.search;
+      if (search === undefined || search === null) return null;
+      const text = String(search).trim();
+      return text || null;
+    }
+
+    /** Collect populated anime/song/artist/composer search lines from a request body. */
+    function extractSearchQueries(body) {
+      const parts = [];
+      for (const [key, label] of SEARCH_FILTER_KEYS) {
+        const text = filterSearchText(body[key]);
+        if (text) parts.push({ label, text, raw: body[key] });
+      }
+      return parts;
+    }
+
+    /** All four search filter texts (null where not set). */
+    function searchFilterTexts(body) {
+      return SEARCH_FILTER_KEYS.map(([key]) => filterSearchText(body[key]));
+    }
+
+    /** True when every search field is set to the same query string. */
+    function isAllFieldsUnified(body) {
+      const texts = searchFilterTexts(body);
+      if (!texts.every((t) => t !== null)) return false;
+      return texts.every((t) => t === texts[0]);
+    }
+
+    /** Whether to show AND/OR badge (2+ distinct text filters, not one unified query). */
+    function shouldShowLogicBadge(body) {
+      const texts = searchFilterTexts(body);
+      const populated = texts.filter((t) => t !== null);
+      if (populated.length < 2) return false;
+      if (isAllFieldsUnified(body)) return false;
+      return true;
+    }
+
+    /** Badges for exact match, case, group granularity, max other artist, etc. */
+    function searchFilterExtras(raw) {
+      //console.log(raw)
+      if (isAbsentSearchFilter(raw)) return [];
+      const badges = [];
+      if (raw.partial_match === false) {
+        badges.push({ text: "exact", cls: "badge-query-extra" });
+      }
+      if (raw.match_case === true) {
+        badges.push({ text: "case-sensitive", cls: "badge-query-extra" });
+      }
+      if (raw.group_granularity !== undefined && raw.group_granularity !== 0) {
+        badges.push({ text: `group≥${raw.group_granularity}`, cls: "badge-query-extra" });
+      }
+      if (raw.max_other_artist !== undefined && raw.max_other_artist !== 99) {
+        badges.push({ text: `max other ${raw.max_other_artist}`, cls: "badge-query-extra" });
+      }
+      return badges;
+    }
+
+    /** Summarize a boolean filter group (omit if all on; warn if all off). */
+    function formatBooleanGroup(body, group) {
+      const resolved = group.keys.map(([key, short]) => ({
+        short,
+        on: body[key] !== false,
+      }));
+      const allOn = resolved.every((s) => s.on);
+      const allOff = resolved.every((s) => !s.on);
+      if (allOn) return { omit: true };
+      if (allOff) {
+        return { text: `${group.label}: none`, cls: "badge-yellow badge-outline", omit: false };
+      }
+      const on = resolved.filter((s) => s.on).map((s) => s.short);
+      return { text: `${group.label}: ${on.join(" ")}`, cls: "badge-gray badge-outline", omit: false };
+    }
+
+    /** AND/OR and ignore-duplicate badges for search requests. */
+    function logicBadges(body) {
+      const badges = [];
+      if (shouldShowLogicBadge(body)) {
+        if (body.and_logic === false) {
+          badges.push({ text: "OR", cls: "badge-purple" });
+        } else {
+          badges.push({ text: "AND", cls: "badge-purple" });
+        }
+      }
+      if (body.ignore_duplicate === true) badges.push({ text: "no dupes", cls: "badge-gray" });
+      return badges;
+    }
+
+    /** Primary headline for lookup endpoints (season, IDs, ANN id). */
+    function lookupHeadline(endpoint, body) {
+      if (endpoint === "/api/season_request" && body.season) {
+        return {
+          html: `<p class="event-query"><span class="query-prefix">Season</span>${escapeHtml(body.season)}</p>`,
+          expand: null,
+        };
+      }
+      if (endpoint === "/api/get_n_random_songs" && body.n != null) {
+        return {
+          html: `<p class="event-query"><span class="query-prefix"># songs</span>${escapeHtml(body.n)}</p>`,
+          expand: null,
+        };
+      }
+      if (endpoint === "/api/annId_request" && body.annId != null) {
+        return {
+          html: `<p class="event-query"><span class="query-prefix">ANN</span>${escapeHtml(body.annId)}</p>`,
+          expand: null,
+        };
+      }
+      for (const [field, label] of LOOKUP_ID_FIELDS) {
+        const ids = body[field];
+        if (!ids || !ids.length) continue;
+        const expandThreshold = 6;
+        if (ids.length <= expandThreshold) {
+          return {
+            html: `<p class="event-query"><span class="query-prefix">${escapeHtml(label)}</span>${escapeHtml(ids.join(", "))}</p>`,
+            expand: null,
+          };
+        }
+        return {
+          html: `<p class="event-query"><span class="query-prefix">${escapeHtml(label)}</span>${escapeHtml(ids.length)} IDs</p>`,
+          expand: ids.join(", "),
+        };
+      }
+      return null;
+    }
+
+    /** HTML headline block for an event’s query (lookup, unified, or per-field). */
+    function renderQuerySection(endpoint, body) {
+      const lookup = lookupHeadline(endpoint, body);
+      if (lookup) return lookup;
+
+      const parts = extractSearchQueries(body);
+      if (parts.length === 0) {
+        return { html: '<p class="event-query muted">No text query</p>', expand: null };
+      }
+
+      const renderSearchLine = (label, text, raw) => {
+        const extras = searchFilterExtras(raw)
+          .map((b) => `<span class="badge ${b.cls}">${escapeHtml(b.text)}</span>`)
+          .join("");
+        return `<div class="query-line"><span class="label">${escapeHtml(label)}</span><span class="query-text">${escapeHtml(text)}</span>${extras}</div>`;
+      };
+
+      if (isAllFieldsUnified(body)) {
+        const extrasByField = parts.map((p) =>
+          searchFilterExtras(p.raw).map((b) => `${b.cls}|${b.text}`).join(",")
+        );
+        const allExtrasSame = extrasByField.every((x) => x === extrasByField[0]);
+        if (allExtrasSame) {
+          const html = `<div class="query-multi">${renderSearchLine("All fields", parts[0].text, parts[0].raw)}</div>`;
+          return { html, expand: null };
+        }
+      }
+
+      const lines = parts
+        .map((p) => renderSearchLine(p.label, p.text, p.raw))
+        .join("");
+      return { html: `<div class="query-multi">${lines}</div>`, expand: null };
+    }
+
+    /** HTML badge row for logic and boolean groups on a request body. */
+    function renderFilterBadges(endpoint, body) {
+      const badges = [];
+
+      for (const b of logicBadges(body)) {
+        badges.push(`<span class="badge ${b.cls}">${escapeHtml(b.text)}</span>`);
+      }
+
+      if (endpoint === "/api/composer_ids_request" && body.arrangement === false) {
+        badges.push('<span class="badge badge-gray badge-outline dim">no arrangement</span>');
+      }
+
+      for (const group of BOOLEAN_GROUPS) {
+        const g = formatBooleanGroup(body, group);
+        if (!g.omit) {
+          badges.push(`<span class="badge ${g.cls}">${escapeHtml(g.text)}</span>`);
+        }
+      }
+
+      return badges.join("");
+    }
+
+    /** HTML for timestamp column plus client name and IP under the time. */
+    function renderEventTimeCol(ev) {
+      const client = ev.client ? String(ev.client) : "—";
+      const ip = ev.ip ? String(ev.ip) : "—";
+      return `<div class="event-time-col">
+        <time class="event-time">${escapeHtml(formatTs(ev.ts))}</time>
+        <div class="event-origin-line event-origin-ip" title="IP">${escapeHtml(ip)}</div>
+        <div class="event-origin-line event-origin-client" title="Client">${escapeHtml(client)}</div>
+      </div>`;
+    }
+
+    /** HTML for one event row (meta, query, badges, optional ID expand, stats). */
+    function renderEvent(ev) {
+      const httpStatus = ev.http_status ?? "—";
+      const isFailed = eventOutcome(ev) === "failed";
+      const body = ev.body || {};
+
+      const meta = [];
+      meta.push(
+        `<span class="badge badge-blue" title="${escapeHtml(ev.endpoint)}">${escapeHtml(endpointLabel(ev.endpoint))}</span>`
+      );
+      meta.push(
+        `<span class="badge ${isFailed ? "badge-red" : "badge-green"}">${escapeHtml(httpStatus)}</span>`
+      );
+      if (ev.reason) {
+        meta.push(
+          `<span class="badge badge-yellow">${escapeHtml(ev.reason)}</span>`
+        );
+      }
+
+      const querySection = renderQuerySection(ev.endpoint, body);
+      const filterBadges = renderFilterBadges(ev.endpoint, body);
+      const badgesHtml = filterBadges
+        ? `<div class="event-badges">${filterBadges}</div>`
+        : "";
+
+      let detailsHtml = "";
+      if (querySection.expand) {
+        detailsHtml = `<details class="event-details"><summary>Show ID list</summary><pre>${escapeHtml(querySection.expand)}</pre></details>`;
+      }
+
+      let stats = "";
+      if (ev.result) {
+        stats = `<div class="results">${escapeHtml(ev.result.count)} result${ev.result.count === 1 ? "" : "s"}</div>`;
+        if (ev.result.duration_ms !== undefined) {
+          stats += `<div class="duration">${escapeHtml(ev.result.duration_ms)} ms</div>`;
+        }
+      }
+
+      return `<article class="event-row">
+        ${renderEventTimeCol(ev)}
+        <div class="event-body">
+          <div class="event-meta">${meta.join("")}</div>
+          ${querySection.html}
+          ${badgesHtml}
+          ${detailsHtml}
+        </div>
+        <div class="event-stats">${stats}</div>
+      </article>`;
+    }
+
+    /** HTML for the full list or empty-state messages. */
+    function renderEvents(events, totalCount) {
+      if (!totalCount) {
+        return '<div class="empty-feed">No events in this window</div>';
+      }
+      if (!events || events.length === 0) {
+        return '<div class="empty-feed">No events match filters</div>';
+      }
+      return events.map(renderEvent).join("");
+    }
+
+    /** Stable string of event ids for cache/view invalidation. */
+    function eventsKey(events) {
+      return events.map((e) => e.id).join(",");
+    }
+
+    /** Poll the feed, merge events, update the list, and schedule the next poll. */
+    async function fetchLogs() {
+      if (isPaused()) {
+        stopPolling();
+        setStatusLine();
+        return;
+      }
+      if (document.hidden || pollInFlight) {
+        return;
+      }
+
+      const url = feedUrl();
+      if (!url) {
+        return;
+      }
+
+      const incremental = latestFeedId != null;
+      const stickToBottom = autoScrollEl.checked && isNearBottom(logList);
+      pollInFlight = true;
+
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error("HTTP " + response.status);
+        }
+        const data = await response.json();
+        const incoming = data.events || [];
+        const hadNew = mergeFeedEvents(incoming, incremental);
+        updateLatestFeedId(data.latest_id);
+
+        if (hadNew || !incremental) {
+          lastViewKey = "";
+          applyView();
+        }
+
+        setStatusLine();
+
+        if (stickToBottom && hadNew) {
+          logList.scrollTop = logList.scrollHeight;
+        }
+
+        scheduleNextPoll(POLL_INTERVAL_MS);
+      } catch (err) {
+        setStatusLine({ error: "Error: " + err.message });
+        console.error("Failed to fetch logs:", err);
+        scheduleNextPoll(POLL_INTERVAL_MS);
+      } finally {
+        pollInFlight = false;
+      }
+    }
+
+    /** Reset feed state and begin polling (shows loading until the first response). */
+    function startPolling() {
+      stopPolling();
+      allEvents = [];
+      latestFeedId = null;
+      lastViewKey = "";
+      invalidateFilterCache();
+      showListPlaceholder("Loading logs…");
+      fetchLogs();
+    }
+
+    togglePollingEl.addEventListener("click", () => {
+      setPollingUi(!isPaused());
+      if (!isPaused()) {
+        fetchLogs();
+      } else {
+        stopPolling();
+        setStatusLine();
+      }
+    });
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        stopPolling();
+      } else if (!isPaused()) {
+        fetchLogs();
+      }
+    });
+
+    if (window.location.protocol === "file:") {
+      logList.innerHTML =
+        '<div class="empty-feed">This page must be served over HTTP (not opened as <code>file://</code>). ' +
+        "Start the API, then open the request log viewer at " +
+        "<code>http://127.0.0.1:8000/log</code> (or whatever <code>REQUEST_LOG_URL_SEGMENT</code> is set to in <code>backEnd/.env</code>).</div>";
+      statusEl.textContent = "Waiting for HTTP server";
+    } else {
+      startPolling();
+    }
+  </script>
+</body>
+
+</html>

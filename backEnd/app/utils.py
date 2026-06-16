@@ -1,7 +1,11 @@
 import re
+from datetime import datetime, time as dt_time, timezone
+from zoneinfo import ZoneInfo
+
+from schemas import RankedTimeStatus
 
 ANIME_REGEX_REPLACE_RULES = [
-    # Ļ can't lower correctly with sqlite lower function hence why next line is needed
+    # Ļ can't lower correctly with sqlite lower function
     {"input": "ļ", "replace": "[ļĻ]"},
     # Ł can't lower correctly with sqlite lower function
     {"input": "ł", "replace": "[łŁ]"},
@@ -26,7 +30,7 @@ ANIME_REGEX_REPLACE_RULES = [
     {"input": "ω", "replace": "[ωΩ]"},
     # Ō can't lower correctly with sqlite lower function
     {"input": "ō", "replace": "[ōŌ]"},
-    # Φ can't lower correctly with  lower function
+    # Φ can't lower correctly with sqlite lower function
     {"input": "φ", "replace": "[φΦ]"},
     # Ø can't lower correctly with sqlite lower function
     {"input": "ø", "replace": "[øØ]"},
@@ -60,7 +64,7 @@ ANIME_REGEX_REPLACE_RULES = [
     # ↄ can't lower correctly with sqlite lower function
     {"input": "ↄ", "replace": "[ↄↃ]"},
     {"input": "c", "replace": "[cςč℃⊃ↄↃϛ]"},
-    # É can't lower correctly with sql lower function
+    # É can't lower correctly with sqlite lower function
     {"input": "é", "replace": "[éÉ]"},
     # Ë can't lower correctly with sqlite lower function
     {"input": "ë", "replace": "[ëË]"},
@@ -91,47 +95,112 @@ ANIME_REGEX_REPLACE_RULES = [
 ]
 
 
-def escapeRegExp(str):
-    str = re.escape(str)
-    str = str.replace("\\ ", " ")
-    str = str.replace("\\*", "*")
-    return str
+def escape_regexp(text: str) -> str:
+    """Escape user input for regex, but keep literal spaces and asterisks searchable."""
+    return re.escape(text).replace("\\ ", " ").replace("\\*", "*")
 
 
 def apply_regex_rules(search):
+    """Expand normalized query text using ANIME_REGEX_REPLACE_RULES."""
     for rule in ANIME_REGEX_REPLACE_RULES:
         search = search.replace(rule["input"], rule["replace"])
     return search
 
 
 def get_regex_search(og_search, partial_match=True, swap_words=False, match_case=False):
-    normalized_search = og_search if match_case else og_search.lower()
-    og_search = escapeRegExp(normalized_search)
-    search = apply_regex_rules(og_search)
-    search = "^" + search + "$" if not partial_match else ".*" + search + ".*"
+    """Build a regex pattern from user text with romaji normalization rules applied."""
+    normalized = og_search if match_case else og_search.lower()
+    escaped = escape_regexp(normalized)
+    pattern = apply_regex_rules(escaped)
+    if partial_match:
+        pattern = f".*{pattern}.*"
+    else:
+        pattern = f"^{pattern}$"
 
+    # Optionally, also allow swapped two-word queries (e.g. surname givenname / givenname surname)
     if swap_words:
-        alt_search = og_search.split(" ")
-        if len(alt_search) == 2:
-            alt_search = " ".join([alt_search[1], alt_search[0]])
-            alt_search = apply_regex_rules(alt_search)
-            alt_search = (
-                "^" + alt_search + "$"
-                if not partial_match
-                else ".*" + alt_search + ".*"
-            )
-            search = f"({search})|({alt_search})"
-    return search
+        words = escaped.split(" ")
+        if len(words) == 2:
+            swapped = " ".join([words[1], words[0]])
+            swapped_pattern = apply_regex_rules(swapped)
+            if partial_match:
+                swapped_pattern = f".*{swapped_pattern}.*"
+            else:
+                swapped_pattern = f"^{swapped_pattern}$"
+            pattern = f"({pattern})|({swapped_pattern})"
+
+    return pattern
 
 
 def regex_match(regex, text, match_case=False):
+    """Return whether regex matches from the start of text."""
     if not text:
         return False
-    return re.match(regex, text if match_case else text.lower())
+    try:
+        return re.match(regex, text if match_case else text.lower()) is not None
+    except re.error:
+        return False
+
+
+def has_search_text(search_filter) -> bool:
+    """True when a text search filter is present with non-whitespace query text."""
+    return search_filter is not None and bool(search_filter.search.strip())
+
+
+def _names_for_artist(artist_database, artist_id) -> list[str]:
+    """Romaji names for an artist id, or the id as a single placeholder when the row is missing."""
+    artist = artist_database.get(str(artist_id))
+    if not artist:
+        return [str(artist_id)]
+    return artist.get("names") or [str(artist_id)]
+
+
+def _format_credit_entry(artist_database, person_id, line_up: int) -> dict:
+    """Build one Artist-shaped credit dict (vocalist, composer, or arranger)."""
+    artist = artist_database.get(str(person_id))
+    if artist is None:
+        return {
+            "id": person_id,
+            "names": _names_for_artist(artist_database, person_id),
+            "line_up_id": line_up,
+        }
+
+    entry = {
+        "id": person_id,
+        "names": artist.get("names") or [str(person_id)],
+        "line_up_id": line_up,
+    }
+
+    # Expand group line-up members when line_up_id is a real index (not -1).
+    line_ups = artist.get("line_ups") or []
+    if line_up >= 0 and line_up < len(line_ups):
+        entry["members"] = [
+            {"id": member[0], "names": _names_for_artist(artist_database, member[0])}
+            for member in line_ups[line_up]["members"]
+        ]
+
+    groups = artist.get("groups") or []
+    if groups:
+        entry["groups"] = []
+        added_group = set()
+        for group in groups:
+            # Same group can appear on multiple line-ups; only emit once per group id.
+            if group[0] in added_group:
+                continue
+            added_group.add(group[0])
+            entry["groups"].append(
+                {"id": group[0], "names": _names_for_artist(artist_database, group[0])}
+            )
+
+    return entry
 
 
 def format_song(artist_database, song):
+    """Turn a raw songsFull DB tuple into the API SongEntry-shaped dict.
 
+    Credit columns store comma-separated artist IDs and parallel line-up indexes.
+    line_up indexes into artist_database[id]['line_ups']; -1 means no line-up slot.
+    """
     if song[16] == 1:
         type = "Opening " + str(song[17])
     elif song[16] == 2:
@@ -141,121 +210,19 @@ def format_song(artist_database, song):
 
     artists = []
     if song[23]:
-
         for artist_id, line_up in zip(song[23].split(","), song[24].split(",")):
-            line_up = int(line_up)
+            artists.append(_format_credit_entry(artist_database, artist_id, int(line_up)))
 
-            artist = artist_database[str(artist_id)]
-
-            current_artist = {
-                "id": artist_id,
-                "names": artist["names"],
-                "line_up_id": line_up,
-            }
-
-            if artist["line_ups"] and len(artist["line_ups"]) >= line_up:
-                current_artist["members"] = []
-                for member in artist["line_ups"][line_up]["members"]:
-                    current_artist["members"].append(
-                        {
-                            "id": member[0],
-                            "names": artist_database[str(member[0])]["names"],
-                        }
-                    )
-
-            if artist["groups"]:
-                current_artist["groups"] = []
-                added_group = set()
-                for group in artist["groups"]:
-                    if group[0] in added_group:
-                        continue
-                    added_group.add(group[0])
-                    current_artist["groups"].append(
-                        {
-                            "id": group[0],
-                            "names": artist_database[str(group[0])]["names"],
-                        }
-                    )
-
-            artists.append(current_artist)
-
+    # Composer and arranger blocks mirror the artist credit shape (IDs at 27/31, line-ups at 28/32).
     composers = []
     if song[27]:
         for composer_id, line_up in zip(song[27].split(","), song[28].split(",")):
-            line_up = int(line_up)
-
-            composer = artist_database[str(composer_id)]
-
-            current_composer = {
-                "id": composer_id,
-                "names": composer["names"],
-                "line_up_id": line_up,
-            }
-
-            if composer["line_ups"] and len(composer["line_ups"]) >= line_up:
-                current_composer["members"] = []
-                for member in composer["line_ups"][line_up]["members"]:
-                    current_composer["members"].append(
-                        {
-                            "id": member[0],
-                            "names": artist_database[str(member[0])]["names"],
-                        }
-                    )
-
-            if composer["groups"]:
-                current_composer["groups"] = []
-                added_group = set()
-                for group in composer["groups"]:
-                    if group[0] in added_group:
-                        continue
-                    added_group.add(group[0])
-                    current_composer["groups"].append(
-                        {
-                            "id": group[0],
-                            "names": artist_database[str(group[0])]["names"],
-                        }
-                    )
-
-            composers.append(current_composer)
+            composers.append(_format_credit_entry(artist_database, composer_id, int(line_up)))
 
     arrangers = []
     if song[31]:
         for arranger_id, line_up in zip(song[31].split(","), song[32].split(",")):
-            line_up = int(line_up)
-
-            arranger = artist_database[str(arranger_id)]
-
-            current_arranger = {
-                "id": arranger_id,
-                "names": arranger["names"],
-                "line_up_id": line_up,
-            }
-
-            if arranger["line_ups"] and len(arranger["line_ups"]) >= line_up:
-                current_arranger["members"] = []
-                for member in arranger["line_ups"][line_up]["members"]:
-                    current_arranger["members"].append(
-                        {
-                            "id": member[0],
-                            "names": artist_database[str(member[0])]["names"],
-                        }
-                    )
-
-            if arranger["groups"]:
-                current_arranger["groups"] = []
-                added_group = set()
-                for group in arranger["groups"]:
-                    if group[0] in added_group:
-                        continue
-                    added_group.add(group[0])
-                    current_arranger["groups"].append(
-                        {
-                            "id": group[0],
-                            "names": artist_database[str(group[0])]["names"],
-                        }
-                    )
-
-            arrangers.append(current_arranger)
+            arrangers.append(_format_credit_entry(artist_database, arranger_id, int(line_up)))
 
     songinfo = {
         "annId": song[0],
@@ -265,9 +232,9 @@ def format_song(artist_database, song):
             "anilist": song[3],
             "kitsu": song[4],
         },
-        "animeJPName": song[6] if song[6] else song[7],
-        "animeENName": song[7] if song[7] else song[6],
-        "animeAltName": song[9].split("\\$") if song[9] else song[9],
+        "animeJPName": song[6] or song[7],
+        "animeENName": song[7] or song[6],
+        "animeAltName": song[9].split("\\$") if song[9] else song[9],  # alt names stored delimited by $
         "animeVintage": song[10],
         "animeType": song[11],
         "animeCategory": song[12],
@@ -276,9 +243,9 @@ def format_song(artist_database, song):
         "songType": type,
         "songCategory": song[18],
         "songName": song[20],
-        "songArtist": song[22] if song[22] else "",
-        "songComposer": song[26] if song[26] else "",
-        "songArranger": song[30] if song[30] else "",
+        "songArtist": song[22] or "",
+        "songComposer": song[26] or "",
+        "songArranger": song[30] or "",
         "songDifficulty": song[33],
         "isDub": song[34],
         "isRebroadcast": song[35],
@@ -292,3 +259,65 @@ def format_song(artist_database, song):
     }
 
     return songinfo
+
+
+# AMQ ranked window: 20:30–21:23 local in Central, Western, or Eastern regions.
+RANKED_REGIONS = [
+    ("Europe/Copenhagen", "Central"),
+    ("America/Chicago", "Western"),
+    ("Asia/Tokyo", "Eastern"),
+]
+RANKED_START_TIME = dt_time(hour=20, minute=30)
+RANKED_END_TIME = dt_time(hour=21, minute=23)
+RANKED_REGION_ZONES = [ZoneInfo(tz) for (tz, _) in RANKED_REGIONS]
+RANKED_REGION_LABELS = [label for (_, label) in RANKED_REGIONS]
+
+
+def is_ranked_time() -> bool:
+    """True when AMQ ranked is active in any tracked region."""
+    now_utc = datetime.now(timezone.utc)
+    for tz_info in RANKED_REGION_ZONES:
+        local_t = now_utc.astimezone(tz_info).time()
+        if RANKED_START_TIME <= local_t < RANKED_END_TIME:
+            return True
+    return False
+
+
+def get_ranked_time_info(date: datetime | None = None) -> RankedTimeStatus:
+    """Ranked status, active region, time remaining, and server time."""
+    if date is None:
+        dt_utc = datetime.now(timezone.utc)
+    else:
+        dt_utc = (
+            date.astimezone(timezone.utc)
+            if date.tzinfo
+            else date.replace(tzinfo=timezone.utc)
+        )
+    server_time = dt_utc.isoformat()
+
+    for index, tz_info in enumerate(RANKED_REGION_ZONES):
+        local_dt = dt_utc.astimezone(tz_info)
+        local_t = local_dt.time()
+        if RANKED_START_TIME <= local_t < RANKED_END_TIME:
+            local_end = local_dt.replace(
+                hour=RANKED_END_TIME.hour,
+                minute=RANKED_END_TIME.minute,
+                second=0,
+                microsecond=0,
+            )
+            remaining_total_seconds = max(0, int((local_end - local_dt).total_seconds()))
+            return RankedTimeStatus(
+                active=True,
+                region=RANKED_REGION_LABELS[index],
+                remaining_minutes=remaining_total_seconds // 60,
+                remaining_seconds=remaining_total_seconds % 60,
+                server_time=server_time,
+            )
+
+    return RankedTimeStatus(
+        active=False,
+        region=None,
+        remaining_minutes=None,
+        remaining_seconds=None,
+        server_time=server_time,
+    )

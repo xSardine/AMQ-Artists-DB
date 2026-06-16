@@ -27,6 +27,7 @@
 }
 
 body {
+  margin: 0;
   background-color: var(--background);
   color: var(--textOnBackground);
   font-family: "Arial", sans-serif;

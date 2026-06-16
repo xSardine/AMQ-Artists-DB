@@ -1,280 +1,216 @@
 import utils
 import sql_calls
-import timeit
-import re
-from datetime import datetime, timezone, time as dt_time
-from zoneinfo import ZoneInfo
+from itertools import chain
+from typing import Any
+
+from song_filters import SongFilters
+
+FormattedSong = dict[str, Any]
+
+# Groups with line-ups that also credit songs without a line-up.
+LINE_UP_EXCEPTIONS = frozenset(
+    {
+        33,     # Tokyo Konsei Gasshou-dan
+        215,    # Suginami Jidou Gasshou-dan
+        19619,  # It's Follies
+        23630,  # Hanamaru Gakudan
+        466,    # Mori no Ki Jidou Gasshou-dan
+        546,    # Pokemon Kids
+        1736,   # Falcom Sound Team jdk
+        1639,   # system-B
+        8086,   # IPD voice
+        20185,  # School Mates
+        4261,   # supercell
+        7695,   # millennium parade
+        6678,   # MOB CHOIR
+        5611,   # Uchuujin
+    }
+)
 
 
-def song_passes_filters(
+def _song_id_set(songs) -> set:
+    """Collect songs.id keys (songsFull.songId, column index 13) for AND-logic membership checks."""
+    if not songs:
+        return set()
+    return {song[13] for song in songs}
+
+
+def _append_formatted_song(
+    artist_database,
     song,
-    authorized_types,
-    authorized_broadcasts,
-    authorized_song_categories,
-    authorized_anime_types,
+    final_song_list,
+    song_ids_done,
+    duplicate_indexes,
+    ignore_duplicate,
 ):
-    if song[16] not in authorized_types:
-        return False
+    """Add a formatted song, or replace an existing duplicate when ignore_duplicate keeps the lower annId."""
+    duplicate_key = (song[20], song[22])
+    duplicate_index = duplicate_indexes.get(duplicate_key, -1)
 
-    if song[18] not in authorized_song_categories:
-        return False
+    if not ignore_duplicate or duplicate_index == -1:
+        song_ids_done.add(song[13])
+        duplicate_indexes[duplicate_key] = len(final_song_list)
+        final_song_list.append(utils.format_song(artist_database, song))
+        return
 
-    if (not song[34] and not song[35]) and "Normal" not in authorized_broadcasts:
-        return False
-
-    if song[34] and "Dub" not in authorized_broadcasts:
-        if not song[35] or "Rebroadcast" not in authorized_broadcasts:
-            return False
-
-    if song[35] and "Rebroadcast" not in authorized_broadcasts:
-        return False
-
-    if len(authorized_anime_types) < len(sql_calls.ALL_ANIME_TYPES):
-        if song[11] not in authorized_anime_types:
-            return False
-
-    return True
+    if final_song_list[duplicate_index]["annId"] > song[0]:
+        song_ids_done.add(song[13])
+        final_song_list[duplicate_index] = utils.format_song(artist_database, song)
 
 
-def add_main_log(
+def _passes_and_logic(
+    song,
     anime_search_filters,
     song_name_search_filters,
     artist_search_filters,
     composer_search_filters,
-    and_logic,
-    ignore_duplicate,
-    authorized_types,
-    authorized_broadcasts,
-    authorized_song_categories,
-    authorized_anime_types,
+    anime_song_ids,
+    song_name_song_ids,
+    artist_song_ids,
+    composer_song_ids,
 ):
-
-    print("-------------------------")
-
-    print("Date: ", str(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))),
-
-    if isinstance(anime_search_filters, list):
-        anime_search_filters = None
-
-    if isinstance(song_name_search_filters, list):
-        song_name_search_filters = None
-
-    if isinstance(artist_search_filters, list):
-        artist_search_filters = None
-
-    if isinstance(composer_search_filters, list):
-        composer_search_filters = None
-
-    if (
-        anime_search_filters
-        and not isinstance(anime_search_filters, list)
-        and song_name_search_filters
-        and not isinstance(song_name_search_filters, list)
-        and artist_search_filters
-        and not isinstance(artist_search_filters, list)
-        and composer_search_filters
-        and not isinstance(composer_search_filters, list)
-        and anime_search_filters.search == song_name_search_filters.search
-        and song_name_search_filters.search == artist_search_filters.search
-        and artist_search_filters.search == composer_search_filters.search
-    ):
-        print(f"Main filter: '{anime_search_filters.search}'")
-    else:
-
-        if anime_search_filters:
-            print(f"Anime filter: '{anime_search_filters.search}'")
-        if song_name_search_filters:
-            print(f"Song Name filter: '{song_name_search_filters.search}'")
-        if artist_search_filters:
-            print(f"Artist filter: '{artist_search_filters.search}'")
-        if composer_search_filters:
-            print(f"Composer filter: '{composer_search_filters.search}'")
-
-    print("Intersection: ", and_logic, end=" | ")
-    print("Ignore Duplicates: ", ignore_duplicate, end=" | ")
-    print("Types: ", authorized_types, end=" | ")
-    print("Broadcasts: ", authorized_broadcasts, end=" | ")
-    print("Song Categories: ", authorized_song_categories, end=" | ")
-    print("Anime Types: ", authorized_anime_types)
-
-    return
-
-
-"""
-Ranked starts at 20:30 local time for three regions and lasts until 21:23 local time:
-    - Central: Europe/Copenhagen (CEST/CET)
-    - Western: America/Chicago (CDT/CST)
-    - East: Asia/Tokyo (JST, no DST)
-
-This uses IANA time zones so DST switches are handled automatically per region.
-"""
-RANKED_REGIONS = [
-    ("Europe/Copenhagen", "Central"),
-    ("America/Chicago", "Western"),
-    ("Asia/Tokyo", "Eastern"),
-]
-RANKED_START_TIME = dt_time(hour=20, minute=30)
-RANKED_END_TIME = dt_time(hour=21, minute=23)
-RANKED_REGION_ZONES = [ZoneInfo(tz) for (tz, _) in RANKED_REGIONS]
-RANKED_REGION_LABELS = [label for (_, label) in RANKED_REGIONS]
-
-
-# Returns true if AMQ ranked is currently active
-def is_ranked_time():
-    now_utc = datetime.now(timezone.utc)
-    for tz_info in RANKED_REGION_ZONES:
-        local_t = now_utc.astimezone(tz_info).time()
-        if RANKED_START_TIME <= local_t < RANKED_END_TIME:
-            return True
-    return False
-
-
-# Returns ranked time status, region, and time remaining for a given datetime
-def get_ranked_time_info(date=None):
-    if date is None:
-        dt_utc = datetime.now(timezone.utc)
-    else:
-        if not isinstance(date, datetime):
-            raise TypeError("Input must be a datetime object or None")
-        dt_utc = (
-            date.astimezone(timezone.utc)
-            if date.tzinfo
-            else date.replace(tzinfo=timezone.utc)
-        )
-    server_time = dt_utc.isoformat()
-
-    for index, tz_info in enumerate(RANKED_REGION_ZONES):
-        local_dt = dt_utc.astimezone(tz_info)
-        local_t = local_dt.time()
-        if RANKED_START_TIME <= local_t < RANKED_END_TIME:
-            local_end = local_dt.replace(
-                hour=RANKED_END_TIME.hour,
-                minute=RANKED_END_TIME.minute,
-                second=0,
-                microsecond=0,
-            )
-            remaining_total_seconds = max(
-                0, int((local_end - local_dt).total_seconds())
-            )
-            return {
-                "active": True,
-                "region": RANKED_REGION_LABELS[index],
-                "remaining_minutes": remaining_total_seconds // 60,
-                "remaining_seconds": remaining_total_seconds % 60,
-                "server_time": server_time,
-            }
-
-    return {
-        "active": False,
-        "region": None,
-        "remaining_minutes": None,
-        "remaining_seconds": None,
-        "server_time": server_time,
-    }
-
-
-def get_duplicate_in_list(list, song):
-    """
-    Returns the index of the duplicate song in the list
-    """
-
-    for i, song2 in enumerate(list):
-        if song[20] == song2["songName"] and song[22] == song2["songArtist"]:
-            return i
-    return -1
+    """AND mode: song must appear in every active filter's result set (by songs.id / songsFull.songId)."""
+    if utils.has_search_text(artist_search_filters):
+        if song[13] not in artist_song_ids:
+            return False
+    if utils.has_search_text(anime_search_filters):
+        if song[13] not in anime_song_ids:
+            return False
+    if utils.has_search_text(song_name_search_filters):
+        if song[13] not in song_name_song_ids:
+            return False
+    if utils.has_search_text(composer_search_filters):
+        if song[13] not in composer_song_ids:
+            return False
+    return True
 
 
 def combine_results(
     artist_database,
-    annId_songs_list,
     anime_songs_list,
-    songName_songs_list,
-    artist_songs_list,
-    composer_songs_list,
+    song_name_songs_list=(),
+    artist_songs_list=(),
+    composer_songs_list=(),
     and_logic=False,
     ignore_duplicate=False,
-    max_nb_songs=500,
+    max_nb_songs=None,
     anime_search_filters=None,
     song_name_search_filters=None,
     artist_search_filters=None,
     composer_search_filters=None,
-):
-    """
-    Combine the results of the different search filters
+) -> list[FormattedSong]:
+    """Merge per-filter raw song lists into formatted API entries.
+
+    OR mode (default): union of all lists, deduped by songs.id (songsFull.songId).
+    AND mode: only songs whose id appears in every active filter branch.
+    ignore_duplicate: collapse same songName+songArtist, preferring the row with lower annId.
     """
 
-    annId_songs_list = [] if not annId_songs_list else annId_songs_list
-    anime_songs_list = [] if not anime_songs_list else anime_songs_list
-    songName_songs_list = [] if not songName_songs_list else songName_songs_list
-    artist_songs_list = [] if not artist_songs_list else artist_songs_list
-    composer_songs_list = [] if not composer_songs_list else composer_songs_list
-
-    songId_done = []
+    song_ids_done = set()
+    duplicate_indexes = {}
     final_song_list = []
-    for song in (
-        annId_songs_list
-        + anime_songs_list
-        + songName_songs_list
-        + artist_songs_list
-        + composer_songs_list
+    if and_logic:
+        anime_song_ids = _song_id_set(anime_songs_list)
+        song_name_song_ids = _song_id_set(song_name_songs_list)
+        artist_song_ids = _song_id_set(artist_songs_list)
+        composer_song_ids = _song_id_set(composer_songs_list)
+
+    for song in chain(
+        anime_songs_list or (),
+        song_name_songs_list or (),
+        artist_songs_list or (),
+        composer_songs_list or (),
     ):
         if max_nb_songs and len(final_song_list) >= max_nb_songs:
             break
 
-        if song[13] in songId_done:
+        if song[13] in song_ids_done:
             continue
 
-        duplicate_ID = get_duplicate_in_list(final_song_list, song)
+        if and_logic and not _passes_and_logic(
+            song,
+            anime_search_filters,
+            song_name_search_filters,
+            artist_search_filters,
+            composer_search_filters,
+            anime_song_ids,
+            song_name_song_ids,
+            artist_song_ids,
+            composer_song_ids,
+        ):
+            continue
 
-        if and_logic:
-            if (
-                (
-                    not artist_search_filters
-                    or not artist_search_filters.search
-                    or song in artist_songs_list
-                )
-                and (
-                    not anime_search_filters
-                    or not anime_search_filters.search
-                    or song in anime_songs_list
-                )
-                and (
-                    not song_name_search_filters
-                    or not song_name_search_filters.search
-                    or song in songName_songs_list
-                )
-                and (
-                    not composer_search_filters
-                    or not composer_search_filters.search
-                    or song in composer_songs_list
-                )
-            ):
-                if not ignore_duplicate or duplicate_ID == -1:
-                    songId_done.append(song[13])
-                    final_song_list.append(utils.format_song(artist_database, song))
-                else:
-                    if final_song_list[duplicate_ID]["annId"] > song[0]:
-                        songId_done.append(song[13])
-                        final_song_list[duplicate_ID] = utils.format_song(
-                            artist_database, song
-                        )
-        else:
-            if not ignore_duplicate or duplicate_ID == -1:
-                songId_done.append(song[13])
-                final_song_list.append(utils.format_song(artist_database, song))
-            else:
-                if final_song_list[duplicate_ID]["annId"] > song[0]:
-                    songId_done.append(song[13])
-                    final_song_list[duplicate_ID] = utils.format_song(
-                        artist_database, song
-                    )
+        _append_formatted_song(
+            artist_database,
+            song,
+            final_song_list,
+            song_ids_done,
+            duplicate_indexes,
+            ignore_duplicate,
+        )
 
     return final_song_list
 
 
-def get_member_list_flat(art_database, artists, bottom=True):
-    # If bottom: will skip subgroups and go directly to the lower tier possible
+def _effective_partial_match(search_filter) -> bool:
+    """Short queries (<=2 chars) force whole-string regex (^...$) even if partial_match is requested."""
+    if len(search_filter.search) <= 2:
+        return False
+    return search_filter.partial_match
 
+
+def _anime_names(anime) -> list[str]:
+    """All searchable anime titles for one anime entry, including $-separated alt names."""
+    names = [anime["animeJPName"], anime["animeENName"]]
+    alt = anime.get("animeAltNames")
+    if alt:
+        names.extend(alt.split("\\$"))
+    return names
+
+
+def search_anime_songs(anime_database, filters: SongFilters, search_filter) -> list:
+    """Regex-match anime JP/EN/alt names, return filtered songs from matching anime."""
+    anime_search = utils.get_regex_search(
+        search_filter.search,
+        _effective_partial_match(search_filter),
+        match_case=search_filter.match_case,
+    )
+    match_case = search_filter.match_case
+    results = []
+    for anime in anime_database.values():
+        if not any(
+            name and utils.regex_match(anime_search, name, match_case)
+            for name in _anime_names(anime)
+        ):
+            continue
+        for song in anime["songs"]:
+            if filters.matches_row(song):
+                results.append(song)
+    return results
+
+
+def search_song_name_songs(song_database, filters: SongFilters, search_filter) -> list:
+    """Regex-match the song title field across the in-memory song database."""
+    song_name_search = utils.get_regex_search(
+        search_filter.search,
+        _effective_partial_match(search_filter),
+        match_case=search_filter.match_case,
+    )
+    match_case = search_filter.match_case
+    results = []
+    for song in song_database.values():
+        if utils.regex_match(song_name_search, song[20], match_case) and filters.matches_row(song):
+            results.append(song)
+    return results
+
+
+def get_member_list_flat(artist_database, artists, bottom=True) -> list[int]:
+    """Flatten credited artists/groups into a list of individual performer IDs.
+
+    artists: list of [artist_id, line_up_index] pairs from a song credit string.
+    bottom=True: only count people inside line-ups, not the group ID on the credit.
+    bottom=False: include the group ID too, then still expand nested line-up members.
+    """
     member_list = []
 
     for artist, line_up in artists:
@@ -285,9 +221,16 @@ def get_member_list_flat(art_database, artists, bottom=True):
             if not bottom:
                 member_list.append(int(artist))
 
+            artist_entry = artist_database.get(str(artist))
+            if not artist_entry:
+                continue
+            line_ups = artist_entry["line_ups"]
+            if line_up >= len(line_ups):
+                continue
+
             for member in get_member_list_flat(
-                art_database,
-                art_database[str(artist)]["line_ups"][line_up]["members"],
+                artist_database,
+                line_ups[line_up]["members"],
                 bottom=bottom,
             ):
                 member_list.append(int(member))
@@ -295,55 +238,40 @@ def get_member_list_flat(art_database, artists, bottom=True):
     return member_list
 
 
-def compare_two_artist_list(list1, list2):
-    same_count = 0  # amount of people present in both
-    add_count = 0  # additional people in list1 compared to list2
-
-    for artist in list1:
-        if artist not in list2:
-            add_count += 1
-        else:
-            same_count += 1
-
+def compare_artist_overlap(song_artists, target_artists) -> tuple[int, int]:
+    """Count shared artist IDs and extra song credits, ignoring credit order."""
+    song_artists = set(song_artists)
+    target_artists = set(target_artists)
+    same_count = len(song_artists & target_artists)
+    add_count = len(song_artists - target_artists)
     return same_count, add_count
 
 
 def check_meets_artists_requirements(
     artist_database, song, artist_ids, group_granularity, max_other_artist
-):
+) -> bool:
+    """True if the song's credited performers satisfy the artist search constraints.
 
-    # Exceptions for groups that have line ups, but also songs with no line ups : they should be considered both a group and artist
-    LINE_UP_EXCEPTIONS = [
-        33,  # Tokyo Konsei
-        215,  # Suginami
-        19619,  # It's Follies
-        23630,  # Hanamaru Gakudan
-        466,  # Mori no Ki Jidou Gasshou-dan
-        546,  # Pokemon Kids
-        1736,  # JDK
-        1639,  # System-B
-        8086,  # IPD voice
-        20185,  # School mates
-        4261,
-        7695,
-        6678,
-        5611,  # Uchuujin
-    ]
+    For each matched artist ID, try every vocalist line-up (plus solo credit for
+    LINE_UP_EXCEPTIONS groups). Requires at least one overlapping member, at most
+    max_other_artist extra performers on the song, and enough overlap per
+    group_granularity (min overlapping flattened IDs: present_artist >= min(granularity, len(line_up))).
+    """
 
     song_artists = [
         [artist, int(line_up)]
         for artist, line_up in zip(song[23].split(","), song[24].split(","))
     ]
-    song_artists_flat = get_member_list_flat(artist_database, song_artists)
+    song_artists_flat = set(get_member_list_flat(artist_database, song_artists))
 
     for artist_id in artist_ids:
-
         line_ups = [[[str(artist_id), -1]]]
 
-        artist = artist_database[str(artist_id)]
+        artist = artist_database.get(str(artist_id))
+        if not artist:
+            continue
 
         if artist["line_ups"]:
-
             line_ups = [
                 line_up["members"]
                 for line_up in artist["line_ups"]
@@ -354,12 +282,12 @@ def check_meets_artists_requirements(
                 line_ups += [[[str(artist_id), -1]]]
 
         for line_up in line_ups:
-
             checked_list = get_member_list_flat(artist_database, line_up)
-            present_artist, additional_artist = compare_two_artist_list(
+            present_artist, additional_artist = compare_artist_overlap(
                 song_artists_flat, checked_list
             )
 
+            # At least one overlap, not too many extra song credits, and min overlap per group_granularity.
             if (
                 present_artist >= 1
                 and additional_artist <= max_other_artist
@@ -377,26 +305,12 @@ def check_meets_composers_requirements(
     group_granularity,
     max_other_artist,
     arrangement,
-):
+) -> bool:
+    """True if the song's composer/arranger credits satisfy the composer search constraints.
 
-    # Exceptions for groups that have line ups, but also songs with no line ups : they should be considered both a group and artist
-    LINE_UP_EXCEPTIONS = [
-        33,  # Tokyo Konsei
-        215,  # Suginami
-        23630,  # Hanamaru Gakudan
-        19619,  # It's Follies
-        466,  # Mori no Ki Jidou Gasshou-dan
-        546,  # Pokemon Kids
-        1736,  # JDK
-        1639,  # System-B
-        8086,  # IPD voice
-        20185,  # School mates
-        4261,
-        7695,
-        6678,
-        5611,  # Uchuujin
-    ]
-
+    Mirrors check_meets_artists_requirements for composing-team credits, optionally
+    including arranger credits when arrangement=True.
+    """
     song_composers = []
     if song[27]:
         song_composers += [
@@ -411,25 +325,24 @@ def check_meets_composers_requirements(
     song_artists_flat = set(get_member_list_flat(artist_database, song_composers))
 
     for composer_id in composer_ids:
-
         line_ups = [[[str(composer_id), -1]]]
+        artist = artist_database.get(str(composer_id))
+        if not artist:
+            continue
 
-        artist = artist_database[str(composer_id)]
-
+        # TODO: Uncomment when more composer line-ups exist
         if artist["line_ups"]:
-
             line_ups = [
                 line_up["members"]
                 for line_up in artist["line_ups"]
-                # if line_up["line_up_type"] == "composers"  # TODO : add it once we start having more composer line up counterpart to normal groups
+                # if line_up["line_up_type"] == "composers"
             ]
-
-            # if composer_id in LINE_UP_EXCEPTIONS: TODO : add it once we start having more composer line up counterpart to normal groups
-            line_ups += [[[str(composer_id), -1]]]  # TODO
+            # if composer_id in LINE_UP_EXCEPTIONS:
+            line_ups += [[[str(composer_id), -1]]]
 
         for line_up in line_ups:
             checked_list = get_member_list_flat(artist_database, line_up)
-            present_artist, additional_artist = compare_two_artist_list(
+            present_artist, additional_artist = compare_artist_overlap(
                 song_artists_flat, checked_list
             )
 
@@ -443,126 +356,102 @@ def check_meets_composers_requirements(
     return False
 
 
-def get_song_list_from_song_ids_json(
-    song_database,
-    songIds,
-    authorized_types,
-    authorized_broadcasts,
-    authorized_song_categories,
-    authorized_anime_types,
-):
+def get_songs_from_song_ids(song_database, song_ids, filters: SongFilters) -> list:
+    """Look up songs.id keys in the in-memory song database; return raw songsFull rows, filtered."""
     song_list = []
 
-    for songId in songIds:
-        song = song_database[songId]
-        if not song_passes_filters(
-            song,
-            authorized_types,
-            authorized_broadcasts,
-            authorized_song_categories,
-            authorized_anime_types,
-        ):
-            continue
-
-        song_list.append(song)
-
+    for song_id in song_ids:
+        song = song_database.get(song_id)
+        if song is not None and filters.matches_row(song):
+            song_list.append(song)
+   
     return song_list
 
 
-def get_all_groups(artist_id, artist_database, include_composers_groups=False):
-    groups = []
+def _expand_search_artist_ids(artist_database, root_ids, group_granularity):
+    """Widen regex-matched artist IDs before SQL song lookup.
 
-    # TODO include_composers_groups do nothing yet, might be a problem in the long run to take into account composers groups
+    Includes parent groups, and when group_granularity > 0 also expands line-up
+    members so songs credited to sub-units are found.
+    """
+    members = []
+    if group_granularity > 0:
+        for artist in root_ids:
+            artist_entry = artist_database.get(str(artist))
+            if not artist_entry:
+                continue
+            if artist_entry["line_ups"]:
+                for line_up in artist_entry["line_ups"]:
+                    for member in get_member_list_flat(
+                        artist_database, line_up["members"], bottom=False
+                    ):
+                        if member not in members:
+                            members.append(member)
+            else:
+                members.append(artist)
 
-    # Get the groups for the current artist
-    for group in artist_database[str(artist_id)]["groups"]:
+    all_groups: list[tuple[int, int]] = []
+    for artist in set(root_ids + members):
+        all_groups.extend(get_all_groups(artist, artist_database))
 
-        groups.append(group)
+    return list(set(root_ids + [group_id for group_id, _ in all_groups] + members))
 
-        # Recursively get the groups for the group itself
-        group_id, _ = group
-        groups += get_all_groups(group_id, artist_database, include_composers_groups)
+
+def get_all_groups(artist_id, artist_database, include_composers_groups=False) -> list[tuple[int, int]]:
+    """Recursively list every parent group (group_id, line_up) for an artist."""
+    entry = artist_database.get(str(artist_id))
+    if not entry:
+        return []
+
+    # TODO: The 'include_composers_groups' parameter is currently unused
+    # Might be a problem in the long run to take into account composers groups
+    groups: list[tuple[int, int]] = []
+    for group in entry["groups"]:
+        group_id, line_up = int(group[0]), int(group[1])
+        groups.append((group_id, line_up))
+        groups.extend(get_all_groups(group_id, artist_database, include_composers_groups))
 
     return groups
 
 
 def process_artist(
-    cursor,
     song_database,
     artist_database,
     search,
     partial_match,
     match_case,
-    authorized_types,
-    authorized_broadcasts,
-    authorized_song_categories,
-    authorized_anime_types,
+    filters: SongFilters,
     group_granularity,
     max_other_artist,
-):
+) -> tuple[list, list[int]]:
+    """Resolve artist name to IDs, widen to groups/members, fetch songs, filter by credit rules."""
     artist_search = utils.get_regex_search(
         search, partial_match, swap_words=True, match_case=match_case
     )
 
     artist_ids = sql_calls.get_artist_ids_from_regex(
-        cursor, artist_search, match_case=match_case
+        artist_search, match_case=match_case
     )
 
-    # If no IDs found, fall back to indexing on songArtist string
+    # If no IDs found, fall back to REGEXP on romajiSongArtist
     if not artist_ids:
         artist_songs_list = sql_calls.get_song_list_from_songArtist(
-            cursor,
-            artist_search,
-            authorized_types,
-            authorized_broadcasts,
-            authorized_song_categories,
-            authorized_anime_types,
-            match_case=match_case,
+            artist_search, filters, match_case=match_case
         )
         return artist_songs_list, artist_ids
 
-    # TODO Reuse those process for future processes such as check meet requirement and post process of songs
-    members = []
-    if group_granularity != 0:
-        if group_granularity > 0:
-            for artist in artist_ids:
-                if artist_database[str(artist)]["line_ups"]:
-                    for line_up in artist_database[str(artist)]["line_ups"]:
-                        for member in get_member_list_flat(
-                            artist_database, line_up["members"], bottom=False
-                        ):
-                            if member not in members:
-                                members.append(member)
-                else:
-                    members.append(artist)
-
-    all_groups = []
-    for artist in set(artist_ids + members):
-        all_groups += get_all_groups(artist, artist_database)
-
-    # Extract every song IDs containing an artist we have
-    songIds = sql_calls.get_songs_ids_from_artist_ids(
-        cursor,
-        list(set(artist_ids + [group[0] for group in all_groups] + members)),
+    song_ids = sql_calls.get_song_ids_from_artist_ids(
+        _expand_search_artist_ids(artist_database, artist_ids, group_granularity),
     )
 
-    artist_songs_list = get_song_list_from_song_ids_json(
-        song_database,
-        songIds,
-        authorized_types,
-        authorized_broadcasts,
-        authorized_song_categories,
-        authorized_anime_types,
+    artist_songs_list = get_songs_from_song_ids(
+        song_database, song_ids, filters
     )
 
     final_song_list = []
     for song in artist_songs_list:
         if check_meets_artists_requirements(
-            artist_database,
-            song,
-            artist_ids,
-            group_granularity,
-            max_other_artist,
+            artist_database, song, artist_ids, group_granularity, max_other_artist
         ):
             final_song_list.append(song)
 
@@ -570,79 +459,43 @@ def process_artist(
 
 
 def process_composer(
-    cursor,
     song_database,
     artist_database,
     search,
     partial_match,
     match_case,
     arrangement,
-    authorized_types,
-    authorized_broadcasts,
-    authorized_song_categories,
-    authorized_anime_types,
+    filters: SongFilters,
     group_granularity,
     max_other_artist,
-):
+) -> tuple[list, list[int]]:
+    """Resolve composer name to IDs, widen to groups/members, fetch songs, filter by credit rules."""
 
     composer_search = utils.get_regex_search(
         search, partial_match, swap_words=True, match_case=match_case
     )
 
     composer_ids = sql_calls.get_artist_ids_from_regex(
-        cursor, composer_search, match_case=match_case
+        composer_search, match_case=match_case
     )
 
-    # If no IDs found, do not fall back to raw string for computing time
+    # If no IDs found, skip romajiSongComposer fallback (unlike artist search; saves compute time).
     if not composer_ids:
         return [], []
 
-    # TODO Reuse those process for future processes such as check meet requirement and post process of songs
-    members = []
-    if group_granularity != 0:
-        if group_granularity > 0:
-            for artist in composer_ids:
-                if artist_database[str(artist)]["line_ups"]:
-                    for line_up in artist_database[str(artist)]["line_ups"]:
-                        for member in get_member_list_flat(
-                            artist_database, line_up["members"], bottom=False
-                        ):
-                            if member not in members:
-                                members.append(member)
-                else:
-                    members.append(artist)
-
-    all_groups = []
-    for artist in set(composer_ids + members):
-        all_groups += get_all_groups(artist, artist_database)
-
-    # Extract every song IDs containing an artist we have
-    songIds = sql_calls.get_songs_ids_from_composing_team_ids(
-        cursor,
-        composer_ids=list(
-            set(composer_ids + [group[0] for group in all_groups] + members)
-        ),
+    song_ids = sql_calls.get_song_ids_from_composing_team_ids(
+        composer_ids=_expand_search_artist_ids(artist_database, composer_ids, group_granularity),
         arrangement=arrangement,
     )
 
-    artist_songs_list = get_song_list_from_song_ids_json(
-        song_database,
-        songIds,
-        authorized_types,
-        authorized_broadcasts,
-        authorized_song_categories,
-        authorized_anime_types,
+    composer_songs_list = get_songs_from_song_ids(
+        song_database, song_ids, filters
     )
 
     final_song_list = []
-    for song in artist_songs_list:
+    for song in composer_songs_list:
         if check_meets_composers_requirements(
-            artist_database,
-            song,
-            composer_ids,
-            group_granularity,
-            max_other_artist,
-            arrangement,
+            artist_database, song, composer_ids, group_granularity, max_other_artist, arrangement
         ):
             final_song_list.append(song)
 
@@ -657,670 +510,200 @@ def get_search_results(
     and_logic,
     ignore_duplicate,
     max_nb_songs,
-    authorized_types,
-    authorized_broadcasts,
-    authorized_song_categories,
-    authorized_anime_types,
-):
-    startstart = timeit.default_timer()
-
-    cursor = sql_calls.connect_to_database(sql_calls.database_path)
-
-    song_database = sql_calls.extract_song_database()
-    anime_database = sql_calls.extract_anime_database()
+    filters: SongFilters,
+) -> list[FormattedSong]:
+    """Main /api/search_request pipeline: run each active text filter, then merge results."""
     artist_database = sql_calls.extract_artist_database()
 
-    add_main_log(
-        anime_search_filters,
-        song_name_search_filters,
-        artist_search_filters,
-        composer_search_filters,
-        and_logic,
-        ignore_duplicate,
-        authorized_types,
-        authorized_broadcasts,
-        authorized_song_categories,
-        authorized_anime_types,
-    )
-
-    is_ranked = is_ranked_time()
-
-    print(f"Preprocess: {round(timeit.default_timer() - startstart, 4)}", end=" | ")
-    start = timeit.default_timer()
-
-    # Filters to process only on main filter
-    annId_songs_list = []
-    if (
-        anime_search_filters
-        and song_name_search_filters
-        and artist_search_filters
-        and anime_search_filters.search == song_name_search_filters.search
-        and song_name_search_filters.search == artist_search_filters.search
-    ):
-        # Links filter
-        if False:
-            songs = sql_calls.get_song_list_from_links(
-                cursor, anime_search_filters.search
-            )
-            if songs:
-                return [utils.format_song(artist_database, song) for song in songs]
-
-        # annId Filter
-        if str(anime_search_filters.search).isdigit():
-            annId_songs_list = sql_calls.get_songs_list_from_ann_ids(
-                cursor,
-                [anime_search_filters.search],
-                authorized_types,
-                authorized_broadcasts,
-                authorized_song_categories,
-                authorized_anime_types,
-            )
-
-    print(f"annId on Main: {round(timeit.default_timer() - start, 4)}", end=" | ")
-    start = timeit.default_timer()
-
-    # Anime Filter to process either way
     anime_songs_list = []
-    if anime_search_filters:
+    if utils.has_search_text(anime_search_filters):
+        anime_database = sql_calls.extract_anime_database()
+        anime_songs_list = search_anime_songs(anime_database, filters, anime_search_filters)
 
-        if len(anime_search_filters.search) <= 2:
-            partial_match = False
-        else:
-            partial_match = anime_search_filters.partial_match
-
-        match_case = anime_search_filters.match_case
-        anime_search = utils.get_regex_search(
-            anime_search_filters.search, partial_match, match_case=match_case
-        )
-
-        anime_songs_list = []
-        for annId in anime_database:
-            anime = anime_database[annId]
-            found = False
-
-            for name in [anime["animeJPName"], anime["animeENName"]] + (
-                anime["animeAltNames"].split("\\$")
-                if "animeAltNames" in anime and anime["animeAltNames"]
-                else []
-            ):
-                if not name or found:
-                    continue
-
-                if utils.regex_match(anime_search, name, match_case):
-                    found = True
-
-            if found:
-                for song in anime["songs"]:
-                    if not song_passes_filters(
-                        song,
-                        authorized_types,
-                        authorized_broadcasts,
-                        authorized_song_categories,
-                        authorized_anime_types,
-                    ):
-                        continue
-
-                    anime_songs_list.append(song)
-
-    print(f"Anime: {round(timeit.default_timer() - start, 4)}", end=" | ")
-    start = timeit.default_timer()
-
-    # Song Name filter not available during ranked
-    songName_songs_list = []
-    if song_name_search_filters and not is_ranked:
-
-        if len(song_name_search_filters.search) <= 2:
-            partial_match = False
-        else:
-            partial_match = song_name_search_filters.partial_match
-
-        match_case = song_name_search_filters.match_case
-        songName_search = utils.get_regex_search(
-            song_name_search_filters.search, partial_match, match_case=match_case
-        )
-
-        songName_songs_list = []
-        for songId in song_database:
-            song = song_database[songId]
-            if utils.regex_match(songName_search, song[20], match_case):
-                if not song_passes_filters(
-                    song,
-                    authorized_types,
-                    authorized_broadcasts,
-                    authorized_song_categories,
-                    authorized_anime_types,
-                ):
-                    continue
-
-                songName_songs_list.append(song)
-
-    print(f"Song Name: {round(timeit.default_timer() - start, 4)}", end=" | ")
-    start = timeit.default_timer()
-
-    # Artist filter not available during ranked
+    song_name_songs_list = []
     artist_songs_list = []
-    artist_ids = None
+    composer_songs_list = []
 
-    if artist_search_filters and not is_ranked:
+    # Song DB is large; only load when a filter scans individual songs or artist/composer paths need it.
+    needs_song_database = bool(
+        utils.has_search_text(song_name_search_filters)
+        or utils.has_search_text(artist_search_filters)
+        or utils.has_search_text(composer_search_filters)
+    )
+    song_database = sql_calls.extract_song_database() if needs_song_database else None
 
-        if len(artist_search_filters.search) <= 2:
-            partial_match = False
-        else:
-            partial_match = artist_search_filters.partial_match
+    if utils.has_search_text(song_name_search_filters):
+        song_name_songs_list = search_song_name_songs(
+            song_database, filters, song_name_search_filters
+        )
 
-        artist_songs_list, artist_ids = process_artist(
-            cursor,
+    if utils.has_search_text(artist_search_filters):
+        artist_songs_list, _ = process_artist(
             song_database,
             artist_database,
             artist_search_filters.search,
-            partial_match,
+            _effective_partial_match(artist_search_filters),
             artist_search_filters.match_case,
-            authorized_types,
-            authorized_broadcasts,
-            authorized_song_categories,
-            authorized_anime_types,
+            filters,
             artist_search_filters.group_granularity,
             artist_search_filters.max_other_artist,
         )
 
-    print(f"Artists: {round(timeit.default_timer() - start, 4)}", end=" | ")
-    start = timeit.default_timer()
-
-    # Composer filter not available during ranked
-    composer_songs_list = []
-    composer_ids = None
-
-    if composer_search_filters and not is_ranked:
-
-        if len(composer_search_filters.search) <= 2:
-            partial_match = False
-        else:
-            partial_match = composer_search_filters.partial_match
-
-        composer_songs_list, composer_ids = process_composer(
-            cursor,
+    if utils.has_search_text(composer_search_filters):
+        composer_songs_list, _ = process_composer(
             song_database,
             artist_database,
             composer_search_filters.search,
-            partial_match,
+            _effective_partial_match(composer_search_filters),
             composer_search_filters.match_case,
             composer_search_filters.arrangement,
-            authorized_types,
-            authorized_broadcasts,
-            authorized_song_categories,
-            authorized_anime_types,
+            filters,
             composer_search_filters.group_granularity,
             composer_search_filters.max_other_artist,
         )
 
-    print(f"Composers: {round(timeit.default_timer() - start, 4)}", end=" | ")
-    start = timeit.default_timer()
-
-    song_list = combine_results(
+    return combine_results(
         artist_database,
-        annId_songs_list,
         anime_songs_list,
-        songName_songs_list,
+        song_name_songs_list,
         artist_songs_list,
         composer_songs_list,
         and_logic,
         ignore_duplicate,
         max_nb_songs,
-        anime_search_filters=anime_search_filters,
-        song_name_search_filters=song_name_search_filters,
-        artist_search_filters=artist_search_filters,
-        composer_search_filters=composer_search_filters,
+        anime_search_filters,
+        song_name_search_filters,
+        artist_search_filters,
+        composer_search_filters,
     )
 
-    print(f"Post Process: {round(timeit.default_timer() - start, 4)}", end=" | ")
-    start = timeit.default_timer()
 
-    computing_time = round(timeit.default_timer() - startstart, 4)
-    nb_results = len(song_list)
-    # TODO logs
-    print(f"full_computing_time: {computing_time}", end=" | ")
-    print(f"nb_results: {nb_results}")
-    print()
-
-    return song_list
-
-
-def get_artists_ids_song_list(
+def get_artist_ids_song_list(
     artist_ids,
     max_other_artist,
     group_granularity,
     ignore_duplicate,
-    authorized_types,
-    authorized_broadcasts,
-    authorized_song_categories,
-    authorized_anime_types,
-):
-    start = timeit.default_timer()
-
-    cursor = sql_calls.connect_to_database(sql_calls.database_path)
-
-    artist_database = sql_calls.extract_artist_database()
-
-    print("-------------------------")
-    print("Date: ", str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")))
-    print(f"artist_id_filter: {artist_ids}")
-    print(f"ignore_dups: {ignore_duplicate}", end=" | ")
-    print(f"types: {authorized_types}", end=" | ")
-    print(f"broadcasts: {authorized_broadcasts}", end=" | ")
-    print(f"song_categories: {authorized_song_categories}", end=" | ")
-    print(f"anime_types: {authorized_anime_types}")
-
+    filters: SongFilters,
+) -> list[FormattedSong]:
+    """Songs credited to explicit artist IDs (and their groups), without name-regex search.
+    Uses group_granularity and max_other_artist the same way as artist name search.
+    """
     if not artist_ids:
         return []
 
-    groups = []
-    for artist in artist_ids:
-        for group in artist_database[str(artist)]["groups"]:
-            groups.append(group)
+    artist_database = sql_calls.extract_artist_database()
 
-    songIds = sql_calls.get_songs_ids_from_artist_ids(
-        cursor, list(set(artist_ids + [group[0] for group in groups]))
+    song_ids = sql_calls.get_song_ids_from_artist_ids(
+        _expand_search_artist_ids(artist_database, artist_ids, group_granularity),
     )
 
     song_database = sql_calls.extract_song_database()
+    songs = get_songs_from_song_ids(song_database, song_ids, filters)
+    final_songs = [
+        song
+        for song in songs
+        if check_meets_artists_requirements(
+            artist_database, song, artist_ids, group_granularity, max_other_artist
+        )
+    ]
 
-    songs = get_song_list_from_song_ids_json(
-        song_database,
-        songIds,
-        authorized_types,
-        authorized_broadcasts,
-        authorized_song_categories,
-        authorized_anime_types,
-    )
-
-    final_songs = []
-    for song in songs:
-        flag = False
-        for artist, line_up in zip(song[23].split(","), song[24].split(",")):
-            if int(artist) in artist_ids:
-                flag = True
-            for group, group_line_up in groups:
-                if artist == group and int(line_up) == group_line_up:
-                    flag = True
-        if flag:
-            final_songs.append(song)
-
-    final_songs = combine_results(
-        artist_database, final_songs, [], [], [], [], False, ignore_duplicate
-    )
-
-    stop = timeit.default_timer()
-
-    print(f"computing_time: {round(stop - start, 4)}", end=" | ")
-    print(f"nb_results: {len(songs)}")
-
-    return final_songs
+    return combine_results(artist_database, final_songs, ignore_duplicate=ignore_duplicate)
 
 
 def get_composer_ids_song_list(
     composer_ids,
     arrangement,
+    group_granularity,
+    max_other_artist,
     ignore_duplicate,
-    authorized_types,
-    authorized_broadcasts,
-    authorized_song_categories,
-    authorized_anime_types,
-):
-    start = timeit.default_timer()
-
-    cursor = sql_calls.connect_to_database(sql_calls.database_path)
-
-    artist_database = sql_calls.extract_artist_database()
-
-    print("-------------------------")
-    print("Date: ", str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")))
-    print(f"composer_id_filter: {composer_ids}")
-    print(f"ignore_dups: {ignore_duplicate}", end=" | ")
-    print(f"types: {authorized_types}", end=" | ")
-    print(f"broadcasts: {authorized_broadcasts}", end=" | ")
-    print(f"song_categories: {authorized_song_categories}", end=" | ")
-    print(f"anime_types: {authorized_anime_types}")
-
+    filters: SongFilters,
+) -> list[FormattedSong]:
+    """Songs credited to explicit composer/arranger IDs (and their groups)."""
     if not composer_ids:
         return []
 
-    groups = []
-    for artist in composer_ids:
-        for group in artist_database[str(artist)]["groups"]:
-            groups.append(group)
+    artist_database = sql_calls.extract_artist_database()
 
-    songIds = sql_calls.get_songs_ids_from_composing_team_ids(
-        cursor, list(set(composer_ids + [group[0] for group in groups])), arrangement
+    song_ids = sql_calls.get_song_ids_from_composing_team_ids(
+        _expand_search_artist_ids(artist_database, composer_ids, group_granularity),
+        arrangement=arrangement,
     )
 
     song_database = sql_calls.extract_song_database()
+    songs = get_songs_from_song_ids(song_database, song_ids, filters)
+    final_songs = [
+        song
+        for song in songs
+        if check_meets_composers_requirements(
+            artist_database, song, composer_ids, group_granularity, max_other_artist, arrangement
+        )
+    ]
 
-    songs = get_song_list_from_song_ids_json(
-        song_database,
-        songIds,
-        authorized_types,
-        authorized_broadcasts,
-        authorized_song_categories,
-        authorized_anime_types,
-    )
-
-    final_songs = []
-    for song in songs:
-        flag = False
-        for composer, line_up in zip(song[27].split(","), song[28].split(",")):
-            if int(composer) in composer_ids:
-                flag = True
-            for group, group_line_up in groups:
-                if composer == group and int(line_up) == group_line_up:
-                    flag = True
-
-        for arranger, line_up in zip(song[31].split(","), song[32].split(",")):
-            if int(arranger) in composer_ids:
-                flag = True
-            for group, group_line_up in groups:
-                if arranger == group and int(line_up) == group_line_up:
-                    flag = True
-
-        if flag:
-            final_songs.append(song)
-
-    final_songs = combine_results(
-        artist_database, final_songs, [], [], [], [], False, ignore_duplicate
-    )
-
-    stop = timeit.default_timer()
-
-    print(f"computing_time: {round(stop - start, 4)}", end=" | ")
-    print(f"nb_results: {len(songs)}")
-
-    return final_songs
+    return combine_results(artist_database, final_songs, ignore_duplicate=ignore_duplicate)
 
 
 def get_ann_ids_song_list(
     ann_ids,
     ignore_duplicate,
-    authorized_types,
-    authorized_broadcasts,
-    authorized_song_categories,
-    authorized_anime_types,
-):
-    start = timeit.default_timer()
-
-    cursor = sql_calls.connect_to_database(sql_calls.database_path)
+    filters: SongFilters,
+) -> list[FormattedSong]:
+    """All songs for one or more Anime News Network anime IDs."""
+    if not ann_ids:
+        return []
 
     artist_database = sql_calls.extract_artist_database()
-
-    print("-------------------------")
-    print("Date: ", str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")))
-    print(
-        f"ann_ids_filter: {ann_ids if len(ann_ids) < 5 else f'{len(ann_ids)} ann_ids'}"
-    )
-    print(f"ignore_dups: {ignore_duplicate}", end=" | ")
-    print(f"types: {authorized_types}", end=" | ")
-    print(f"broadcasts: {authorized_broadcasts}", end=" | ")
-    print(f"song_categories: {authorized_song_categories}")
-
-    if len(ann_ids) == 0:
-        return []
-
-    if not all(str(ann_id).isdigit() for ann_id in ann_ids):
-        return []
-
-    songs = sql_calls.get_songs_list_from_ann_ids(
-        cursor,
-        ann_ids,
-        authorized_types,
-        authorized_broadcasts,
-        authorized_song_categories,
-        authorized_anime_types,
-    )
-
-    songs = combine_results(
-        artist_database,
-        songs,
-        [],
-        [],
-        [],
-        [],
-        False,
-        ignore_duplicate,
-        max_nb_songs=None,
-    )
-
-    stop = timeit.default_timer()
-
-    print(f"computing_time: {round(stop - start, 4)}", end=" | ")
-    print(f"nb_results: {len(songs)}")
-
-    return songs
+    songs = sql_calls.get_songs_list_from_ann_ids(ann_ids, filters)
+    return combine_results(artist_database, songs, ignore_duplicate=ignore_duplicate)
 
 
 def get_mal_ids_song_list(
     mal_ids,
     ignore_duplicate,
-    authorized_types=[1, 2, 3],
-    authorized_broadcasts=["Normal", "Dub", "Rebroadcast"],
-    authorized_song_categories=["Standard", "Chanting", "Instrumental", "Character"],
-    authorized_anime_types=sql_calls.ALL_ANIME_TYPES,
-):
-
-    start = timeit.default_timer()
-
-    cursor = sql_calls.connect_to_database(sql_calls.database_path)
-
-    artist_database = sql_calls.extract_artist_database()
-
-    print("-------------------------")
-    print("Date: ", str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")))
-    print(f"mal_ids_filter: {len(mal_ids)}")
-    print(f"ignore_dups: {ignore_duplicate}", end=" | ")
-    print(f"types: {authorized_types}", end=" | ")
-    print(f"broadcasts: {authorized_broadcasts}", end=" | ")
-    print(f"song_categories: {authorized_song_categories}")
-
-    for mal_id in mal_ids:
-        if not str(mal_id).isdigit():
-            return []
-
-    songs = sql_calls.get_songs_list_from_mal_ids(
-        cursor,
-        mal_ids,
-        authorized_types,
-        authorized_broadcasts,
-        authorized_song_categories,
-        authorized_anime_types,
-    )
-
-    if not songs:
+    filters: SongFilters,
+) -> list[FormattedSong]:
+    """All songs linked to MyAnimeList anime IDs."""
+    if not mal_ids:
         return []
 
-    songs = combine_results(
-        artist_database,
-        songs,
-        [],
-        [],
-        [],
-        [],
-        False,
-        ignore_duplicate,
-        max_nb_songs=None,
-    )
-
-    stop = timeit.default_timer()
-
-    print(f"computing_time: {round(stop - start, 4)}", end=" | ")
-    print(f"nb_results: {len(songs)}")
-
-    return songs
+    artist_database = sql_calls.extract_artist_database()
+    songs = sql_calls.get_songs_list_from_mal_ids(mal_ids, filters)
+    return combine_results(artist_database, songs, ignore_duplicate=ignore_duplicate)
 
 
 def get_ann_song_ids_song_list(
     ann_song_ids,
     ignore_duplicate,
-    authorized_types=[1, 2, 3],
-    authorized_broadcasts=["Normal", "Dub", "Rebroadcast"],
-    authorized_song_categories=["Standard", "Chanting", "Instrumental", "Character"],
-    authorized_anime_types=sql_calls.ALL_ANIME_TYPES,
-):
-
-    start = timeit.default_timer()
-
-    cursor = sql_calls.connect_to_database(sql_calls.database_path)
+    filters: SongFilters,
+) -> list[FormattedSong]:
+    """Fetch specific songs by Anime News Network song IDs."""
+    if not ann_song_ids:
+        return []
 
     artist_database = sql_calls.extract_artist_database()
-
-    print("-------------------------")
-    print("Date: ", str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")))
-    print(
-        f"ann_song_ids_filter: {ann_song_ids if len(ann_song_ids) < 5 else f'{len(ann_song_ids)} ann_song_ids'}"
-    )
-    print(f"ignore_dups: {ignore_duplicate}", end=" | ")
-    print(f"types: {authorized_types}", end=" | ")
-    print(f"broadcasts: {authorized_broadcasts}", end=" | ")
-    print(f"song_categories: {authorized_song_categories}")
-
-    if len(ann_song_ids) == 0:
-        return []
-
-    if not all(str(ann_song_id).isdigit() for ann_song_id in ann_song_ids):
-        return []
-
-    songs = sql_calls.get_songs_list_from_ann_song_ids(
-        cursor,
-        ann_song_ids,
-        authorized_types,
-        authorized_broadcasts,
-        authorized_song_categories,
-        authorized_anime_types,
-    )
-
-    songs = combine_results(
-        artist_database,
-        songs,
-        [],
-        [],
-        [],
-        [],
-        False,
-        ignore_duplicate,
-        max_nb_songs=None,
-    )
-
-    stop = timeit.default_timer()
-
-    print(f"computing_time: {round(stop - start, 4)}", end=" | ")
-    print(f"nb_results: {len(songs)}")
-
-    return songs
+    songs = sql_calls.get_songs_list_from_ann_song_ids(ann_song_ids, filters)
+    return combine_results(artist_database, songs, ignore_duplicate=ignore_duplicate)
 
 
 def get_amq_song_ids_song_list(
     amq_song_ids,
     ignore_duplicate,
-    authorized_types=[1, 2, 3],
-    authorized_broadcasts=["Normal", "Dub", "Rebroadcast"],
-    authorized_song_categories=["Standard", "Chanting", "Instrumental", "Character"],
-    authorized_anime_types=sql_calls.ALL_ANIME_TYPES,
-):
-
-    start = timeit.default_timer()
-
-    cursor = sql_calls.connect_to_database(sql_calls.database_path)
+    filters: SongFilters,
+) -> list[FormattedSong]:
+    """Fetch specific songs by AMQ song IDs."""
+    if not amq_song_ids:
+        return []
 
     artist_database = sql_calls.extract_artist_database()
-
-    print("-------------------------")
-    print("Date: ", str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")))
-    print(
-        f"amq_song_ids_filter: {amq_song_ids if len(amq_song_ids) < 5 else f'{len(amq_song_ids)} amq_song_ids'}"
-    )
-    print(f"ignore_dups: {ignore_duplicate}", end=" | ")
-    print(f"types: {authorized_types}", end=" | ")
-    print(f"broadcasts: {authorized_broadcasts}", end=" | ")
-    print(f"song_categories: {authorized_song_categories}")
-
-    if len(amq_song_ids) == 0:
-        return []
-
-    if not all(str(amq_song_id).isdigit() for amq_song_id in amq_song_ids):
-        return []
-
-    songs = sql_calls.get_songs_list_from_amq_song_ids(
-        cursor,
-        amq_song_ids,
-        authorized_types,
-        authorized_broadcasts,
-        authorized_song_categories,
-        authorized_anime_types,
-    )
-
-    songs = combine_results(
-        artist_database,
-        songs,
-        [],
-        [],
-        [],
-        [],
-        False,
-        ignore_duplicate,
-        max_nb_songs=None,
-    )
-
-    stop = timeit.default_timer()
-
-    print(f"computing_time: {round(stop - start, 4)}", end=" | ")
-    print(f"nb_results: {len(songs)}")
-
-    return songs
+    songs = sql_calls.get_songs_list_from_amq_song_ids(amq_song_ids, filters)
+    return combine_results(artist_database, songs, ignore_duplicate=ignore_duplicate)
 
 
 def get_season_song_list(
     season,
     ignore_duplicate,
-    authorized_types=[1, 2, 3],
-    authorized_broadcasts=["Normal", "Dub", "Rebroadcast"],
-    authorized_song_categories=["Standard", "Chanting", "Instrumental", "Character"],
-    authorized_anime_types=sql_calls.ALL_ANIME_TYPES,
-):
-
-    start = timeit.default_timer()
-
-    cursor = sql_calls.connect_to_database(sql_calls.database_path)
-
+    filters: SongFilters,
+) -> list[FormattedSong]:
+    """All songs from a season label (e.g. 'Winter 2020')."""
     artist_database = sql_calls.extract_artist_database()
-
-    print("-------------------------")
-    print("Date: ", str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")))
-    print(f"season_filter: {season}")
-    print(f"ignore_dups: {ignore_duplicate}", end=" | ")
-    print(f"types: {authorized_types}", end=" | ")
-    print(f"broadcasts: {authorized_broadcasts}", end=" | ")
-    print(f"song_categories: {authorized_song_categories}")
-
-    songs = sql_calls.get_songs_list_from_season(
-        cursor,
-        season,
-        authorized_types,
-        authorized_broadcasts,
-        authorized_song_categories,
-        authorized_anime_types,
-    )
-
-    songs = combine_results(
-        artist_database,
-        songs,
-        [],
-        [],
-        [],
-        [],
-        False,
-        ignore_duplicate,
-        max_nb_songs=None,
-    )
-
-    stop = timeit.default_timer()
-
-    print(f"computing_time: {round(stop - start, 4)}", end=" | ")
-    print(f"nb_results: {len(songs)}")
-
-    return songs
+    songs = sql_calls.get_songs_list_from_season(season, filters)
+    return combine_results(artist_database, songs, ignore_duplicate=ignore_duplicate)
