@@ -371,6 +371,7 @@ export class SongTableComponent implements OnInit, OnDestroy, OnChanges {
   popUpSongDiff: string = '';
   popUpSongLength: string = '';
   popUpSongCat: string = '';
+  popUpSongType: string = '';
   popUpannURL: string = '';
   popUpMalID: string = '';
   popUpAnidbID: string = '';
@@ -945,6 +946,7 @@ export class SongTableComponent implements OnInit, OnDestroy, OnChanges {
     this.popUpannId = song.annId;
     this.popUpVintage = song.animeVintage;
     this.popUpAnimeType = song.animeType;
+    this.popUpSongType = song.songType;
     this.popUpAnimeCategory = song.animeCategory;
     this.popUpannSongId = song.annSongId != -1 ? song.annSongId : null;
     this.popUpAnime =

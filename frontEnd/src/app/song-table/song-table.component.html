@@ -92,6 +92,22 @@
             {{ popUpannSongId }}
           </p>
         </div>
+        <div *ngIf="popUpSongType" class="popUpSongInfo" style="width: 245px">
+          <p
+            title="*as of 2024-02-03"
+            style="text-decoration: underline; margin-bottom: 5px"
+          >
+            Song Type
+          </p>
+          <p
+            class="clickable"
+            (click)="copyToClipboard($event, popUpSongType)"
+            title="Copy Song Type to clipboard"
+            style="margin-top: 0"
+          >
+            {{ popUpSongType }}
+          </p>
+        </div>
         <div *ngIf="popUpSongCat" class="popUpSongInfo" style="width: 245px">
           <p
             title="*as of 2024-02-03"
