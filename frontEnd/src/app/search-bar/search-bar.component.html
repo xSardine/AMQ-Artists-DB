@@ -56,6 +56,7 @@
       [title]="rankedStatus.active ? 'Search by anime' : 'Search by anime, song name or artist'"
       class="textInputFilter main-search-input"
       type="search"
+      maxlength="500"
       (keyup.enter)="onSearchCallKey()"
       (input)="mainFilter = mainFilterInput.value"
     />
@@ -191,6 +192,7 @@
         #animeFilterInput
         class="textInputFilter filter-input"
         type="search"
+        maxlength="500"
         placeholder="Search by anime..."
         title="Search by anime name"
         (keyup.enter)="onSearchCallKey()"
@@ -219,6 +221,7 @@
         placeholder="Search by song name..."
         title="Search by song name"
         type="search"
+        maxlength="500"
         (keyup.enter)="onSearchCallKey()"
         (input)="songNameFilter = songNameFilterInput.value"
       />
@@ -244,6 +247,7 @@
         class="textInputFilter filter-input"
         placeholder="Search by artist..."
         type="search"
+        maxlength="500"
         title="Search by artist"
         (keyup.enter)="onSearchCallKey()"
         (input)="artistFilter = artistFilterInput.value"
@@ -270,6 +274,7 @@
         class="textInputFilter filter-input"
         placeholder="Search by composer..."
         type="search"
+        maxlength="500"
         title="Search by composer"
         (keyup.enter)="onSearchCallKey()"
         (input)="composerFilter = composerFilterInput.value"
