@@ -368,12 +368,13 @@
 
 .grid {
   display: grid;
-  gap: 4px;
+  gap: 8px;
 }
 
 .grid > div {
   padding: 10px;
-  background-color: #444;
+  border: 1px solid rgba(126, 126, 126, 0.4);
+  background-color: rgba(0, 0, 0, 0.18);
 }
 
 .subGrid {
@@ -382,39 +383,33 @@
 }
 
 .subGrid > div {
-  font-size: 17px;
-  padding: 2px;
-  background-color: #444;
+  font-size: 15px;
+  padding: 4px 6px;
 }
 
 .clipboardPopUp {
-  transition: 2s;
   position: absolute;
   color: var(--textOnBackground);
-  text-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
-
+  font-size: 12px;
+  background-color: var(--primaryColor);
+  border-radius: 2px;
+  padding: 5px;
+  line-height: 1;
   z-index: 10000;
 }
 
-/* The Modal (background) */
 .modal {
-  /* Hidden by default */
   position: fixed;
-  /* Stay in place */
-  z-index: 1;
-  /* Sit on top */
+  z-index: 1000;
   left: 0;
   top: 0;
-  padding-top: 10vh;
   width: 100%;
-  height: 90vh;
-  /* Center the modal horizontally and vertically */
+  height: 100vh;
+  padding: 24px;
+  box-sizing: border-box;
   display: flex;
   justify-content: center;
-  align-items: center;
-  overflow: auto;
-  /* Enable scroll if needed */
-  /* Fallback color */
+  align-items: flex-start;
   background-color: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(3px);
 }
@@ -427,7 +422,6 @@
   color: var(--linkOnBackground);
 }
 
-/* Modal Header */
 .modal-header {
   padding: 2px 16px;
   text-align: center;
@@ -436,27 +430,310 @@
   color: var(--textOnPrimary);
 }
 
-/* Modal Body */
 .modal-body {
-  padding: 2px 16px;
+  padding: 16px;
 }
 
-/* Modal Content */
 .modal-content {
   font-family: "Custom Font", sans-serif;
   position: relative;
   background-color: var(--background);
   color: var(--textOnBackground);
-  font-size: 18px;
+  font-size: 16px;
   margin: auto;
   padding: 0;
-  border: 4px solid #888;
-  width: 70%;
+  border: 1px solid rgba(126, 126, 126, 0.72);
+  width: min(1120px, calc(100vw - 48px));
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
   box-shadow:
     0 4px 8px 0 rgba(0, 0, 0, 0.2),
     0 6px 20px 0 rgba(0, 0, 0, 0.19);
   animation-name: animatetop;
   animation-duration: 0.4s;
+}
+
+.song-modal-hero {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 18px 20px;
+  border-bottom: 1px solid rgba(126, 126, 126, 0.5);
+  background-color: var(--primaryColor);
+  color: var(--textOnPrimary);
+}
+
+.song-modal-title-group {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+}
+
+.song-modal-close {
+  flex: 0 0 auto;
+  border: 1px solid rgba(126, 126, 126, 0.72);
+  background: rgba(0, 0, 0, 0.16);
+  color: var(--textOnPrimary);
+  width: 34px;
+  height: 34px;
+  cursor: pointer;
+}
+
+.song-modal-close:hover {
+  color: var(--accentColor);
+}
+
+.song-modal-title-line {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+
+.song-modal-row-number {
+  flex: 0 0 auto;
+  font-size: 18px;
+  color: rgb(180, 180, 180);
+}
+
+.song-modal-title {
+  margin: 0;
+  font-size: 22px;
+  overflow-wrap: anywhere;
+}
+
+.song-modal-artist {
+  margin: 6px 0 0;
+  font-size: 17px;
+  opacity: 0.9;
+  overflow-wrap: anywhere;
+}
+
+.song-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.song-modal-overview {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+  gap: 16px;
+}
+
+.song-modal-panel,
+.song-modal-links,
+.song-modal-credits,
+.song-modal-credit-details {
+  border: 1px solid rgba(126, 126, 126, 0.42);
+  background: rgba(0, 0, 0, 0.12);
+  padding: 14px;
+}
+
+.song-modal-panel-header,
+.song-modal-section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.song-modal-panel-header h3,
+.song-modal-links h3,
+.song-modal-section-title h3 {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.song-modal-site-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.song-modal-site-links a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.song-modal-site-links img {
+  display: block;
+  max-width: 32px;
+  max-height: 24px;
+}
+
+.song-modal-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 14px;
+  margin: 0;
+}
+
+.song-modal-facts div {
+  min-width: 0;
+}
+
+.song-modal-facts dt {
+  margin: 0 0 2px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.song-modal-facts dd {
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  line-height: 1.25;
+}
+
+.song-modal-fact-value {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.song-modal-fact-action {
+  flex: 0 0 auto;
+  cursor: pointer;
+  opacity: 0.9;
+}
+
+.song-modal-fact-action:hover {
+  color: var(--accentColor);
+}
+
+.song-modal-links h3 {
+  margin-bottom: 10px;
+}
+
+.song-modal-links-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.song-modal-link {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "kind copy"
+    "file copy";
+  align-items: center;
+  gap: 3px 10px;
+  padding: 8px 10px;
+  border: 1px solid rgba(126, 126, 126, 0.4);
+  background: rgba(0, 0, 0, 0.14);
+  min-width: 0;
+}
+
+.song-modal-link-kind {
+  grid-area: kind;
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.song-modal-link-file {
+  grid-area: file;
+  min-width: 0;
+  color: var(--linkOnBackground);
+  text-decoration: underline;
+  overflow-wrap: anywhere;
+  line-height: 1.25;
+}
+
+.song-modal-link-file:hover {
+  color: var(--accentColor);
+}
+
+.song-modal-link-copy {
+  grid-area: copy;
+  border: none;
+  background: transparent;
+  color: var(--textOnBackground);
+  cursor: pointer;
+  padding: 6px;
+  line-height: 1;
+}
+
+.song-modal-link-copy:hover {
+  color: var(--accentColor);
+}
+
+.song-modal-credit-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.song-modal-credit-summary div {
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1px solid rgba(126, 126, 126, 0.4);
+  background: rgba(0, 0, 0, 0.14);
+}
+
+.song-modal-credit-summary span {
+  display: block;
+  margin-bottom: 3px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.song-modal-credit-summary strong {
+  display: block;
+  font-weight: 600;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.song-modal-credit-summary-value {
+  cursor: pointer;
+}
+
+.song-modal-credit-summary-value:hover {
+  color: var(--accentColor);
+}
+
+.song-modal-credit-heading {
+  margin: 16px 0 8px;
+  font-size: 14px;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.song-modal-credit-details > .song-modal-credit-heading:first-child {
+  margin-top: 0;
+}
+
+.song-modal-credit-primary {
+  margin: 5px;
+}
+
+.song-modal-credit-search {
+  margin-right: 6px;
+}
+
+.song-modal-credit-subheading {
+  margin: 20px 3px 3px;
+  font-size: 15px;
+  opacity: 0.7;
+  text-decoration: underline;
 }
 
 .popUpSongInfo {
@@ -484,5 +761,37 @@
   to {
     top: 0;
     opacity: 1;
+  }
+}
+
+@media (max-width: 860px) {
+  .modal {
+    padding: 12px;
+  }
+
+  .modal-content {
+    width: calc(100vw - 24px);
+    max-height: calc(100vh - 24px);
+  }
+
+  .song-modal-hero {
+    flex-direction: column;
+    padding-right: 64px;
+  }
+
+  .song-modal-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+  }
+
+  .song-modal-overview,
+  .song-modal-links-list,
+  .song-modal-credit-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .song-modal-facts {
+    grid-template-columns: 1fr;
   }
 }
