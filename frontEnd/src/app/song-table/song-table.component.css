@@ -472,14 +472,20 @@
   min-width: 0;
 }
 
+.song-modal-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 0 0 auto;
+}
+
 .song-modal-close {
   flex: 0 0 auto;
-  border: 1px solid rgba(126, 126, 126, 0.72);
-  background: rgba(0, 0, 0, 0.16);
+  border: none;
+  background: transparent;
   color: var(--textOnPrimary);
-  width: 34px;
-  height: 34px;
   cursor: pointer;
+  font-size: 25px;
 }
 
 .song-modal-close:hover {
@@ -495,21 +501,25 @@
 
 .song-modal-row-number {
   flex: 0 0 auto;
-  font-size: 18px;
+  font-size: 15px;
+  font-weight: 700;
   color: rgb(180, 180, 180);
+  white-space: nowrap;
 }
 
 .song-modal-title {
   margin: 0;
   font-size: 22px;
   overflow-wrap: anywhere;
+  line-height: 1.2;
 }
 
 .song-modal-artist {
-  margin: 6px 0 0;
+  margin: 4px 0 0;
   font-size: 17px;
   opacity: 0.9;
   overflow-wrap: anywhere;
+  line-height: 1.2;
 }
 
 .song-modal-body {
@@ -526,15 +536,13 @@
 
 .song-modal-panel,
 .song-modal-links,
-.song-modal-credits,
 .song-modal-credit-details {
   border: 1px solid rgba(126, 126, 126, 0.42);
   background: rgba(0, 0, 0, 0.12);
   padding: 14px;
 }
 
-.song-modal-panel-header,
-.song-modal-section-title {
+.song-modal-panel-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -544,7 +552,7 @@
 
 .song-modal-panel-header h3,
 .song-modal-links h3,
-.song-modal-section-title h3 {
+.song-modal-credit-details h3 {
   margin: 0;
   font-size: 15px;
   line-height: 1.2;
@@ -612,7 +620,8 @@
   color: var(--accentColor);
 }
 
-.song-modal-links h3 {
+.song-modal-links h3,
+.song-modal-credit-details h3 {
   margin-bottom: 10px;
 }
 
@@ -672,47 +681,9 @@
   color: var(--accentColor);
 }
 
-.song-modal-credit-summary {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-  margin-bottom: 14px;
-}
-
-.song-modal-credit-summary div {
-  min-width: 0;
-  padding: 8px 10px;
-  border: 1px solid rgba(126, 126, 126, 0.4);
-  background: rgba(0, 0, 0, 0.14);
-}
-
-.song-modal-credit-summary span {
-  display: block;
-  margin-bottom: 3px;
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  opacity: 0.7;
-}
-
-.song-modal-credit-summary strong {
-  display: block;
-  font-weight: 600;
-  line-height: 1.25;
-  overflow-wrap: anywhere;
-}
-
-.song-modal-credit-summary-value {
-  cursor: pointer;
-}
-
-.song-modal-credit-summary-value:hover {
-  color: var(--accentColor);
-}
-
 .song-modal-credit-heading {
   margin: 16px 0 8px;
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.2;
   text-transform: uppercase;
 }
@@ -779,15 +750,14 @@
     padding-right: 64px;
   }
 
-  .song-modal-close {
+  .song-modal-header-actions {
     position: absolute;
     top: 12px;
     right: 12px;
   }
 
   .song-modal-overview,
-  .song-modal-links-list,
-  .song-modal-credit-summary {
+  .song-modal-links-list {
     grid-template-columns: 1fr;
   }
 

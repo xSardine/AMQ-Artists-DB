@@ -1,5 +1,5 @@
 <!-- The Modal -->
-<div *ngIf="showSongInfoPopup" id="myModal" class="modal">
+<div *ngIf="showSongInfoPopup" id="song-info-modal" class="modal">
   <div
     (click)="this.doubleClickPreventer = !this.doubleClickPreventer"
     class="modal-content"
@@ -8,7 +8,6 @@
       <div class="song-modal-title-group">
         <div>
           <div class="song-modal-title-line">
-            <span class="song-modal-row-number">{{ songInfoPopupIndex + 1 }}.</span>
             <h2
               class="song-modal-title clickable"
               title="Copy to clipboard"
@@ -26,15 +25,20 @@
           </p>
         </div>
       </div>
-      <button
-        type="button"
-        class="song-modal-close"
-        title="Close"
-        aria-label="Close song info"
-        (click)="closeSongInfoPopup(); $event.stopPropagation()"
-      >
-        <i class="fa fa-times" aria-hidden="true"></i>
-      </button>
+      <div class="song-modal-header-actions">
+        <span class="song-modal-row-number">
+          {{ songInfoPopupIndex + 1 }} / {{ songTable?.length || 0 }}
+        </span>
+        <button
+          type="button"
+          class="song-modal-close"
+          title="Close"
+          aria-label="Close song info"
+          (click)="closeSongInfoPopup(); $event.stopPropagation()"
+        >
+          <i class="fa fa-times" aria-hidden="true"></i>
+        </button>
+      </div>
     </div>
 
     <div class="modal-body song-modal-body">
@@ -150,10 +154,6 @@
               <dd class="clickable" title="Copy to clipboard" (click)="copyToClipboard($event, popUpannSongId)">{{ popUpannSongId || "-" }}</dd>
             </div>
             <div>
-              <dt>AMQ Song ID</dt>
-              <dd class="clickable" title="Copy to clipboard" (click)="copyToClipboard($event, popUpAmqSongId)">{{ popUpAmqSongId || "-" }}</dd>
-            </div>
-            <div>
               <dt>Length</dt>
               <dd class="clickable" title="Copy to clipboard" (click)="copyToClipboard($event, popUpSongLengthFormatted)">
                 {{ popUpSongLengthFormatted || "-" }}
@@ -192,44 +192,6 @@
             <button type="button" class="song-modal-link-copy" title="Copy to clipboard" (click)="copyToClipboard($event, popUpAudioLink)">
               <i class="fa fa-clone" aria-hidden="true"></i>
             </button>
-          </div>
-        </div>
-      </section>
-
-      <section class="song-modal-credits">
-        <div class="song-modal-section-title">
-          <h3>Credits</h3>
-        </div>
-        <div class="song-modal-credit-summary">
-          <div>
-            <span>Artists</span>
-            <strong
-              class="song-modal-credit-summary-value"
-              title="Copy to clipboard"
-              (click)="copyToClipboard($event, popUpArtist)"
-            >
-              {{ popUpArtist || "-" }}
-            </strong>
-          </div>
-          <div>
-            <span>Composers</span>
-            <strong
-              class="song-modal-credit-summary-value"
-              title="Copy to clipboard"
-              (click)="copyToClipboard($event, popUpSongComposer)"
-            >
-              {{ popUpSongComposer || "-" }}
-            </strong>
-          </div>
-          <div>
-            <span>Arrangers</span>
-            <strong
-              class="song-modal-credit-summary-value"
-              title="Copy to clipboard"
-              (click)="copyToClipboard($event, popUpSongArranger)"
-            >
-              {{ popUpSongArranger || "-" }}
-            </strong>
           </div>
         </div>
       </section>
