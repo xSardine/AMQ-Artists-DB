@@ -105,8 +105,8 @@ export class SongTableComponent implements OnInit, OnDestroy, OnChanges {
     { key: 'Artist', header: 'Artist', defaultVisible: true },
     { key: 'Composer', header: 'Composer', defaultVisible: false },
     { key: 'Arranger', header: 'Arranger', defaultVisible: false },
-    { key: 'Length', header: 'Length', defaultVisible: false },
     { key: 'Difficulty', header: 'Difficulty', defaultVisible: false },
+    { key: 'Length', header: 'Length', defaultVisible: false },
     { key: 'Song Links', header: 'Song Links', defaultVisible: false, sortable: false },
     { key: 'Play Audio', header: 'Play', defaultVisible: true, sortable: false },
     { key: 'Delete Row', header: 'Del', defaultVisible: true, sortable: false },
@@ -368,7 +368,6 @@ export class SongTableComponent implements OnInit, OnDestroy, OnChanges {
   popUpAnimeJPName: string = '';
   popUpAnimeAltName: string[] = [];
   popUpannSongId: string = '';
-  popUpAmqSongId: string = '';
   popUpSongType: string = '';
   popUpSongName: string = '';
   popUpArtist: string = '';
@@ -868,7 +867,7 @@ export class SongTableComponent implements OnInit, OnDestroy, OnChanges {
 
   private scrollSongInfoModalToTop() {
     setTimeout(() => {
-      document.getElementById('myModal')?.scrollTo(0, 0);
+      document.getElementById('song-info-modal')?.scrollTo(0, 0);
     });
   }
 
@@ -898,8 +897,10 @@ export class SongTableComponent implements OnInit, OnDestroy, OnChanges {
         return song.songCategory || '-';
       case 'Difficulty':
         return song.songDifficulty != null ? `${song.songDifficulty}%` : '-';
-      case 'Length':
-        return song.songLength != null ? `${song.songLength}s` : '-';
+      case 'Length': {
+        const formatted = this.formatSongLength(song.songLength);
+        return formatted || '-';
+      }
       case 'Composer':
         return song.songComposer || '-';
       case 'Arranger':
@@ -938,7 +939,7 @@ export class SongTableComponent implements OnInit, OnDestroy, OnChanges {
       case 'Difficulty':
         return song.songDifficulty != null ? String(song.songDifficulty) : '';
       case 'Length':
-        return song.songLength != null ? String(song.songLength) : '';
+        return this.formatSongLength(song.songLength);
       case 'Composer':
         return song.songComposer || '';
       case 'Arranger':
@@ -974,7 +975,6 @@ export class SongTableComponent implements OnInit, OnDestroy, OnChanges {
     this.popUpAnimeJPName = song.animeJPName;
     this.popUpAnimeAltName = song.animeAltName || [];
     this.popUpannSongId = song.annSongId != -1 ? song.annSongId : null;
-    this.popUpAmqSongId = song.amqSongId;
     this.popUpAnime =
       this.animeTitleLang == 'JP' ? song.animeJPName : song.animeENName;
     this.popUpMalID = song.linked_ids.myanimelist;
