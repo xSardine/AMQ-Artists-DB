@@ -80,6 +80,51 @@ def _request_context(request: Any) -> dict[str, Any]:
     return context
 
 
+def _request_summary(body_data: Any) -> str:
+    """One-line console summary: search text or IDs only."""
+    if not isinstance(body_data, dict):
+        return ""
+
+    search_bits: list[tuple[str, str]] = []
+    for key, label in (
+        ("anime_search_filter", "anime"),
+        ("song_name_search_filter", "song"),
+        ("artist_search_filter", "artist"),
+        ("composer_search_filter", "composer"),
+    ):
+        filt = body_data.get(key)
+        if isinstance(filt, dict) and filt.get("search"):
+            search_bits.append((label, filt["search"]))
+    if search_bits:
+        searches = [search for _, search in search_bits]
+        if len(searches) == 4 and len(set(searches)) == 1:
+            return f"main={searches[0]}"
+        return " ".join(f"{label}={search}" for label, search in search_bits)
+
+    for id_key in (
+        "artist_ids",
+        "composer_ids",
+        "ann_ids",
+        "mal_ids",
+        "ann_song_ids",
+        "amq_song_ids",
+    ):
+        ids = body_data.get(id_key)
+        if ids:
+            return f"{id_key}={ids}"
+
+    if body_data.get("annId") is not None:
+        return f"annId={body_data['annId']}"
+
+    if body_data.get("season"):
+        return f"season={body_data['season']}"
+
+    if body_data.get("n") is not None:
+        return f"n={body_data['n']}"
+
+    return ""
+
+
 def record_request(
     endpoint: str,
     body: Any,
@@ -93,17 +138,18 @@ def record_request(
     errors: Any = None,
     raise_http_exception: bool = True,
 ) -> None:
-    """Log a request event and append it to the ring buffer.
+    """Log a request event and append it to the ring buffer."""
+    body_data = _serialize_body(body)
+    summary = _request_summary(body_data)
+    if summary:
+        if duration_ms is not None:
+            summary += f" ({duration_ms}ms)"
+        print("LOG: " + summary, flush=True)
 
-    Outcome is derived from http_status (2xx vs 4xx/5xx). On http_status >= 400, logs
-    reason (and optional errors) then raises HTTPException when raise_http_exception is
-    True (default). Success events include result.count and result.duration_ms when
-    provided.
-    """
     payload: dict[str, Any] = {
         "endpoint": endpoint,
         "http_status": http_status,
-        "body": _serialize_body(body),
+        "body": body_data,
         **_request_context(request),
     }
 

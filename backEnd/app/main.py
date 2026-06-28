@@ -1,20 +1,21 @@
+from contextlib import asynccontextmanager
 from pathlib import Path
 import time
 
-from fastapi import FastAPI, Query, Request
+from fastapi import Depends, FastAPI, Query, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.exception_handlers import request_validation_exception_handler
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, Response
 
 import get_search_result
 import request_log
-from sql_calls import DatabaseQueryError
-import sql_calls
 import utils
+from catalog import Catalog, load_catalog
 from song_filters import SongFilters
 from schemas import *
+from db_types import *
 
 
 def _elapsed_ms(start: float) -> int:
@@ -22,8 +23,52 @@ def _elapsed_ms(start: float) -> int:
     return int((time.perf_counter() - start) * 1000)
 
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Build the immutable read catalog before accepting requests."""
+    app.state.catalog = load_catalog()
+    yield
+    app.state.catalog = None
+
+
+def get_catalog(request: Request) -> Catalog:
+    """Return the catalog owned by this FastAPI application instance."""
+    return request.app.state.catalog
+
+
+def accepts_gzip(request: Request) -> bool:
+    """Return whether the caller accepts a gzip-encoded response body."""
+    gzip_q: float | None = None
+    wildcard_q: float | None = None
+
+    for value in request.headers.get("accept-encoding", "").lower().split(","):
+        encoding, *parameters = value.strip().split(";")
+        if encoding not in {"gzip", "*"}:
+            continue
+
+        q = 1.0
+        for parameter in parameters:
+            name, separator, raw_value = parameter.strip().partition("=")
+            if name != "q" or not separator:
+                continue
+            try:
+                q = float(raw_value)
+            except ValueError:
+                q = 0.0
+            break
+
+        if encoding == "gzip":
+            gzip_q = q
+        else:
+            wildcard_q = q
+
+    if gzip_q is not None:
+        return gzip_q > 0
+    return wildcard_q is not None and wildcard_q > 0
+
+
 # Launch API
-app = FastAPI()
+app = FastAPI(lifespan=lifespan)
 app.add_middleware(
     GZipMiddleware,
     minimum_size=1000,  # Compress responses > 1000 bytes
@@ -59,21 +104,8 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
     return await request_validation_exception_handler(request, exc)
 
 
-# Handle SQLite failures
-@app.exception_handler(DatabaseQueryError)
-async def database_query_error_handler(request: Request, exc: DatabaseQueryError):
-    request_log.record_request(
-        request.url.path,
-        None,
-        request,
-        http_status=500,
-        reason="SQL failure",
-        detail=str(exc),
-    )
-
-
 # Map request booleans to SongFilters; 400 + log if a filter group is empty.
-def resolve_song_filters(query, *, endpoint: str, request: Request | None = None) -> SongFilters:
+def resolve_song_filters(query, endpoint: str, request: Request | None = None) -> SongFilters:
     song_types = []
     if query.opening_filter:
         song_types.append(1)
@@ -165,33 +197,25 @@ def resolve_song_filters(query, *, endpoint: str, request: Request | None = None
 
 # Return 50 random songs, no filters applied, legacy endpoint called on front end page load, do not log
 @app.post("/api/get_50_random_songs", response_model=list[SongEntry])
-async def get_50_random_songs():
-    songs = sql_calls.get_random_songs(50)
-    artist_database = sql_calls.extract_artist_database()
-    song_list = [utils.format_song(artist_database, song) for song in songs]
+def get_50_random_songs(catalog: Catalog = Depends(get_catalog)):
+    songs = catalog.random_songs(50)
+    song_list = [utils.format_song(catalog.artists_by_id, song) for song in songs]
     return song_list
 
 
 # Return n random songs
 @app.post("/api/get_n_random_songs", response_model=list[SongEntry])
-async def get_n_random_songs(query: GetNSongsRequest, request: Request):
+def get_n_random_songs(
+    query: GetNSongsRequest,
+    request: Request,
+    catalog: Catalog = Depends(get_catalog),
+):
     endpoint = "/api/get_n_random_songs"
 
-    if query.n < 1 or query.n > 500:
-        request_log.record_request(
-            endpoint,
-            query,
-            request,
-            http_status=400,
-            reason="Invalid n",
-            detail="n must be between 1 and 500",
-        )
-
-    filters = resolve_song_filters(query, endpoint=endpoint, request=request)
+    filters = resolve_song_filters(query, endpoint, request)
     start = time.perf_counter()
-    songs = sql_calls.get_random_songs(query.n, filters)
-    artist_database = sql_calls.extract_artist_database()
-    song_list = [utils.format_song(artist_database, song) for song in songs]
+    songs = catalog.random_songs(query.n, filters)
+    song_list = [utils.format_song(catalog.artists_by_id, song) for song in songs]
 
     request_log.record_request(
         endpoint,
@@ -209,7 +233,11 @@ async def get_n_random_songs(query: GetNSongsRequest, request: Request):
     response_model=list[SongEntry],
     responses={503: {"description": "Song name/artist/composer text search is disabled during ranked time"}},
 )
-async def search_request(query: SearchRequest, request: Request):
+def search_request(
+    query: SearchRequest,
+    request: Request,
+    catalog: Catalog = Depends(get_catalog),
+):
     endpoint = "/api/search_request"
 
     # During ranked, song name / artist / composer text search is disabled.
@@ -227,9 +255,10 @@ async def search_request(query: SearchRequest, request: Request):
             detail="Song name/artist/composer text search is disabled during ranked time",
         )
 
-    filters = resolve_song_filters(query, endpoint=endpoint, request=request)
+    filters = resolve_song_filters(query, endpoint, request)
     start = time.perf_counter()
     song_list = get_search_result.get_search_results(
+        catalog,
         query.anime_search_filter,
         query.song_name_search_filter,
         query.artist_search_filter,
@@ -252,15 +281,20 @@ async def search_request(query: SearchRequest, request: Request):
 
 # Return songs from a list of artist IDs
 @app.post("/api/artist_ids_request", response_model=list[SongEntry])
-async def artist_ids_request(query: ArtistIdSearchRequest, request: Request):
+def artist_ids_request(
+    query: ArtistIdSearchRequest,
+    request: Request,
+    catalog: Catalog = Depends(get_catalog),
+):
     endpoint = "/api/artist_ids_request"
 
-    filters = resolve_song_filters(query, endpoint=endpoint, request=request)
+    filters = resolve_song_filters(query, endpoint, request)
     start = time.perf_counter()
     song_list = get_search_result.get_artist_ids_song_list(
+        catalog,
         query.artist_ids,
-        query.max_other_artist,
         query.group_granularity,
+        query.max_other_artist,
         query.ignore_duplicate,
         filters,
     )
@@ -277,12 +311,17 @@ async def artist_ids_request(query: ArtistIdSearchRequest, request: Request):
 
 # Return songs from a list of composer IDs
 @app.post("/api/composer_ids_request", response_model=list[SongEntry])
-async def composer_ids_request(query: ComposerIdSearchRequest, request: Request):
+def composer_ids_request(
+    query: ComposerIdSearchRequest,
+    request: Request,
+    catalog: Catalog = Depends(get_catalog),
+):
     endpoint = "/api/composer_ids_request"
 
-    filters = resolve_song_filters(query, endpoint=endpoint, request=request)
+    filters = resolve_song_filters(query, endpoint, request)
     start = time.perf_counter()
     song_list = get_search_result.get_composer_ids_song_list(
+        catalog,
         query.composer_ids,
         query.arrangement,
         query.group_granularity,
@@ -303,12 +342,17 @@ async def composer_ids_request(query: ComposerIdSearchRequest, request: Request)
 
 # Return songs from a single anime ANN ID (deprecated)
 @app.post("/api/annId_request", response_model=list[SongEntry], deprecated=True)
-async def annId_request(query: AnnIdSearchRequest, request: Request):
+def annId_request(
+    query: AnnIdSearchRequest,
+    request: Request,
+    catalog: Catalog = Depends(get_catalog),
+):
     endpoint = "/api/annId_request"
 
-    filters = resolve_song_filters(query, endpoint=endpoint, request=request)
+    filters = resolve_song_filters(query, endpoint, request)
     start = time.perf_counter()
     song_list = get_search_result.get_ann_ids_song_list(
+        catalog,
         [query.annId],
         query.ignore_duplicate,
         filters,
@@ -326,7 +370,11 @@ async def annId_request(query: AnnIdSearchRequest, request: Request):
 
 # Return songs from a list of anime ANN IDs
 @app.post("/api/ann_ids_request", response_model=list[SongEntry])
-async def ann_ids_request(query: AnnIdsSearchRequest, request: Request):
+def ann_ids_request(
+    query: AnnIdsSearchRequest,
+    request: Request,
+    catalog: Catalog = Depends(get_catalog),
+):
     endpoint = "/api/ann_ids_request"
 
     if len(query.ann_ids) > 500:
@@ -339,9 +387,10 @@ async def ann_ids_request(query: AnnIdsSearchRequest, request: Request):
             detail="Too many ANN IDs. Maximum allowed is 500.",
         )
 
-    filters = resolve_song_filters(query, endpoint=endpoint, request=request)
+    filters = resolve_song_filters(query, endpoint, request)
     start = time.perf_counter()
     song_list = get_search_result.get_ann_ids_song_list(
+        catalog,
         query.ann_ids,
         query.ignore_duplicate,
         filters,
@@ -359,10 +408,14 @@ async def ann_ids_request(query: AnnIdsSearchRequest, request: Request):
 
 # Return songs from a list of anime MAL IDs
 @app.post("/api/mal_ids_request", response_model=list[SongEntry])
-async def mal_ids_request(query: MalIdsSearchRequest, request: Request):
+def mal_ids_request(
+    query: MalIdsSearchRequest,
+    request: Request,
+    catalog: Catalog = Depends(get_catalog),
+):
     endpoint = "/api/mal_ids_request"
 
-    filters = resolve_song_filters(query, endpoint=endpoint, request=request)
+    filters = resolve_song_filters(query, endpoint, request)
 
     if len(query.mal_ids) > 500:
         request_log.record_request(
@@ -376,6 +429,7 @@ async def mal_ids_request(query: MalIdsSearchRequest, request: Request):
 
     start = time.perf_counter()
     song_list = get_search_result.get_mal_ids_song_list(
+        catalog,
         query.mal_ids,
         query.ignore_duplicate,
         filters,
@@ -393,10 +447,14 @@ async def mal_ids_request(query: MalIdsSearchRequest, request: Request):
 
 # Return songs from a list of ANN song IDs
 @app.post("/api/ann_song_ids_request", response_model=list[SongEntry])
-async def ann_song_ids_request(query: AnnSongIdsSearchRequest, request: Request):
+def ann_song_ids_request(
+    query: AnnSongIdsSearchRequest,
+    request: Request,
+    catalog: Catalog = Depends(get_catalog),
+):
     endpoint = "/api/ann_song_ids_request"
 
-    filters = resolve_song_filters(query, endpoint=endpoint, request=request)
+    filters = resolve_song_filters(query, endpoint, request)
 
     if len(query.ann_song_ids) > 500:
         request_log.record_request(
@@ -410,6 +468,7 @@ async def ann_song_ids_request(query: AnnSongIdsSearchRequest, request: Request)
 
     start = time.perf_counter()
     song_list = get_search_result.get_ann_song_ids_song_list(
+        catalog,
         query.ann_song_ids,
         query.ignore_duplicate,
         filters,
@@ -427,10 +486,14 @@ async def ann_song_ids_request(query: AnnSongIdsSearchRequest, request: Request)
 
 # Return songs from a list of AMQ song IDs
 @app.post("/api/amq_song_ids_request", response_model=list[SongEntry])
-async def amq_song_ids_request(query: AmqSongIdsSearchRequest, request: Request):
+def amq_song_ids_request(
+    query: AmqSongIdsSearchRequest,
+    request: Request,
+    catalog: Catalog = Depends(get_catalog),
+):
     endpoint = "/api/amq_song_ids_request"
 
-    filters = resolve_song_filters(query, endpoint=endpoint, request=request)
+    filters = resolve_song_filters(query, endpoint, request)
 
     if len(query.amq_song_ids) > 500:
         request_log.record_request(
@@ -444,6 +507,7 @@ async def amq_song_ids_request(query: AmqSongIdsSearchRequest, request: Request)
 
     start = time.perf_counter()
     song_list = get_search_result.get_amq_song_ids_song_list(
+        catalog,
         query.amq_song_ids,
         query.ignore_duplicate,
         filters,
@@ -461,7 +525,11 @@ async def amq_song_ids_request(query: AmqSongIdsSearchRequest, request: Request)
 
 # Return all songs from a specific season
 @app.post("/api/season_request", response_model=list[SongEntry])
-async def season_request(query: SeasonSearchRequest, request: Request):
+def season_request(
+    query: SeasonSearchRequest,
+    request: Request,
+    catalog: Catalog = Depends(get_catalog),
+):
     endpoint = "/api/season_request"
 
     # Validate season format ("Season YYYY"); normalize whitespace before parsing.
@@ -491,9 +559,10 @@ async def season_request(query: SeasonSearchRequest, request: Request):
             detail=error_detail,
         )
 
-    filters = resolve_song_filters(query, endpoint=endpoint, request=request)
+    filters = resolve_song_filters(query, endpoint, request)
     start = time.perf_counter()
     song_list = get_search_result.get_season_song_list(
+        catalog,
         query.season,
         query.ignore_duplicate,
         filters,
@@ -511,7 +580,7 @@ async def season_request(query: SeasonSearchRequest, request: Request):
 
 # Return every possible songartist string for autocompletion
 @app.get("/api/artist_autocomplete", response_model=list[str])
-async def artist_autocomplete(
+def artist_autocomplete(
     search: str | None = Query(
         None,
         max_length=MAX_TEXT_FIELD_LENGTH,
@@ -520,13 +589,14 @@ async def artist_autocomplete(
     count: int = Query(
         99999, ge=1, description="Maximum number of suggestions to return."
     ),
+    catalog: Catalog = Depends(get_catalog),
 ):
-    return sql_calls.autocomplete_artists(search, count)
+    return catalog.autocomplete_artists(search, count)
 
 
 # Return every possible anime song name string for autocompletion
 @app.get("/api/song_name_autocomplete", response_model=list[str])
-async def song_name_autocomplete(
+def song_name_autocomplete(
     search: str | None = Query(
         None,
         max_length=MAX_TEXT_FIELD_LENGTH,
@@ -535,13 +605,14 @@ async def song_name_autocomplete(
     count: int = Query(
         99999, ge=1, description="Maximum number of suggestions to return."
     ),
+    catalog: Catalog = Depends(get_catalog),
 ):
-    return sql_calls.autocomplete_song_names(search, count)
+    return catalog.autocomplete_song_names(search, count)
 
 
 # Return every possible anime name string for autocompletion with possible filters on song_name and artist
 @app.get("/api/anime_name_autocomplete", response_model=list[str])
-async def anime_name_autocomplete(
+def anime_name_autocomplete(
     songName: str | None = Query(
         None,
         max_length=MAX_TEXT_FIELD_LENGTH,
@@ -552,8 +623,9 @@ async def anime_name_autocomplete(
         max_length=MAX_TEXT_FIELD_LENGTH,
         description="Filter to anime that have this romaji song artist.",
     ),
+    catalog: Catalog = Depends(get_catalog),
 ):
-    return sql_calls.autocomplete_anime_names(songName, songArtist)
+    return catalog.autocomplete_anime_names(songName, songArtist)
 
 
 # Return a .json dict containing every key annId value linked_ids
@@ -562,8 +634,25 @@ async def anime_name_autocomplete(
     response_model=dict[int, AnnIdLinkedAnimeEntry],
     response_model_by_alias=False,
 )
-async def annid_linked_ids():
-    return sql_calls.get_annid_linked_ids()
+def annid_linked_ids(
+    request: Request,
+    catalog: Catalog = Depends(get_catalog),
+):
+    headers = {
+        "Cache-Control": "public, max-age=3600",
+        "ETag": catalog.annid_linked_ids_etag,
+        "Vary": "Accept-Encoding",
+    }
+    if request.headers.get("if-none-match") == catalog.annid_linked_ids_etag:
+        return Response(status_code=304, headers=headers)
+    if accepts_gzip(request):
+        headers["Content-Encoding"] = "gzip"
+        content = catalog.annid_linked_ids_gzip
+    else:
+        # Prevent the global GZipMiddleware from overriding an explicit gzip;q=0.
+        headers["Content-Encoding"] = "identity"
+        content = catalog.annid_linked_ids_json
+    return Response(content=content, media_type="application/json", headers=headers)
 
 
 # Return information about ranked restrictions
@@ -574,9 +663,8 @@ async def get_ranked_time_status():
 
 # Return stats and song counts to monitor the DB
 @app.get("/api/database_totals", response_model=DatabaseTotals)
-async def get_database_totals():
-    totals = sql_calls.get_database_totals()
-    return DatabaseTotals(**totals)
+def get_database_totals(catalog: Catalog = Depends(get_catalog)):
+    return DatabaseTotals(**catalog.database_totals)
 
 
 # Serve log-viewer.html and request log JSON feed
@@ -591,4 +679,4 @@ if log_path and log_viewer.is_file():
 
     @app.get(f"/{log_path}/feed", include_in_schema=False)
     async def request_log_feed(since: str | None = None, limit: int = 100):
-        return request_log.get_feed_payload(since=since, limit=limit)
+        return request_log.get_feed_payload(since, limit)

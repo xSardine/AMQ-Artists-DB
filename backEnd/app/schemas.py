@@ -47,18 +47,18 @@ class ComposerSearchFilter(TextSearchFilter):
                 "search": "Hiroyuki Sawano",
                 "partial_match": True,
                 "match_case": False,
-                "arrangement": True,
                 "group_granularity": 0,
                 "max_other_artist": 99,
+                "arrangement": True,
             }
         }
     )
 
-    # Match arranger credits too, not only composer
-    arrangement: bool = True
     # Same as ArtistSearchFilter
     group_granularity: int = Field(0, ge=0)
     max_other_artist: int = Field(99, ge=0)
+    # Match arranger credits too, not only composer
+    arrangement: bool = True
 
 
 class SongFilterOptions(BaseModel):
@@ -188,7 +188,7 @@ class SongEntry(BaseModel):
     amqSongId: int
     animeENName: str
     animeJPName: str
-    animeAltName: list[str] | None = None
+    animeAltName: list[str]
     animeVintage: str | None = None
     linked_ids: AnimeListLinks
     animeType: str | None = None

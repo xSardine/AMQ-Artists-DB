@@ -105,8 +105,8 @@ export class SongTableComponent implements OnInit, OnDestroy, OnChanges {
     { key: 'Artist', header: 'Artist', defaultVisible: true },
     { key: 'Composer', header: 'Composer', defaultVisible: false },
     { key: 'Arranger', header: 'Arranger', defaultVisible: false },
-    { key: 'Length', header: 'Length', defaultVisible: false },
     { key: 'Difficulty', header: 'Difficulty', defaultVisible: false },
+    { key: 'Length', header: 'Length', defaultVisible: false },
     { key: 'Song Links', header: 'Song Links', defaultVisible: false, sortable: false },
     { key: 'Play Audio', header: 'Play', defaultVisible: true, sortable: false },
     { key: 'Delete Row', header: 'Del', defaultVisible: true, sortable: false },
@@ -364,13 +364,20 @@ export class SongTableComponent implements OnInit, OnDestroy, OnChanges {
   popUpannId: string = '';
   popUpVintage: string = '';
   popUpAnimeType: string = '';
-  popUpAnimeCategory: string = '';
+  popUpAnimeENName: string = '';
+  popUpAnimeJPName: string = '';
+  popUpAnimeAltName: string[] = [];
   popUpannSongId: string = '';
+  popUpSongType: string = '';
   popUpSongName: string = '';
   popUpArtist: string = '';
+  popUpBroadcast: string = '';
   popUpSongDiff: string = '';
   popUpSongLength: string = '';
+  popUpSongLengthFormatted: string = '';
   popUpSongCat: string = '';
+  popUpSongComposer: string = '';
+  popUpSongArranger: string = '';
   popUpannURL: string = '';
   popUpMalID: string = '';
   popUpAnidbID: string = '';
@@ -397,8 +404,8 @@ export class SongTableComponent implements OnInit, OnDestroy, OnChanges {
   };
   currentPlayingSong: any;
 
-  copyToClipboard(event: any, copytext: string) {
-    navigator.clipboard.writeText(copytext);
+  copyToClipboard(event: any, copytext: any) {
+    navigator.clipboard.writeText(String(copytext ?? ''));
     this.clipboardPopUpStyle = {
       left: event.pageX + 10 + 'px',
       top: event.pageY - 20 + 'px',
@@ -408,6 +415,23 @@ export class SongTableComponent implements OnInit, OnDestroy, OnChanges {
       this.show = false;
     }, 400);
     return;
+  }
+
+  closeSongInfoPopup() {
+    this.showSongInfoPopup = false;
+    this.songInfoPopupIndex = -1;
+    this.doubleClickPreventer = false;
+  }
+
+  formatSongLength(length: string | number | null | undefined) {
+    const seconds = Math.round(Number(length));
+    if (!Number.isFinite(seconds) || seconds < 0) {
+      return '';
+    }
+
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = String(seconds % 60).padStart(2, '0');
+    return `${minutes}:${remainingSeconds}`;
   }
 
   computeAverage(array: any[]): number {
@@ -843,7 +867,7 @@ export class SongTableComponent implements OnInit, OnDestroy, OnChanges {
 
   private scrollSongInfoModalToTop() {
     setTimeout(() => {
-      document.getElementById('myModal')?.scrollTo(0, 0);
+      document.getElementById('song-info-modal')?.scrollTo(0, 0);
     });
   }
 
@@ -873,8 +897,10 @@ export class SongTableComponent implements OnInit, OnDestroy, OnChanges {
         return song.songCategory || '-';
       case 'Difficulty':
         return song.songDifficulty != null ? `${song.songDifficulty}%` : '-';
-      case 'Length':
-        return song.songLength != null ? `${song.songLength}s` : '-';
+      case 'Length': {
+        const formatted = this.formatSongLength(song.songLength);
+        return formatted || '-';
+      }
       case 'Composer':
         return song.songComposer || '-';
       case 'Arranger':
@@ -913,7 +939,7 @@ export class SongTableComponent implements OnInit, OnDestroy, OnChanges {
       case 'Difficulty':
         return song.songDifficulty != null ? String(song.songDifficulty) : '';
       case 'Length':
-        return song.songLength != null ? String(song.songLength) : '';
+        return this.formatSongLength(song.songLength);
       case 'Composer':
         return song.songComposer || '';
       case 'Arranger':
@@ -945,7 +971,9 @@ export class SongTableComponent implements OnInit, OnDestroy, OnChanges {
     this.popUpannId = song.annId;
     this.popUpVintage = song.animeVintage;
     this.popUpAnimeType = song.animeType;
-    this.popUpAnimeCategory = song.animeCategory;
+    this.popUpAnimeENName = song.animeENName;
+    this.popUpAnimeJPName = song.animeJPName;
+    this.popUpAnimeAltName = song.animeAltName || [];
     this.popUpannSongId = song.annSongId != -1 ? song.annSongId : null;
     this.popUpAnime =
       this.animeTitleLang == 'JP' ? song.animeJPName : song.animeENName;
@@ -953,11 +981,16 @@ export class SongTableComponent implements OnInit, OnDestroy, OnChanges {
     this.popUpAnidbID = song.linked_ids.anidb;
     this.popUpAnilistID = song.linked_ids.anilist;
     this.popUpKitsuID = song.linked_ids.kitsu;
+    this.popUpSongType = song.songType;
     this.popUpSongName = song.songName;
     this.popUpArtist = song.songArtist;
+    this.popUpBroadcast = this.getBroadcastLabel(song);
     this.popUpSongDiff = song.songDifficulty;
     this.popUpSongLength = song.songLength;
+    this.popUpSongLengthFormatted = this.formatSongLength(song.songLength);
     this.popUpSongCat = song.songCategory;
+    this.popUpSongComposer = song.songComposer;
+    this.popUpSongArranger = song.songArranger;
     this.popUpHDName = song.HQ;
     this.popUpHDLink = song.HQ
       ? 'https://naedist.animemusicquiz.com/' + song.HQ
@@ -1047,17 +1080,46 @@ export class SongTableComponent implements OnInit, OnDestroy, OnChanges {
       });
   }
 
+  searchSeason(season: string) {
+    if (!season) {
+      return;
+    }
+
+    let body = {
+      season,
+    };
+
+    if (JSON.stringify(body) === JSON.stringify(this.previousBody)) {
+      this.closeSongInfoPopup();
+      return;
+    }
+
+    this.previousBody = body;
+    this.sendPrevBody(body);
+    this.closeSongInfoPopup();
+
+    let currentSongList;
+    currentSongList = this.searchRequestService
+      .seasonRequest(body)
+      .subscribe((data) => {
+        currentSongList = data;
+        this.sendSongList(currentSongList);
+      });
+  }
+
   searchAnnId(id: any) {
     let body = {
       ann_ids: [id],
     };
 
     if (JSON.stringify(body) === JSON.stringify(this.previousBody)) {
+      this.closeSongInfoPopup();
       return;
     }
 
     this.previousBody = body;
     this.sendPrevBody(body);
+    this.closeSongInfoPopup();
 
     let currentSongList;
     currentSongList = this.searchRequestService

@@ -1,42 +1,36 @@
 import re
 from datetime import datetime, time as dt_time, timezone
+from re import Pattern
+from typing import Any
 from zoneinfo import ZoneInfo
 
+from db_types import *
 from schemas import RankedTimeStatus
 
-ANIME_REGEX_REPLACE_RULES = [
-    # Ļ can't lower correctly with sqlite lower function
+# Fuzzy-match rules for romaji and visually similar Unicode characters.
+# The scanner matches multi-character inputs before single characters so each part
+# of the original query is expanded once without reprocessing generated regex.
+# Uppercase and lowercase Unicode variants are explicitly included where fuzzy
+# equivalence requires both forms.
+REGEX_REPLACE_RULES = [
     {"input": "ļ", "replace": "[ļĻ]"},
-    # Ł can't lower correctly with sqlite lower function
     {"input": "ł", "replace": "[łŁ]"},
     {"input": "l", "replace": "[l˥ļĻΛłŁ]"},
-    # Ψ can't lower correctly with sqlite lower function
     {"input": "ψ", "replace": "[ψΨ]"},
-    # Ź can't lower correctly with sqlite lower function
     {"input": "ź", "replace": "[źŹ]"},
-    # Ż can't lower correctly with sqlite lower function
     {"input": "ż", "replace": "[żŻ]"},
     {"input": "z", "replace": "[zźŹżŻ]"},
-    # Ū can't lower correctly with sqlite lower function
     {"input": "ū", "replace": "[ūŪ]"},
-    # Ú can't lower correctly with sqlite lower function
     {"input": "ú", "replace": "[úÚ]"},
-    # Ü can't lower correctly with sqlite lower function
     {"input": "ü", "replace": "[üÜ]"},
     {"input": "ou", "replace": "(ou|ō|o)"},
     {"input": "uu", "replace": "(uu|u|ū)"},
     {"input": "u", "replace": "([uūŪûúÚùüÜǖμυ]|uu)"},
-    # Ω can't lower correctly with sqlite lower function
     {"input": "ω", "replace": "[ωΩ]"},
-    # Ō can't lower correctly with sqlite lower function
     {"input": "ō", "replace": "[ōŌ]"},
-    # Φ can't lower correctly with sqlite lower function
     {"input": "φ", "replace": "[φΦ]"},
-    # Ø can't lower correctly with sqlite lower function
     {"input": "ø", "replace": "[øØ]"},
-    # Ó can't lower correctly with sqlite lower function
     {"input": "ó", "replace": "[óÓ]"},
-    # Ö can't lower correctly with sqlite lower function
     {"input": "ö", "replace": "[öÖ]"},
     {"input": "0", "replace": "[0Ө]"},
     {"input": "oo", "replace": "(oo|ō|o)"},
@@ -46,29 +40,18 @@ ANIME_REGEX_REPLACE_RULES = [
     {"input": "w", "replace": "[wω]"},
     {"input": "aa", "replace": "(aa|a)"},
     {"input": "ae", "replace": "(ae|æ)"},
-    # Λ can't lower correctly with sqlite lower function
     {"input": "λ", "replace": "[λΛ]"},
-    # Ⓐ can't lower correctly with sqlite lower function
     {"input": "ⓐ", "replace": "[ⓐⒶ]"},
-    # À can't lower correctly with sqlite lower function
     {"input": "à", "replace": "[àÀ]"},
-    # Á can't lower correctly with sqlite lower function
     {"input": "á", "replace": "[áÁ]"},
-    # ά can't lower correctly with sqlite lower function
     {"input": "ά", "replace": "[άΆ]"},
-    # Ā can't lower correctly with sqlite lower function
     {"input": "ā", "replace": "[āĀ]"},
-    # Å can't lower correctly with sqlite lower function
     {"input": "å", "replace": "[åÅ]"},
     {"input": "a", "replace": "([aəäãάΆ@âàÀáÁạåÅæāĀ∀λΛ]|aa)"},
-    # ↄ can't lower correctly with sqlite lower function
     {"input": "ↄ", "replace": "[ↄↃ]"},
     {"input": "c", "replace": "[cςč℃⊃ↄↃϛ]"},
-    # É can't lower correctly with sqlite lower function
     {"input": "é", "replace": "[éÉ]"},
-    # Ë can't lower correctly with sqlite lower function
     {"input": "ë", "replace": "[ëË]"},
-    # Ǝ can't lower correctly with sqlite lower function
     {"input": "ǝ", "replace": "[ǝƎ]"},
     {"input": "e", "replace": "[eəéÉêёëËèæēǝƎ]"},
     {"input": "'", "replace": "['’ˈ]"},
@@ -82,64 +65,120 @@ ANIME_REGEX_REPLACE_RULES = [
     {"input": "x", "replace": "[x×]"},
     {"input": "b", "replace": "[bßβ]"},
     {"input": "ss", "replace": "(ss|ß)"},
-    # я can't lower correctly with sqlite lower function
     {"input": "я", "replace": "[яЯ]"},
     {"input": "r", "replace": "[rяЯ]"},
     {"input": "s", "replace": "[sς]"},
     {"input": "y", "replace": "[y¥γ]"},
     {"input": "p", "replace": "[pρ]"},
-    {
-        "input": " ",
-        "replace": "([^\\w]+|_+)",
-    },
 ]
 
+# Lookup tables built once at import; _apply_regex_rules scans left-to-right only
+REGEX_REPLACEMENTS = {
+    rule["input"]: rule["replace"]
+    for rule in REGEX_REPLACE_RULES
+    if rule["input"] != " "
+}
 
-def escape_regexp(text: str) -> str:
-    """Escape user input for regex, but keep literal spaces and asterisks searchable."""
-    return re.escape(text).replace("\\ ", " ").replace("\\*", "*")
+# Mapping of single-character input rules to their regex replacements
+SINGLE_CHAR_REPLACEMENTS = {
+    rule_input: replacement
+    for rule_input, replacement in REGEX_REPLACEMENTS.items()
+    if len(rule_input) == 1
+}
+
+# Multi-character rules grouped by first character and ordered longest-first
+MULTI_CHAR_RULES_BY_FIRST_CHAR: dict[str, tuple[str, ...]] = {}
+
+for rule_input in REGEX_REPLACEMENTS:
+    if len(rule_input) <= 1:
+        continue
+
+    first_char = rule_input[0]
+    existing_rules = MULTI_CHAR_RULES_BY_FIRST_CHAR.get(first_char, ())
+    MULTI_CHAR_RULES_BY_FIRST_CHAR[first_char] = tuple(
+        sorted(
+            (*existing_rules, rule_input),
+            key=len,
+            reverse=True,
+        )
+    )
 
 
-def apply_regex_rules(search):
-    """Expand normalized query text using ANIME_REGEX_REPLACE_RULES."""
-    for rule in ANIME_REGEX_REPLACE_RULES:
-        search = search.replace(rule["input"], rule["replace"])
-    return search
+def _apply_regex_rules(search: str) -> str:
+    """Expand escaped search text into a fuzzy regex body.
+
+    Uses longest-match rule selection and processes only the original input,
+    preventing generated regex fragments from being expanded again.
+    Literal spaces become flexible separator patterns.
+    """
+    result = []
+    index = 0
+
+    while index < len(search):
+        char = search[index]
+
+        # Replace a typed space with a flexible separator between search terms
+        if char == " ":
+            result.append(r"[\W_]+")
+            index += 1
+            continue
+
+        # Prefer the longest multi-character rule at this position
+        matched_rule = None
+        for rule_input in MULTI_CHAR_RULES_BY_FIRST_CHAR.get(char, ()):
+            if search.startswith(rule_input, index):
+                matched_rule = rule_input
+                break
+
+        if matched_rule is not None:
+            result.append(REGEX_REPLACEMENTS[matched_rule])
+            index += len(matched_rule)
+            continue
+
+        # Otherwise expand this character, or preserve it if no rule exists
+        result.append(SINGLE_CHAR_REPLACEMENTS.get(char, char))
+        index += 1
+
+    return "".join(result)
 
 
-def get_regex_search(og_search, partial_match=True, swap_words=False, match_case=False):
-    """Build a regex pattern from user text with romaji normalization rules applied."""
-    normalized = og_search if match_case else og_search.lower()
-    escaped = escape_regexp(normalized)
-    pattern = apply_regex_rules(escaped)
-    if partial_match:
-        pattern = f".*{pattern}.*"
-    else:
+def regex_matches(pattern: Pattern[str], text: str, match_case: bool) -> bool:
+    """Return whether a compiled pattern matches anywhere in text."""
+    if not text:
+        return False
+    haystack = text if match_case else text.lower()
+    return pattern.search(haystack) is not None
+
+
+def build_search_regex(
+    search_text: str,
+    partial_match: bool = True,
+    match_case: bool = False,
+    swap_words: bool = False,
+) -> Pattern[str]:
+    """Compile user text into a regex with romaji normalization rules applied."""
+    # Single-char queries force whole-string regex (^...$) even if partial_match is requested.
+    if len(search_text) <= 1:
+        partial_match = False
+
+    normalized = search_text if match_case else search_text.lower()
+    # Escape regex metacharacters, but leave spaces and * available for custom replacement rules
+    escaped = re.escape(normalized).replace("\\ ", " ").replace("\\*", "*")
+    pattern = _apply_regex_rules(escaped)
+    if not partial_match:
         pattern = f"^{pattern}$"
 
-    # Optionally, also allow swapped two-word queries (e.g. surname givenname / givenname surname)
+    # Optionally allow swapped two-word queries (e.g. surname givenname / givenname surname)
     if swap_words:
         words = escaped.split(" ")
         if len(words) == 2:
             swapped = " ".join([words[1], words[0]])
-            swapped_pattern = apply_regex_rules(swapped)
-            if partial_match:
-                swapped_pattern = f".*{swapped_pattern}.*"
-            else:
+            swapped_pattern = _apply_regex_rules(swapped)
+            if not partial_match:
                 swapped_pattern = f"^{swapped_pattern}$"
             pattern = f"({pattern})|({swapped_pattern})"
 
-    return pattern
-
-
-def regex_match(regex, text, match_case=False):
-    """Return whether regex matches from the start of text."""
-    if not text:
-        return False
-    try:
-        return re.match(regex, text if match_case else text.lower()) is not None
-    except re.error:
-        return False
+    return re.compile(pattern)
 
 
 def has_search_text(search_filter) -> bool:
@@ -147,15 +186,17 @@ def has_search_text(search_filter) -> bool:
     return search_filter is not None and bool(search_filter.search.strip())
 
 
-def _names_for_artist(artist_database, artist_id) -> list[str]:
-    """Romaji names for an artist id, or the id as a single placeholder when the row is missing."""
+def _names_for_artist(artist_database: ArtistDatabase, artist_id: int) -> list[str]:
+    """Return an artist's names, falling back to the artist ID when unavailable."""
     artist = artist_database.get(str(artist_id))
     if not artist:
         return [str(artist_id)]
     return artist.get("names") or [str(artist_id)]
 
 
-def _format_credit_entry(artist_database, person_id, line_up: int) -> dict:
+def _format_credit_entry(
+    artist_database: ArtistDatabase, person_id: int, line_up: int
+) -> dict[str, Any]:
     """Build one Artist-shaped credit dict (vocalist, composer, or arranger)."""
     artist = artist_database.get(str(person_id))
     if artist is None:
@@ -185,46 +226,53 @@ def _format_credit_entry(artist_database, person_id, line_up: int) -> dict:
         added_group = set()
         for group in groups:
             # Same group can appear on multiple line-ups; only emit once per group id.
-            if group[0] in added_group:
+            group_id = int(group[0])
+            if group_id in added_group:
                 continue
-            added_group.add(group[0])
+            added_group.add(group_id)
             entry["groups"].append(
-                {"id": group[0], "names": _names_for_artist(artist_database, group[0])}
+                {"id": group_id, "names": _names_for_artist(artist_database, group_id)}
             )
 
     return entry
 
 
-def format_song(artist_database, song):
+def format_song(artist_database: ArtistDatabase, song: SongFullRow) -> FormattedSong:
     """Turn a raw songsFull DB tuple into the API SongEntry-shaped dict.
 
     Credit columns store comma-separated artist IDs and parallel line-up indexes.
     line_up indexes into artist_database[id]['line_ups']; -1 means no line-up slot.
     """
-    if song[16] == 1:
-        type = "Opening " + str(song[17])
-    elif song[16] == 2:
-        type = "Ending " + str(song[17])
+    if song[COL_SONG_TYPE] == 1:
+        song_type = "Opening " + str(song[17])
+    elif song[COL_SONG_TYPE] == 2:
+        song_type = "Ending " + str(song[17])
     else:
-        type = "Insert Song"
+        song_type = "Insert Song"
 
     artists = []
-    if song[23]:
-        for artist_id, line_up in zip(song[23].split(","), song[24].split(",")):
-            artists.append(_format_credit_entry(artist_database, artist_id, int(line_up)))
+    if song[COL_ARTISTS]:
+        artists.extend(
+            _format_credit_entry(artist_database, int(artist_id), int(line_up))
+            for artist_id, line_up in zip(song[COL_ARTISTS].split(","), song[COL_ARTISTS_LINE_UP].split(","))
+        )
 
-    # Composer and arranger blocks mirror the artist credit shape (IDs at 27/31, line-ups at 28/32).
     composers = []
-    if song[27]:
-        for composer_id, line_up in zip(song[27].split(","), song[28].split(",")):
-            composers.append(_format_credit_entry(artist_database, composer_id, int(line_up)))
+    if song[COL_COMPOSERS]:
+        composers.extend(
+            _format_credit_entry(artist_database, int(composer_id), int(line_up))
+            for composer_id, line_up in zip(song[COL_COMPOSERS].split(","), song[COL_COMPOSERS_LINE_UP].split(","))
+        )
 
     arrangers = []
-    if song[31]:
-        for arranger_id, line_up in zip(song[31].split(","), song[32].split(",")):
-            arrangers.append(_format_credit_entry(artist_database, arranger_id, int(line_up)))
+    if song[COL_ARRANGERS]:
+        arrangers.extend(
+            _format_credit_entry(artist_database, int(arranger_id), int(line_up))
+            for arranger_id, line_up in zip(song[COL_ARRANGERS].split(","), song[COL_ARRANGERS_LINE_UP].split(","))
+        )
 
-    songinfo = {
+
+    songinfo: FormattedSong = {
         "annId": song[0],
         "linked_ids": {
             "myanimelist": song[1],
@@ -234,13 +282,13 @@ def format_song(artist_database, song):
         },
         "animeJPName": song[6] or song[7],
         "animeENName": song[7] or song[6],
-        "animeAltName": song[9].split("\\$") if song[9] else song[9],  # alt names stored delimited by $
+        "animeAltName": song[9].split("\\$") if song[9] else [],  # alt names stored delimited by $
         "animeVintage": song[10],
         "animeType": song[11],
         "animeCategory": song[12],
         "annSongId": song[14],
         "amqSongId": song[15],
-        "songType": type,
+        "songType": song_type,
         "songCategory": song[18],
         "songName": song[20],
         "songArtist": song[22] or "",
@@ -261,7 +309,7 @@ def format_song(artist_database, song):
     return songinfo
 
 
-# AMQ ranked window: 20:30–21:23 local in Central, Western, or Eastern regions.
+# AMQ ranked runs from 20:30 to 21:23 local time in each region.
 RANKED_REGIONS = [
     ("Europe/Copenhagen", "Central"),
     ("America/Chicago", "Western"),

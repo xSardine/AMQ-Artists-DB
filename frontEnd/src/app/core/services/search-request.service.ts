@@ -121,10 +121,7 @@ export class SearchRequestService {
 
   // Determine whether the AMQ ranked window is currently active for any supported time zone
   getRankedStatus(date: Date = new Date()): RankedStatus {
-    for (const {
-      region,
-      localSeconds,
-    } of SearchRequestService.RANKED_REGIONS) {
+    for (const { region, localSeconds } of SearchRequestService.RANKED_REGIONS) {
       const localSec = localSeconds(date);
 
       if (
@@ -200,7 +197,9 @@ export class SearchRequestService {
           return '';
         })
         .filter(Boolean);
-      return messages.length ? messages.join(' ') : null;
+      // Simple search can fire 4 identical error messages, dedupe them
+      const uniqueMessages = [...new Set(messages)];
+      return uniqueMessages.length ? uniqueMessages.join(' ') : null;
     }
 
     return null;
