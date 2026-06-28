@@ -453,7 +453,7 @@
   animation-duration: 0.4s;
 }
 
-.song-modal-hero {
+.song-modal-header {
   position: relative;
   display: flex;
   align-items: flex-start;
@@ -745,7 +745,7 @@
     max-height: calc(100vh - 24px);
   }
 
-  .song-modal-hero {
+  .song-modal-header {
     flex-direction: column;
     padding-right: 64px;
   }

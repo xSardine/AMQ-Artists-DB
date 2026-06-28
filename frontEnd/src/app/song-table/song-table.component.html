@@ -4,11 +4,12 @@
     (click)="this.doubleClickPreventer = !this.doubleClickPreventer"
     class="modal-content"
     >
-    <div class="song-modal-hero">
+    <div class="song-modal-header">
       <div class="song-modal-title-group">
         <div>
           <div class="song-modal-title-line">
             <h2
+              id="song-modal-song-name"
               class="song-modal-title clickable"
               title="Copy to clipboard"
             (click)="copyToClipboard($event, popUpSongName)"
@@ -17,6 +18,7 @@
           </h2>
           </div>
           <p
+            id="song-modal-artist"
             class="song-modal-artist clickable"
             title="Copy to clipboard"
             (click)="copyToClipboard($event, popUpArtist)"
@@ -26,10 +28,11 @@
         </div>
       </div>
       <div class="song-modal-header-actions">
-        <span class="song-modal-row-number">
+        <span id="song-modal-row-number" class="song-modal-row-number">
           {{ songInfoPopupIndex + 1 }} / {{ songTable?.length || 0 }}
         </span>
         <button
+          id="song-modal-close"
           type="button"
           class="song-modal-close"
           title="Close"
@@ -67,13 +70,13 @@
           <dl class="song-modal-facts">
             <div>
               <dt>English</dt>
-              <dd class="clickable" title="Copy to clipboard" (click)="copyToClipboard($event, popUpAnimeENName)">
+              <dd id="song-modal-anime-english" class="clickable" title="Copy to clipboard" (click)="copyToClipboard($event, popUpAnimeENName)">
                 {{ popUpAnimeENName || "-" }}
               </dd>
             </div>
             <div>
               <dt>Japanese</dt>
-              <dd class="clickable" title="Copy to clipboard" (click)="copyToClipboard($event, popUpAnimeJPName)">
+              <dd id="song-modal-anime-japanese" class="clickable" title="Copy to clipboard" (click)="copyToClipboard($event, popUpAnimeJPName)">
                 {{ popUpAnimeJPName || "-" }}
               </dd>
             </div>
@@ -86,14 +89,14 @@
                   title="Search this season"
                   (click)="searchSeason(popUpVintage)"
                 ></i>
-                <span class="clickable" title="Copy to clipboard" (click)="copyToClipboard($event, popUpVintage)">
+                <span id="song-modal-anime-season" class="clickable" title="Copy to clipboard" (click)="copyToClipboard($event, popUpVintage)">
                   {{ popUpVintage || "-" }}
                 </span>
               </dd>
             </div>
             <div>
               <dt>Media</dt>
-              <dd class="clickable" title="Copy to clipboard" (click)="copyToClipboard($event, popUpAnimeType)">
+              <dd id="song-modal-anime-media" class="clickable" title="Copy to clipboard" (click)="copyToClipboard($event, popUpAnimeType)">
                 {{ popUpAnimeType || "-" }}
               </dd>
             </div>
@@ -106,15 +109,17 @@
                   title="Search this ANN ID"
                   (click)="searchAnnId(popUpannId)"
                 ></i>
-                <span class="clickable" title="Copy to clipboard" (click)="copyToClipboard($event, popUpannId)">
+                <span id="song-modal-anime-ann-id" class="clickable" title="Copy to clipboard" (click)="copyToClipboard($event, popUpannId)">
                   {{ popUpannId }}
                 </span>
               </dd>
             </div>
-            <div *ngFor="let altName of popUpAnimeAltName">
+            <div *ngIf="popUpAnimeAltName.length > 0">
               <dt>Alt Title</dt>
-              <dd class="clickable" title="Copy to clipboard" (click)="copyToClipboard($event, altName)">
-                {{ altName }}
+              <dd id="song-modal-anime-alt-title">
+                <ng-container *ngFor="let altName of popUpAnimeAltName; let last = last">
+                  <span class="clickable" title="Copy to clipboard" (click)="copyToClipboard($event, altName)">{{ altName }}</span><br *ngIf="!last">
+                </ng-container>
               </dd>
             </div>
           </dl>
@@ -127,35 +132,35 @@
           <dl class="song-modal-facts">
             <div>
               <dt>Type</dt>
-              <dd class="clickable" title="Copy to clipboard" (click)="copyToClipboard($event, popUpSongType)">
+              <dd id="song-modal-song-type" class="clickable" title="Copy to clipboard" (click)="copyToClipboard($event, popUpSongType)">
                 {{ popUpSongType || "-" }}
               </dd>
             </div>
             <div>
               <dt>Difficulty</dt>
-              <dd class="clickable" title="Copy to clipboard" (click)="copyToClipboard($event, popUpSongDiff)">
+              <dd id="song-modal-song-difficulty" class="clickable" title="Copy to clipboard" (click)="copyToClipboard($event, popUpSongDiff)">
                 {{ popUpSongDiff ? popUpSongDiff + "%" : "-" }}
               </dd>
             </div>
             <div>
               <dt>Broadcast</dt>
-              <dd class="clickable" title="Copy to clipboard" (click)="copyToClipboard($event, popUpBroadcast)">
+              <dd id="song-modal-song-broadcast" class="clickable" title="Copy to clipboard" (click)="copyToClipboard($event, popUpBroadcast)">
                 {{ popUpBroadcast || "-" }}
               </dd>
             </div>
             <div>
               <dt>Performance</dt>
-              <dd class="clickable" title="Copy to clipboard" (click)="copyToClipboard($event, popUpSongCat)">
+              <dd id="song-modal-song-performance" class="clickable" title="Copy to clipboard" (click)="copyToClipboard($event, popUpSongCat)">
                 {{ popUpSongCat || "-" }}
               </dd>
             </div>
             <div>
               <dt>ANN Song ID</dt>
-              <dd class="clickable" title="Copy to clipboard" (click)="copyToClipboard($event, popUpannSongId)">{{ popUpannSongId || "-" }}</dd>
+              <dd id="song-modal-ann-song-id" class="clickable" title="Copy to clipboard" (click)="copyToClipboard($event, popUpannSongId)">{{ popUpannSongId || "-" }}</dd>
             </div>
             <div>
               <dt>Length</dt>
-              <dd class="clickable" title="Copy to clipboard" (click)="copyToClipboard($event, popUpSongLengthFormatted)">
+              <dd id="song-modal-song-length" class="clickable" title="Copy to clipboard" (click)="copyToClipboard($event, popUpSongLengthFormatted)">
                 {{ popUpSongLengthFormatted || "-" }}
               </dd>
             </div>
@@ -168,7 +173,7 @@
         <div class="song-modal-links-list">
           <div *ngIf="popUpHDLink" class="song-modal-link">
             <span class="song-modal-link-kind">720p</span>
-            <a id="modal-720-link" class="song-modal-link-file" target="_blank" href="{{ popUpHDLink }}" title="{{ popUpHDName }}">
+            <a id="song-modal-720-link" class="song-modal-link-file" target="_blank" href="{{ popUpHDLink }}" title="{{ popUpHDName }}">
               {{ popUpHDName }}
             </a>
             <button type="button" class="song-modal-link-copy" title="Copy to clipboard" (click)="copyToClipboard($event, popUpHDLink)">
@@ -177,7 +182,7 @@
           </div>
           <div *ngIf="popUpMDLink" class="song-modal-link">
             <span class="song-modal-link-kind">480p</span>
-            <a id="modal-480-link" class="song-modal-link-file" target="_blank" href="{{ popUpMDLink }}" title="{{ popUpMDName }}">
+            <a id="song-modal-480-link" class="song-modal-link-file" target="_blank" href="{{ popUpMDLink }}" title="{{ popUpMDName }}">
               {{ popUpMDName }}
             </a>
             <button type="button" class="song-modal-link-copy" title="Copy to clipboard" (click)="copyToClipboard($event, popUpMDLink)">
@@ -186,7 +191,7 @@
           </div>
           <div *ngIf="popUpAudioLink" class="song-modal-link">
             <span class="song-modal-link-kind">MP3</span>
-            <a id="modal-mp3-link" class="song-modal-link-file" target="_blank" href="{{ popUpAudioLink }}" title="{{ popUpAudioName }}">
+            <a id="song-modal-mp3-link" class="song-modal-link-file" target="_blank" href="{{ popUpAudioLink }}" title="{{ popUpAudioName }}">
               {{ popUpAudioName }}
             </a>
             <button type="button" class="song-modal-link-copy" title="Copy to clipboard" (click)="copyToClipboard($event, popUpAudioLink)">
