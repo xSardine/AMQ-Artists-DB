@@ -1,16 +1,10 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideRouter } from '@angular/router';
 import { AppComponent } from './app/app.component';
-import { AnisongDBApiService } from './app/api/anisong-db-api.service';
-
-import 'vidstack/player';
-import 'vidstack/player/layouts/default';
-import 'vidstack/player/ui';
+import { routes } from './app/app.routes';
 
 bootstrapApplication(AppComponent, {
-  providers: [provideHttpClient()],
+  providers: [provideHttpClient(withFetch()), provideRouter(routes)],
 })
-  .then(({ injector }) => {
-    window.AnisongDB = injector.get(AnisongDBApiService).api;
-  })
   .catch(console.error);

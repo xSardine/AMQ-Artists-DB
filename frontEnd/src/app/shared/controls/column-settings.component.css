@@ -1,0 +1,88 @@
+:host {
+  display: block;
+  position: relative;
+}
+
+.column-settings-panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 20;
+  min-width: 220px;
+  max-width: calc(100vw - 24px);
+  max-height: 320px;
+  padding: 8px;
+  background: var(--bg);
+  overflow: auto;
+}
+
+.column-settings-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.column-setting-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px;
+}
+
+.column-setting-toggle {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  cursor: pointer;
+}
+
+.column-drag-handle {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 2px;
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: grab;
+}
+
+.column-drag-handle:active {
+  cursor: grabbing;
+}
+
+.column-drag-handle:hover {
+  color: var(--text);
+}
+
+.column-dragging {
+  opacity: 0.45;
+}
+
+.column-drag-over-before::after,
+.column-drag-over-after::after {
+  position: absolute;
+  right: 0;
+  left: 0;
+  height: 2px;
+  background: var(--accent);
+  content: '';
+  pointer-events: none;
+}
+
+.column-drag-over-before::after {
+  top: 0;
+  transform: translateY(-50%);
+}
+
+.column-drag-over-after::after {
+  bottom: 0;
+  transform: translateY(50%);
+}

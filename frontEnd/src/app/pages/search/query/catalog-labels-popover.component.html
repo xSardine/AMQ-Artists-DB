@@ -1,0 +1,18 @@
+<app-info-popover [label]="'Available ' + heading().toLowerCase()" [buttonId]="idPrefix() + '-toggle'" (opening)="loadRequested.emit()">
+  <strong>{{ heading() }}</strong>
+  <p class="catalog-labels-help">Enter comma-separated names. All entered names must match.</p>
+  @if (loading()) {
+    <p role="status">Loading…</p>
+  } @else if (error(); as message) {
+    <p role="alert">{{ message }}</p>
+    <button [id]="idPrefix() + '-retry'" class="app-button" type="button" (click)="loadRequested.emit()">Try again</button>
+  } @else {
+    <ul class="catalog-labels-list">
+      @for (name of names(); track name) {
+        <li>{{ name }}</li>
+      } @empty {
+        <li>No entries available.</li>
+      }
+    </ul>
+  }
+</app-info-popover>

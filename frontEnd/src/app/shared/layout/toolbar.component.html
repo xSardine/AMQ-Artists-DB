@@ -1,0 +1,20 @@
+<header class="app-toolbar" [class.app-toolbar--wrap]="wrapControls()">
+  <a class="toolbar-logo-link" [attr.id]="logoLinkId()" [href]="href()">
+    <img class="toolbar-logo" src="/assets/img/sardineLogo.png" alt="Artist Anisong Database Logo">
+    <span class="toolbar-title">Anisong Database</span>
+  </a>
+  @if (section()) {
+    <span class="toolbar-divider" aria-hidden="true"></span>
+    <span class="toolbar-section">{{ section() }}</span>
+  }
+  <ng-content select="[toolbar-status]" />
+  <span class="toolbar-spacer"></span>
+  <div class="toolbar-controls">
+    <ng-content select="[toolbar-controls]" />
+    <button type="button" class="app-icon-button toolbar-icon-button" [id]="settingsButtonId()"
+      aria-label="Settings" title="Settings" (click)="settingsRequested.emit()">
+      <i class="fa fa-cog" aria-hidden="true"></i>
+    </button>
+  </div>
+</header>
+

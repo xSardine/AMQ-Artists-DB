@@ -1,0 +1,42 @@
+<div #panel class="chart-tooltip" popover="manual" aria-hidden="true">
+  @if (content(); as item) {
+    @if (item.title.length) {
+      <div class="chart-tooltip-title">
+        @for (line of item.title; track $index) {
+          <div>{{ line }}</div>
+        }
+      </div>
+    }
+    @for (line of item.beforeBody; track $index) {
+      <div>{{ line }}</div>
+    }
+    @for (body of item.body; track $index) {
+      @for (line of body.before; track $index) {
+        <div>{{ line }}</div>
+      }
+      <div class="chart-tooltip-row">
+        @if (body.color) {
+          <span class="chart-tooltip-swatch" [style.background-color]="body.color"></span>
+        }
+        <div>
+          @for (line of body.lines; track $index) {
+            <div>{{ line }}</div>
+          }
+        </div>
+      </div>
+      @for (line of body.after; track $index) {
+        <div>{{ line }}</div>
+      }
+    }
+    @for (line of item.afterBody; track $index) {
+      <div>{{ line }}</div>
+    }
+    @if (item.footer.length) {
+      <div class="chart-tooltip-footer">
+        @for (line of item.footer; track $index) {
+          <div>{{ line }}</div>
+        }
+      </div>
+    }
+  }
+</div>

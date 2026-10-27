@@ -1,6 +1,0 @@
-<div class="audio-player" [class.is-hidden]="!playerVisible()" [title]="playerTitle()">
-  <media-player #player view-type="audio" [storage]="storage">
-    <media-provider></media-provider>
-    <media-audio-layout [attr.color-scheme]="preferences.preferences().theme === 'light' ? 'light' : 'dark'"></media-audio-layout>
-  </media-player>
-</div>

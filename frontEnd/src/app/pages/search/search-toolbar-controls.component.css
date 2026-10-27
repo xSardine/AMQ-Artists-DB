@@ -1,0 +1,96 @@
+.toolbar-anime-name-label {
+  margin: 0 5px 0 0;
+  font-weight: bold;
+}
+
+.toolbar-lang-toggle {
+  margin-right: 20px;
+}
+
+.lang-toggle {
+  --lang-toggle-inset: 1px;
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+  width: 110px;
+  height: 32px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.lang-toggle input {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.lang-toggle-track {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 100%;
+  height: 100%;
+  border: 1px solid var(--chrome);
+  border-radius: 5px;
+  background: var(--text-on-chrome);
+  overflow: hidden;
+}
+
+.lang-toggle-track::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset: var(--lang-toggle-inset) auto var(--lang-toggle-inset) var(--lang-toggle-inset);
+  width: calc(50% - var(--lang-toggle-inset));
+  border-radius: 4px;
+  background: var(--chrome);
+  transition: transform 0.2s ease-out;
+}
+
+.lang-toggle-option {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9em;
+  font-weight: bold;
+  line-height: 1;
+  color: var(--chrome);
+  transition: color 0.2s ease-out;
+}
+
+.lang-toggle input:checked ~ .lang-toggle-track::before {
+  transform: translateX(100%);
+}
+
+.lang-toggle input:not(:checked) ~ .lang-toggle-track .lang-toggle-option:first-child,
+.lang-toggle input:checked ~ .lang-toggle-track .lang-toggle-option:last-child {
+  color: var(--text-on-chrome);
+}
+
+.lang-toggle input:focus-visible ~ .lang-toggle-track {
+  outline: 2px solid var(--text-on-chrome);
+  outline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+  .toolbar-anime-name-label {
+    display: none;
+  }
+
+  .toolbar-lang-toggle {
+    margin-right: 15px;
+    width: 90px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lang-toggle-track::before,
+  .lang-toggle-option {
+    transition: none;
+  }
+}

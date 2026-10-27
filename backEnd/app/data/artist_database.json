@@ -151450,7 +151450,7 @@
             }
         ],
         "disambiguation": null,
-        "type": "person",
+        "type": "group",
         "members": [],
         "groups": [],
         "amq_ids": [
@@ -171467,7 +171467,7 @@
             }
         ],
         "disambiguation": null,
-        "type": "person",
+        "type": "group",
         "members": [],
         "groups": [],
         "amq_ids": [
@@ -171601,7 +171601,7 @@
             }
         ],
         "disambiguation": null,
-        "type": "choir",
+        "type": "group",
         "members": [],
         "groups": [],
         "amq_ids": [
@@ -189066,7 +189066,7 @@
             }
         ],
         "disambiguation": null,
-        "type": "person",
+        "type": "group",
         "members": [],
         "groups": [],
         "amq_ids": [
@@ -393763,7 +393763,7 @@
             }
         ],
         "disambiguation": null,
-        "type": "person",
+        "type": "group",
         "members": [],
         "groups": [],
         "amq_ids": [
@@ -444962,7 +444962,7 @@
             }
         ],
         "disambiguation": null,
-        "type": "person",
+        "type": "group",
         "members": [],
         "groups": [],
         "amq_ids": [
@@ -453730,7 +453730,7 @@
             }
         ],
         "disambiguation": null,
-        "type": "person",
+        "type": "group",
         "members": [],
         "groups": [
             [
@@ -498440,7 +498440,7 @@
             }
         ],
         "disambiguation": null,
-        "type": "person",
+        "type": "group",
         "members": [],
         "groups": [],
         "amq_ids": [
@@ -513182,7 +513182,7 @@
             }
         ],
         "disambiguation": null,
-        "type": "person",
+        "type": "group",
         "members": [],
         "groups": [],
         "amq_ids": [
@@ -521830,7 +521830,7 @@
             }
         ],
         "disambiguation": null,
-        "type": "person",
+        "type": "group",
         "members": [],
         "groups": [],
         "amq_ids": [
@@ -527471,7 +527471,7 @@
             }
         ],
         "disambiguation": null,
-        "type": "person",
+        "type": "group",
         "members": [],
         "groups": [],
         "amq_ids": [
@@ -530423,7 +530423,7 @@
             }
         ],
         "disambiguation": null,
-        "type": "person",
+        "type": "group",
         "members": [],
         "groups": [],
         "amq_ids": [
@@ -546843,7 +546843,7 @@
             }
         ],
         "disambiguation": null,
-        "type": "person",
+        "type": "group",
         "members": [],
         "groups": [],
         "amq_ids": [

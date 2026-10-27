@@ -1,0 +1,134 @@
+.app-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  height: 60px;
+  min-height: 60px;
+  padding: 0;
+  background: var(--chrome);
+  color: var(--text-on-chrome);
+  font: bold 14px/1.2 Arial, sans-serif;
+}
+
+.app-toolbar .toolbar-logo-link,
+.app-toolbar .toolbar-logo-link:hover {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  padding-left: 8px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.app-toolbar .toolbar-logo-link:focus-visible {
+  outline: 1px solid var(--text-on-chrome);
+  outline-offset: 2px;
+}
+
+.app-toolbar .toolbar-logo {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  margin-right: 5px;
+}
+
+.app-toolbar .toolbar-title {
+  font-size: 26px;
+  white-space: nowrap;
+}
+
+.app-toolbar .toolbar-divider {
+  width: 1px;
+  height: 24px;
+  margin: 0 16px;
+  background: var(--border);
+  flex-shrink: 0;
+}
+
+.app-toolbar .toolbar-section {
+  color: var(--text-on-chrome-muted);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.app-toolbar .toolbar-spacer {
+  flex: 1;
+}
+
+.app-toolbar .toolbar-controls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  font-weight: normal;
+}
+
+.app-toolbar .toolbar-checkbox {
+  margin: 0 20px 0 0;
+  color: inherit;
+}
+
+.app-toolbar .toolbar-icon-button {
+  flex-shrink: 0;
+  margin-right: 20px;
+  color: var(--text-on-chrome);
+  font-size: 28px;
+}
+
+.app-toolbar .toolbar-icon-button:hover:not(:disabled),
+.app-toolbar .toolbar-icon-button:focus-visible {
+  color: var(--accent-hover);
+}
+
+@media (max-width: 1000px) {
+  .app-toolbar--wrap {
+    height: auto;
+    flex-wrap: wrap;
+  }
+
+  .app-toolbar--wrap .toolbar-controls {
+    flex-basis: 100%;
+    padding: 0 0 8px 8px;
+  }
+}
+
+@media (max-width: 700px) {
+  .app-toolbar {
+    height: 52px;
+    min-height: 52px;
+  }
+
+  .app-toolbar--wrap {
+    height: auto;
+  }
+
+  .app-toolbar .toolbar-logo {
+    width: 32px;
+    height: 32px;
+    margin-right: 4px;
+  }
+
+  .app-toolbar .toolbar-title {
+    font-size: 17px;
+  }
+
+  .app-toolbar .toolbar-divider {
+    height: 20px;
+    margin: 0 8px;
+  }
+
+  .app-toolbar .toolbar-section {
+    font-size: 12px;
+  }
+
+  .app-toolbar .toolbar-icon-button {
+    margin-right: 15px;
+    font-size: 24px;
+  }
+
+  .app-toolbar .toolbar-checkbox {
+    margin-right: 15px;
+  }
+}

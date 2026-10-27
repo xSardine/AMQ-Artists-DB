@@ -1,0 +1,8 @@
+<button #button type="button" class="app-icon-button info-popover-button" [attr.popovertarget]="popoverId"
+  [attr.id]="buttonId()" [attr.aria-label]="'About ' + label()">
+  <i class="fa fa-info-circle" aria-hidden="true"></i>
+</button>
+<div #panel [id]="popoverId" popover="auto" class="app-floating-panel info-popover-panel" role="note"
+  [attr.aria-label]="label()" (beforetoggle)="beforeToggle($event)">
+  <ng-content />
+</div>

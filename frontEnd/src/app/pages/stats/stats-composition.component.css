@@ -1,0 +1,82 @@
+:host {
+  display: block;
+  container-type: inline-size;
+}
+
+.composition {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  min-height: 114px;
+}
+
+.composition-chart {
+  position: relative;
+  height: 112px;
+}
+
+.composition-legend {
+  display: grid;
+  gap: 5px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 12px;
+}
+
+.composition-legend li {
+  display: grid;
+  grid-template-columns: 7px minmax(0, 1fr) auto 5ch;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.composition-swatch {
+  width: 8px;
+  height: 8px;
+  align-self: center;
+}
+
+.composition-label {
+  overflow-wrap: anywhere;
+}
+
+.composition-count,
+.composition-share {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.composition-share {
+  color: var(--text-muted);
+}
+
+.composition-empty {
+  display: grid;
+  place-items: center;
+  min-height: 114px;
+  color: var(--text-muted);
+}
+
+@container (max-width: 340px) {
+  .composition {
+    grid-template-columns: 92px minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .composition-chart {
+    height: 92px;
+  }
+}
+
+@container (max-width: 270px) {
+  .composition {
+    grid-template-columns: 1fr;
+  }
+
+  .composition-chart {
+    width: 92px;
+    justify-self: center;
+  }
+}

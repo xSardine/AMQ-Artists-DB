@@ -1,0 +1,124 @@
+<div class="review-change" [class.review-reviewed]="change().review_status === 'approved'">
+  <div class="review-record">
+    <h3>{{ change().target.label }}</h3>
+    <p class="review-context">{{ recordContext(change().target, true) }}</p>
+    <p class="review-field">{{ labels[change().field] }} · {{ change().operation.replaceAll('_', ' ') }}</p>
+    <div class="review-status">
+      <span class="page-badge">{{ change().review_status }}</span>
+      @if (waiting()) { <span class="page-badge">Waiting for restart</span> }
+    </div>
+  </div>
+  <dl class="page-values">
+    <div class="review-value">
+      <dt>Current value</dt>
+      <dd>
+        {{ display(change().planned_value) }}
+        @if (profileUrl(change().field, change().planned_value); as url) {
+          <a class="page-profile-icon" [href]="url" target="_blank" rel="noopener noreferrer"
+            title="Open this ID's page URL" aria-label="Open this ID's page URL">
+            <i class="fa fa-external-link" aria-hidden="true"></i>
+          </a>
+        }
+      </dd>
+    </div>
+    <div class="review-value">
+      <dt>Proposed value</dt>
+      <dd>
+        {{ change().operation === 'clear' ? 'Clear value' : display(change().proposed_value.value) }}
+        @if (profileUrl(change().field, change().proposed_value.value); as url) {
+          <a class="page-profile-icon" [href]="url" target="_blank" rel="noopener noreferrer"
+            title="Open this ID's page URL" aria-label="Open this ID's page URL">
+            <i class="fa fa-external-link" aria-hidden="true"></i>
+          </a>
+        }
+      </dd>
+    </div>
+    @if (change().proposed_value.old_value) {
+      <div class="review-value review-replaced">
+        <dt>Replacing alias</dt>
+        <dd>{{ change().proposed_value.old_value }}</dd>
+      </div>
+    }
+  </dl>
+  @if (change().review_status !== 'approved') {
+    <div class="review-edit">
+      <select class="app-select app-control--form" aria-label="Decision" [ngModel]="draft().action"
+        (ngModelChange)="edited.emit({ action: $event })" [disabled]="busy()">
+        <option value="">Choose decision</option>
+        <option value="approve" [disabled]="!!change().conflict">Approve</option>
+        <option value="reject">Reject</option>
+        <option value="hold">Hold</option>
+        <option value="duplicate">Duplicate</option>
+      </select>
+      @if (draft().action === 'approve' && change().operation !== 'clear') {
+        <label class="page-field review-accepted">{{ isArtistId(change().field) ? 'Accepted artist ID' : 'Accepted name' }}
+          <span class="review-input">
+            @if (isArtistId(change().field)) {
+              <input class="app-input app-control--form" type="number" [ngModel]="draft().value"
+                (ngModelChange)="edited.emit({ value: $event })"
+                min="1" step="1" [max]="maxArtistId" [disabled]="busy()" />
+            } @else {
+              <input class="app-input app-control--form" [ngModel]="draft().value"
+                (ngModelChange)="edited.emit({ value: $event })" maxlength="500" [disabled]="busy()" />
+            }
+          </span>
+        </label>
+      }
+      <details class="page-details" (toggle)="toggleComment($event)">
+        <summary>Reviewer comment (optional){{ draft().comment ? ' · added' : '' }}</summary>
+        @if (commentOpen()) {
+          <textarea class="app-textarea app-control--form" [ngModel]="draft().comment"
+            (ngModelChange)="edited.emit({ comment: $event })" maxlength="3000" rows="3"
+            aria-label="Reviewer comment" [disabled]="busy()"></textarea>
+        }
+      </details>
+    </div>
+  }
+  @if (change().conflict || change().warnings.length || draft().stale) {
+    <div class="review-notices">
+      @if (change().conflict) { <p class="page-error">{{ change().conflict }}</p> }
+      @for (warning of change().warnings; track warning) { <p class="page-warning">{{ warning }}</p> }
+      @if (draft().stale) {
+        <p class="page-warning">This item changed since you chose a decision. Review the current value and update your decision before saving.</p>
+      }
+    </div>
+  }
+  <div class="review-change-footer">
+    @if (change().latest_approved_revision && change().latest_approved_revision === change().field_revision) {
+      <button class="app-button app-control--form" type="button" (click)="undoRequested.emit(change())" [disabled]="busy()">Undo latest field action</button>
+    }
+    <details class="page-details review-history" [open]="historyId() === change().id" (toggle)="toggleHistory($event)">
+      <summary>Review history ({{ historyId() === change().id ? history()?.total ?? change().event_count : change().event_count }})</summary>
+      @if (historyId() === change().id) {
+        @if (historyLoading()) {
+          <p>Loading history…</p>
+        } @else if (history(); as page) {
+          <ul>
+            @for (event of page.events; track event.id) {
+              <li>
+                <strong>{{ event.reviewer_name }}</strong> — {{ event.action }} ·
+                <time [attr.datetime]="event.created_at" [title]="event.created_at">{{ formatTimestamp(event.created_at) }}</time>
+                @if (event.reviewed_value) {
+                  <div>Reviewed value: {{ display(event.reviewed_value.value) }}
+                    @if (profileUrl(change().field, event.reviewed_value.value); as url) {
+                      <a class="page-profile-link page-profile-link--inline" [href]="url" target="_blank" rel="noopener noreferrer">Open profile</a>
+                    }
+                  </div>
+                }
+                @if (event.comment) { <div class="page-comment-text">{{ event.comment }}</div> }
+              </li>
+            } @empty { <li>No review history.</li> }
+          </ul>
+          @if (page.total > historyPageSize) {
+            <div class="page-pagination">
+              <button class="app-button app-control--form" type="button" (click)="historyRequested.emit(historyOffset() - historyPageSize)"
+                [disabled]="historyLoading() || historyOffset() === 0">Newer events</button>
+              <button class="app-button app-control--form" type="button" (click)="historyRequested.emit(historyOffset() + historyPageSize)"
+                [disabled]="historyLoading() || historyOffset() + historyPageSize >= page.total">Older events</button>
+            </div>
+          }
+        }
+      }
+    </details>
+  </div>
+</div>

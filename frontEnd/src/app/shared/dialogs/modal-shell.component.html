@@ -1,0 +1,20 @@
+<dialog #dialog [id]="dialogId()" class="modal-shell-content" [attr.data-size]="size()"
+  [class.modal-shell-content--fill]="fillHeight()" [attr.aria-labelledby]="titleId()" (close)="onClose()"
+  (cancel)="onCancel($event)" (click)="onDialogClick($event)">
+  <header class="modal-shell-header">
+    <div class="modal-shell-title">
+      @if (modalTitle(); as title) {
+      <h2 [id]="titleId()">{{ title }}</h2>
+      }
+      <ng-content select="[modal-title]" />
+    </div>
+    <div class="modal-shell-header-actions">
+      <ng-content select="[modal-header-actions]" />
+      <button #closeButton [id]="closeButtonId()" type="button" class="app-icon-button modal-shell-close"
+        [title]="closeLabel()" [attr.aria-label]="closeLabel()" [disabled]="closeDisabled()" (click)="close()">
+        <i class="fa fa-times" aria-hidden="true"></i>
+      </button>
+    </div>
+  </header>
+  <ng-content />
+</dialog>

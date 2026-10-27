@@ -1,0 +1,17 @@
+<h1>Reviewer access</h1>
+<form (ngSubmit)="login()">
+  <label class="page-field">Name
+    <input class="app-input app-control--form" name="reviewer" [(ngModel)]="name"
+      maxlength="100" autocomplete="nickname" required />
+  </label>
+  <label class="page-field">Password
+    <input class="app-input app-control--form" name="password" type="password" [(ngModel)]="password"
+      maxlength="1024" autocomplete="current-password" required />
+  </label>
+  @if (loginRequest.error()) {
+    <p class="page-error" role="alert">{{ loginRequest.error() }}</p>
+  }
+  <button class="app-button app-control--form" type="submit" [disabled]="loginRequest.busy() || !password || !name.trim()">
+    {{ loginRequest.busy() ? 'Signing in…' : 'Continue' }}
+  </button>
+</form>

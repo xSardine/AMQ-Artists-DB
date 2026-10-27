@@ -1,0 +1,20 @@
+@if (open()) {
+  <app-modal-shell [modalTitle]="title()" size="compact" [closeDisabled]="busy()"
+    [dialogId]="idPrefix() + '-modal'" [titleId]="idPrefix() + '-title'"
+    [closeButtonId]="idPrefix() + '-close'" (closed)="cancelled.emit()">
+    <div class="action-dialog-body">
+      <p>{{ message() }}</p>
+      @if (error()) {
+        <p class="action-dialog-error" role="alert">{{ error() }}</p>
+      }
+      <div class="action-dialog-actions">
+        <button [id]="idPrefix() + '-cancel'" type="button" class="app-button" data-modal-initial-focus
+          (click)="cancelled.emit()" [disabled]="busy()">Cancel</button>
+        <button [id]="idPrefix() + '-confirm'" type="button" class="app-button"
+          [class.app-button--danger]="destructive()" (click)="confirmed.emit()" [disabled]="busy()">
+          {{ busy() ? busyLabel() : confirmLabel() }}
+        </button>
+      </div>
+    </div>
+  </app-modal-shell>
+}

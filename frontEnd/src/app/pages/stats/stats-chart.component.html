@@ -1,0 +1,8 @@
+<div class="chart-wrap">
+  @if (hasData()) {
+    <canvas #canvas role="img" [attr.aria-label]="description()"></canvas>
+  } @else {
+    <div class="chart-empty" role="status">No data.</div>
+  }
+</div>
+<app-stats-chart-tooltip />

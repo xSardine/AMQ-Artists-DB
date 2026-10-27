@@ -1,0 +1,360 @@
+@if (song(); as currentSong) {
+  <app-modal-shell modalTitle="Song info" titleId="song-modal-title" dialogId="song-info-modal"
+    closeButtonId="song-modal-close" closeLabel="Close song info" size="wide" [fillHeight]="true" (closed)="close()">
+    <div #modalContent class="song-modal-body">
+      <div class="song-modal-overview">
+        <div class="song-modal-section">
+          <h3 class="song-modal-section-title">Song</h3>
+          <div class="song-modal-overview-content">
+            <div class="song-modal-title-group">
+              <div class="song-modal-title-text">
+                <h4 id="song-modal-song-name" class="app-copyable song-modal-title"
+                  title="Copy song name" (click)="onCopy($event, currentSong.songName)">
+                  {{ currentSong.songName }}
+                </h4>
+                <p id="song-modal-artist" class="app-copyable song-modal-artist"
+                  title="Copy artist" (click)="onCopy($event, currentSong.songArtist)">
+                  by {{ currentSong.songArtist || 'Unknown Artist' }}
+                </p>
+              </div>
+              <button id="song-modal-copy-song" type="button" class="app-icon-button"
+                title="Copy song and artist" aria-label="Copy song and artist" (click)="onCopy($event, songAndArtist())">
+                <i class="fa fa-clone" aria-hidden="true"></i>
+              </button>
+            </div>
+            <dl class="song-modal-facts">
+              <div>
+                <dt>Type</dt>
+                <dd id="song-modal-song-type" class="app-copyable" title="Copy song type"
+                  (click)="onCopy($event, currentSong.songType)">
+                  {{ currentSong.songType || '–' }}
+                </dd>
+              </div>
+              <div>
+                <dt>Difficulty</dt>
+                <dd id="song-modal-song-difficulty" class="app-copyable" title="Copy difficulty"
+                  (click)="onCopy($event, currentSong.songDifficulty)">
+                  {{ currentSong.songDifficulty ? currentSong.songDifficulty + '%' : '–' }}
+                </dd>
+              </div>
+              <div>
+                <dt>Length</dt>
+                <dd id="song-modal-song-length" class="app-copyable" title="Copy length"
+                  (click)="onCopy($event, formattedLength())">
+                  {{ formattedLength() || '–' }}
+                </dd>
+              </div>
+              <div>
+                <dt>Broadcast</dt>
+                <dd id="song-modal-song-broadcast" class="app-copyable" title="Copy broadcast"
+                  (click)="onCopy($event, broadcast())">
+                  {{ broadcast() }}
+                </dd>
+              </div>
+              <div>
+                <dt>Performance</dt>
+                <dd id="song-modal-song-performance" class="app-copyable" title="Copy performance"
+                  (click)="onCopy($event, currentSong.songCategory)">
+                  {{ currentSong.songCategory || '–' }}
+                </dd>
+              </div>
+            </dl>
+            @if (showSongIds()) {
+              <dl class="song-modal-facts">
+                <div>
+                  <dt class="song-modal-fact-label">
+                    ANN Song ID
+                    <app-info-popover label="ANN Song ID" buttonId="song-modal-ann-song-id-info">
+                      A unique identifier for this song in the database.
+                    </app-info-popover>
+                  </dt>
+                  <dd id="song-modal-ann-song-id" class="app-copyable" title="Copy ANN song ID"
+                    (click)="onCopy($event, annSongId())">
+                    {{ annSongId() ?? '–' }}
+                  </dd>
+                </div>
+                <div>
+                  <dt class="song-modal-fact-label">
+                    AMQ Song ID
+                    <app-info-popover label="AMQ Song ID" buttonId="song-modal-amq-song-id-info">
+                      A non-unique identifier for songs. Search by this ID to find all versions of the same song.
+                    </app-info-popover>
+                  </dt>
+                  <dd class="song-modal-fact-value">
+                    @if (currentSong.amqSongId) {
+                      <button id="song-modal-search-amq-song" type="button" class="app-icon-button app-icon-button--inline"
+                        title="Search this AMQ song ID" aria-label="Search this AMQ song ID"
+                        (click)="searchAmqSongId(currentSong.amqSongId, $event)">
+                        <i class="fa fa-search" aria-hidden="true"></i>
+                      </button>
+                    }
+                    <span id="song-modal-amq-song-id" class="app-copyable" title="Copy AMQ song ID"
+                      (click)="onCopy($event, currentSong.amqSongId)">
+                      {{ currentSong.amqSongId || '–' }}
+                    </span>
+                  </dd>
+                </div>
+              </dl>
+            }
+          </div>
+        </div>
+
+        <div class="song-modal-section">
+          <h3 class="song-modal-section-title">Anime</h3>
+          <div class="song-modal-overview-content">
+            <div class="song-modal-anime-names">
+              <h4 id="song-modal-anime-title" class="app-copyable song-modal-anime-title"
+                title="Copy anime title" (click)="onCopy($event, animeTitles().primary)">
+                {{ animeTitles().primary }}
+              </h4>
+              @if (animeTitles().secondary.length) {
+                <div class="song-modal-alternate-titles" aria-label="Other anime titles">
+                  @for (name of animeTitles().secondary; track name) {
+                    <span class="app-copyable" title="Copy anime title" (click)="onCopy($event, name)">{{ name }}</span>
+                  }
+                </div>
+              }
+            </div>
+            <dl class="song-modal-facts">
+              <div>
+                <dt>Season</dt>
+                <dd class="song-modal-fact-value">
+                  @if (currentSong.animeVintage) {
+                    <button id="song-modal-search-season" type="button" class="app-icon-button app-icon-button--inline"
+                      title="Search this season" aria-label="Search this season"
+                      (click)="searchSeason(currentSong.animeVintage, $event)">
+                      <i class="fa fa-search" aria-hidden="true"></i>
+                    </button>
+                  }
+                  <span id="song-modal-anime-season" class="app-copyable" title="Copy season"
+                    (click)="onCopy($event, currentSong.animeVintage)">
+                    {{ currentSong.animeVintage || '–' }}
+                  </span>
+                </dd>
+              </div>
+              <div>
+                <dt>Type</dt>
+                <dd id="song-modal-anime-type" class="app-copyable" title="Copy anime type"
+                  (click)="onCopy($event, currentSong.animeType)">
+                  {{ currentSong.animeType || '–' }}
+                </dd>
+              </div>
+              <div>
+                <dt>ANN ID</dt>
+                <dd class="song-modal-fact-value">
+                  @if (currentSong.annId) {
+                    <button id="song-modal-search-anime" type="button" class="app-icon-button app-icon-button--inline"
+                      title="Search this ANN ID" aria-label="Search this ANN ID"
+                      (click)="searchAnnId(currentSong.annId, $event)">
+                      <i class="fa fa-search" aria-hidden="true"></i>
+                    </button>
+                  }
+                  <span id="song-modal-anime-ann-id" class="app-copyable" title="Copy ANN ID"
+                    (click)="onCopy($event, currentSong.annId)">
+                    {{ currentSong.annId }}
+                  </span>
+                </dd>
+              </div>
+            </dl>
+            <dl class="song-modal-site-links">
+              <dt>Anime Sites</dt>
+              <dd>
+                @for (site of animeListSites; track site.alt) {
+                  @if (site.getUrl(currentSong); as siteUrl) {
+                    <a [href]="siteUrl" target="_blank" rel="noopener noreferrer" [title]="site.alt">
+                      <img [src]="site.img" alt="" />
+                      {{ site.label }}
+                    </a>
+                  }
+                }
+              </dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+
+      @if (currentSong.HQ || currentSong.MQ || currentSong.audio) {
+        <div class="song-modal-section song-modal-links" role="group" aria-labelledby="song-modal-links-title">
+          <h3 id="song-modal-links-title" class="song-modal-section-title">Links</h3>
+          <div class="song-modal-links-list">
+            @for (link of songDistLinks; track link.field) {
+              @if (currentSong[link.field]; as fileName) {
+                @let url = preferences.getDistUrl(fileName);
+                <div class="song-modal-link">
+                  <span class="song-modal-link-kind">{{ link.infoLabel }}</span>
+                  <a
+                    class="song-modal-link-file"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    [href]="url"
+                    [title]="fileName"
+                  >
+                    {{ fileName }}
+                  </a>
+                  <button
+                    type="button"
+                    class="app-icon-button song-modal-link-copy"
+                    [id]="'song-modal-link-copy-' + link.infoLabel.toLowerCase()"
+                    [title]="'Copy ' + link.infoLabel + ' link'"
+                    [attr.aria-label]="'Copy ' + link.infoLabel + ' link'"
+                    (click)="onCopy($event, url)"
+                  >
+                    <i class="fa fa-clone" aria-hidden="true"></i>
+                  </button>
+                </div>
+              }
+            }
+          </div>
+        </div>
+      }
+
+      @if (creditSections().length > 0) {
+        @for (section of creditSections(); track section.title) {
+          <div class="song-modal-section">
+            <h3 class="song-modal-section-title">{{ section.title }}</h3>
+            <div class="song-modal-credit-grid" [style.--song-modal-grid-columns]="gridColumns(section.people.length)">
+              @for (person of section.people; track $index) {
+                <div class="song-modal-credit-panel">
+                  <div class="song-modal-credit-heading">
+                    <p class="song-modal-credit-identity song-modal-credit-primary">
+                      @if (!rankedActive()) {
+                        <button
+                          type="button"
+                          class="app-icon-button app-icon-button--inline"
+                          [title]="creditSearchTitle(section.role, 'primary')"
+                          [attr.aria-label]="creditSearchTitle(section.role, 'primary')"
+                          (click)="searchCredit(person, section.role, $event)"
+                        >
+                          <i class="fa fa-search" aria-hidden="true"></i>
+                        </button>
+                      }
+                      <span
+                        class="app-copyable"
+                        title="Copy to clipboard"
+                        (click)="onCopy($event, person.names[0])"
+                      >
+                        {{ person.names[0] }}
+                      </span>
+                      @if (showArtistIds()) {
+                        <span class="song-modal-credit-id">{{ person.id }}</span>
+                      }
+                    </p>
+
+                    @if (person.names.length > 1) {
+                      <p class="song-modal-credit-aliases">
+                        <span class="song-modal-credit-alias-label">AKA:</span>
+                        <span class="song-modal-credit-alias-list">
+                          @for (name of person.names.slice(1); track name) {
+                            <span
+                              class="app-copyable"
+                              title="Copy to clipboard"
+                              (click)="onCopy($event, name)"
+                            >
+                              {{ name }}
+                            </span>
+                          }
+                        </span>
+                      </p>
+                    }
+                  </div>
+
+                  @if (person.members?.length) {
+                    <div class="song-modal-credit-related">
+                      <p class="song-modal-credit-subheading">
+                        {{ person.members!.length }} member{{ person.members!.length === 1 ? '' : 's' }}:
+                      </p>
+                      <div class="song-modal-credit-subgrid" [style.--song-modal-grid-columns]="creditSubgridColumns(section.people.length)">
+                        @for (member of person.members; track $index) {
+                          <div class="song-modal-credit-identity">
+                            @if (!rankedActive()) {
+                              <button
+                                type="button"
+                                class="app-icon-button app-icon-button--inline"
+                                [title]="creditSearchTitle(section.role, 'member')"
+                                [attr.aria-label]="creditSearchTitle(section.role, 'member')"
+                                (click)="searchCredit(member, section.role, $event)"
+                              >
+                                <i class="fa fa-search" aria-hidden="true"></i>
+                              </button>
+                            }
+                            <span
+                              class="app-copyable"
+                              title="Copy to clipboard"
+                              (click)="onCopy($event, member.names[0])"
+                            >
+                              {{ member.names[0] }}
+                            </span>
+                            @if (showArtistIds()) {
+                              <span class="song-modal-credit-id">{{ member.id }}</span>
+                            }
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  }
+
+                  @if (person.groups?.length) {
+                    <div class="song-modal-credit-related">
+                      <p class="song-modal-credit-subheading">Part of:</p>
+                      <div class="song-modal-credit-subgrid" [style.--song-modal-grid-columns]="creditSubgridColumns(section.people.length)">
+                        @for (group of person.groups; track $index) {
+                          <div class="song-modal-credit-identity">
+                            @if (!rankedActive()) {
+                              <button
+                                type="button"
+                                class="app-icon-button app-icon-button--inline"
+                                [title]="creditSearchTitle(section.role, 'group')"
+                                [attr.aria-label]="creditSearchTitle(section.role, 'group')"
+                                (click)="searchCredit(group, section.role, $event)"
+                              >
+                                <i class="fa fa-search" aria-hidden="true"></i>
+                              </button>
+                            }
+                            <span
+                              class="app-copyable"
+                              title="Copy to clipboard"
+                              (click)="onCopy($event, group.names[0])"
+                            >
+                              {{ group.names[0] }}
+                            </span>
+                            @if (showArtistIds()) {
+                              <span class="song-modal-credit-id">{{ group.id }}</span>
+                            }
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        }
+      }
+    </div>
+    <div class="song-modal-footer">
+      <div class="song-modal-navigation" role="group" aria-label="Browse songs">
+        <span id="song-modal-row-number" class="song-modal-row-number" aria-live="polite">
+          {{ rowIndex() + 1 }} / {{ totalRows() }}
+        </span>
+        <button id="song-modal-previous" type="button" class="app-icon-button" title="Previous song"
+          aria-label="Previous song" [disabled]="!canNavigate()" (click)="navigate(-1)">
+          <i class="fa fa-chevron-left" aria-hidden="true"></i>
+        </button>
+        <button id="song-modal-next" type="button" class="app-icon-button" title="Next song"
+          aria-label="Next song" [disabled]="!canNavigate()" (click)="navigate(1)">
+          <i class="fa fa-chevron-right" aria-hidden="true"></i>
+        </button>
+      </div>
+      <button id="song-modal-playback" type="button" class="app-button song-modal-playback"
+        [disabled]="!canPlay()" (click)="togglePlayback()">
+        @if (playbackActive()) {
+          <i class="fa fa-pause" aria-hidden="true"></i> Pause
+        } @else {
+          <i class="fa fa-play" aria-hidden="true"></i> Play
+        }
+      </button>
+    </div>
+    <app-clipboard-popup-outlet />
+  </app-modal-shell>
+}

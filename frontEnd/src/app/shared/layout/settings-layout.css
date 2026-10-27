@@ -1,0 +1,104 @@
+.settings-layout {
+  min-width: 0;
+  padding: 16px;
+}
+
+.settings-layout--scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+}
+
+.settings-layout :where(.settings-row, .settings-data-row) {
+  display: grid;
+  grid-template-columns: 140px minmax(0, 1fr);
+  gap: 12px;
+}
+
+.settings-layout .settings-row {
+  align-items: start;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.settings-layout .settings-row:first-child {
+  padding-top: 0;
+}
+
+.settings-layout .settings-row:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.settings-layout .settings-row-label {
+  margin: 0;
+  padding-top: 7px;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 1.4;
+}
+
+.settings-layout .settings-row--centered {
+  align-items: center;
+}
+
+.settings-layout .settings-row--centered .settings-row-label {
+  padding-top: 0;
+}
+
+.settings-layout .settings-row-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  min-width: 0;
+}
+
+.settings-layout .settings-row-controls--inline {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+}
+
+.settings-layout .settings-row-controls .app-select {
+  width: 100%;
+  height: 34px;
+}
+
+.settings-footer {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px;
+  border-top: 1px solid var(--border);
+}
+
+@media (max-width: 520px) {
+  .settings-layout :where(.settings-row, .settings-data-row) {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-layout .settings-row {
+    gap: 8px;
+  }
+
+  .settings-layout .settings-row-label {
+    padding-top: 0;
+  }
+}
+
+@media (pointer: coarse) {
+  .settings-layout .settings-row-controls .app-select {
+    height: 44px;
+    font-size: 16px;
+  }
+
+  .settings-layout .settings-row-controls .app-checkbox {
+    min-height: 44px;
+  }
+}

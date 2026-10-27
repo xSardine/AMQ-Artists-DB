@@ -1,0 +1,149 @@
+<div class="page-shell page-shell--viewport">
+  <app-toolbar
+    section="Log"
+    href="/log"
+    logoLinkId="log-home"
+    (settingsRequested)="settingsOpen.set(true)"
+    [wrapControls]="state.authenticated()">
+    <ng-container toolbar-status>
+      @if (state.authenticated() && state.ranked(); as region) { <span class="page-badge ranked-indicator">{{ region }} Ranked</span> }
+    </ng-container>
+    <ng-container toolbar-controls>
+      @if (state.authenticated()) {
+        <span class="log-status" [class.is-error]="state.feedError()" aria-live="off">{{ state.status() }}</span>
+        <label class="app-checkbox toolbar-checkbox" for="log-auto-scroll" title="Follow new events when sorting by Time">
+          <input type="checkbox" id="log-auto-scroll" [disabled]="table.sort().column !== 'time'" [ngModel]="state.autoScroll()" (ngModelChange)="state.autoScroll.set($event)">
+          Auto-scroll
+        </label>
+        <label class="app-checkbox toolbar-checkbox" for="log-polling">
+          <input type="checkbox" id="log-polling" [ngModel]="state.polling()" (ngModelChange)="state.polling.set($event)">
+          Polling
+        </label>
+      }
+    </ng-container>
+  </app-toolbar>
+  @if (settingsOpen()) {
+    <app-log-settings-dialog (closed)="settingsOpen.set(false)" />
+  }
+  @if (state.authenticated()) {
+    <main class="page-content page-content--wide page-content--viewport log-content">
+      <div class="log-controls" role="group" aria-label="Log controls">
+        <div class="log-filter-search">
+          <input id="log-filter-search" type="search" class="app-input log-search-input" aria-label="Filter logs" placeholder="Filter logs…" autocomplete="off" spellcheck="false" maxlength="1000" [ngModel]="state.filters().search" (ngModelChange)="state.updateFilters({ search: $event })">
+        </div>
+        <div class="log-filter-groups">
+          <label class="log-filter-group" for="log-filter-requests">
+            <span class="log-filter-label">Requests:</span>
+            <select id="log-filter-requests" class="app-select"
+              [ngModel]="state.filters().requestGroup" (ngModelChange)="state.updateFilters({ requestGroup: $event })">
+              <option value="all">All</option>
+              <option value="text">Text</option>
+              <option value="ids">IDs</option>
+              <option value="other">Other</option>
+            </select>
+          </label>
+          <label class="log-filter-group" for="log-filter-outcome">
+            <span class="log-filter-label">Outcome:</span>
+            <select id="log-filter-outcome" class="app-select"
+              [ngModel]="state.filters().outcome" (ngModelChange)="state.updateFilters({ outcome: $event })">
+              <option value="all">All</option>
+              <option value="completed">Completed</option>
+              <option value="failed">Failed</option>
+              <option value="zero-results">0 Results</option>
+            </select>
+          </label>
+        </div>
+        <div class="log-controls-actions">
+          <button id="log-reset-filters" type="button" class="app-button" (click)="state.resetFilters()" title="Reset filters">
+            <i class="fa fa-filter" aria-hidden="true"></i> Reset
+          </button>
+          <button id="log-clear" type="button" class="app-button app-button--danger" (click)="state.clear()" [disabled]="!state.events().length" title="Clear displayed events from this view">
+            <i class="fa fa-table" aria-hidden="true"></i> Clear
+          </button>
+          <app-column-settings idPrefix="log-column-settings" [columns]="table.columns()"
+            [visibleIds]="table.visibleIds()" [(open)]="columnsOpen"
+            (visibilityChanged)="table.setVisible($event.id, $event.visible)"
+            (moved)="table.moveColumn($event)" (selectionReset)="table.resetSelection()"
+            (orderReset)="table.resetOrder()" />
+        </div>
+      </div>
+      <div id="log-table-viewport" class="log-table-viewport" #logViewport tabindex="0" role="region" aria-label="Request log events">
+        @if (table.visibleColumns().length) {
+          <table class="log-table" [style.min-width.px]="table.minWidth()" aria-label="Request log">
+            <colgroup>
+              @for (column of table.visibleColumns(); track column.id) { <col [style.width.px]="column.width" /> }
+            </colgroup>
+            <thead>
+              <tr>
+                @for (column of table.visibleColumns(); track column.id) {
+                  <th scope="col" [class.log-numeric]="column.numeric"
+                    [attr.aria-sort]="table.sort().column === column.id ? (table.sort().direction === 'asc' ? 'ascending' : 'descending') : null">
+                    <button [id]="'log-sort-' + column.id" type="button" class="log-sort-button" (click)="sortBy(column.id)" [title]="'Sort by ' + column.header">
+                      {{ column.header }}
+                      @if (table.sort().column === column.id) {
+                        <i class="fa" [class.fa-caret-up]="table.sort().direction === 'asc'"
+                          [class.fa-caret-down]="table.sort().direction === 'desc'" aria-hidden="true"></i>
+                      }
+                    </button>
+                  </th>
+                }
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of table.rows(); track row.event.id) {
+                <tr tabindex="0" [attr.data-event-id]="row.event.id" [attr.aria-label]="'Inspect ' + row.cells.request + ' at ' + row.cells.time"
+                  (click)="inspectRow($event, row)" (keydown)="onRowKeydown($event, row)">
+                  @for (column of table.visibleColumns(); track column.id) {
+                    <td [class.log-numeric]="column.numeric" [class.log-ip-cell]="column.id === 'ip'"
+                      [title]="row.cells[column.id] ?? ''">
+                      @switch (column.id) {
+                        @case ('ip') {
+                          <app-log-ip [value]="row.event.ip" />
+                        }
+                        @case ('query') {
+                          @for (query of row.queries; track $index) {
+                            <span class="log-query">
+                              @if (row.event.endpoint === '/api/search_request') {
+                                <span class="log-query-label">{{ query.label }}</span>
+                              }
+                              {{ query.value }}
+                            </span>
+                          } @empty { — }
+                        }
+                        @case ('status') {
+                          <span
+                            [class.log-http-success]="row.event.http_status != null && row.event.http_status >= 100 && row.event.http_status < 400"
+                            [class.log-http-error]="row.event.http_status != null && row.event.http_status >= 400">
+                            {{ row.cells.status ?? '—' }}
+                          </span>
+                        }
+                        @default { {{ row.cells[column.id] ?? '—' }} }
+                      }
+                    </td>
+                  }
+                </tr>
+              } @empty {
+                <tr>
+                  <td class="log-empty" [attr.colspan]="table.visibleColumns().length">
+                    {{ state.events().length ? 'No events match the current filters.' : 'No events in this window.' }}
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        } @else {
+          <p class="log-empty">No columns selected. Use Columns to show columns or reset the selection.</p>
+        }
+      </div>
+    </main>
+    @if (selectedEvent(); as event) {
+      <app-log-detail-dialog [event]="event" [timeSettings]="state.timeSettings()"
+        [(jsonExpanded)]="detailsJsonExpanded" (navigationRequested)="navigateDetails($event)"
+        (closed)="closeDetails()" />
+    }
+  } @else {
+    <main class="page-content page-content--narrow page-content--viewport page-content--scroll">
+      <app-log-access-form (signedIn)="state.onLogin($event)" />
+    </main>
+  }
+</div>

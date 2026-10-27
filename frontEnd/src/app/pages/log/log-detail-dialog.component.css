@@ -1,0 +1,386 @@
+.log-detail-body {
+  display: grid;
+  gap: 16px;
+  min-height: 0;
+  padding: 20px;
+  overflow: auto;
+}
+
+.log-detail-body h3,
+.log-detail-body dl,
+.log-detail-body dd,
+.log-detail-body ul {
+  margin: 0;
+}
+
+.log-detail-body dt {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.log-detail-body dd {
+  overflow-wrap: anywhere;
+}
+
+.log-detail-overview {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 20px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+}
+
+.log-detail-request {
+  min-width: 0;
+}
+
+.log-detail-request h3 {
+  margin-bottom: 6px;
+  font-size: 18px;
+}
+
+.log-detail-request code {
+  color: var(--text-muted);
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.log-detail-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  padding: 4px 20px;
+  border-inline: 1px solid var(--border);
+}
+
+.log-detail-metrics dt {
+  margin-bottom: 3px;
+  white-space: nowrap;
+}
+
+.log-detail-metrics dd {
+  font-size: 22px;
+  font-weight: bold;
+  font-variant-numeric: tabular-nums;
+}
+
+.log-detail-status--success {
+  color: var(--success);
+}
+
+.log-detail-status--error {
+  color: var(--error);
+}
+
+.log-detail-origin {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 16px;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.log-detail-origin dt {
+  margin-bottom: 2px;
+}
+
+.log-detail-timestamp {
+  grid-column: 1 / -1;
+}
+
+.log-detail-ip {
+  color: var(--text-muted);
+  font-family: monospace;
+}
+
+.log-detail-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  align-items: start;
+  gap: 16px;
+}
+
+.log-detail-panel,
+.log-detail-json-panel {
+  min-width: 0;
+  border: 1px solid var(--border);
+}
+
+.log-detail-panel-heading,
+.log-detail-json-panel > summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  background: var(--surface-2);
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.log-detail-panel-heading {
+  border-bottom: 1px solid var(--border);
+}
+
+.log-detail-panel-heading .fa,
+.log-detail-json-label .fa {
+  color: var(--text-muted);
+}
+
+.log-detail-queries,
+.log-detail-filters {
+  padding: 4px 14px;
+}
+
+.log-detail-queries > div,
+.log-detail-filters > div {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr);
+  align-items: start;
+  gap: 12px;
+  padding: 10px 0;
+}
+
+.log-detail-queries > div + div,
+.log-detail-filters > div + div {
+  border-top: 1px solid var(--border);
+}
+
+.log-detail-queries dd {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.log-detail-query-value {
+  white-space: pre-wrap;
+}
+
+.log-detail-values {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-width: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--text);
+  font-size: 13px;
+}
+
+.log-detail-values li {
+  padding: 3px 6px;
+  background: var(--surface-2);
+  overflow-wrap: anywhere;
+}
+
+.log-detail-filters > div {
+  padding: 8px 0;
+}
+
+.log-detail-filters dd {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.log-detail-filter-entry {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+
+.log-detail-filter-operator {
+  flex-shrink: 0;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.log-detail-empty {
+  padding: 14px;
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.log-detail-failure {
+  min-width: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--error);
+  background: var(--error-bg);
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+.log-detail-failure h3 {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  color: var(--error);
+  font-size: 14px;
+}
+
+.log-detail-issues {
+  display: grid;
+  gap: 10px;
+  max-height: 240px;
+  padding: 12px 0 0;
+  list-style: none;
+  overflow: auto;
+}
+
+.log-detail-issues li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: 12px;
+}
+
+.log-detail-issues code {
+  font-size: 12px;
+}
+
+.log-detail-json-panel > summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+.log-detail-json-panel > summary::-webkit-details-marker {
+  display: none;
+}
+
+.log-detail-json-panel > summary:hover {
+  background: var(--surface-3);
+}
+
+.log-detail-json-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.log-detail-json-hint {
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: normal;
+}
+
+.log-detail-json-panel > summary .log-detail-json-hint {
+  margin-left: auto;
+}
+
+.log-detail-json-chevron {
+  flex-shrink: 0;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.log-detail-json-panel[open] .log-detail-json-chevron {
+  transform: rotate(90deg);
+}
+
+.log-detail-json-content {
+  padding: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.log-detail-json-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.log-detail-json-actions .app-button {
+  flex-shrink: 0;
+}
+
+.log-detail-copy-message {
+  margin: 10px 0 0;
+  color: var(--error);
+}
+
+.log-detail-json {
+  margin: 12px 0 0;
+  padding: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  font: 13px / 1.5 monospace;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  tab-size: 2;
+}
+
+@media (max-width: 900px) {
+  .log-detail-overview {
+    grid-template-columns: minmax(0, 1fr) minmax(240px, 1fr);
+    gap: 16px;
+  }
+
+  .log-detail-metrics {
+    padding-right: 0;
+    border-right: 0;
+  }
+
+  .log-detail-origin {
+    grid-column: 1 / -1;
+    grid-template-columns: minmax(0, 2fr) repeat(2, minmax(0, 1fr));
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+
+  .log-detail-timestamp {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 680px) {
+  .log-detail-body {
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .log-detail-overview,
+  .log-detail-columns {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .log-detail-overview {
+    padding: 12px;
+  }
+
+  .log-detail-metrics {
+    padding: 12px 0 0;
+    border: 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .log-detail-origin {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .log-detail-timestamp {
+    grid-column: 1 / -1;
+  }
+
+  .log-detail-issues li {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
+  }
+
+  .log-detail-json-panel > summary .log-detail-json-hint {
+    display: none;
+  }
+
+  .log-detail-json-chevron {
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 400px) {
+  .log-detail-queries > div,
+  .log-detail-filters > div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+  }
+}

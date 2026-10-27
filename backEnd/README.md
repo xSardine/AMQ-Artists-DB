@@ -13,7 +13,7 @@ Then enhanced automatically or manually by me.
 
 ## Running locally
 
-Requires **Python 3.10+** ([downloads](https://www.python.org/downloads/)).
+Requires **Python 3.10+**
 
 ### Setup
 
@@ -53,23 +53,22 @@ From `backEnd/app`:
 python -m uvicorn main:app --host 127.0.0.1 --port 8000 --reload
 ```
 
-The API listens on [http://127.0.0.1:8000](http://127.0.0.1:8000). Example: `POST http://127.0.0.1:8000/api/search_request`.
+The API listens on [http://127.0.0.1:8000](http://127.0.0.1:8000)
+Interactive docs: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
 
-Interactive docs: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs) or [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc).
+### Configuration
 
-### Request log (optional)
+Copy [`.env.example`](.env.example) to `.env`.
 
-The API serves an in-memory request log viewer from `backEnd/app/log-viewer.html`. Copy `backEnd/.env.example` to `backEnd/.env` and set `REQUEST_LOG_URL_SEGMENT` to the URL path segment you want. Defaults to `log` if `.env` is missing or the segment is blank. Restart the server after changing `.env`.
+IP addresses in the log are anonymized. Set an optional salt value `REQUEST_LOG_IP_HASH_SALT`. If empty, a random value is chosen on each startup.
 
-IP addresses are anonymized by default (`REQUEST_LOG_ANONYMIZE_IP=true`): the log stores a deterministic alias like `anon-abc123...` so repeated requests from the same IP are still linkable without exposing the real address. Set `REQUEST_LOG_IP_HASH_SALT` in `backEnd/.env` if you want aliases to remain stable across restarts.
+Set `LOG_PASSWORD` and `REVIEW_PASSWORD` for Log and Review access.
 
-- Viewer: `http://127.0.0.1:8000/log` (or your custom segment)
-- JSON feed: `http://127.0.0.1:8000/log/feed`
+In production, set `AUTH_COOKIE_SECURE=true` and `FRONTEND_ORIGINS` to your frontend's origin. 
 
-If your reverse proxy only forwards `/api/*` to FastAPI, the same endpoints are also available under `/api`:
+Restart after configuration changes.
 
-- Viewer: `http://127.0.0.1:8000/api/log`
-- JSON feed: `http://127.0.0.1:8000/api/log/feed`
+Contributions are stored in `app/data/contributions.db`, created automatically. Reviewers approve original names and artist IDs. Approved changes take effect on the next backend restart; imported catalog database and JSON files stay unchanged.
 
 ## Production
 

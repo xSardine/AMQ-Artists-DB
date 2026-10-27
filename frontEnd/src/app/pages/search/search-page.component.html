@@ -1,0 +1,25 @@
+<div class="page-shell">
+  <app-toolbar
+    href="/"
+    logoLinkId="header-logo-link"
+    settingsButtonId="header-settings-button"
+    (settingsRequested)="modals.open({ type: 'settings' })">
+    <app-search-toolbar-controls toolbar-controls />
+  </app-toolbar>
+
+  <app-audio-player />
+
+  <main class="page-content page-content--fluid search-content">
+    <app-search-bar />
+    <app-song-table />
+    <p class="amq-disclaimer">
+      Built on the <a href="https://animemusicquiz.com/" target="_blank" rel="noopener">AMQ</a>
+      database. This is a personal project, not affiliated. Support AMQ on
+      <a href="https://www.patreon.com/NextWorldGames" target="_blank" rel="noopener">Patreon</a>.
+    </p>
+  </main>
+</div>
+
+<app-search-modal-outlet />
+
+<app-toast-outlet />

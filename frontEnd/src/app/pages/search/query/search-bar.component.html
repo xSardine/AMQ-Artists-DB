@@ -1,0 +1,513 @@
+@if (rankedStatus().active) {
+  <div class="ranked-banner" role="status" aria-live="polite">
+    <span class="ranked-banner-icon" aria-hidden="true"><i class="fa fa-shield"></i></span>
+    <span class="ranked-banner-text">
+      <span class="ranked-banner-title">AMQ Ranked</span>
+      <span class="ranked-banner-region">{{ rankedStatus().region }}</span>
+      Some functionality disabled – <strong>{{ formatRankedRemaining(rankedStatus()) }}</strong> remaining
+    </span>
+    <button
+      id="search-ranked-info"
+      type="button"
+      class="ranked-banner-info tooltip"
+      aria-label="About AMQ Ranked restrictions"
+    >
+      <i class="fa fa-info-circle" aria-hidden="true"></i>
+      <span class="tooltiptext ranked-banner-info-tooltip">
+        <strong>What is Ranked?</strong>
+        <p>
+          Ranked is a daily scheduled multiplayer mode in Anime Music Quiz. During this time, AnisongDB limits
+          search and scouting features to help prevent cheating. Audio playback and song links remain available.
+        </p>
+
+        <strong>Schedule</strong>
+        <p>
+          Each window runs {{ rankedScheduleLabel }} during that region's local time.
+        </p>
+        <ul>
+          @for (region of rankedRegions; track region.region) {
+            <li><strong>{{ region.region }}</strong> {{ region.timeZone }} ({{ region.timeZoneLabel }})</li>
+          }
+        </ul>
+
+        <strong>API Endpoints Disabled</strong>
+        <ul>
+          <li>Song name search</li>
+          <li>Artist search</li>
+          <li>Composer search</li>
+        </ul>
+
+        <strong>Table &amp; UI disabled</strong>
+        <ul>
+          <li>Artist, composer, and arranger quick-search icons</li>
+        </ul>
+      </span>
+    </button>
+  </div>
+}
+
+<div class="search-bar-header">
+  @if (!showAdvancedFilters()) {
+    <div class="search-simple-form">
+      <button id="search-btn-main" type="button" class="app-button app-button--primary" (click)="submitSearch()">
+        <i class="fa fa-search" aria-hidden="true"></i> Search
+      </button>
+
+      <input
+        id="search-input-main"
+        [placeholder]="rankedStatus().active ? 'Search by anime' : 'Search by anime, song name or artist'"
+        [title]="rankedStatus().active ? 'Search by anime' : 'Search by anime, song name or artist'"
+        class="app-input main-search-input"
+        type="search"
+        maxlength="500"
+        [(ngModel)]="form.main"
+        (keyup.enter)="submitSearch()"
+      />
+
+      @for (option of songTypeOptions; track option.key) {
+        <label class="app-checkbox" [for]="'search-main-checkbox-' + option.idSuffix">
+          <input
+            [id]="'search-main-checkbox-' + option.idSuffix"
+            type="checkbox"
+            [(ngModel)]="form.filters[option.key]"
+          />
+          {{ option.label }}
+        </label>
+      }
+
+      <label class="app-checkbox" for="search-main-checkbox-ignore-duplicates"
+        ><input
+          id="search-main-checkbox-ignore-duplicates"
+          type="checkbox"
+          [(ngModel)]="form.ignoreDuplicate"
+        />
+        Ignore Duplicates
+      </label>
+
+      <label
+        class="app-checkbox"
+        for="search-main-checkbox-partial-match"
+        title="If activated, results only have to contain the filter and not match it exactly"
+        ><input
+          id="search-main-checkbox-partial-match"
+          type="checkbox"
+          [(ngModel)]="form.mainPartialMatch"
+        />
+        Partial Match
+      </label>
+    </div>
+  }
+
+  <div class="search-bar-actions">
+    <button
+      id="search-toggle-advanced"
+      type="button"
+      class="search-toolbar-action"
+      [title]="showAdvancedFilters() ? 'Switch to simple search' : 'Switch to advanced search'"
+      (click)="toggleAdvancedFilters()"
+    >
+      <i class="fa fa-cog" aria-hidden="true"></i> {{ showAdvancedFilters() ? 'Simple Search' : 'Advanced Search' }}
+    </button>
+
+    <a
+      id="search-help"
+      class="search-toolbar-action"
+      title="AnisongDB Help"
+      href="https://github.com/xSardine/AMQ-Artists-DB/blob/main/README.md"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <i class="fa fa-question-circle" aria-hidden="true"></i> Help
+    </a>
+  </div>
+</div>
+
+@if (showAdvancedFilters()) {
+  <form id="search-advanced-form" class="advanced-search" (ngSubmit)="submitSearch()">
+    <div class="advanced-search-grid">
+      <div class="advanced-search-fields" aria-labelledby="search-advanced-fields-heading" role="group">
+        <div class="advanced-search-heading-row">
+          <h2 id="search-advanced-fields-heading" class="advanced-search-heading">Search fields</h2>
+          <app-segmented-radio
+            label="Search method"
+            name="search-advanced-mode"
+            idPrefix="search-advanced-mode"
+            [options]="fieldModes"
+            [value]="form.advancedSearchFieldMode"
+            (valueChange)="form.advancedSearchFieldMode = $event"
+          />
+        </div>
+
+        @if (form.advancedSearchFieldMode === 'text') {
+          <div class="advanced-search-queries">
+            <div class="advanced-search-query">
+              <label class="advanced-search-query-label" for="search-advanced-anime">Anime</label>
+              <input
+                id="search-advanced-anime"
+                name="anime"
+                class="app-input"
+                type="search"
+                maxlength="500"
+                placeholder="Anime name"
+                [(ngModel)]="form.anime"
+              />
+              <select
+                id="search-advanced-anime-match"
+                name="anime-match"
+                class="app-select"
+                aria-label="Anime matching"
+                [(ngModel)]="form.animeMatchMode"
+              >
+                @for (option of matchModeOptions; track option.value) {
+                  <option [value]="option.value">{{ option.label }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="advanced-search-query">
+              <label class="advanced-search-query-label" for="search-advanced-song">Song</label>
+              <input
+                id="search-advanced-song"
+                name="song"
+                class="app-input"
+                type="search"
+                maxlength="500"
+                placeholder="Song name"
+                [(ngModel)]="form.songName"
+              />
+              <select
+                id="search-advanced-song-match"
+                name="song-match"
+                class="app-select"
+                aria-label="Song name matching"
+                [(ngModel)]="form.songNameMatchMode"
+              >
+                @for (option of matchModeOptions; track option.value) {
+                  <option [value]="option.value">{{ option.label }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="advanced-search-query">
+              <label class="advanced-search-query-label" for="search-advanced-artist">Artist</label>
+              <input
+                id="search-advanced-artist"
+                name="artist"
+                class="app-input"
+                type="search"
+                maxlength="500"
+                placeholder="Artist name"
+                [(ngModel)]="form.artist"
+              />
+              <select
+                id="search-advanced-artist-match"
+                name="artist-match"
+                class="app-select"
+                aria-label="Artist matching"
+                [(ngModel)]="form.artistMatchMode"
+              >
+                @for (option of matchModeOptions; track option.value) {
+                  <option [value]="option.value">{{ option.label }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="advanced-search-query">
+              <label class="advanced-search-query-label" for="search-advanced-composer">Composer</label>
+              <input
+                id="search-advanced-composer"
+                name="composer"
+                class="app-input"
+                type="search"
+                maxlength="500"
+                placeholder="Composer name"
+                [(ngModel)]="form.composer"
+              />
+              <select
+                id="search-advanced-composer-match"
+                name="composer-match"
+                class="app-select"
+                aria-label="Composer matching"
+                [(ngModel)]="form.composerMatchMode"
+              >
+                @for (option of matchModeOptions; track option.value) {
+                  <option [value]="option.value">{{ option.label }}</option>
+                }
+              </select>
+            </div>
+          </div>
+        } @else {
+          <div class="advanced-search-lookup">
+            <label class="advanced-search-lookup-field" for="search-advanced-lookup-type">
+              <span class="advanced-search-field-label">Search by</span>
+              <select
+                id="search-advanced-lookup-type"
+                name="lookup-type"
+                class="app-select"
+                [(ngModel)]="form.advancedLookupType"
+              >
+                @for (option of advancedLookupOptions; track option.value) {
+                  <option [value]="option.value">{{ option.label }}</option>
+                }
+              </select>
+            </label>
+            <label class="advanced-search-lookup-field" for="search-advanced-lookup-value">
+              <span class="advanced-search-field-label">Value</span>
+              <input
+                id="search-advanced-lookup-value"
+                name="lookup-value"
+                class="app-input"
+                type="text"
+                maxlength="500"
+                [attr.inputmode]="getAdvancedLookupOption(form.advancedLookupType).inputMode"
+                [placeholder]="getAdvancedLookupOption(form.advancedLookupType).placeholder"
+                [(ngModel)]="form.advancedLookupValue"
+              />
+            </label>
+            @if (isCreditIdLookup) {
+              <label class="advanced-search-lookup-field" for="search-advanced-id-match">
+                <span class="advanced-search-field-label">Match IDs</span>
+                <select id="search-advanced-id-match" name="id-match" class="app-select" [(ngModel)]="form.idMatch">
+                  <option value="any">Any ID (OR)</option>
+                  <option value="all">All IDs (AND)</option>
+                </select>
+              </label>
+            }
+          </div>
+        }
+
+        @if (form.advancedSearchFieldMode === 'text' || isCreditIdLookup) {
+          <div class="advanced-search-options-row">
+            <button
+              id="search-advanced-credit-toggle"
+              class="advanced-search-credit-toggle"
+              type="button"
+              [attr.aria-expanded]="creditOptionsOpen()"
+              aria-controls="search-advanced-credit-options"
+              (click)="creditOptionsOpen.set(!creditOptionsOpen())"
+            >
+              <i class="fa" [class.fa-caret-right]="!creditOptionsOpen()" [class.fa-caret-down]="creditOptionsOpen()" aria-hidden="true"></i>
+              Artist / composer credit options
+            </button>
+            @if (form.advancedSearchFieldMode === 'text') {
+              <label class="advanced-search-combination" for="search-advanced-field-match">
+                <span>Match search fields</span>
+                <select
+                  id="search-advanced-field-match"
+                  name="field-match"
+                  class="app-select"
+                  [(ngModel)]="form.combination"
+                >
+                  <option value="or" title="A song needs to match at least one search field">Any field (OR)</option>
+                  <option value="and" title="A song needs to match every search field">All fields (AND)</option>
+                </select>
+              </label>
+            }
+          </div>
+          <div id="search-advanced-credit-options" class="advanced-search-credit-fields" [hidden]="!creditOptionsOpen()">
+            <div class="advanced-search-credit-field">
+              <div class="advanced-search-field-label">
+                <label for="search-advanced-max-other-people">Max other people</label>
+                <app-info-popover label="Max other people" buttonId="search-advanced-max-other-people-info">
+                  Maximum number of people outside the Artist or Composer filter who may be credited
+                </app-info-popover>
+              </div>
+              <input
+                id="search-advanced-max-other-people"
+                name="max-other-people"
+                class="app-input"
+                type="number"
+                min="0"
+                step="1"
+                [(ngModel)]="form.maximumOtherPeople"
+              />
+            </div>
+            <div class="advanced-search-credit-field">
+              <div class="advanced-search-field-label">
+                <label for="search-advanced-min-group-members">Min group members</label>
+                <app-info-popover label="Min group members" buttonId="search-advanced-min-group-members-info">
+                  Minimum number of people from an Artist or Composer group who must be credited
+                </app-info-popover>
+              </div>
+              <input
+                id="search-advanced-min-group-members"
+                name="min-group-members"
+                class="app-input"
+                type="number"
+                min="0"
+                step="1"
+                [(ngModel)]="form.minimumGroupMembers"
+              />
+            </div>
+            <label
+              class="app-checkbox"
+              for="search-advanced-include-arrangements"
+              title="For composer search, include songs where they only participated in the arrangement"
+            >
+              <input
+                id="search-advanced-include-arrangements"
+                name="include-arrangements"
+                type="checkbox"
+                [(ngModel)]="form.composerArrangement"
+              />
+              Include arrangement credits
+            </label>
+          </div>
+        }
+      </div>
+
+      <div class="advanced-search-filters" aria-labelledby="search-advanced-filters-heading" role="group">
+        <div class="advanced-search-heading-row">
+          <h2 id="search-advanced-filters-heading" class="advanced-search-heading">Song filters</h2>
+          <a
+            id="search-advanced-filter-help"
+            class="app-icon-button advanced-search-help"
+            title="Help understanding filters"
+            aria-label="Help understanding filters"
+            href="https://github.com/xSardine/AMQ-Artists-DB#filters"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <i class="fa fa-question-circle" aria-hidden="true"></i>
+          </a>
+        </div>
+
+        <div class="advanced-search-filter-columns">
+          <div class="advanced-search-checkboxes">
+            @for (group of advancedFilterGroups; track group.id) {
+              <div class="advanced-search-checkbox-group" role="group" [attr.aria-labelledby]="'search-advanced-' + group.id + '-label'">
+                <span class="advanced-search-group-label" [id]="'search-advanced-' + group.id + '-label'">{{ group.label }}</span>
+                <div class="advanced-search-checkbox-options">
+                  @for (option of group.options; track option.key) {
+                    <label class="app-checkbox" [for]="'search-advanced-' + option.idSuffix">
+                      <input
+                        [id]="'search-advanced-' + option.idSuffix"
+                        [name]="option.key"
+                        type="checkbox"
+                        [(ngModel)]="form.filters[option.key]"
+                      />
+                      {{ option.label }}
+                    </label>
+                  }
+                </div>
+              </div>
+            }
+            <div class="advanced-search-common-options">
+              <label
+                class="app-checkbox"
+                for="search-advanced-include-no-links"
+                title="Include songs with no media links (720, 480, MP3)"
+              >
+                <input
+                  id="search-advanced-include-no-links"
+                  name="include-no-links"
+                  type="checkbox"
+                  [(ngModel)]="form.filters.includeNoLinks"
+                />
+                Include songs with no links
+              </label>
+              <label class="app-checkbox" for="search-advanced-ignore-duplicates">
+                <input
+                  id="search-advanced-ignore-duplicates"
+                  name="ignore-duplicates"
+                  type="checkbox"
+                  [(ngModel)]="form.ignoreDuplicate"
+                />
+                Ignore duplicates
+              </label>
+            </div>
+          </div>
+          <div class="advanced-search-parameters">
+            <label class="advanced-search-filter-field" for="search-advanced-season">
+              <span class="advanced-search-field-label">Season</span>
+              <input
+                id="search-advanced-season"
+                name="season"
+                class="app-input"
+                type="text"
+                maxlength="27"
+                placeholder="Season Year - Season Year"
+                [(ngModel)]="form.seasonRange"
+              />
+            </label>
+            <label class="advanced-search-filter-field" for="search-advanced-difficulty">
+              <span class="advanced-search-field-label">Difficulty (%)</span>
+              <input
+                id="search-advanced-difficulty"
+                name="difficulty"
+                class="app-input"
+                type="text"
+                inputmode="decimal"
+                maxlength="13"
+                placeholder="0 - 100"
+                [(ngModel)]="form.difficultyRange"
+              />
+            </label>
+            <label class="advanced-search-filter-field" for="search-advanced-length">
+              <span class="advanced-search-field-label">Length (sec)</span>
+              <input
+                id="search-advanced-length"
+                name="length"
+                class="app-input"
+                type="text"
+                inputmode="decimal"
+                maxlength="27"
+                placeholder="0 - 90"
+                [(ngModel)]="form.songLengthRange"
+              />
+            </label>
+            <div class="advanced-search-filter-field">
+              <div class="advanced-search-field-label">
+                <label for="search-advanced-genres">Genre</label>
+                <app-catalog-labels-popover heading="Genres" [names]="genres" idPrefix="search-advanced-genre-list" />
+              </div>
+              <input
+                id="search-advanced-genres"
+                name="genres"
+                class="app-input"
+                type="text"
+                maxlength="500"
+                placeholder="Genres"
+                title="Comma-separated genre names; all must match"
+                [(ngModel)]="form.genres"
+              />
+            </div>
+            <div class="advanced-search-filter-field" hidden>
+              <div class="advanced-search-field-label">
+                <label for="search-advanced-tags">Tag</label>
+                <app-catalog-labels-popover
+                  heading="Tags"
+                  idPrefix="search-advanced-tag-list"
+                  [names]="tags.values()"
+                  [loading]="tags.loading()"
+                  [error]="tags.error()"
+                  (loadRequested)="tags.load()"
+                />
+              </div>
+              <input
+                id="search-advanced-tags"
+                name="tags"
+                class="app-input"
+                type="text"
+                maxlength="500"
+                placeholder="Tags"
+                title="Comma-separated tag names; all must match"
+                [(ngModel)]="form.tags"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="advanced-search-actions">
+      <button
+        id="search-advanced-submit"
+        type="submit"
+        class="app-button app-button--primary"
+      >
+        <i class="fa fa-search" aria-hidden="true"></i> Search
+      </button>
+    </div>
+  </form>
+}
