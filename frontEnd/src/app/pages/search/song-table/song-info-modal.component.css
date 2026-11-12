@@ -59,7 +59,9 @@
 }
 
 .song-modal-title-text {
+  display: grid;
   flex: 1;
+  gap: 4px;
   min-width: 0;
 }
 
@@ -73,8 +75,7 @@
   font-size: 23px;
 }
 
-.song-modal-body .song-modal-artist {
-  margin-top: 4px;
+.song-modal-artist {
   color: var(--text-muted);
   font-size: 17px;
 }

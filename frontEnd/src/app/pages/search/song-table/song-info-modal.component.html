@@ -12,9 +12,11 @@
                   title="Copy song name" (click)="onCopy($event, currentSong.songName)">
                   {{ currentSong.songName }}
                 </h4>
-                <p id="song-modal-artist" class="app-copyable song-modal-artist"
-                  title="Copy artist" (click)="onCopy($event, currentSong.songArtist)">
-                  by {{ currentSong.songArtist || 'Unknown Artist' }}
+                <p class="song-modal-artist">
+                  by <span id="song-modal-artist" class="app-copyable"
+                    title="Copy artist" (click)="onCopy($event, currentSong.songArtist)">
+                    {{ currentSong.songArtist || 'Unknown Artist' }}
+                  </span>
                 </p>
               </div>
               <button id="song-modal-copy-song" type="button" class="app-icon-button"

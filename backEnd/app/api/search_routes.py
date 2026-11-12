@@ -157,11 +157,13 @@ def season_request(query: SeasonSearchRequest, request: Request, catalog: Catalo
     return _search_response(request, query, catalog)
 
 
+# Return all genre names in the catalog
 @router.get("/api/genres", response_model=list[str])
 def get_genres(catalog: CatalogDependency):
     return sorted(catalog.genre_by_lower.values(), key=str.casefold)
 
 
+# Return all tag names in the catalog
 @router.get("/api/tags", response_model=list[str])
 def get_tags(catalog: CatalogDependency):
     return sorted(catalog.tag_by_lower.values(), key=str.casefold)

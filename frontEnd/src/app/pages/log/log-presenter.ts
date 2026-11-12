@@ -182,11 +182,8 @@ function rangeValues(filter: LogBody, unit = '', unknownKey?: string): string[] 
 
 function describeFilters(body: LogBody): LogFilterRow[] {
   const rows: LogFilterRow[] = [];
-  const searchCount = SEARCH_FIELDS.filter(([key]) => {
-    const search = objectValue(body[key]).search;
-    return typeof search === 'string' && search.trim();
-  }).length;
-  if (searchCount > 1) {
+  const sentFieldCount = SEARCH_FIELDS.filter(([key]) => Object.hasOwn(body, key)).length;
+  if (sentFieldCount > 1) {
     rows.push({ label: 'Match fields', entries: [{ values: [body.and_logic === false ? 'OR' : 'AND'] }] });
   }
   if (body.ignore_duplicate === true) {
