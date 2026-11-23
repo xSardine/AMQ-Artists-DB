@@ -1,0 +1,194 @@
+<app-modal-shell modalTitle="Settings" titleId="settings-modal-title" dialogId="settings-modal" closeButtonId="settings-modal-close"
+  closeLabel="Close settings" [fillHeight]="true" (closed)="closed.emit()">
+  <div class="settings-tabs" role="tablist" aria-label="Settings sections" (keydown)="onTabKeydown($event)">
+    @for (tab of settingsTabRegistry.tabs(); track tab.id) {
+      <button [id]="'settings-tab-' + tab.id" type="button" class="app-tab" role="tab"
+        [class.is-active]="activeTab() === tab.id" [attr.aria-selected]="activeTab() === tab.id"
+        [attr.tabindex]="activeTab() === tab.id ? 0 : -1" [attr.aria-controls]="'settings-panel-' + tab.id"
+        (click)="setTab(tab.id)">{{ tab.label }}</button>
+    }
+  </div>
+
+  <div class="settings-modal-panel">
+    @if (activeTab() === 'settings') {
+      <div id="settings-panel-settings" class="settings-modal-body settings-layout" role="tabpanel" aria-labelledby="settings-tab-settings">
+        <div class="settings-rows">
+          <div class="settings-row" aria-labelledby="settings-theme-label" role="group">
+            <h3 id="settings-theme-label" class="settings-row-label">Theme</h3>
+            <div class="settings-row-controls">
+              <app-theme-selector />
+            </div>
+          </div>
+
+          <div class="settings-row">
+            <div class="settings-row-label settings-label-with-info">
+              <label for="settings-song-host">Song link host</label>
+              <app-info-popover label="Song link host">Server used for song links and audio playback.</app-info-popover>
+            </div>
+            <div class="settings-row-controls">
+              <select id="settings-song-host" class="app-select"
+                [ngModel]="preferences().distServer" [ngModelOptions]="{ standalone: true }"
+                (ngModelChange)="searchPreferences.updatePreferences({ distServer: $event })">
+                @for (server of distServers; track server.id) {
+                  <option [value]="server.id">{{ server.label }}</option>
+                }
+              </select>
+            </div>
+          </div>
+
+          <div class="settings-row" aria-labelledby="settings-radio-mode-label" role="group">
+            <div class="settings-row-label settings-label-with-info">
+              <h3 id="settings-radio-mode-label" class="settings-inline-label">Radio mode</h3>
+              <app-info-popover label="Radio mode">
+                <div class="settings-radio-help">
+                  <p><strong>None:</strong> Stop when the current song ends.</p>
+                  <p><strong>Repeat:</strong> Replay the current song.</p>
+                  <p><strong>Loop all:</strong> Play the songs with audio in the results table in order, then start again.</p>
+                </div>
+              </app-info-popover>
+            </div>
+            <div class="settings-row-controls">
+              <app-segmented-radio label="Radio mode" name="radio-mode" [options]="radioModes"
+                [value]="preferences().radioMode"
+                (valueChange)="searchPreferences.updatePreferences({ radioMode: $event })" />
+            </div>
+          </div>
+
+          <div class="settings-row" aria-labelledby="settings-anime-titles-label" role="group">
+            <h3 id="settings-anime-titles-label" class="settings-row-label">Anime titles</h3>
+            <div class="settings-row-controls settings-row-controls--inline">
+              <app-segmented-radio class="settings-title-language" label="Anime title language"
+                name="anime-title-language" idPrefix="settings-anime-title" [options]="animeTitleLanguages"
+                [value]="preferences().animeTitleLanguage"
+                (valueChange)="searchPreferences.updatePreferences({ animeTitleLanguage: $event })" />
+              <label class="app-checkbox">
+                <input type="checkbox" [checked]="preferences().showAnimeLanguageToggle"
+                  (change)="searchPreferences.updatePreferences({ showAnimeLanguageToggle: $any($event.target).checked })" />
+                Show in header
+              </label>
+            </div>
+          </div>
+
+          <div class="settings-row settings-row--centered" aria-labelledby="settings-song-info-label" role="group">
+            <h3 id="settings-song-info-label" class="settings-row-label">Song info</h3>
+            <div class="settings-row-controls settings-row-controls--inline">
+              <label class="app-checkbox">
+                <input id="settings-show-song-ids" type="checkbox" [checked]="preferences().showSongIds"
+                  (change)="searchPreferences.updatePreferences({ showSongIds: $any($event.target).checked })" />
+                Song IDs
+              </label>
+              <label class="app-checkbox">
+                <input type="checkbox" [checked]="preferences().showArtistIds"
+                  (change)="searchPreferences.updatePreferences({ showArtistIds: $any($event.target).checked })" />
+                Artist IDs
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-data-section" aria-labelledby="settings-data-heading" role="group">
+          <h3 id="settings-data-heading" class="settings-data-title">Saved data</h3>
+          <input #searchDataImportInput type="file" accept="application/json,.json" hidden (change)="onSearchDataImport($event)" />
+
+          <div class="settings-data-row" role="group" aria-labelledby="settings-backup-label">
+            <div class="settings-label-with-info">
+              <h4 id="settings-backup-label" class="settings-data-label">Backup</h4>
+              <app-info-popover label="Backup">Import/Export saves search preferences, columns, and playlists.</app-info-popover>
+            </div>
+            <div class="settings-data-actions">
+              <button id="settings-data-import" type="button" class="app-button" [disabled]="dataBusy()" (click)="searchDataImportInput.click()">
+                <i class="fa fa-upload" aria-hidden="true"></i> Import
+              </button>
+              <button id="settings-data-export" type="button" class="app-button" [disabled]="dataBusy()" (click)="exportSearchData()">
+                <i class="fa fa-download" aria-hidden="true"></i> Export
+              </button>
+            </div>
+          </div>
+
+          <div class="settings-data-row" role="group" aria-labelledby="settings-reset-label">
+            <h4 id="settings-reset-label" class="settings-data-label">Reset</h4>
+            <div class="settings-data-actions settings-data-actions--reset">
+              <button id="settings-reset-preferences" type="button" class="app-button" aria-label="Reset search preferences"
+                [disabled]="dataBusy()" (click)="requestReset('preferences')">
+                <i class="fa fa-undo" aria-hidden="true"></i> Preferences
+              </button>
+              <button id="settings-reset-columns" type="button" class="app-button" aria-label="Reset table columns"
+                [disabled]="dataBusy()" (click)="requestReset('table')">
+                <i class="fa fa-undo" aria-hidden="true"></i> Columns
+              </button>
+              <button id="settings-delete-playlists" type="button" class="app-button app-button--danger" aria-label="Delete all playlists"
+                [disabled]="dataBusy()" (click)="requestReset('playlists')">
+                <i class="fa fa-trash" aria-hidden="true"></i> Playlists
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    } @else if (activeTab() === 'info') {
+      <div id="settings-panel-info" class="settings-modal-body settings-layout" role="tabpanel" aria-labelledby="settings-tab-info">
+        <div class="settings-info-page">
+          <div class="settings-info-creator">
+            <img class="settings-info-creator-image" src="/assets/img/sardineLogo.png" alt="xSardine" />
+            <div class="settings-info-creator-content">
+              <span class="settings-info-eyebrow">Created by</span>
+              <h3>xSardine</h3>
+              <a href="https://github.com/xSardine" target="_blank" rel="noopener">
+                <i class="fa fa-github" aria-hidden="true"></i> GitHub profile
+              </a>
+            </div>
+          </div>
+
+          <div class="settings-info-section">
+            <h3>About</h3>
+            <p class="settings-info-text">AnisongDB is an anime song database used for finding and listening to anime songs. Search by anime, song name, artist, composer, season, or database ID. Open a song's info panel to explore artist credits, aliases, group memberships, and line-ups.</p>
+            <p class="settings-info-text">It mirrors AMQ's song database and follows their rules for what can be uploaded as a song. This means mistakes or other issues should be reported to AMQ instead of here. The database is manually synced about once per month.</p>
+          </div>
+
+          <div class="settings-info-section">
+            <h3>Project links</h3>
+            <div class="settings-info-links">
+              <a id="settings-github-link" href="https://github.com/xSardine/AMQ-Artists-DB" target="_blank" rel="noopener">
+                <i class="fa fa-github" aria-hidden="true"></i>
+                <span><strong>GitHub</strong><small>Source code and feedback</small></span>
+              </a>
+              <a href="https://anisongdb.com/docs/" target="_blank" rel="noopener">
+                <i class="fa fa-book" aria-hidden="true"></i>
+                <span><strong>API documentation</strong><small>Endpoints and data models</small></span>
+              </a>
+              <a href="/stats" target="_blank" rel="noopener">
+                <i class="fa fa-bar-chart" aria-hidden="true"></i>
+                <span><strong>Statistics</strong><small>Browse database stats</small></span>
+              </a>
+            </div>
+          </div>
+
+          <div class="settings-info-section">
+            <h3>Community</h3>
+            <div class="settings-info-links settings-info-links-secondary">
+              <a href="https://animemusicquiz.com/" target="_blank" rel="noopener">
+                <i class="fa fa-external-link" aria-hidden="true"></i>
+                <span><strong>Anime Music Quiz</strong><small>The game this is based on</small></span>
+              </a>
+              <a href="https://www.patreon.com/NextWorldGames" target="_blank" rel="noopener">
+                <i class="fa fa-heart" aria-hidden="true"></i>
+                <span><strong>Support AMQ</strong><small>Donate to AMQ's Patreon</small></span>
+              </a>
+            </div>
+          </div>
+
+          <p class="settings-info-credits">Thanks to Egerod and the AMQ mod team for Anime Music Quiz and its database.</p>
+        </div>
+      </div>
+    } @else {
+      <div [id]="'settings-panel-' + activeTab()" class="settings-modal-body settings-layout" role="tabpanel"
+        [attr.aria-labelledby]="'settings-tab-' + activeTab()" [settingsTabPanel]="activeTab()"></div>
+    }
+  </div>
+  <app-clipboard-popup-outlet />
+</app-modal-shell>
+
+@if (dataConfirmation(); as action) {
+  <app-confirm-dialog [open]="true" idPrefix="settings-data-confirm" [title]="action.title"
+    [message]="action.message" [confirmLabel]="action.confirmLabel" [destructive]="true"
+    [busy]="dataBusy()" [error]="dataError()" (confirmed)="confirmDataAction()" (cancelled)="cancelDataAction()" />
+}

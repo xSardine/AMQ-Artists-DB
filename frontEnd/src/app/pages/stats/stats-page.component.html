@@ -1,0 +1,162 @@
+<div class="page-shell stats-page" [class.loading]="state.loading()">
+  <app-toolbar section="Stats" href="/stats" (settingsRequested)="settingsOpen.set(true)" />
+  @if (settingsOpen()) {
+    <app-stats-settings-dialog (closed)="settingsOpen.set(false)" />
+  }
+  <main class="page-content page-content--wide">
+    <div class="dashboard-grid">
+      @if (state.error(); as error) {
+        <div class="page-error stats-error" role="alert">
+          <span>{{ error }}</span>
+          <button class="app-button app-button--danger" type="button" (click)="state.load()" [disabled]="state.loading()">Try again</button>
+        </div>
+      }
+      <div class="overview-header">
+        <h1>Catalog overview</h1>
+        <div class="database-updated">
+          Database updated:
+          @if (state.data(); as data) {
+            @if (data.database_updated_at) {
+              <time [attr.datetime]="data.database_updated_at">{{ formatTimestamp(data.database_updated_at) }}</time>
+            } @else {
+              Unknown
+            }
+          } @else {
+            —
+          }
+        </div>
+      </div>
+      @for (card of totals(); track card.label) {
+        <div class="summary-card">
+          <div class="summary-label">{{ card.label }}</div>
+          <div class="summary-value">{{ card.value }}</div>
+        </div>
+      }
+      @for (panel of compositionPanels; track panel.field) {
+        <div class="panel panel--quarter" [attr.aria-label]="panel.title" role="group">
+          <div class="panel-header"><h2>{{ panel.title }}</h2></div>
+          <div class="panel-body">
+            <app-stats-composition
+              [values]="state.data()?.[panel.field]"
+              [total]="state.data()?.total_songs ?? 0"
+            />
+          </div>
+        </div>
+      }
+      @for (panel of panels(); track panel.id) {
+        <div class="panel" [class.panel--wide]="panel.wide" [class.panel--half]="panel.half" [attr.aria-labelledby]="panel.id + '-title'" role="group">
+          <div class="panel-header panel-header--analysis">
+            <h2 [id]="panel.id + '-title'">{{ panel.model()?.title || panel.title }}</h2>
+            <div class="panel-controls">
+              <div class="view-buttons" role="group" [attr.aria-label]="panel.title + ' view'">
+                @for (view of panel.views; track view[0]) {
+                  <button class="app-button panel-toggle" type="button" [attr.aria-controls]="panel.id + '-content'" [attr.aria-pressed]="state.controls[panel.view]() === view[0]" (click)="state.setControl(panel.view, view[0])" [disabled]="state.loading()">{{ view[1] }}</button>
+                }
+              </div>
+              @for (control of panel.controls; track control.key) {
+                @if (control.hiddenWhen !== state.controls[panel.view]()) {
+                  <label>{{ control.label }}
+                    <select class="app-select panel-select" [ngModel]="state.controls[control.key]()" (ngModelChange)="state.setControl(control.key, $event)" [disabled]="state.loading()">
+                      @for (option of control.options; track option[0]) { <option [value]="option[0]">{{ option[1] }}</option> }
+                    </select>
+                  </label>
+                }
+              }
+            </div>
+          </div>
+          <div class="panel-body" [id]="panel.id + '-content'">
+            @if (panel.model(); as model) {
+              @if (state.controls[panel.view]() === 'graph') {
+                <app-stats-chart [data]="model.chart" [description]="model.chartDescription" />
+              } @else { <div class="data-table-wrap"><app-stats-table [table]="model.table" /></div> }
+              @if (model.summary) { <div class="coverage-line">{{ model.summary }}</div> }
+              @if (model.coverage) { <div class="coverage-line">{{ model.coverage }}</div> }
+              @if (model.note || panel.note) { <p class="table-note">{{ model.note || panel.note }}</p> }
+            }
+          </div>
+        </div>
+      }
+      @for (group of labels; track group.id) {
+        <div class="panel panel--half" [attr.aria-label]="group.title" role="group">
+          <div class="panel-header"><h2>{{ group.title }}</h2><span class="panel-kicker">{{ group.model()?.kicker }}</span></div>
+          <div class="panel-body">
+            <div class="filter-row">
+              <input class="app-input search-input" type="search" [placeholder]="'Filter ' + group.title.toLowerCase() + '…'" [attr.aria-label]="'Filter ' + group.title.toLowerCase()" [ngModel]="state.controls[group.filter]()" (ngModelChange)="state.setControl(group.filter, $event)">
+              <select class="app-select panel-select" [attr.aria-label]="group.title + ' measurements'" [ngModel]="state.controls[group.view]()" (ngModelChange)="state.setControl(group.view, $event)">
+                @for (option of labelViews; track option[0]) { <option [value]="option[0]">{{ option[1] }}</option> }
+              </select>
+              <select class="app-select panel-select" [attr.aria-label]="'Sort ' + group.title.toLowerCase()" [ngModel]="state.controls[group.sort]()" (ngModelChange)="state.setControl(group.sort, $event)">
+                @for (option of group.model()?.sortOptions || []; track option[0]) { <option [value]="option[0]">{{ option[1] }}</option> }
+              </select>
+            </div>
+            @if (group.model(); as model) { <div class="table-scroll"><app-stats-table [table]="model.table" /></div> }
+            <p class="table-note">{{ group.title }} overlap. Difficulty and length summaries use known measurements.</p>
+          </div>
+        </div>
+      }
+      <div class="panel" aria-label="Artist Identities" role="group">
+        <div class="panel-header"><h2>Artist Identities</h2>
+          <select class="app-select panel-select" aria-label="Artist identity view" [ngModel]="state.controls.artistView()" (ngModelChange)="state.setControl('artistView', $event)" [disabled]="state.loading()">
+            @for (option of artistViews; track option[0]) { <option [value]="option[0]">{{ option[1] }}</option> }
+          </select>
+        </div>
+        <div class="panel-body">@if (state.artists(); as model) { <div class="table-scroll"><app-stats-table [table]="model.table" /></div><p class="table-note">{{ model.note }}</p> }</div>
+      </div>
+      <div class="panel" aria-label="Song Credits" role="group">
+        <div class="panel-header"><h2>Song Credits</h2>
+          <select class="app-select panel-select" aria-label="Song credit view" [ngModel]="state.controls.creditView()" (ngModelChange)="state.setControl('creditView', $event)" [disabled]="state.loading()">
+            @for (option of creditViews; track option[0]) { <option [value]="option[0]">{{ option[1] }}</option> }
+          </select>
+        </div>
+        <div class="panel-body">@if (state.credits(); as model) { <div class="table-scroll"><app-stats-table [table]="model.table" /></div><p class="table-note">{{ model.note }}</p> }</div>
+      </div>
+      <div class="panel" aria-label="Most Credited Artists" role="group">
+        <div class="panel-header"><h2>Most Credited Artists</h2>
+          <select class="app-select panel-select" aria-label="Artist ranking role" [ngModel]="state.controls.creditRankingRole()" (ngModelChange)="state.setControl('creditRankingRole', $event)" [disabled]="state.loading()">
+            @for (option of rankingRoles; track option[0]) { <option [value]="option[0]">{{ option[1] }}</option> }
+          </select>
+        </div>
+        <div class="panel-body">@if (state.ranking(); as table) { <div class="table-scroll"><app-stats-table [table]="table" /></div> }
+          <p class="table-note">Top 10 by unique AMQ songs, using direct credits. Repeated uses and multiple roles on the same song count once.</p>
+        </div>
+      </div>
+      <div class="panel" aria-label="Media Links" role="group">
+        <div class="panel-header"><h2>Media Links</h2></div>
+        <div class="panel-body">@if (state.links(); as table) { <div class="coverage-table-wrap"><app-stats-table [table]="table" /></div> }</div>
+      </div>
+      <div class="panel" aria-label="External ID Coverage" role="group">
+        <div class="panel-header"><h2>External ID Coverage</h2></div>
+        <div class="panel-body">
+          <div class="coverage-grid">
+            @for (group of state.idCoverage(); track group.title) {
+              <div><h3>{{ group.title }}</h3><div class="bar-list">
+                @for (row of group.rows; track row.label) {
+                  <div><div class="bar-labels"><span class="bar-name">{{ row.label }}</span><span class="bar-value">{{ row.value }}</span></div>
+                    <div class="bar-track" aria-hidden="true"><div class="bar-fill" [style.width.%]="row.width"></div></div>
+                  </div>
+                }
+              </div></div>
+            }
+          </div>
+          <div class="coverage-status coverage-line">@if (state.data(); as data) {
+            {{ formatNumber(data.external_id_coverage['amq_song'].present) }} songs have AMQ IDs; {{ formatNumber(data.external_id_coverage['amq_song'].present - data.total_unique_amq_songs) }} are additional uses of those songs.
+          }</div>
+        </div>
+      </div>
+      <div class="panel" aria-label="Original Name Coverage" role="group">
+        <div class="panel-header"><h2>Original Name Coverage</h2></div>
+        <div class="panel-body">@if (state.originals(); as table) { <div class="coverage-table-wrap"><app-stats-table [table]="table" /></div> }</div>
+      </div>
+      <div class="panel panel--full" aria-label="Metadata Completeness" role="group">
+        <div class="panel-header"><h2>Metadata Completeness</h2></div>
+        <div class="panel-body"><div class="missing-grid">
+          @for (row of state.missing(); track row.label) {
+            <div><div class="bar-labels"><span>{{ row.label }}</span><span class="missing-value"><strong>{{ row.value }}</strong> missing · {{ row.text }}</span></div>
+              <div class="completeness-track"><div class="completeness-fill" [style.width.%]="row.completeness"></div></div>
+            </div>
+          }
+        </div></div>
+      </div>
+    </div>
+  </main>
+</div>

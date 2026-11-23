@@ -1,0 +1,13 @@
+<h1>Log access</h1>
+<form (ngSubmit)="login()">
+  <label class="page-field">Password
+    <input id="log-password" class="app-input app-control--form" name="password" type="password" [(ngModel)]="password"
+      maxlength="1024" autocomplete="current-password" required />
+  </label>
+  @if (loginRequest.error()) {
+    <p class="page-error" role="alert">{{ loginRequest.error() }}</p>
+  }
+  <button id="log-login" class="app-button app-control--form" type="submit" [disabled]="loginRequest.busy() || !password">
+    {{ loginRequest.busy() ? 'Signing in…' : 'Continue' }}
+  </button>
+</form>

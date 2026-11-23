@@ -1,0 +1,22 @@
+@if (!activeModal()) {
+  <app-clipboard-popup-outlet />
+}
+
+@switch (activeModal()?.type) {
+  @case ('settings') {
+    <app-search-settings-dialog (closed)="modals.close('settings')" />
+  }
+  @case ('playlists') {
+    <app-playlist-dialog />
+  }
+  @case ('song-info') {
+    @if (activeSong(); as song) {
+      <app-song-info-modal [song]="song" />
+    }
+  }
+  @case ('playlist-picker') {
+    @if (activeSong(); as song) {
+      <app-song-playlist-picker [song]="song" />
+    }
+  }
+}

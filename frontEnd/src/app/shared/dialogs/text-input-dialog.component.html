@@ -1,0 +1,23 @@
+<app-modal-shell [modalTitle]="title()" size="compact" [closeDisabled]="busy()"
+  [dialogId]="idPrefix() + '-modal'" [titleId]="idPrefix() + '-title'"
+  [closeButtonId]="idPrefix() + '-close'" (closed)="cancelled.emit()">
+  <form class="action-dialog-body" novalidate (ngSubmit)="submitted.emit(value())">
+    <label class="page-field" [for]="idPrefix() + '-value'">
+      {{ label() }}
+      <input [id]="idPrefix() + '-value'" name="value" class="app-input app-control--form"
+        type="text" data-modal-initial-focus [ngModel]="value()" (ngModelChange)="value.set($event)"
+        [maxlength]="maxLength()" [disabled]="busy()" [attr.aria-invalid]="error() ? 'true' : null"
+        [attr.aria-describedby]="error() ? idPrefix() + '-error' : null" />
+    </label>
+    @if (error()) {
+      <p [id]="idPrefix() + '-error'" class="action-dialog-error" role="alert">{{ error() }}</p>
+    }
+    <div class="action-dialog-actions">
+      <button [id]="idPrefix() + '-cancel'" type="button" class="app-button"
+        (click)="cancelled.emit()" [disabled]="busy()">Cancel</button>
+      <button [id]="idPrefix() + '-save'" type="submit" class="app-button" [disabled]="busy()">
+        {{ confirmLabel() }}
+      </button>
+    </div>
+  </form>
+</app-modal-shell>

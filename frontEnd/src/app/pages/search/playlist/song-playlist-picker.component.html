@@ -1,0 +1,58 @@
+<app-modal-shell modalTitle="Add to playlist" titleId="playlist-picker-title" dialogId="playlist-picker"
+  closeButtonId="playlist-picker-close" closeLabel="Close add to playlist" size="compact" (closed)="close()">
+  <div class="playlist-picker-body">
+      <div class="playlist-picker-song">
+        <span class="playlist-picker-label">Song</span>
+        <span class="playlist-picker-song-value">{{ song().songName }} by {{ song().songArtist }}</span>
+      </div>
+      @if (playlistService.playlists().length) {
+        <div class="playlist-picker-controls">
+          <label class="playlist-picker-label" for="playlist-picker-select">Playlist</label>
+          <select
+            id="playlist-picker-select"
+            class="app-select playlist-picker-select"
+            [value]="playlistService.selectedPlaylistId() ?? ''"
+            (change)="playlistService.selectPlaylist($any($event.target).value)"
+          >
+            @for (playlist of playlistService.sortedPlaylists(); track playlist.id) {
+              <option [value]="playlist.id">{{ playlist.name }} ({{ formatSongCount(playlist.annSongIds.length) }})</option>
+            }
+          </select>
+          <button
+            id="playlist-picker-toggle-song"
+            type="button"
+            class="app-button app-button--full playlist-picker-add"
+            [disabled]="!canToggleSong()"
+            (click)="toggleSong()"
+          >
+            <i
+              class="fa"
+              [class.fa-plus]="!selectedPlaylistContainsSong()"
+              [class.fa-minus]="selectedPlaylistContainsSong()"
+              aria-hidden="true"
+            ></i>
+            {{ selectedPlaylistContainsSong() ? 'Remove' : 'Add' }}
+          </button>
+        </div>
+        <label class="app-checkbox playlist-picker-auto-add">
+          <input
+            type="checkbox"
+            [checked]="playlistService.autoAddEnabled()"
+            (change)="playlistService.setAutoAdd($any($event.target).checked)"
+          />
+          Auto add songs to this playlist (skip this menu)
+        </label>
+      } @else {
+        <p class="playlist-picker-empty">Create a playlist first.</p>
+        <button
+          id="playlist-picker-manage"
+          type="button"
+          class="app-button app-button--full"
+          (click)="managePlaylists()"
+        >
+          Manage playlists
+        </button>
+      }
+  </div>
+  <app-clipboard-popup-outlet />
+</app-modal-shell>

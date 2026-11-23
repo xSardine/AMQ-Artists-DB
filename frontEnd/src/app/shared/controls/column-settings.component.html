@@ -1,0 +1,41 @@
+<button #toggle [id]="idPrefix() + '-toggle'" type="button" class="app-button" [class.app-button--primary]="primary()"
+  title="Column settings" [attr.aria-expanded]="open()" [attr.aria-controls]="idPrefix() + '-panel'"
+  (click)="open.set(!open())">
+  Columns ({{ visibleIds().length }}/{{ columns().length }})
+</button>
+@if (open()) {
+<div [id]="idPrefix() + '-panel'" class="app-floating-panel column-settings-panel">
+  <div [id]="idPrefix() + '-actions'" class="column-settings-actions">
+    <button [id]="idPrefix() + '-reset-selection'" type="button" class="app-button app-button--compact"
+      title="Restore default visible columns" aria-label="Reset column selection" (click)="selectionReset.emit()">
+      <i class="fa fa-undo" aria-hidden="true"></i> Selection
+    </button>
+    <button [id]="idPrefix() + '-reset-order'" type="button" class="app-button app-button--compact"
+      title="Restore default column order" aria-label="Reset column order" (click)="orderReset.emit()">
+      <i class="fa fa-undo" aria-hidden="true"></i> Order
+    </button>
+  </div>
+  @for (column of columns(); track column.id) {
+  <div class="column-setting-row" [class.column-dragging]="drag()?.id === column.id"
+    [class.column-drag-over-before]="drag()?.target === column.id && drag()?.id !== column.id && !drag()?.after"
+    [class.column-drag-over-after]="drag()?.target === column.id && drag()?.id !== column.id && drag()?.after"
+    (dragover)="dragOver($event, column.id)" (drop)="drop($event, column.id)">
+    <label class="column-setting-toggle">
+      <input [id]="idPrefix() + '-visible-' + column.id" type="checkbox" [checked]="visible().has(column.id)"
+        (change)="setVisible(column.id, $event)" />
+      {{ column.visibilityLabel ?? column.header }}
+    </label>
+    <button [id]="idPrefix() + '-reorder-' + column.id" type="button" class="column-drag-handle" draggable="true"
+      [attr.data-column-id]="column.id" title="Drag to reorder, or use the Up and Down arrow keys"
+      [attr.aria-label]="'Reorder ' + column.header + ' column. Use the Up and Down arrow keys.'"
+      (dragstart)="startDrag($event, column.id)" (dragend)="drag.set(null)"
+      (keydown)="moveWithKeyboard($event, column.id)">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="currentColor"
+        aria-hidden="true">
+        <path d="M20 9H4v2h16V9zM4 15h16v-2H4v2z" />
+      </svg>
+    </button>
+  </div>
+  }
+</div>
+}

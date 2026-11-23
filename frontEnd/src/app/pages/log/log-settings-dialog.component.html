@@ -1,0 +1,60 @@
+<app-modal-shell modalTitle="Settings" dialogId="log-settings-modal" titleId="log-settings-title"
+  closeButtonId="log-settings-close" closeLabel="Close settings" (closed)="closed.emit()">
+  <div class="settings-layout settings-layout--scroll">
+    <div class="settings-rows">
+      <div class="settings-row" role="group" aria-labelledby="log-settings-theme-label">
+        <h3 id="log-settings-theme-label" class="settings-row-label">Theme</h3>
+        <div class="settings-row-controls">
+          <app-theme-selector controlId="log-settings-theme" />
+        </div>
+      </div>
+      <div class="settings-row" role="group" aria-labelledby="log-settings-time-label">
+        <h3 id="log-settings-time-label" class="settings-row-label">Date and time</h3>
+        <div class="settings-row-controls">
+          <div class="log-settings-grid">
+            <label class="log-settings-field" for="log-time-format">
+              <span>Time format</span>
+              <select id="log-time-format" class="app-select" [ngModel]="state.timeSettings().timeFormat"
+                (ngModelChange)="state.setTimeSetting('timeFormat', $event)">
+                <option value="h12">12-hour</option>
+                <option value="h24">24-hour</option>
+              </select>
+            </label>
+            <label class="log-settings-field" for="log-time-zone">
+              <span>Time zone</span>
+              <select id="log-time-zone" class="app-select" [ngModel]="state.timeSettings().timeZone"
+                (ngModelChange)="state.setTimeSetting('timeZone', $event)">
+                <option value="local">Local time</option>
+                <option value="utc">UTC</option>
+              </select>
+            </label>
+            <label class="log-settings-field" for="log-date-format">
+              <span>Date format</span>
+              <select id="log-date-format" class="app-select" [ngModel]="state.timeSettings().dateFormat"
+                (ngModelChange)="state.setTimeSetting('dateFormat', $event)">
+                <option value="ymd">YYYY-MM-DD</option>
+                <option value="mdy">MM/DD/YYYY</option>
+                <option value="dmy">DD/MM/YYYY</option>
+              </select>
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="settings-row settings-row--centered">
+        <label class="settings-row-label" for="log-event-limit">Event limit</label>
+        <div class="settings-row-controls">
+          <input #eventLimitInput id="log-event-limit" class="app-input app-control--form"
+            type="number" min="1" max="1000" step="1" required
+            [value]="state.eventLimit()" (change)="updateEventLimit(eventLimitInput)">
+        </div>
+      </div>
+    </div>
+  </div>
+  @if (state.authenticated()) {
+    <div class="settings-footer">
+      <button id="logout" type="button" class="app-button" [disabled]="state.loggingOut()" (click)="logout()">
+        Log Out
+      </button>
+    </div>
+  }
+</app-modal-shell>

@@ -1,0 +1,141 @@
+<app-modal-shell [modalTitle]="'Log event #' + event().id" size="wide"
+  dialogId="log-detail" titleId="log-detail-title" closeButtonId="log-detail-close" (closed)="closed.emit()">
+  <div #detailBody class="log-detail-body">
+    <div class="log-detail-overview">
+      <div class="log-detail-request">
+        <h3>{{ description().request }}</h3>
+        <code>{{ event().endpoint }}</code>
+      </div>
+      <dl class="log-detail-metrics">
+        <div>
+          <dt>HTTP status</dt>
+          <dd [class.log-detail-status--success]="response().successful"
+            [class.log-detail-status--error]="response().failed">{{ response().status ?? '—' }}</dd>
+        </div>
+        <div>
+          <dt>Results</dt>
+          <dd>{{ response().count ?? '—' }}</dd>
+        </div>
+        <div>
+          <dt>Time (ms)</dt>
+          <dd>{{ response().duration ?? '—' }}</dd>
+        </div>
+      </dl>
+      <dl class="log-detail-origin">
+        <div class="log-detail-timestamp">
+          <dt>Time</dt>
+          <dd><time [attr.datetime]="event().ts">{{ formattedTime() }}</time></dd>
+        </div>
+        <div>
+          <dt>IP hash</dt>
+          <dd class="log-detail-ip"><app-log-ip [value]="event().ip" /></dd>
+        </div>
+        <div>
+          <dt>Client</dt>
+          <dd>{{ event().client || '—' }}</dd>
+        </div>
+      </dl>
+    </div>
+
+    @if (event().reason || errors().length) {
+      <div class="log-detail-failure" role="group" aria-labelledby="log-detail-failure-heading">
+        <h3 id="log-detail-failure-heading">
+          <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+          {{ event().reason || 'Request failed' }}
+        </h3>
+        @if (errors().length) {
+          <ul class="log-detail-issues">
+            @for (issue of errors(); track $index) {
+              <li><code>{{ issue.location }}</code><span>{{ issue.message }}</span></li>
+            }
+          </ul>
+        }
+      </div>
+    }
+
+    <div class="log-detail-columns">
+      <div class="log-detail-panel" aria-labelledby="log-detail-query-heading" role="group">
+        <h3 id="log-detail-query-heading" class="log-detail-panel-heading">
+          <i class="fa fa-search" aria-hidden="true"></i> Query
+        </h3>
+        @if (description().queries.length) {
+          <dl class="log-detail-queries">
+            @for (query of description().queries; track $index) {
+              <div>
+                <dt>
+                  {{ query.label }}
+                  @if (query.count !== undefined) { ({{ query.count }}) }
+                </dt>
+                <dd>
+                  <div class="log-detail-query-value">{{ query.value }}</div>
+                  @if (query.options.length) {
+                    <ul class="log-detail-values" [attr.aria-label]="query.label + ' options'">
+                      @for (option of query.options; track $index) {
+                        <li>{{ option }}</li>
+                      }
+                    </ul>
+                  }
+                </dd>
+              </div>
+            }
+          </dl>
+        } @else {
+          <p class="log-detail-empty">No query supplied.</p>
+        }
+      </div>
+      <div class="log-detail-panel" aria-labelledby="log-detail-filter-heading" role="group">
+        <h3 id="log-detail-filter-heading" class="log-detail-panel-heading">
+          <i class="fa fa-sliders" aria-hidden="true"></i> Filters and options
+        </h3>
+        @if (description().filters.length) {
+          <dl class="log-detail-filters">
+            @for (filter of description().filters; track $index) {
+              <div>
+                <dt>{{ filter.label }}</dt>
+                <dd>
+                  @for (entry of filter.entries; track $index) {
+                    <div class="log-detail-filter-entry">
+                      @if (entry.operator) {
+                        <span class="log-detail-filter-operator">{{ entry.operator }}</span>
+                      }
+                      <ul class="log-detail-values">
+                        @for (value of entry.values; track $index) {
+                          <li>{{ value }}</li>
+                        }
+                      </ul>
+                    </div>
+                  }
+                </dd>
+              </div>
+            }
+          </dl>
+        } @else {
+          <p class="log-detail-empty">No additional filters or options.</p>
+        }
+      </div>
+    </div>
+
+    <details id="log-detail-json-panel" class="log-detail-json-panel"
+      [open]="jsonExpanded()" (toggle)="toggleJson($event)">
+      <summary id="log-detail-json-toggle">
+        <span class="log-detail-json-label"><i class="fa fa-code" aria-hidden="true"></i> Event JSON</span>
+        <span class="log-detail-json-hint">Full event data</span>
+        <i class="fa fa-chevron-right log-detail-json-chevron" aria-hidden="true"></i>
+      </summary>
+      @if (jsonExpanded()) {
+        <div class="log-detail-json-content">
+          <div class="log-detail-json-actions">
+            <span class="log-detail-json-hint">Request and event metadata</span>
+            <button id="log-copy-json" type="button" class="app-button" (click)="copyJson()" [disabled]="copying()">
+              <i class="fa fa-copy" aria-hidden="true"></i> Copy JSON
+            </button>
+          </div>
+          @if (copyMessage()) {
+            <p class="log-detail-copy-message" role="status">{{ copyMessage() }}</p>
+          }
+          <pre id="log-detail-json" class="log-detail-json" tabindex="0" aria-label="Full event JSON"><code>{{ json() }}</code></pre>
+        </div>
+      }
+    </details>
+  </div>
+</app-modal-shell>

@@ -1,0 +1,13 @@
+<app-modal-shell modalTitle="Settings" dialogId="contribute-settings-modal" titleId="contribute-settings-title"
+  closeButtonId="contribute-settings-close" closeLabel="Close settings" (closed)="closed.emit()">
+  <div class="settings-layout settings-layout--scroll">
+    <div class="settings-rows">
+      <div class="settings-row" role="group" aria-labelledby="contribute-settings-theme-label">
+        <h3 id="contribute-settings-theme-label" class="settings-row-label">Theme</h3>
+        <div class="settings-row-controls">
+          <app-theme-selector controlId="contribute-settings-theme" />
+        </div>
+      </div>
+    </div>
+  </div>
+</app-modal-shell>

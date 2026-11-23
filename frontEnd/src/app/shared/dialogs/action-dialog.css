@@ -1,0 +1,21 @@
+.action-dialog-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  overflow: auto;
+}
+
+.action-dialog-body p {
+  margin: 0;
+}
+
+.action-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.action-dialog-error {
+  color: var(--error);
+}

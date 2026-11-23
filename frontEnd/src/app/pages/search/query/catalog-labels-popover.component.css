@@ -1,0 +1,20 @@
+:host {
+  display: inline-flex;
+}
+
+.catalog-labels-help {
+  margin: 8px 0;
+}
+
+.catalog-labels-list {
+  columns: 2;
+  column-gap: 16px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.catalog-labels-list li {
+  break-inside: avoid;
+  margin-bottom: 4px;
+}

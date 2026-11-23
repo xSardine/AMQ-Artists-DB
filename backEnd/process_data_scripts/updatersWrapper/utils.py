@@ -1,75 +1,9 @@
-import re
+"""Interactive helpers for catalog maintenance scripts."""
 
-ANIME_REGEX_REPLACE_RULES = [
-    # Ļ can't lower correctly with sql lower function
-    {"input": "ļ", "replace": "[ļĻ]"},
-    {"input": "l", "replace": "[l˥ļĻΛ]"},
-    # Ź can't lower correctly with sql lower function
-    {"input": "ź", "replace": "[źŹ]"},
-    {"input": "z", "replace": "[zźŹ]"},
-    {"input": "ou", "replace": "(ou|ō|o)"},
-    {"input": "oo", "replace": "(oo|ō|o)"},
-    {"input": "oh", "replace": "(oh|ō|o)"},
-    {"input": "wo", "replace": "(wo|o)"},
-    {"input": "o", "replace": "([oōóòöôøӨΦο]|ou|oo|oh|wo)"},
-    {"input": "uu", "replace": "(uu|u|ū)"},
-    {"input": "u", "replace": "([uūûúùüǖμ]|uu)"},
-    {"input": "aa", "replace": "(aa|a)"},
-    {"input": "ae", "replace": "(ae|æ)"},
-    {"input": "a", "replace": "([aäãά@âàáạåæā∀Λ]|aa)"},
-    {"input": "c", "replace": "[cςč℃Ↄ]"},
-    # É can't lower correctly with sql lower function
-    {"input": "é", "replace": "[éÉ]"},
-    {"input": "e", "replace": "[eəéÉêёëèæē]"},
-    {"input": "'", "replace": "['’ˈ]"},
-    {"input": "n", "replace": "[nñ]"},
-    {"input": "0", "replace": "[0Ө]"},
-    {"input": "2", "replace": "[2²₂]"},
-    {"input": "3", "replace": "[3³]"},
-    {"input": "5", "replace": "[5⁵]"},
-    {"input": "*", "replace": "[*✻＊✳︎]"},
-    {
-        "input": " ",
-        "replace": "( ?[²³⁵★☆♥♡\\/\\*✻✳︎＊'ˈ\\-∽~〜・·\\.,;:!?@_-⇔→≒=\\+†×±◎Ө♪♩♣␣∞] ?| )",
-    },
-    {"input": "i", "replace": "([iíίɪ]|ii)"},
-    {"input": "x", "replace": "[x×]"},
-    {"input": "b", "replace": "[bßβ]"},
-    {"input": "r", "replace": "[rЯ]"},
-    {"input": "s", "replace": "[sς]"},
-]
-
-
-def escapeRegExp(str):
-    str = re.escape(str)
-    str = str.replace("\ ", " ")
-    str = str.replace("\*", "*")
-    return str
-
-
-def apply_regex_rules(search):
-    for rule in ANIME_REGEX_REPLACE_RULES:
-        search = search.replace(rule["input"], rule["replace"])
-    return search
-
-
-def get_regex_search(og_search, partial_match=True, swap_words=True):
-    og_search = escapeRegExp(og_search.lower())
-    search = apply_regex_rules(og_search)
-    search = "^" + search + "$" if not partial_match else ".*" + search + ".*"
-
-    if swap_words:
-        alt_search = og_search.split(" ")
-        if len(alt_search) == 2:
-            alt_search = " ".join([alt_search[1], alt_search[0]])
-            alt_search = apply_regex_rules(alt_search)
-            alt_search = (
-                "^" + alt_search + "$"
-                if not partial_match
-                else ".*" + alt_search + ".*"
-            )
-            search = f"({search})|({alt_search})"
-    return search
+if __package__:
+    from .text_matching import build_search_regex, regex_matches
+else:
+    from text_matching import build_search_regex, regex_matches
 
 
 def ask_validation(message):
@@ -259,6 +193,23 @@ def get_recap_artists(song_database, artist_database, ids):
     return recap_str
 
 
+def _matching_artist_ids(artist_database, artist, partial_match):
+    pattern = build_search_regex(
+        artist,
+        partial_match=partial_match,
+        match_case=False,
+        swap_words=True,
+    )
+    return [
+        artist_id
+        for artist_id, entry in artist_database.items()
+        if any(
+            regex_matches(pattern, name["romaji_name"], match_case=False)
+            for name in entry["names"]
+        )
+    ]
+
+
 def get_artist_id(
     song_database,
     artist_database,
@@ -274,30 +225,12 @@ def get_artist_id(
     if not exact_match:
 
         if partial_match:
-            artist_regex = get_regex_search(artist)
-
-            for id in artist_database.keys():
-                flag = False
-                for name in artist_database[id]["names"]:
-                    romaji_name = name["romaji_name"]
-                    if re.match(artist_regex, romaji_name, re.IGNORECASE):
-                        flag = True
-                if flag:
-                    ids.append(id)
+            ids = _matching_artist_ids(artist_database, artist, partial_match=True)
 
         if not partial_match or (ids and len(ids) > 10):
             if partial_match:
                 print("Too much results, removing partial match")
-            artist_regex = get_regex_search(artist, partial_match=False)
-            ids = []
-            for id in artist_database.keys():
-                flag = False
-                for name in artist_database[id]["names"]:
-                    romaji_name = name["romaji_name"]
-                    if re.match(artist_regex, romaji_name, re.IGNORECASE):
-                        flag = True
-                if flag:
-                    ids.append(id)
+            ids = _matching_artist_ids(artist_database, artist, partial_match=False)
 
     else:
 
@@ -315,7 +248,7 @@ def get_artist_id(
             exit()
             # return -1
         new_id = add_new_artist_to_DB(artist_database, artist)
-        print(f"/!\ COULDN'T FIND {artist} ({amq_id}), adding {new_id}")
+        print(f"/!\\ COULDN'T FIND {artist} ({amq_id}), adding {new_id}")
         return new_id
 
     if len(ids) > 1:

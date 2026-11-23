@@ -1,0 +1,128 @@
+<div class="page-shell">
+  <app-toolbar
+    section="Review"
+    href="/review"
+    (settingsRequested)="settingsOpen.set(true)" />
+  @if (settingsOpen()) {
+    <app-review-settings-dialog (closed)="settingsOpen.set(false)" />
+  }
+  @if (!state.authenticated()) {
+    <main class="page-content page-content--narrow">
+      <app-review-access-form (signedIn)="state.onLogin($event)" />
+    </main>
+  } @else {
+    <main class="page-content page-content--wide">
+      <div class="page-heading">
+        <h1>Review contributions</h1>
+        <span class="page-muted">Reviewing as <strong>{{ state.reviewer() }}</strong></span>
+      </div>
+      @if (state.error()) { <p class="page-error" role="alert">{{ state.error() }}</p> }
+      @if (state.message()) { <p class="page-success" role="status">{{ state.message() }}</p> }
+      <div class="page-row">
+        <label class="page-field">Status
+          <select class="app-select app-control--form" [(ngModel)]="state.status" (ngModelChange)="state.load()" [disabled]="state.busy()">
+            <option value="pending">Pending</option><option value="held">Held</option>
+            <option value="approved">Approved</option><option value="rejected">Rejected</option>
+            <option value="duplicate">Duplicate</option><option value="reverted">Reverted</option><option value="all">All</option>
+          </select>
+        </label>
+        <label class="page-field">Record type
+          <select class="app-select app-control--form" [(ngModel)]="state.kind" (ngModelChange)="state.load()" [disabled]="state.busy()">
+            <option value="">All</option><option value="anime">Anime</option><option value="artist">Artist</option><option value="song">Song</option>
+          </select>
+        </label>
+        <label class="page-field">Find submissions
+          <input class="app-input app-control--form" [(ngModel)]="state.filter" maxlength="200" (keydown.enter)="state.load()" placeholder="Name, record, or submission number" [disabled]="state.busy()" />
+        </label>
+        <button class="app-button app-control--form" type="button" (click)="state.load()" [disabled]="state.busy()">Find</button>
+        <button class="app-button app-control--form" type="button" (click)="state.refresh()" [disabled]="state.busy()">Refresh</button>
+      </div>
+      @if (state.queue(); as data) {
+        <div class="review-summary">
+          <span class="page-badge">Pending: {{ data.counts['pending'] || 0 }}</span>
+          <span class="page-badge">Waiting for restart: {{ data.waiting_for_restart }} fields</span>
+          <span class="page-muted">Current value includes the latest approvals, even before restart.</span>
+        </div>
+        @if (data.issue_count) {
+          <details class="page-details" [open]="state.issuesOpen()" (toggle)="toggleIssues($event)">
+            <summary>Startup conflicts ({{ data.issue_count }})</summary>
+            @if (state.issuesOpen()) {
+              @if (state.issuesLoading()) { <p>Loading conflicts…</p> }
+              @if (state.issues(); as page) {
+                @for (issue of page.issues; track issue.approved_revision) {
+                  <p class="page-error">Revision {{ issue.approved_revision }} — {{ issue.target.label }}: {{ issue.reason }}</p>
+                }
+                <div class="page-pagination">
+                  <button class="app-button app-control--form" type="button" (click)="state.loadIssues(state.issueOffset() - 10)" [disabled]="state.issuesLoading() || state.issueOffset() === 0">Previous</button>
+                  <span>{{ state.issueOffset() + 1 }}–{{ state.issueOffset() + page.issues.length }} of {{ page.total }}</span>
+                  <button class="app-button app-control--form" type="button" (click)="state.loadIssues(state.issueOffset() + 10)" [disabled]="state.issuesLoading() || state.issueOffset() + 10 >= page.total">Next</button>
+                </div>
+              }
+            }
+          </details>
+        }
+        @for (summary of data.submissions; track summary.id) {
+          <div class="page-panel review-submission">
+            <header class="review-submission-header">
+              <h2>
+                <button type="button" class="app-button review-toggle app-control--form" (click)="state.toggleSubmission(summary.id)" [attr.aria-expanded]="state.expandedSubmission() === summary.id" [attr.aria-controls]="'submission-' + summary.id">
+                  <i class="fa" [class.fa-chevron-down]="state.expandedSubmission() === summary.id" [class.fa-chevron-right]="state.expandedSubmission() !== summary.id" aria-hidden="true"></i>
+                  Submission #{{ summary.id }}
+                </button>
+              </h2>
+              <div class="review-submission-meta">
+                <span>By <strong>{{ summary.contributor_name }}</strong></span>
+                <time class="page-muted" [attr.datetime]="summary.submitted_at" [title]="summary.submitted_at">{{ formatTimestamp(summary.submitted_at) }}</time>
+                <span class="page-muted">{{ summary.change_count }} changes</span>
+              </div>
+              <div class="review-submission-actions">
+                @if (state.pendingCount(summary.id)) { <span>{{ state.pendingCount(summary.id) }} unsaved decisions</span> }
+                @if (state.expandedSubmission() === summary.id) {
+                  <button type="button" class="app-button review-approve-all app-control--form" (click)="state.approveAll()" [disabled]="state.busy() || state.detailLoading()">Approve all</button>
+                  <button type="button" class="app-button review-save app-control--form" (click)="state.save(summary.id)" [disabled]="state.busy() || state.detailLoading() || !state.pendingCount(summary.id) || state.stale(summary.id)">{{ state.saving() ? 'Saving…' : 'Save' }}</button>
+                }
+              </div>
+            </header>
+            @if (state.expandedSubmission() === summary.id) {
+              <div [id]="'submission-' + summary.id">
+                @if (state.detailLoading()) { <p>Loading submission…</p> }
+                @if (state.submission(); as detail) {
+                  @if (detail.comment) {
+                    <details class="page-details" #comment (toggle)="state.commentOpen.set(comment.open)">
+                      <summary>Contributor comment</summary>
+                      @if (state.commentOpen()) { <p class="page-comment-text">{{ detail.comment }}</p> }
+                    </details>
+                  }
+                  @if (detail.change_count > 5) {
+                    <div class="page-pagination">
+                      <button class="app-button app-control--form" type="button" (click)="state.moveChanges(-1)" [disabled]="state.changeOffset() === 0">Previous changes</button>
+                      <span>Changes {{ state.changeOffset() + 1 }}–{{ state.changeOffset() + state.visibleChanges().length }} of {{ detail.change_count }}</span>
+                      <button class="app-button app-control--form" type="button" (click)="state.moveChanges(1)" [disabled]="state.changeOffset() + 5 >= detail.change_count">Next changes</button>
+                    </div>
+                  }
+                  @for (change of state.visibleChanges(); track change.id) {
+                    <app-review-change
+                      [change]="change" [draft]="state.draftFor(change)" [busy]="state.busy()" [loadedRevision]="data.loaded_revision"
+                      [historyId]="state.historyChange()" [history]="state.history()" [historyOffset]="state.historyOffset()" [historyLoading]="state.historyLoading()"
+                      (edited)="state.updateDraft(change, $event)" (undoRequested)="state.askUndo($event)"
+                      (historyToggled)="state.toggleHistory(change.id, $event)" (historyRequested)="state.loadHistory(change.id, $event)"
+                    />
+                  }
+                }
+              </div>
+            }
+          </div>
+        } @empty { <p class="page-muted">No submissions match this view.</p> }
+        <nav class="page-pagination" aria-label="Submission pages">
+          <button class="app-button app-control--form" type="button" (click)="state.newer()" [disabled]="state.busy() || !state.pageHistory().length">Newer submissions</button>
+          <span>Page {{ state.pageHistory().length + 1 }} · {{ data.submissions.length }} submissions</span>
+          <button class="app-button app-control--form" type="button" (click)="state.older()" [disabled]="state.busy() || data.next_before === null">Older submissions</button>
+          <button class="app-button app-control--form" type="button" (click)="state.load()" [disabled]="state.busy() || !state.pageHistory().length">Newest</button>
+        </nav>
+      } @else if (state.queueLoading()) { <p>Loading submissions…</p> }
+    </main>
+  }
+  <app-confirm-dialog idPrefix="review-undo" confirmLabel="Undo" [open]="state.undoTarget() !== null" [busy]="state.saving()" [error]="state.error()"
+    title="Undo latest field action" message="Undo the latest approved action on this field? The catalog changes after restart."
+    (confirmed)="state.undo()" (cancelled)="state.undoTarget.set(null)" />
+</div>

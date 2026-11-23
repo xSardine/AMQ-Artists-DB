@@ -1,0 +1,343 @@
+@if (songTable() || searchErrorMessage()) {
+  <div class="table-controls">
+    <div class="table-controls-start">
+      @if (searchErrorMessage()) {
+        <div class="search-error-banner" role="alert">
+          <span class="search-error-banner-icon" aria-hidden="true"><i class="fa fa-exclamation-triangle"></i></span>
+          <span class="search-error-banner-text">
+            <span class="search-error-banner-title">Search Error</span>
+            {{ searchErrorMessage() }}
+          </span>
+        </div>
+      }
+
+      @if (songTable()) {
+        <app-song-table-stats
+          [(open)]="showTableStats"
+        />
+      }
+    </div>
+
+    @if (songTable()) {
+      <div class="table-controls-actions">
+        <button
+          id="table-download-json"
+          type="button"
+          class="app-button app-button--primary"
+          title="Download Song List as JSON"
+          aria-label="Download Song List as JSON"
+          (click)="downloadJson()"
+        >
+          <i class="fa fa-download" aria-hidden="true"></i>
+        </button>
+        <button
+          id="table-shuffle"
+          type="button"
+          class="app-button app-button--primary"
+          title="Shuffle table order"
+          aria-label="Shuffle table order"
+          (click)="workspace.shuffle()"
+        >
+          <i class="fa fa-random" aria-hidden="true"></i>
+        </button>
+        <app-column-settings
+          [primary]="true"
+          [columns]="availableColumns()"
+          [visibleIds]="visibleColumnIds()"
+          [(open)]="showColumnSettings"
+          (visibilityChanged)="table.setVisible($event.id, $event.visible)"
+          (moved)="table.moveColumn($event.id, $event.target, $event.after)"
+          (selectionReset)="table.resetVisibility()"
+          (orderReset)="table.resetColumnOrder()"
+        />
+      </div>
+    }
+  </div>
+}
+
+@if (songTable()) {
+  <div class="table-scroll">
+    <table id="table" class="song-table">
+      <thead>
+        <tr>
+          @let sort = sortState();
+          @for (column of tableHeaders(); track column.id) {
+            <th
+              scope="col"
+              [style.text-align]="column.centered ? 'center' : null"
+              [attr.aria-sort]="sort?.column === column.id ? (sort?.ascending ? 'ascending' : 'descending') : null"
+            >
+              @if (column.sort) {
+                <button
+                  type="button"
+                  class="table-sort-button"
+                  [class.is-active]="sort?.column === column.id"
+                  [title]="'Sort by ' + column.header"
+                  (click)="table.sort(column.id)"
+                >
+                  {{ column.header }}
+                  @if (sort?.column === column.id) {
+                    <i
+                      class="fa table-sort-caret"
+                      [class.fa-caret-up]="sort?.ascending"
+                      [class.fa-caret-down]="!sort?.ascending"
+                      aria-hidden="true"
+                    ></i>
+                  }
+                </button>
+              } @else {
+                {{ column.header }}
+              }
+            </th>
+          }
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (song of songTable(); track song; let rowIndex = $index) {
+          <tr
+            [class.dragging-row]="isDraggingSong(song)"
+            [class.drag-over-before]="isDragOverBefore(song)"
+            [class.drag-over-after]="isDragOverAfter(song)"
+            (dragover)="onRowDragOver($event, song)"
+            (drop)="onRowDrop($event, song)"
+          >
+            @for (column of tableHeaders(); track column.id) {
+              <td
+                [style.text-align]="column.centered ? 'center' : null"
+                [style.white-space]="column.nowrap ? 'nowrap' : null"
+              >
+              @switch (column.id) {
+                @case ('move-row') {
+                  <button
+                    type="button"
+                    class="app-icon-button app-icon-button--grab"
+                    [id]="'table-row-' + rowIndex + '-move'"
+                    title="Drag to move row"
+                    aria-label="Drag to move row"
+                    draggable="true"
+                    (dragstart)="onRowDragStart($event, song)"
+                    (dragend)="onRowDragEnd()"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28px" height="28px"
+                    fill="currentColor" aria-hidden="true">
+                      <path d="M20 9H4v2h16V9zM4 15h16v-2H4v2z"/>
+                    </svg>
+                  </button>
+                }
+
+                @case ('info') {
+                  <button
+                    type="button"
+                    class="app-icon-button"
+                    [id]="'table-row-' + rowIndex + '-info'"
+                    title="More information"
+                    aria-label="More information"
+                    (click)="displaySongInfoPopup(song)"
+                  >
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                  </button>
+                }
+
+                @case ('row-number') {
+                  {{ rowIndex + 1 }}
+                }
+
+                @case ('ann-id') {
+                  <span class="table-inline-action">
+                    <button
+                      type="button"
+                      class="app-icon-button app-icon-button--inline"
+                      title="Search songs in this entry"
+                      aria-label="Search songs in this entry"
+                      (click)="searchAnnId(song.annId)"
+                    >
+                      <i class="fa fa-search" aria-hidden="true"></i>
+                    </button>
+                    <span
+                      class="app-copyable"
+                      title="Copy to clipboard"
+                      (click)="clipboard.copy($event, song.annId + '')"
+                      >{{ song.annId }}</span
+                    >
+                  </span>
+                }
+
+                @case ('artist') {
+                  <span class="table-inline-action">
+                    @if (!rankedActive()) {
+                      <button
+                        type="button"
+                        class="app-icon-button app-icon-button--inline"
+                        title="Search songs by this artist(s)"
+                        aria-label="Search songs by this artist(s)"
+                        (click)="searchArtistIds(song.artists)"
+                      >
+                        <i class="fa fa-search" aria-hidden="true"></i>
+                      </button>
+                    }
+                    <span
+                      class="app-copyable"
+                      title="Copy to clipboard"
+                      (click)="clipboard.copy($event, getColumnCopyValue(song, column))"
+                      >{{ getColumnDisplayValue(song, column) }}</span
+                    >
+                  </span>
+                }
+
+                @case ('composer') {
+                  <span class="table-inline-action">
+                    @if (!rankedActive()) {
+                      <button
+                        type="button"
+                        class="app-icon-button app-icon-button--inline"
+                        title="Search songs composed or arranged by this composer(s)"
+                        aria-label="Search songs composed or arranged by this composer(s)"
+                        (click)="searchComposerIds(song.composers)"
+                      >
+                        <i class="fa fa-search" aria-hidden="true"></i>
+                      </button>
+                    }
+                    <span
+                      class="app-copyable"
+                      title="Copy to clipboard"
+                      (click)="clipboard.copy($event, getColumnCopyValue(song, column))"
+                      >{{ getColumnDisplayValue(song, column) }}</span
+                    >
+                  </span>
+                }
+
+                @case ('arranger') {
+                  <span class="table-inline-action">
+                    @if (!rankedActive()) {
+                      <button
+                        type="button"
+                        class="app-icon-button app-icon-button--inline"
+                        title="Search songs composed or arranged by this arranger(s)"
+                        aria-label="Search songs composed or arranged by this arranger(s)"
+                        (click)="searchComposerIds(song.arrangers)"
+                      >
+                        <i class="fa fa-search" aria-hidden="true"></i>
+                      </button>
+                    }
+                    <span
+                      class="app-copyable"
+                      title="Copy to clipboard"
+                      (click)="clipboard.copy($event, getColumnCopyValue(song, column))"
+                      >{{ getColumnDisplayValue(song, column) }}</span
+                    >
+                  </span>
+                }
+
+                @case ('anime-lists') {
+                  <div class="table-icon-links">
+                    @for (site of animeListSites; track site.alt) {
+                      @if (site.getUrl(song); as siteUrl) {
+                        <a
+                          [href]="siteUrl"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="table-site-link"
+                          [title]="site.alt"
+                        >
+                          <img [src]="site.img" class="table-site-icon" [alt]="site.alt" />
+                        </a>
+                      }
+                    }
+                  </div>
+                }
+
+                @case ('song-links') {
+                  <div class="table-song-links">
+                    @for (link of songDistLinks; track link.field) {
+                      @if (song[link.field]; as fileName) {
+                        <a
+                          [href]="preferences.getDistUrl(fileName)"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          [title]="link.title"
+                        >
+                          {{ link.label }}
+                        </a>
+                      }
+                    }
+                  </div>
+                }
+
+                @case ('play-audio') {
+                  @if (isSongPlayable(song)) {
+                    <button
+                      type="button"
+                      class="app-icon-button"
+                      [id]="'table-row-' + rowIndex + '-play'"
+                      [class.app-icon-button--active]="isCurrentAudioSong(song)"
+                      title="Play song"
+                      aria-label="Play song"
+                      (click)="audioPlayback.play(song)"
+                    >
+                      <i class="fa fa-music" aria-hidden="true"></i>
+                    </button>
+                  }
+                }
+
+                @case ('add-playlist') {
+                  @let alreadyAdded = isAlreadyInAutoAddPlaylist(song);
+                  <button
+                    type="button"
+                    class="app-icon-button"
+                    [id]="'table-row-' + rowIndex + '-playlist'"
+                    [class.app-icon-button--playlist-added]="alreadyAdded"
+                    [attr.title]="alreadyAdded ? 'Remove from auto-add playlist' : 'Add to playlist'"
+                    [attr.aria-label]="alreadyAdded ? 'Remove from auto-add playlist' : 'Add to playlist'"
+                    [disabled]="!hasAnnSongId(song)"
+                    (click)="openPlaylistPicker(song)"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28px" height="28px"
+                    fill="currentColor" aria-hidden="true">
+                      <path d="M14 10H3v2h11v-2zm0-4H3v2h11V6zm4 8v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM3 16h7v-2H3v2z"/>
+                    </svg>
+                  </button>
+                }
+
+                @case ('delete-row') {
+                  <button
+                    type="button"
+                    class="app-icon-button"
+                    [id]="'table-row-' + rowIndex + '-delete'"
+                    title="Delete song from list"
+                    aria-label="Delete song from list"
+                    (click)="workspace.remove(song)"
+                  >
+                    <i class="fa fa-trash" aria-hidden="true"></i>
+                  </button>
+                }
+
+                @default {
+                  @if (column.renderCell) {
+                    <span
+                      class="table-extension-cell"
+                      [songTableExtensionCell]="column"
+                      [extensionCellSong]="song"
+                      [extensionCellRowIndex]="rowIndex"
+                      [extensionCellAnimeTitleLanguage]="animeTitleLang()"
+                    ></span>
+                  } @else if (column.copy) {
+                    <span
+                      class="app-copyable"
+                      title="Copy to clipboard"
+                      (click)="clipboard.copy($event, getColumnCopyValue(song, column))"
+                      >{{ getColumnDisplayValue(song, column) }}</span
+                    >
+                  } @else {
+                    {{ getColumnDisplayValue(song, column) }}
+                  }
+                }
+              }
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

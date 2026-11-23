@@ -1,8 +1,18 @@
 # Front End
 
-Angular app for [AnisongDB](https://anisongdb.com), built with [Angular CLI](https://github.com/angular/angular-cli) **21** (see `package.json` for exact versions).
+Frontend for [AnisongDB](https://anisongdb.com), built with **Angular 21**.
 
-Most components are custom-built because I wanted to train on front end coding. The audio player uses [Vidstack](https://www.vidstack.io/).
+Audio playback uses [Vidstack](https://www.vidstack.io/). Statistics charts use [Chart.js](https://www.chartjs.org/).
+
+## Pages
+
+| Route | Description |
+| --- | --- |
+| `/` | Search anime songs and artist credits, play audio, and manage playlists. |
+| `/stats` | Explore database statistics using charts and tables. |
+| `/log` | Inspect recent API requests in a sortable table with selectable columns and full event details. Requires password. |
+| `/contribute` | Suggest original anime, song, and artist names or artist IDs. |
+| `/review` | Review contributions and view decision history. Requires password. |
 
 ## Development server
 
@@ -13,30 +23,12 @@ npm install
 npm start
 ```
 
-Open `http://localhost:4200/`. The app reloads when you change source files.
-
-The dev server proxies `http://localhost:4200/log` (and `/log/feed`) to the backend at `http://127.0.0.1:8000`, so you can open the request log viewer from the same host/port while developing.
+Open `http://localhost:4200/`. All page routes above use this frontend address during development. The app reloads when you change source files.
 
 ## API backend
 
-You need a running API for the front end to display search results:
-Dev server uses `127.0.0.1:8000` by default (you can change this to anisongdb.com if you don't want to start the backend).
-To change this, edit `apiUrl` in `frontEnd/src/environments/environment.ts`.
+You need a running API for the front end to display search results.
 
-Production builds use `frontEnd/src/environments/environment.prod.ts` instead (`ng build` swaps it in automatically via `angular.json`).
+Run the backend at `http://localhost:8000`. Development requests go directly to it. If you don't want to start the backend, you can set the `apiUrl` to `anisongdb.com` in `src/environments/environment.ts`
 
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Vitest](https://vitest.dev/).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+Production builds use `src/environments/environment.prod.ts` instead, selected automatically by `angular.json`.

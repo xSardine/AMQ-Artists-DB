@@ -1,0 +1,170 @@
+<div class="page-shell">
+  <app-toolbar section="Contribute" href="/contribute" (settingsRequested)="settingsOpen.set(true)" />
+  @if (settingsOpen()) {
+    <app-contribute-settings-dialog (closed)="settingsOpen.set(false)" />
+  }
+  <main class="page-content">
+    <h1>Contribute catalog information</h1>
+    <p>Suggest original names for existing anime, artists, and songs, or add artists' ANN, MyAnimeList, and AniList IDs. Several changes can be submitted together. Decisions are private to reviewers; accepted changes take effect after a server restart.</p>
+    @if (state.receipt() !== null) {
+      <div class="page-panel" role="status">
+        <h2>Submission received: #{{ state.receipt() }}</h2>
+        <p>Your changes have been sent for review.</p>
+        @if (state.draft.hasContent()) {
+          <p>Newer draft changes have been kept for your next submission.</p>
+        }
+        <button class="app-button app-control--form" type="button" (click)="state.receipt.set(null)">Start another submission</button>
+      </div>
+    } @else {
+      <fieldset class="contribution-fields" [disabled]="state.submitting()">
+        <label class="page-field">Your name
+          <input class="app-input app-control--form" [(ngModel)]="state.draft.name" maxlength="100" autocomplete="nickname" required />
+        </label>
+        <label class="page-field">Comment (optional)
+          <textarea class="app-textarea app-control--form" [(ngModel)]="state.draft.comment" maxlength="3000"></textarea>
+        </label>
+        <div class="page-panel" #changeEditor tabindex="-1" aria-labelledby="contribution-editor-heading" role="group">
+          <h2 id="contribution-editor-heading">
+            @if (state.draft.editingId()) { Edit change } @else { Add a change }
+          </h2>
+          <div class="page-row">
+            <label class="page-field">Record type
+              <select class="app-select app-control--form" [(ngModel)]="state.kind" [disabled]="state.draft.hasUnfinishedChange()">
+                <option value="anime">Anime</option>
+                <option value="artist">Artist</option>
+                <option value="song">Song</option>
+              </select>
+            </label>
+            <label class="page-field">Find record
+              <input class="app-input app-control--form" [(ngModel)]="state.search" maxlength="200" (keydown.enter)="state.find()" placeholder="Name or database ID" />
+            </label>
+            <button class="app-button app-control--form" type="button" (click)="state.find()" [disabled]="state.searching() || state.draft.hasUnfinishedChange() || !state.search.trim()">
+              {{ state.searching() ? 'Finding…' : 'Find' }}
+            </button>
+          </div>
+          @for (target of state.results(); track target.id) {
+            <button type="button" class="app-button page-result app-control--form" (click)="state.choose(target)">
+              {{ target.label }}
+              <small>{{ recordContext(target) }}</small>
+            </button>
+          } @empty {
+            @if (!state.searching() && state.search && !state.selected()) {
+              <p class="page-muted">Search for and select the exact record.</p>
+            }
+          }
+          @if (state.draft.editor().targetId && !state.selected() && !state.searching()) {
+            <button class="app-button app-control--form" type="button" (click)="state.retryTarget()">Retry loading record</button>
+          }
+          @if (state.selected(); as target) {
+            <h3>{{ target.label }}</h3>
+            <p class="page-muted">{{ recordContext(target) }}</p>
+            <div class="page-row">
+              <label class="page-field">Field
+                <select class="app-select app-control--form" [(ngModel)]="state.field">
+                  @for (key of state.fields(); track key) { <option [value]="key">{{ labels[key] }}</option> }
+                </select>
+              </label>
+              <label class="page-field">Action
+                <select class="app-select app-control--form" [(ngModel)]="state.operation">
+                  @for (action of state.operations(); track action) {
+                    <option [value]="action">{{ operationLabels[action] }}</option>
+                  }
+                </select>
+              </label>
+            </div>
+            <dl class="page-values">
+              <dt>Active value</dt>
+              <dd>
+                {{ display(target.values[state.field]) }}
+                @if (profileUrl(state.field, target.values[state.field]); as url) {
+                  <a class="page-profile-link" [href]="url" target="_blank" rel="noopener noreferrer">Open profile</a>
+                }
+              </dd>
+            </dl>
+            @if (state.operation === 'replace_alias') {
+              <label class="page-field">Alias being replaced
+                <select class="app-select app-control--form" [(ngModel)]="state.oldValue">
+                  <option value="">Select alias</option>
+                  @for (alias of state.aliases(); track alias) { <option [value]="alias">{{ alias }}</option> }
+                </select>
+              </label>
+            }
+            @if (state.operation === 'remove_alias') {
+              <label class="page-field">Alias to remove
+                <select class="app-select app-control--form" [(ngModel)]="state.value">
+                  <option value="">Select alias</option>
+                  @for (alias of state.aliases(); track alias) { <option [value]="alias">{{ alias }}</option> }
+                </select>
+              </label>
+            } @else if (state.operation !== 'clear') {
+              @if (isArtistId(state.field)) {
+                <label class="page-field">Proposed artist ID
+                  <input class="app-input app-control--form" type="number" [(ngModel)]="state.value" min="1" step="1" [max]="maxArtistId" />
+                </label>
+                @if (profileUrl(state.field, state.value); as url) {
+                  <p><a [href]="url" target="_blank" rel="noopener noreferrer">Open this ID's page URL</a></p>
+                }
+              } @else {
+                <label class="page-field">Proposed original name <input class="app-input app-control--form" [(ngModel)]="state.value" maxlength="500" /></label>
+              }
+            } @else { <p>This proposes clearing {{ labels[state.field] }}.</p> }
+            <div class="page-actions">
+              <button class="app-button app-control--form" type="button" (click)="state.add()" [disabled]="state.searching() || (state.draft.full() && !state.draft.editingId())">
+                {{ state.draft.editingId() ? 'Save change' : 'Add to submission' }}
+              </button>
+            </div>
+          }
+          @if (state.error()) { <p class="page-error" role="alert">{{ state.error() }}</p> }
+          @if (state.draft.hasUnfinishedChange()) {
+            <div class="contribution-unfinished">
+              <p class="page-muted">Finish this change before submitting, or cancel it to keep only the listed changes.</p>
+              <button class="app-button app-control--form" type="button" (click)="state.cancelEdit()">Cancel change</button>
+            </div>
+          }
+        </div>
+        <div class="page-panel">
+          <div class="contribution-list-heading">
+            <h2 id="contribution-changes-heading">Changes in this submission ({{ state.draft.cart().length }})</h2>
+            <button class="app-button app-button--danger app-control--form" type="button" (click)="discardDraft()">Discard draft</button>
+          </div>
+          <ol class="contribution-list" aria-labelledby="contribution-changes-heading">
+            @for (item of state.draft.cart(); track item.client_id) {
+              <li class="contribution-change" [class.contribution-change--editing]="state.draft.editingId() === item.client_id">
+                <div class="contribution-change-record">
+                  <h3>{{ $index + 1 }}. {{ item.label }}</h3>
+                  <p class="page-muted">{{ labels[item.field] }} · {{ operationLabels[item.operation] }}</p>
+                  @if (state.draft.editingId() === item.client_id) { <p class="page-muted">Editing above</p> }
+                </div>
+                <div class="contribution-change-value">
+                  @if (item.payload.old_value) {
+                    <p class="page-muted">Replace: {{ item.payload.old_value }}</p>
+                  }
+                  <p>
+                    {{ item.operation === 'clear' ? 'Clear value' : item.payload.value }}
+                    @if (profileUrl(item.field, item.payload.value); as url) {
+                      <a class="page-profile-icon" [href]="url" target="_blank" rel="noopener noreferrer" title="Open artist profile" aria-label="Open artist profile"><i class="fa fa-external-link" aria-hidden="true"></i></a>
+                    }
+                  </p>
+                </div>
+                <div class="contribution-change-actions">
+                  <button class="app-button app-control--form" type="button" (click)="editChange(item.client_id, changeEditor)" [disabled]="state.draft.editingId() === item.client_id">Edit</button>
+                  <button class="app-button app-control--form" type="button" (click)="state.remove(item.client_id)">Remove</button>
+                </div>
+              </li>
+            }
+          </ol>
+          @if (!state.draft.cart().length) { <p class="page-muted">Add one or more changes above.</p> }
+          @if (state.draft.full()) { <p class="page-muted">This submission has reached its limit of 100 changes.</p> }
+        </div>
+      </fieldset>
+      @if (state.submitError()) { <p class="page-error" role="alert">{{ state.submitError() }}</p> }
+      <button class="app-button app-control--form" type="button" (click)="state.submit()" [disabled]="state.submitting() || state.searching() || state.draft.hasUnfinishedChange() || !state.draft.name.trim() || !state.draft.cart().length">
+        {{ state.submitting() ? 'Submitting…' : 'Submit contribution' }}
+      </button>
+    }
+  </main>
+</div>
+
+<app-confirm-dialog [open]="discardOpen()" [busy]="state.submitting()" idPrefix="contribute-discard"
+  title="Discard draft" message="Discard all proposed changes and unfinished edits? Your contributor name will be kept."
+  confirmLabel="Discard" [destructive]="true" (confirmed)="confirmDiscard()" (cancelled)="discardOpen.set(false)" />

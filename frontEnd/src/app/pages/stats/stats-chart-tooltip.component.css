@@ -1,0 +1,41 @@
+.chart-tooltip {
+  position: fixed;
+  inset: auto;
+  box-sizing: border-box;
+  width: max-content;
+  max-width: min(300px, calc(100vw - 24px));
+  max-height: calc(100vh - 24px);
+  margin: 0;
+  padding: 4px 6px;
+  overflow: auto;
+  border: 1px solid var(--border);
+  background: var(--surface-3);
+  color: var(--text);
+  font: 12px / 1.4 Arial, sans-serif;
+  overflow-wrap: anywhere;
+  pointer-events: none;
+}
+
+.chart-tooltip-title,
+.chart-tooltip-footer {
+  font-weight: bold;
+}
+
+.chart-tooltip-title {
+  margin-bottom: 3px;
+}
+
+.chart-tooltip-footer {
+  margin-top: 3px;
+}
+
+.chart-tooltip-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.chart-tooltip-swatch {
+  flex: 0 0 8px;
+  height: 8px;
+}

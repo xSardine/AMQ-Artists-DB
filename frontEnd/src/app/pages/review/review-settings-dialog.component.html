@@ -1,0 +1,20 @@
+<app-modal-shell modalTitle="Settings" dialogId="review-settings-modal" titleId="review-settings-title"
+  closeButtonId="review-settings-close" closeLabel="Close settings" (closed)="closed.emit()">
+  <div class="settings-layout settings-layout--scroll">
+    <div class="settings-rows">
+      <div class="settings-row" role="group" aria-labelledby="review-settings-theme-label">
+        <h3 id="review-settings-theme-label" class="settings-row-label">Theme</h3>
+        <div class="settings-row-controls">
+          <app-theme-selector controlId="review-settings-theme" />
+        </div>
+      </div>
+    </div>
+  </div>
+  @if (state.authenticated()) {
+    <div class="settings-footer">
+      <button id="logout" type="button" class="app-button" [disabled]="state.busy()" (click)="logout()">
+        Log Out
+      </button>
+    </div>
+  }
+</app-modal-shell>

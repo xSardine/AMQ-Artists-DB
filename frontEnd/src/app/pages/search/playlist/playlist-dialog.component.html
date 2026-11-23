@@ -1,0 +1,96 @@
+<app-modal-shell modalTitle="Playlists" titleId="playlist-modal-title" dialogId="playlist-modal" closeButtonId="playlist-modal-close"
+  closeLabel="Close playlists" (closed)="modals.close('playlists')">
+  <div class="playlist-modal-panel" (scroll)="closeActions()">
+    <div class="playlist-modal-body">
+      @if (playlistService.autoAddPlaylist(); as playlist) {
+        <div class="playlist-auto-add-banner" role="status">
+          <span>Auto adding songs to <strong>{{ playlist.name }}</strong></span>
+          <button id="playlist-auto-add-cancel" type="button" class="app-button" (click)="playlistService.cancelAutoAdd()">Cancel</button>
+        </div>
+      }
+
+      <div class="playlist-section">
+        <h3 class="playlist-section-title">New playlist</h3>
+        <p class="playlist-help-text">All songs currently in the table will be added to this playlist, up to 500 songs. They are stored as ANN Song Ids in the browser's local storage. Add individual songs from the "Add" column in the song table.</p>
+        <div class="playlist-create-row">
+          <input id="playlist-create-name" #newPlaylistName type="text" class="app-input" maxlength="100" placeholder="Playlist name"
+            (keyup.enter)="createPlaylist(newPlaylistName)" />
+          <button id="playlist-create-save" type="button" class="app-button" (click)="createPlaylist(newPlaylistName)"><i class="fa fa-save" aria-hidden="true"></i> Save</button>
+        </div>
+      </div>
+
+      <div class="playlist-section">
+        <h3 class="playlist-section-title">Import</h3>
+        <p class="playlist-help-text">Load songs from a JSON file into the table. Any file with ANN Song IDs works.</p>
+        <input #playlistImportInput type="file" accept="application/json,.json" hidden (change)="onImport($event)" />
+        <button id="playlist-import" type="button" class="app-button" (click)="playlistImportInput.click()"><i class="fa fa-upload" aria-hidden="true"></i> Import</button>
+      </div>
+
+      <div class="playlist-section">
+        <div class="playlist-list-header">
+          <h3 class="playlist-section-title">Saved playlists</h3>
+          <label class="playlist-sort-control" for="playlist-sort-select">
+            <span>Sort</span>
+            <select id="playlist-sort-select" class="app-select" aria-label="Sort saved playlists"
+              (change)="playlistService.setPlaylistSort($any($event.target).value)">
+              @for (option of playlistSortOptions; track option.value) {
+                <option [value]="option.value" [selected]="playlistService.playlistSort() === option.value">{{ option.label }}</option>
+              }
+            </select>
+          </label>
+        </div>
+
+        @if (playlistService.playlists().length) {
+          <div class="playlist-list">
+            @for (playlist of sortedPlaylists(); track playlist.id) {
+              <div class="playlist-row">
+                <div class="playlist-row-details">
+                  <strong>{{ playlist.name }}</strong>
+                  <span>{{ formatSongCount(playlist.annSongIds.length) }} · Created {{ formatDate(playlist.createdOn) }}</span>
+                </div>
+                <div class="playlist-row-actions">
+                  <button type="button" class="app-button app-button--compact" [id]="'playlist-' + playlist.id + '-load'" (click)="loadPlaylist(playlist)"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Load</button>
+                  <button type="button" class="app-button app-button--compact" [id]="'playlist-' + playlist.id + '-more'" aria-haspopup="menu"
+                    [attr.aria-expanded]="openActionsId() === playlist.id" [attr.aria-controls]="'playlist-actions-' + playlist.id"
+                    (click)="toggleActions(playlist.id, $event)" (keydown)="onActionsTriggerKeydown(playlist.id, $event)"><i class="fa fa-ellipsis-h" aria-hidden="true"></i> More</button>
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          <p class="playlist-help-text">No saved playlists.</p>
+        }
+      </div>
+    </div>
+  </div>
+
+  @if (openActionsPlaylist(); as playlist) {
+    <div #actionsMenu [id]="'playlist-actions-' + playlist.id" class="app-floating-panel playlist-actions-menu" role="menu"
+      [attr.aria-labelledby]="'playlist-' + playlist.id + '-more'"
+      [style.left.px]="actionsMenuPosition()?.left ?? 0" [style.top.px]="actionsMenuPosition()?.top ?? 0"
+      [style.visibility]="actionsMenuPosition() ? 'visible' : 'hidden'" (click)="closeActions(); $event.stopPropagation()"
+      (keydown)="onActionsMenuKeydown($event)">
+      <button type="button" class="app-button app-button--accent app-button--full" role="menuitem" (click)="toggleAutoAdd(playlist)"><i class="fa" [class.fa-check]="isAutoAddPlaylist(playlist)" [class.fa-bolt]="!isAutoAddPlaylist(playlist)" aria-hidden="true"></i> {{ isAutoAddPlaylist(playlist) ? 'Stop auto-add' : 'Auto-add to this playlist' }}</button>
+      <button type="button" class="app-button app-button--accent app-button--full" role="menuitem" (click)="appendTable(playlist)"><i class="fa fa-plus" aria-hidden="true"></i> Append current table</button>
+      <button type="button" class="app-button app-button--accent app-button--full" role="menuitem" (click)="replaceWithTable(playlist)"><i class="fa fa-refresh" aria-hidden="true"></i> Replace with current table</button>
+      <div class="playlist-actions-menu-separator" role="separator"></div>
+      <button type="button" class="app-button app-button--accent app-button--full" role="menuitem" (click)="rename(playlist)"><i class="fa fa-pencil" aria-hidden="true"></i> Rename playlist</button>
+      <button type="button" class="app-button app-button--accent app-button--full" role="menuitem" (click)="duplicate(playlist)"><i class="fa fa-clone" aria-hidden="true"></i> Duplicate playlist</button>
+      <button type="button" class="app-button app-button--accent app-button--full" role="menuitem" (click)="exportPlaylist(playlist)"><i class="fa fa-download" aria-hidden="true"></i> Export playlist</button>
+      <button type="button" class="app-button app-button--danger app-button--full" role="menuitem" (click)="deletePlaylist(playlist)"><i class="fa fa-trash" aria-hidden="true"></i> Delete playlist</button>
+    </div>
+  }
+  <app-clipboard-popup-outlet />
+</app-modal-shell>
+
+@if (confirmation(); as action) {
+  <app-confirm-dialog [open]="true" idPrefix="playlist-confirm" [title]="action.title" [message]="action.message"
+    [confirmLabel]="action.confirmLabel" [destructive]="true" [error]="confirmationError()"
+    (confirmed)="confirmPlaylistAction()" (cancelled)="confirmation.set(null)" />
+}
+
+@if (renameTarget()) {
+  <app-text-input-dialog idPrefix="playlist-rename" title="Rename playlist" label="Playlist name"
+    [(value)]="renameName" [error]="renameError()" (submitted)="savePlaylistName($event)"
+    (cancelled)="renameTarget.set(null)" />
+}

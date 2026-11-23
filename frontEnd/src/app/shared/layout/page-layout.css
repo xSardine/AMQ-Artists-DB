@@ -1,0 +1,216 @@
+/* Loaded once by styles.css. Form layout is opt-in through .page-field;
+   shared components keep control of their own labels and controls. */
+.page-shell {
+  display: flex;
+  flex-direction: column;
+  min-width: 320px;
+  min-height: 100dvh;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.page-shell--viewport {
+  height: 100dvh;
+}
+
+.page-content {
+  flex: 1 0 auto;
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 12px;
+}
+
+.page-content--narrow {
+  max-width: 480px;
+}
+
+.page-content--wide {
+  max-width: 1600px;
+}
+
+.page-content--fluid {
+  max-width: none;
+}
+
+.page-content--viewport {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.page-content--scroll {
+  overflow: auto;
+}
+
+.page-content :where(h1) {
+  margin: 0 0 20px;
+  font-size: 26px;
+}
+
+.page-content :where(h2) {
+  margin: 0 0 12px;
+  font-size: 18px;
+}
+
+.page-content :where(h3) {
+  margin: 0 0 8px;
+  font-size: 16px;
+}
+
+.page-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 20px;
+  margin-bottom: 20px;
+}
+
+.page-heading :where(h1, h2) {
+  margin: 0;
+}
+
+.page-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  margin: 0 0 16px;
+  font-weight: bold;
+}
+
+.page-panel {
+  margin: 20px 0;
+  padding: 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0;
+}
+
+.page-panel > :last-child {
+  margin-bottom: 0;
+}
+
+.page-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  margin-bottom: 16px;
+}
+
+.page-row > .page-field {
+  flex: 1;
+  min-width: 170px;
+  margin-bottom: 0;
+}
+
+.page-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 12px 0;
+}
+
+.page-muted {
+  color: var(--text-muted);
+  font-weight: normal;
+}
+
+.page-error,
+.page-warning,
+.page-success {
+  padding: 10px 12px;
+  margin: 12px 0;
+  border: 1px solid currentColor;
+  overflow-wrap: anywhere;
+}
+
+.page-error {
+  color: var(--error);
+}
+
+.page-warning {
+  color: var(--warning);
+}
+
+.page-profile-link {
+  display: block;
+  font-weight: normal;
+}
+
+.page-profile-link--inline {
+  display: inline;
+  margin-left: 8px;
+}
+
+.page-profile-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 6px;
+  padding: 2px;
+  text-decoration: none;
+  vertical-align: baseline;
+}
+
+.page-success {
+  color: var(--success);
+}
+
+.page-values {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 8px;
+  margin: 12px 0;
+  overflow-wrap: anywhere;
+}
+
+.page-values dt {
+  color: var(--text-muted);
+}
+
+.page-values dd {
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.page-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 7px;
+  border: 1px solid var(--border);
+  font-size: 13px;
+}
+
+.page-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 20px;
+  margin: 16px 0;
+}
+
+.page-details {
+  margin: 12px 0;
+}
+
+.page-details > summary {
+  cursor: pointer;
+  color: var(--link);
+}
+
+.page-comment-text {
+  white-space: pre-wrap;
+  margin: 10px 0;
+}
+
+@media (max-width: 700px) {
+  .page-content {
+    padding: 8px;
+  }
+
+  .page-values {
+    grid-template-columns: 1fr;
+  }
+}

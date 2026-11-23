@@ -1,0 +1,21 @@
+@if (hasData()) {
+  <div class="composition">
+    <div class="composition-chart" aria-hidden="true">
+      <canvas #canvas></canvas>
+    </div>
+    <ul class="composition-legend">
+      @for (row of rows(); track row.label; let index = $index) {
+        <li>
+          <span class="composition-swatch" [style.background-color]="colors()[index]" aria-hidden="true"></span>
+          <span class="composition-label">{{ row.label }}</span>
+          <span class="composition-count">{{ row.formattedCount }}</span>
+          <span class="composition-share">{{ row.share }}</span>
+        </li>
+      }
+    </ul>
+  </div>
+} @else {
+  <div class="composition-empty">{{ values() ? 'No data.' : '—' }}</div>
+}
+
+<app-stats-chart-tooltip />
